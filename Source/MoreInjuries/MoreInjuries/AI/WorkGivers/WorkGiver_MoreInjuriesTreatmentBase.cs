@@ -32,7 +32,8 @@ public abstract class WorkGiver_MoreInjuriesTreatmentBase : WorkGiver_Scanner
             && GoodLayingStatusForTend(patient, doctor)
             && !patient.IsForbidden(doctor)
             && (!patient.IsMutant || patient.mutant.Def.entitledToMedicalCare)
-            && !patient.InAggroMentalState;
+            && !patient.InAggroMentalState
+            && patient.playerSettings?.medCare is not MedicalCareCategory.NoCare;
     }
 
     public override bool HasJobOnThing(Pawn pawn, Thing thing, bool forced = false)

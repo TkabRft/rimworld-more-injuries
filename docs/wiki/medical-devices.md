@@ -145,6 +145,8 @@ Blood bags are also the only way to stabilize pawns with severe [hemodilution](/
 
 ## CPR
 
+Status: `added, not verified`. code-synced: 2026-09-26.
+
 Cardiopulmonary resuscitation (CPR) is an emergency procedure that combines chest compressions with artificial ventilation to manually preserve brain function until further measures can be taken to restore spontaneous blood circulation and breathing in a person who is in [cardiac arrest](/docs/wiki/injuries/cardiac-arrest.md#cardiac-arrest), suffering from a [heart attack](https://rimworldwiki.com/wiki/Ailments#Heart_attack), or is [choking on blood](/docs/wiki/injuries/choking.md#choking-on-blood).
 
 > **In-Game Description**
@@ -156,7 +158,7 @@ Cardiopulmonary resuscitation (CPR) is an emergency procedure that combines ches
 
 1. Tell a *drafted* pawn capable of doctoring to perform CPR on a pawn suffering from [cardiac arrest](/docs/wiki/injuries/cardiac-arrest.md#cardiac-arrest) (during `ventricular fibrillation` and `clinical death` stages), [heart attack](https://rimworldwiki.com/wiki/Ailments#Heart_attack), or [choking on blood](/docs/wiki/injuries/choking.md#choking-on-blood) using the `Perform CPR` option in the right-click context menu. Self-treatment is not possible.
 2. CPR is part of the [First Aid](#first-aid) order for *drafted* pawns.
-3. Alternatively, resuscitating patients using CPR is now part of a new general, high-priority work type for all doctors. So, if you have a patient in a hospital bed with a condition that requires CPR, any non-drafted doctor will automatically attempt to resuscitate the patient using CPR or a [defibrillator](#defibrillator), in accordance with the configured work priorities.
+3. Alternatively, resuscitating patients using CPR is now part of a new general, high-priority work type for all doctors. So, if you have a patient in a hospital bed with a condition that requires CPR, any non-drafted doctor will automatically attempt to resuscitate the patient using CPR or a [defibrillator](#defibrillator), in accordance with the configured work priorities. Automatic doctor CPR, airway management, and the other treatment work givers do not run when the patient's medical care is set to no medical care. No medicine still allows CPR, because CPR does not use medicine.
 
 **Research Requirements**: [Cardiopulmonary Resuscitation (CPR)](/docs/wiki/research.md#cardiopulmonary-resuscitation-cpr)  
 **Severity Reduction**: $f_{\text{sigmoid}}($ `medicine skill> / 15` $)$ where $f_{\text{sigmoid}}$ is a diffused sigmoid function defined as $f_{\text{sigmoid}}(x) = \frac{1}{1 + e^{-10\cdot(x - 0.5)}} + z$ where $z$ is a random factor between $-0.1$ and $0.1$. See [Wolfram Alpha](https://www.wolframalpha.com/input?i=f%28x%29+%3D+1+%2F+%281+%2B+e%5E%28-10*%28x%2F15+-+0.5%29%29%29+%2B+z%2C+x+in+%5B0%2C+20%5D%2C+z+in%5B-0.1%2C0.1%5D) for a visualization of the function.
