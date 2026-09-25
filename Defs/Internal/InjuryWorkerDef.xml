@@ -25,7 +25,6 @@
             </earGroups>
           </li>
           <li Class="MoreInjuries.HealthConditions.HearingLoss.HearingLossExplosionsWorkerFactory" />
-          <li Class="MoreInjuries.HealthConditions.HeadInjury.Concussions.ConcussionExplosionsWorkerFactory" />
           <li Class="MoreInjuries.HealthConditions.HeavyBleeding.HeavyBleedingWorkerFactory" />
           <li Class="MoreInjuries.HealthConditions.ProvideFirstAidWorkerFactory" />
           <li Class="MoreInjuries.HealthConditions.Drugs.DrugWorkerFactory" />

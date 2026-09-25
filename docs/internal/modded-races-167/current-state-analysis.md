@@ -241,28 +241,11 @@ IEnumerable<BodyPartRecord> affectedBones = damage.parts.Where(bodyPart =>
 
 **File:** `Source/.../HealthConditions/HeadInjury/HeadInjuryWorker.cs`
 
-Two assumptions:
+See `docs/concussion.md` for the current matching rules and `HeadTraumaProperties` patch surface.
 
-1. **`BodyPartGroupDefOf.FullHead` group existence:**
+A part contributes if it is listed in `partMultipliers`, or it or an ancestor is in `headRoots` (`Head`, `Skull`) or `headGroups` (`FullHead`). A patched `partMultipliers` row is enough without `FullHead`. Unlisted race parts do nothing until patched.
 
-   ```csharp
-   if (bodyPart.groups.Contains(BodyPartGroupDefOf.FullHead))
-   ```
-
-   This is a standard vanilla group. Any pawn race without a `FullHead` group on its head parts will never trigger head injuries. For races that do define `FullHead`, this works correctly.
-
-2. **Hard-coded severity multipliers per body part def:**
-
-   ```csharp
-   _ when bodyPart == KnownBodyPartDefOf.Brain => 3.0f,
-   _ when bodyPart == KnownBodyPartDefOf.Skull => 1.5f,
-   _ when bodyPart == KnownBodyPartDefOf.Ear   => 1f,
-   _ when bodyPart == BodyPartDefOf.Eye        => 0.7f,
-   _ when bodyPart == KnownBodyPartDefOf.Nose  => 0.5f,
-   _ => 0.75f
-   ```
-
-   The fallback of `0.75f` means unknown head body parts still contribute to head injury severity, making this **partially graceful** for non-standard head anatomy.
+The hediff is always applied to `GetBrain()`. Races without a brain skip concussion and trauma stroke.
 
 #### HydrostaticShockWorker
 
@@ -687,7 +670,7 @@ The corpse cache filters by `RaceProps.Humanlike: true` (see [WorkGiver_RemoveTo
 | `MoreInjuryComp.Pawn` | Casts `parent` to `Pawn` | Crash if comp attached to non-Pawn Thing | Low (safe in practice) |
 | `AdrenalineWorker.IsEnabled` | Checks `!Pawn.IsShambler` | Shamblers don't get adrenaline | Low (intentional) |
 | `FractureWorker` | Hard-coded dict of Human bone defs | Non-human races get no fractures even with equivalent bones | Medium (feature gap) |
-| `HeadInjuryWorker` | Uses `BodyPartGroupDefOf.FullHead` | Races without `FullHead` group get no head injuries | Medium (feature gap) |
+| `HeadInjuryWorker` | XML `HeadTraumaProperties` plus `GetBrain()` | Unlisted race parts do nothing until patched; no brain skips the hediff | Medium (feature gap; see `docs/concussion.md`) |
 | `HydrostaticShockWorker` | `GetBrain()` used for stroke target | Races without `Brain` silently skip hydrostatic shock | Low (graceful) |
 | `ParalysisWorker` | Checks for Human-only `SpinalCord` body part | Non-human races never get paralysis | Medium (feature gap) |
 | `IntestinalSpillWorker` | Hard-coded set including Human-only intestine defs | Non-human races skip intestinal spill for missing organs | Low (graceful, partial feature gap) |

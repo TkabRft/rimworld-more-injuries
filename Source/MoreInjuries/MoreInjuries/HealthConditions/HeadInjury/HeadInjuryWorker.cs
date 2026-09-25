@@ -1,95 +1,91 @@
 ﻿using MoreInjuries.Defs.WellKnown;
-using MoreInjuries.HealthConditions.HeadInjury.Concussions;
-using MoreInjuries.HealthConditions.HeadInjury.HemorrhagicStroke;
-using RimWorld;
-using System.Collections.Generic;
-using System.Linq;
+using UnityEngine;
 using Verse;
 
 namespace MoreInjuries.HealthConditions.HeadInjury;
 
-public sealed class HeadInjuryWorker(MoreInjuryComp parent) : InjuryWorker(parent), IPostTakeDamageHandler
+public sealed class HeadInjuryWorker(MoreInjuryComp parent) : InjuryWorker(parent), IPostPostApplyDamageHandler
 {
-    private readonly HeadInjuryGiver[] _headInjuryGivers =
-    [
-        new ConcussionGiver(),
-        new HemorrhagicStrokeGiver(),
-    ];
+    private const float REFERENCE_HIT_POINTS = 10f;
+    private const float MINIMUM_SEVERITY = 0.01f;
 
-    public static HashSet<string> DamageDefNameWhitelist { get; }
+    public override bool IsEnabled =>
+        (MoreInjuriesMod.Settings.EnableConcussion || MoreInjuriesMod.Settings.EnableHemorrhagicStroke)
+        && HeadTraumaPropertiesDef.Named is not null;
 
-    public override bool IsEnabled => _headInjuryGivers.Any(static giver => giver.IsEnabled);
-
-    static HeadInjuryWorker()
+    public void PostPostApplyDamage(ref readonly DamageInfo dinfo)
     {
-        // allowed damage types that may cause a head injury when applied to the head
-        DamageDefNameWhitelist =
-        [
-            "Arrow",
-            "ArrowHighVelocity",
-            "Beanbag",
-            "Bite",
-            "BiteToxic",
-            DamageDefOf.Blunt.defName,
-            DamageDefOf.Bomb.defName,
-            "BombSuper",
-            DamageDefOf.Bullet.defName,
-            "BulletToxic",
-            DamageDefOf.Crush.defName,
-            "EnergyBolt",
-            "Nerve",
-            DamageDefOf.Stab.defName,
-            "Thermobaric", // from Combat Extended
-        ];
-    }
-
-    private float CalculateSeverityFactor(BodyPartDef bodyPart) => __ switch
-    {
-        _ when bodyPart == KnownBodyPartDefOf.Brain => 3.0f,
-        _ when bodyPart == KnownBodyPartDefOf.Skull => 1.5f,
-        _ when bodyPart == KnownBodyPartDefOf.Ear => 1f,
-        _ when bodyPart == BodyPartDefOf.Eye => 0.7f,
-        _ when bodyPart == KnownBodyPartDefOf.Nose => 0.5f,
-        _ => 0.75f
-    };
-
-    public void PostTakeDamage(DamageWorker.DamageResult damage, ref readonly DamageInfo dinfo)
-    {
-        if (damage.parts is not List<BodyPartRecord> { Count: > 0 } bodyParts)
+        HeadTraumaPropertiesDef? properties = HeadTraumaPropertiesDef.Named;
+        if (properties is null)
         {
             return;
         }
-        if (!DamageDefNameWhitelist.Contains(dinfo.Def.defName))
+        BodyPartRecord? hitPart = dinfo.HitPart;
+        if (hitPart is null || !properties.IsHeadPart(hitPart))
+        {
+            return;
+        }
+        float receivedDamage = dinfo.Amount;
+        if (receivedDamage <= 0f)
         {
             return;
         }
         Pawn patient = Pawn;
-        // assuming an even distribution of the damage across all affected body parts, we can calculate the weighted damage to the head
-        float weightedHeadTrauma = 0;
-        float aggregatedBodyTrauma = bodyParts.Sum(static bodyPart => bodyPart.coverage);
-        foreach (BodyPartRecord bodyPart in bodyParts)
-        {
-            // check if the body part of the head (body part group FullHead)
-            if (bodyPart.groups.Contains(BodyPartGroupDefOf.FullHead))
-            {
-                // determine severity factor based on the specific body part
-                float severityFactor = CalculateSeverityFactor(bodyPart.def);
-                // calculate the damage to the head based on the severity factor and the weighted damage absorbed by the body part
-                weightedHeadTrauma += severityFactor * damage.totalDamageDealt * bodyPart.coverage / aggregatedBodyTrauma;
-            }
-        }
-        if (weightedHeadTrauma == 0f)
+        BodyPartRecord? brain = patient.health.hediffSet.GetBrain();
+        if (brain is null)
         {
             return;
         }
-        // equivalentHeadTrauma is the equivalent damage directly applied to the skull to determine the maximum likeliness of the head injury
-        float equivalentHeadTrauma = weightedHeadTrauma / 1.5f;
-        foreach (HeadInjuryGiver giver in _headInjuryGivers)
+        float healthScaling = 1f;
+        if (hitPart.def.hitPoints > 0)
         {
-            if (giver.IsEnabled)
-            {
-                giver.TryGiveInjury(patient, equivalentHeadTrauma);
-            }
+            healthScaling = REFERENCE_HIT_POINTS / hitPart.def.hitPoints;
         }
+        float trauma = receivedDamage
+            * properties.GetDamageTypePercent(dinfo.Def)
+            * properties.GetPartMultiplier(hitPart)
+            * healthScaling;
+        MoreInjuriesSettings settings = MoreInjuriesMod.Settings;
+        if (settings.EnableConcussion)
+        {
+            TryApplyOutcome(
+                patient,
+                brain,
+                KnownHediffDefOf.Concussion,
+                trauma,
+                settings.ConcussionThreshold,
+                settings.ConcussionChance);
+        }
+        if (settings.EnableHemorrhagicStroke)
+        {
+            TryApplyOutcome(
+                patient,
+                brain,
+                KnownHediffDefOf.HemorrhagicStroke,
+                trauma,
+                settings.HemorrhagicStrokeThreshold,
+                settings.HemorrhagicStrokeChance);
+        }
+    }
+
+    private static void TryApplyOutcome(
+        Pawn patient,
+        BodyPartRecord brain,
+        HediffDef hediffDef,
+        float trauma,
+        float threshold,
+        float chance)
+    {
+        float added = Mathf.Clamp01(trauma / threshold) * chance;
+        if (added < MINIMUM_SEVERITY)
+        {
+            return;
+        }
+        if (!patient.health.hediffSet.TryGetHediff(hediffDef, out Hediff? hediff))
+        {
+            hediff = HediffMaker.MakeHediff(hediffDef, patient);
+            patient.health.AddHediff(hediff, brain);
+        }
+        hediff.Severity = Mathf.Min(1f, hediff.Severity + added);
     }
 }
