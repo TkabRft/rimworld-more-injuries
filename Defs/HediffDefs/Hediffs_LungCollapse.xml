@@ -3,13 +3,19 @@
   <HediffDef ParentName="DiseaseBase">
     <defName>LungCollapse</defName>
     <label>lung collapse</label>
-    <description>A buildup of air inside the chest cavity creates pressure against the lung. Pressure increases as more air enters this space. The lung collapses, impairing normal breathing causing surrounding structures to shift. When severe enough to cause these shifts and hypotension, it is called a tension pneumothorax. In this life-threatening condition, the increased pressure inside the chest can compress the heart and lead to a collapse of the blood vessels that drain to the heart, causing obstructive shock. With the heart unable to fill, cardiac output drops. Hypotension and shock ensue. If left untreated treated, it can lead to cardiac arrest and death.\n\nMust be surgically repaired.</description>
+    <description>A buildup of air inside the chest cavity creates pressure against the lung, impairing normal breathing. The collapse stays at the severity it began at. It does not worsen on its own, but further injury to that lung can make it worse.\n\nBelow 45% severity, a decent tend lets the body reabsorb the trapped air over several days, unless that lung is still bleeding. At or above 45% severity, surrounding structures shift and blood flow to the heart is impaired. This is a tension pneumothorax. Tending will not repair it, and it must be surgically repaired. If left untreated, it can lead to cardiac arrest and death.</description>
     <defaultLabelColor>(255, 129, 56)</defaultLabelColor>
+    <tendable>true</tendable>
+    <alwaysShowSeverity>true</alwaysShowSeverity>
     <maxSeverity>1</maxSeverity>
     <comps>
-      <li Class="HediffCompProperties_SeverityPerDay">
-        <severityPerDay>0.5</severityPerDay>
-        <showHoursToRecover>false</showHoursToRecover>
+      <li Class="HediffCompProperties_TendDuration">
+        <baseTendDurationHours>12</baseTendDurationHours>
+      </li>
+      <li Class="MoreInjuries.HealthConditions.LungCollapse.HediffCompProperties_LungCollapseResolution">
+        <surgicalThreshold>0.45</surgicalThreshold>
+        <severityPerDayTended>-0.15</severityPerDayTended>
+        <minTendQuality>0.4</minTendQuality>
       </li>
       <li Class="MoreInjuries.HealthConditions.Secondary.HediffCompProperties_CausedBy"></li>
       <li Class="MoreInjuries.HealthConditions.Secondary.HediffCompProperties_SecondaryCondition">
@@ -47,18 +53,16 @@
     </comps>
     <stages>
       <li>
-        <label>initial</label>
+        <label>minor</label>
         <minSeverity>0</minSeverity>
         <partEfficiencyOffset>-0.05</partEfficiencyOffset>
         <painOffset>0.1</painOffset>
-        <lifeThreatening>true</lifeThreatening>
       </li>
       <li>
-        <label>minor obstructive shock</label>
+        <label>moderate</label>
         <minSeverity>0.2</minSeverity>
         <partEfficiencyOffset>-0.1</partEfficiencyOffset>
         <painOffset>0.3</painOffset>
-        <lifeThreatening>true</lifeThreatening>
         <capMods>
           <li>
             <capacity>BloodPumping</capacity>
@@ -67,7 +71,7 @@
         </capMods>
       </li>
       <li>
-        <label>moderate obstructive shock</label>
+        <label>tension</label>
         <minSeverity>0.45</minSeverity>
         <partEfficiencyOffset>-0.2</partEfficiencyOffset>
         <painOffset>0.4</painOffset>
@@ -80,7 +84,7 @@
         </capMods>
       </li>
       <li>
-        <label>severe obstructive shock</label>
+        <label>severe tension</label>
         <minSeverity>0.75</minSeverity>
         <partEfficiencyOffset>-0.3</partEfficiencyOffset>
         <painOffset>0.5</painOffset>
@@ -93,7 +97,7 @@
         </capMods>
       </li>
       <li>
-        <label>extreme obstructive shock</label>
+        <label>extreme tension</label>
         <minSeverity>0.9</minSeverity>
         <partEfficiencyOffset>-0.4</partEfficiencyOffset>
         <painOffset>0.7</painOffset>

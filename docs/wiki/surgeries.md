@@ -133,7 +133,7 @@ $\rightarrow$ *see [lung collapse](/docs/wiki/injuries/lung-collapse.md#lung-col
 > Thoracotomy is a surgical procedure that involves making an incision in the chest wall to gain access to the lungs and the surrounding structures. The source of the air leak causing the lung collapse is identified and repaired, and pleural space is drained to allow the lung to re-expand and to relieve the pressure on the heart and other organs. Finally, the chest wall is closed and the incision is sutured.  
 > A complex and invasive surgery that requires a skilled surgeon and yields a moderate success rate."_
 
-**Used for**: Treating [lung collapse](/docs/wiki/injuries/lung-collapse.md#lung-collapse) with invasive surgical techniques to repair the damage and restore the lung to full function. Moderate success rate and moderate risk of complications.
+**Used for**: Treating [lung collapse](/docs/wiki/injuries/lung-collapse.md#lung-collapse) with invasive surgical techniques to repair the damage and restore the lung to full function. Required at 45% severity and above. Optional below that. Moderate success rate and moderate risk of complications.
 
 **Skill Requirements**: `Medicine` at level 6  
 **Research Requirements**: [Emergency medicine](/docs/wiki/research.md#emergency-medicine)  
@@ -172,7 +172,7 @@ $\rightarrow$ *see [lung collapse](/docs/wiki/injuries/lung-collapse.md#lung-col
 > Video-assisted thoracoscopic surgery (VATS) is a minimally invasive surgical procedure that involves making small incisions in the chest wall and using a camera and specialized instruments to repair the collapsed lung. Since the surgery is performed through small incisions, it is associated with less pain, shorter recovery time, and reduced risk of complications compared to traditional open surgery.  
 > While VATS is less invasive and offers a higher success rate than thoracotomy, it requires highly specialized equipment, additional training, and takes longer to perform, given the complexity of the procedure."_
 
-**Used for**: Treating [lung collapse](/docs/wiki/injuries/lung-collapse.md#lung-collapse) with minimally invasive surgical techniques to repair the damage and restore the lung to full function. High success rate and low risk of complications.
+**Used for**: Treating [lung collapse](/docs/wiki/injuries/lung-collapse.md#lung-collapse) with minimally invasive surgical techniques to repair the damage and restore the lung to full function. Required at 45% severity and above. Optional below that. High success rate and low risk of complications.
 
 **Skill Requirements**: `Medicine` at level 8  
 **Research Requirements**: [Advanced thoracic surgery](/docs/wiki/research.md#advanced-thoracic-surgery)  
