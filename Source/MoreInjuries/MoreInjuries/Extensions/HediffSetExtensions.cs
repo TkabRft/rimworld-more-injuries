@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace MoreInjuries.Extensions;
@@ -71,12 +72,11 @@ public static class HediffSetExtensions
         }
     }
 
-
     public static bool IsArtificialPart(this HediffSet hediffSet, BodyPartRecord part)
     {
         // Check if any hediff on this part is an artificial part (bionics)
-        return hediffSet.hediffs.Any(hediff => 
-            hediff.Part == part && 
+        return hediffSet.hediffs.Any(hediff =>
+            hediff.Part == part &&
             hediff.def.addedPartProps is not null);
     }
 }

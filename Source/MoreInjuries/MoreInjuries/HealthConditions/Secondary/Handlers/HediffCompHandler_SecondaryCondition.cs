@@ -1,79 +1,59 @@
 ﻿using MoreInjuries.Extensions;
 using MoreInjuries.HealthConditions.Secondary.Handlers.HediffMakers;
-using MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers;
 using MoreInjuries.HealthConditions.Secondary.Handlers.TargetEvaluators;
-using MoreInjuries.Roslyn.Future.ThrowHelpers;
+using MoreInjuries.Roslyn.SourceGen.XmlBinding.Attributes;
 using RimWorld;
-using System.Collections.Generic;
-using UnityEngine;
+
 using Verse;
 
 namespace MoreInjuries.HealthConditions.Secondary.Handlers;
 
-// members initialized via XML defs
-[SuppressMessage(CODE_STYLE, STYLE_IDE0032_USE_AUTO_PROPERTY, Justification = JUSTIFY_IDE0032_XML_DEF_REQUIRES_FIELD)]
-[SuppressMessage(CODE_STYLE, STYLE_IDE1006_NAMING_STYLES, Justification = JUSTIFY_IDE1006_XML_NAMING_CONVENTION)]
-public abstract class HediffCompHandler_SecondaryCondition : HediffCompHandler
+[XmlBindable]
+public abstract partial class HediffCompHandler_SecondaryCondition : HediffCompHandler_ChanceBased, IHediffCompHandler<HediffComp_SecondaryCondition>
 {
-    // don't rename this field. XML defs depend on this name
-    private readonly float? baseChance = null;
-    // don't rename this field. XML defs depend on this name
-    private readonly HediffMakerProperties? hediffMakerProps = default;
-    // don't rename this field. XML defs depend on this name
-    private readonly List<SecondaryHediffModifier>? chanceModifiers = default;
-    // don't rename this field. XML defs depend on this name
-    private readonly bool sendLetterWhenDiscovered = false;
-    // don't rename this field. XML defs depend on this name
-    private readonly BodyPartHediffTargetEvaluator? targetEvaluator = default;
+    [XmlBinding("hediffMakerProps")]
+    public partial HediffMakerProperties HediffMakerProps { get; }
 
-    public virtual float BaseChance => baseChance ?? 1f;
+    [XmlBinding("sendLetterWhenDiscovered")]
+    public partial bool SendLetterWhenDiscovered { get; }
 
-    public HediffMakerProperties? HediffMakerProps => hediffMakerProps;
+    [XmlBinding<bool>("applyDownstreamModifiers", defaultValue: true)]
+    public partial bool ApplyDownstreamModifiers { get; }
 
-    public IReadOnlyList<SecondaryHediffModifier>? ChanceModifiers => chanceModifiers;
+    [XmlBinding("targetEvaluator", DefaultValueProvider = typeof(BodyPartHediffTargetEvaluator_WholeBody), DefaultValueFrom = nameof(BodyPartHediffTargetEvaluator_WholeBody.Instance))]
+    public partial BodyPartHediffTargetEvaluator TargetEvaluator { get; }
 
-    public bool SendLetterWhenDiscovered => sendLetterWhenDiscovered;
-
-    public BodyPartHediffTargetEvaluator TargetEvaluator => targetEvaluator ?? BodyPartHediffTargetEvaluator_WholeBody.Instance;
-
-    public virtual bool ShouldSkip(HediffComp_SecondaryCondition comp)
+    public virtual void Handle(HediffComp_SecondaryCondition comp)
     {
-        if (comp.Pawn.Dead)
+        HediffMakerDef hediffMakerDef = HediffMakerProps.GetHediffMakerDef(comp, handler: this);
+        if (!ShouldSkip(comp, hediffMakerDef.HediffDef))
         {
-            return true;
+            TryApplyHediff(comp, hediffMakerDef);
         }
-        if (comp.SeverityCurve is not null && !Rand.Chance(comp.SeverityCurve.Evaluate(comp.parent.Severity)))
-        {
-            return true;
-        }
-        float chance = BaseChance;
-        if (chance > Mathf.Epsilon && ChanceModifiers is { Count: > 0 })
-        {
-            foreach (SecondaryHediffModifier modifier in ChanceModifiers)
-            {
-                chance *= modifier.GetModifier(comp.parent, this);
-                if (chance <= Mathf.Epsilon)
-                {
-                    return true;
-                }
-            }
-        }
-        if (chance <= Mathf.Epsilon || chance < 1f && !Rand.Chance(chance))
-        {
-            return true;
-        }
-        return false;
     }
 
-    protected virtual void Evaulate(HediffComp_SecondaryCondition comp)
+    public virtual bool ShouldSkip(HediffComp_SecondaryCondition comp, HediffDef hediffDef)
     {
-        Throw.InvalidOperationException.IfNull(this, HediffMakerProps);
+        if (ShouldSkip(comp))
+        {
+            return true;
+        }
+        Hediff hediff = comp.parent;
+        float chance = 1f;
+        // apply modifiers from the downstream hediff
+        if (ApplyDownstreamModifiers && hediffDef.GetModExtension<HediffModifier_DownstreamChanceModifiers_ModExtension>() is { } downstream)
+        {
+            chance *= downstream.GetModifier(hediff, compHandler: this);
+        }
+        return !Rand.Chance(chance);
+    }
 
-        BodyPartHediffTargetEvaluator localTargetEvaluator = TargetEvaluator;
-        BodyPartRecord? targetBodyPart = localTargetEvaluator.GetTargetBodyPart(comp, this);
-        HediffMakerDef hediffMakerDef = HediffMakerProps.GetHediffMakerDef(comp, handler: this, targetBodyPart);
+    protected virtual void TryApplyHediff(HediffComp_SecondaryCondition comp, HediffMakerDef hediffMakerDef)
+    {
         HediffDef hediffDef = hediffMakerDef.HediffDef;
+        BodyPartHediffTargetEvaluator localTargetEvaluator = TargetEvaluator;
         // check if the hediff already exists on the target body part (or anywhere if no body part is specified)
+        BodyPartRecord? targetBodyPart = localTargetEvaluator.GetTargetBodyPart(comp, this);
         Hediff? existingHediff = null;
         if (targetBodyPart is null && !comp.Pawn.health.hediffSet.TryGetHediff(hediffDef, out existingHediff)
             || targetBodyPart is not null && !comp.Pawn.health.hediffSet.TryGetFirstHediffMatchingPart(targetBodyPart, hediffDef, out existingHediff))

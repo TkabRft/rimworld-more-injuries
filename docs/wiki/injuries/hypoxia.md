@@ -1,5 +1,7 @@
 # Hypoxia
 
+Status: `added, not verified`. code-synced: 2026-09-25.
+
 <!-- @generate_breadcrumb_trail {"template": "_:file_folder: {0}_", "connector": " :arrow_right: "} -->
 _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [Injuries and Medical Conditions A-Z](/docs/wiki/injuries/README.md) :arrow_right: [Hypoxia](/docs/wiki/injuries/hypoxia.md)_
 <!-- @end_generated_block -->
@@ -34,7 +36,7 @@ flowchart LR
 **Causes**: Hypoperfusion due to [hypovolemic shock](/docs/wiki/injuries/hypovolemic-shock.md#hypovolemic-shock) or [cardiac arrest](/docs/wiki/injuries/cardiac-arrest.md#cardiac-arrest), reduced oxygen-carrying abilities of the blood due to [hemodilution](/docs/wiki/injuries/hemodilution.md#hemodilution), or other conditions that prevent adequate oxygen supply to the affected area.  
 [Hypothermia](/docs/wiki/injuries/hypothermia.md#hypothermia) may slow down the progression of hypoxia, as the reduced cellular metabolism at extremely low body temperatures can protect the body from further damage, albeit within limits.
 
-**Effects**: Damage to the affected tissue, and anaerobic metabolism leading to the production of lactic acid and [acidosis](/docs/wiki/injuries/acidosis.md#acidosis). If not treated immediately, hypoxia can lead to tissue damage, multiple organ failure, and death.
+**Effects**: Damage to the affected tissue, and anaerobic metabolism leading to the production of lactic acid and [acidosis](/docs/wiki/injuries/acidosis.md#acidosis). If not treated immediately, hypoxia can lead to tissue damage, multiple organ failure, and death. Deathless and Breathless (`VacuumResistance_Total`) block new organ hypoxia and cerebral hypoxia, and they block neural symptoms from an existing cerebral hypoxia hediff. The blood-loss path that used to add cerebral hypoxia is severity 0, so it does not apply brain damage.
 
 **Treatment**: Rapid correction of the underlying cause of hypoxia is essential. This may involve resuscitation measures to restore blood flow and oxygen supply to the affected area, such as [saline IV infusions](/docs/wiki/medical-devices.md#saline-iv-bag) or, preferably, [blood transfusions](/docs/wiki/medical-devices.md#blood-bag) to restore blood volume, or [cardiopulmonary resuscitation (CPR)](/docs/wiki/research.md#cardiopulmonary-resuscitation-cpr) to restore circulation and oxygenation in cases of cardiac arrest. Additionally, treating the damaged tissue with conventional medicine can help improve recovery and reduce the risk of further complications. In cases of hypoxia caused by [hemodilution](/docs/wiki/injuries/hemodilution.md#hemodilution), it is necessary to administer [blood products](/docs/wiki/medical-devices.md#blood-bag) to restore red blood cell and plasma levels.
 

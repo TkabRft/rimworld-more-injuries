@@ -98,93 +98,46 @@ internal sealed class ConcussionExplosionsWorker(MoreInjuryComp parent) : Injury
     public void PostPostApplyDamage(ref readonly DamageInfo dinfo)
     {
         Pawn patient = Pawn;
-
-        /*
-        //original code
-        if (dinfo.Def is not null && KnownDamageGroupNames.Explosions.Value.Contains(dinfo.Def.defName))
-        {
-            // ((1 / e) * x) / ((1 / e) * x + 1)
-            const float E_INVERSE = 1f / (float)Math.E;
-            float chance = E_INVERSE * dinfo.Amount / ((E_INVERSE * dinfo.Amount) + 1);
-            if (Rand.Chance(chance * MoreInjuriesMod.Settings.ConcussionChance) && patient.health.hediffSet.GetBrain() is BodyPartRecord brain)
-            {
-                if (!patient.health.hediffSet.TryGetHediff(KnownHediffDefOf.Concussion, out Hediff? concussion))
-                {
-                    concussion = HediffMaker.MakeHediff(KnownHediffDefOf.Concussion, patient);
-                    patient.health.AddHediff(concussion, brain);
-                }
-                // the base severity is a random value between 0 and the initial chance distribution
-                // commonly between 0.6 and 0.9, possibly even higher for very high damage
-                float baseSeverity = Rand.Range(0f, chance);
-                // and now scale all of that logarithmically using
-                // f(x)=1/(1+e^(10 * (0.4-x)))
-                // such that at an inital chance of 0.8, there is a 50% chance of a severity of above and below 0.5
-                // in cases of high damage, the severity will be skewed towards higher values
-                float severity = 1f / (1f + Mathf.Exp(10f * (0.4f - baseSeverity)));
-                // no clamping required, the function is already bounded between >0.01 and ~0.99
-                concussion.Severity = severity;
-            }
-        }
-        */
-
-        // Only process if damage went to a head-related part
         BodyPartRecord? hitPart = dinfo.HitPart;
         if (hitPart is null || !IsHeadPart(hitPart))
         {
             return;
         }
-        
-        // Get the brain as target for the concussion hediff
+
         BodyPartRecord? brain = patient.health.hediffSet.GetBrain();
         if (brain is null)
         {
             return;
         }
-        
-        // Get the damage type concussion percentage
-        float concussionPercentPerDamage = GetConcussionPercentageForDamage(dinfo.Def);
-        
-        // Get the body part multiplier based on the specific hit location
-        float bodyPartMultiplier = GetBodyPartMultiplier(hitPart);
-        
-        // Calculate the percentage of damage that reached this body part
-        // This accounts for armor reduction
-        float damagePercentageReached = CalculateDamagePercentageReached(dinfo.Amount, hitPart, patient);
-        
-        // Calculate total concussion severity
-        float concussionSeverity = CalculateConcussionSeverity(
-            dinfo.Amount,
-            damagePercentageReached,
-            bodyPartMultiplier,
-            concussionPercentPerDamage,
-            hitPart
-        );
-        
-        if (concussionSeverity < 0.01f)
+
+        float receivedDamage = dinfo.Amount;
+        if (receivedDamage <= 0f)
         {
-            // Ignore negligible concussion
             return;
         }
-        
-        // Apply or increase concussion hediff
+
+        float concussionPercentPerDamage = GetConcussionPercentageForDamage(dinfo.Def);
+        float bodyPartMultiplier = GetBodyPartMultiplier(hitPart);
+        float concussionSeverity = CalculateConcussionSeverity(
+            receivedDamage,
+            bodyPartMultiplier,
+            concussionPercentPerDamage,
+            hitPart) * MoreInjuriesMod.Settings.ConcussionChance;
+
+        if (concussionSeverity < 0.01f)
+        {
+            return;
+        }
+
         if (!patient.health.hediffSet.TryGetHediff(KnownHediffDefOf.Concussion, out Hediff? concussion))
         {
             concussion = HediffMaker.MakeHediff(KnownHediffDefOf.Concussion, patient);
             patient.health.AddHediff(concussion, brain);
         }
-        
-        // Add to existing concussion severity, clamped to max
-        concussion.Severity = Mathf.Min(1.0f, concussion.Severity + concussionSeverity);
-        
-        Logger.LogDebug(
-            $"Applied {concussionSeverity:P} concussion to {patient.Name} from {dinfo.Amount:F2} damage " +
-            $"to {hitPart.Label} (multiplier: {bodyPartMultiplier}x, damage type: {dinfo.Def?.defName ?? "Unknown"}, " +
-            $"percent per dmg: {concussionPercentPerDamage:P}, actual reached: {damagePercentageReached:P})"
-        );
 
+        concussion.Severity = Mathf.Min(1.0f, concussion.Severity + concussionSeverity);
     }
 
-    // Determines if a body part is related to the head/brain and should cause concussions.
     private static bool IsHeadPart(BodyPartRecord part)
     {
         // Check if it's the brain, skull, or any part in the head group
@@ -207,34 +160,6 @@ internal sealed class ConcussionExplosionsWorker(MoreInjuryComp parent) : Injury
         return false;
     }
 
-    // Calculates what percentage of the total damage actually reached the target body part.
-    // This accounts for armor reduction by examining the body part's armor values.
-    private static float CalculateDamagePercentageReached(float totalDamage, BodyPartRecord targetPart, Pawn pawn)
-    {
-        if (totalDamage <= 0f)
-        {
-            return 0f;
-        }
-        
-        // Simple approximation: base damage reduction on body part coverage and armor
-        // Higher armor = lower percentage of damage reaches the part
-        float armorReduction = 1.0f;
-        
-        // Account for coverage (covered parts reduce impact damage more)
-        if (targetPart.coverage > 0f)
-        {
-            armorReduction *= targetPart.coverage;
-        }
-        
-        // A pawn with heavy armor takes less concussion damage, but some always gets through
-        // This is a simplification - a full implementation would use the damage result
-        float minDamagePercentage = 0.1f; // At least 10% of damage always reaches (serious hits)
-        float maxDamagePercentage = 1.0f; // At most 100% (no armor)
-        
-        return Mathf.Clamp(armorReduction, minDamagePercentage, maxDamagePercentage);
-    }
-
-    // Gets the body part multiplier based on the specific head region that was hit.
     private static float GetBodyPartMultiplier(BodyPartRecord hitPart)
     {
         // Direct hits to the brain are most severe
@@ -304,32 +229,19 @@ internal sealed class ConcussionExplosionsWorker(MoreInjuryComp parent) : Injury
     // Calculates the final concussion severity based on received damage, body part sensitivity,
     // and damage type, with scaling based on target body part's HP.
     private static float CalculateConcussionSeverity(
-        float totalDamage,
-        float damagePercentageReached,
+        float receivedDamage,
         float bodyPartMultiplier,
         float concussionPercentPerDamage,
         BodyPartRecord targetPart)
     {
-        // Actual damage that reached this part after armor/coverage reduction
-        float actualReceivedDamage = totalDamage * damagePercentageReached;
-        
-        // Base concussion = damage * damage type percentage * body part multiplier
-        float baseConcussion = actualReceivedDamage * concussionPercentPerDamage * bodyPartMultiplier;
-        
-        // Scale by target body part health - smaller brain = more concussion per damage
-        // This makes the same impact more severe on smaller creatures
+        float baseConcussion = receivedDamage * concussionPercentPerDamage * bodyPartMultiplier;
         float healthScaling = 1.0f;
         if (targetPart.def.hitPoints > 0)
         {
-            // Use base hit points from definition (e.g., brain = 10 HP base)
-            const float ReferenceHitPoints = 10.0f;
-            healthScaling = ReferenceHitPoints / targetPart.def.hitPoints;
+            const float REFERENCE_HIT_POINTS = 10.0f;
+            healthScaling = REFERENCE_HIT_POINTS / targetPart.def.hitPoints;
         }
-        
-        float finalConcussion = baseConcussion * healthScaling;
-        
-        // Clamp to reasonable range
-        return Mathf.Clamp(finalConcussion, 0f, 1.0f);
-    }
 
+        return Mathf.Clamp(baseConcussion * healthScaling, 0f, 1.0f);
+    }
 }

@@ -1,29 +1,21 @@
-﻿using Verse;
+﻿using MoreInjuries.Roslyn.SourceGen.XmlBinding.Attributes;
+using Verse;
 
 namespace MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers;
 
-[SuppressMessage(CODE_STYLE, STYLE_IDE1006_NAMING_STYLES, Justification = JUSTIFY_IDE1006_XML_NAMING_CONVENTION)]
-public class HediffModifier_LinkedHediff_Fixed : SecondaryHediffModifier
+[XmlBindable]
+public partial class HediffModifier_LinkedHediff_Fixed : HediffModifier_LinkedHediff_Base
 {
-    // don't rename this field. XML defs depend on this name
-    private readonly HediffDef hediffDef = default!;
-    // don't rename this field. XML defs depend on this name
-    private readonly float chanceModifier = -1f;
+    [XmlBinding("chanceModifier", NullableBackingField = true)]
+    public partial float ChanceModifier { get; }
 
     /// <inheritdoc />
-    public override float GetModifier(Hediff hediff, HediffCompHandler compHandler)
+    public override float GetModifier(Hediff hediff, IHediffCompHandler compHandler)
     {
-        if (chanceModifier < 0f || hediffDef is null)
+        if (hediff.pawn.health.hediffSet.HasHediff(HediffDef))
         {
-            Logger.ConfigError($"{nameof(HediffModifier_LinkedHediff_SimpleCurve)} is not properly initialized. Current severity curve is null. Cannot evaluate chance.");
-            return 1f;
+            return ChanceModifier;
         }
-        if (hediff.pawn.health.hediffSet.HasHediff(hediffDef))
-        {
-            // if the hediff exists, we evaluate the chance based on the severity curve
-            return chanceModifier;
-        }
-        // if the hediff does not exist, we return the base chance
-        return 1f;
+        return Unchanged;
     }
 }

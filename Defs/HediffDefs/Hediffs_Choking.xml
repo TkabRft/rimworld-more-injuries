@@ -6,6 +6,23 @@
     <description>Blood from traumatic injuries being aspirated into the airways triggers coughing and causes suffocation. The bleeding must be stopped and the airways cleared to prevent death. If the patient is conscious, they may be able to cough up the blood on their own and clear the airway. Otherwise, the airways must be cleared using a specialized airway suction device or by compressing the chest using CPR to expel the blood and restore breathing.</description>
     <defaultLabelColor>(255, 102, 102)</defaultLabelColor>
     <tendable>false</tendable>
+    <modExtensions>
+      <li Class="MoreInjuries.HealthConditions.Secondary.HediffModifier_SeverityModifiers_ModExtension">
+        <modifiers>
+          <li MayRequire="Ludeon.RimWorld.Biotech">
+            <apply>OnIncrease</apply>
+            <modifier Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Genes_WhenPresent">
+              <geneModifiers>
+                <li>
+                  <geneDef>VacuumResistance_Total</geneDef>
+                  <modifier>0.05</modifier>
+                </li>
+              </geneModifiers>
+            </modifier>
+          </li>
+        </modifiers>
+      </li>
+    </modExtensions>
     <comps>
       <li Class="HediffCompProperties_SeverityPerDay">
         <severityPerDay>2.0</severityPerDay>
@@ -57,7 +74,7 @@
         </capMods>
       </li>
       <li>
-        <minSeverity>0.450</minSeverity>
+        <minSeverity>0.45</minSeverity>
         <label>severe</label>
         <lifeThreatening>true</lifeThreatening>
         <capMods>
@@ -68,7 +85,7 @@
         </capMods>
       </li>
       <li>
-        <minSeverity>0.650</minSeverity>
+        <minSeverity>0.65</minSeverity>
         <label>very severe</label>
         <lifeThreatening>true</lifeThreatening>
         <capMods>
@@ -162,8 +179,25 @@
         <li>(1, 1)</li>
       </points>
     </removeOnRedressChanceByDaysCurve>
+    <modExtensions>
+      <li Class="MoreInjuries.HealthConditions.Secondary.HediffModifier_SeverityModifiers_ModExtension">
+        <modifiers>
+          <li MayRequire="Ludeon.RimWorld.Biotech">
+            <apply>OnIncrease</apply>
+            <modifier Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Genes_WhenPresent">
+              <geneModifiers>
+                <li>
+                  <geneDef>VacuumResistance_Total</geneDef>
+                  <modifier>0.05</modifier>
+                </li>
+              </geneModifiers>
+            </modifier>
+          </li>
+        </modifiers>
+      </li>
+    </modExtensions>
     <comps>
-      <li Class="HediffCompProperties_SeverityPerDay">
+      <li Class="MoreInjuries.HealthConditions.HediffCompProperties_SeverityPerDay_WithModifiers">
         <severityPerDay>8.0</severityPerDay>
       </li>
       <li Class="HediffCompProperties_Discoverable">

@@ -1,6 +1,8 @@
 
 # Concussion
 
+Status: `added, not verified`. code-synced: 2026-09-25.
+
 <!-- @generate_breadcrumb_trail {"template": "_:file_folder: {0}_", "connector": " :arrow_right: "} -->
 _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [Injuries and Medical Conditions A-Z](/docs/wiki/injuries/README.md) :arrow_right: [Concussion](/docs/wiki/injuries/concussion.md)_
 <!-- @end_generated_block -->
@@ -24,7 +26,7 @@ flowchart LR
 
 *See the section on the [pathophysiological system](/docs/wiki/pathophysiological-system.md#pathophysiological-system) for more information on the graphical representation.*
 
-**Causes**: Blunt force trauma to the head. May be caused by any violent impact to the head, such as hand-to-hand combat, being struck by a projectile, or explosions.
+**Causes**: Damage to the head, skull, brain, or a head sub-part. Severity scales with the damage that reached the part, the damage type, and the hit location. Direct brain hits are the most severe, then skull, then the outer head. Blunt, bomb, and crush damage contribute more than stab or bullet damage. The concussion chance setting scales the result. Armor that stops the hit also stops the concussion, because only damage that arrives is counted.
 
 **Effects**: A concussion may range from a mild headache to full unconsciousness, depending on the severity of the injury. The pawn may experience a temporary loss of consciousness, memory loss, painful headaches, disorientation,difficulty with thinking, nausea and vomiting, blurred vision, and dizziness. Repeated head injuries may worsen the condition or lead to a [hemorrhagic stroke](/docs/wiki/injuries/hemorrhagic-stroke.md#hemorrhagic-stroke).
 

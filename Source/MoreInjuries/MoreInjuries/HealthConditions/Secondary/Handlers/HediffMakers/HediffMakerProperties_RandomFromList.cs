@@ -1,63 +1,63 @@
-﻿using MoreInjuries.Roslyn.Future.ThrowHelpers;
+﻿using MoreInjuries.Debug;
+using MoreInjuries.Roslyn.Future.ThrowHelpers;
+using MoreInjuries.Roslyn.SourceGen.XmlBinding.Attributes;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using Verse;
 
 namespace MoreInjuries.HealthConditions.Secondary.Handlers.HediffMakers;
 
-[SuppressMessage(CODE_STYLE, STYLE_IDE1006_NAMING_STYLES, Justification = JUSTIFY_IDE1006_XML_NAMING_CONVENTION)]
-public class HediffMakerProperties_RandomFromList : HediffMakerProperties
+[XmlBindable]
+public partial class HediffMakerProperties_RandomFromList : HediffMakerProperties
 {
-    [ThreadStatic]
-    private static float[]? t_cdfCache;
+    [XmlBinding("hediffMakerDefs", Validate = nameof(ValidateHediffMakerDefs))]
+    public partial IReadOnlyList<HediffMakerDef> HediffMakerDefs { get; }
 
-    // don't rename this field. XML defs depend on this name
-    private readonly List<HediffMakerDef> hediffMakerDefs = default!;
-    // don't rename this field. XML defs depend on this name
-    private readonly float minSeverityDefault = 0f;
-    // don't rename this field. XML defs depend on this name
-    private readonly float maxSeverityDefault = 0f;
-    // don't rename this field. XML defs depend on this name
-    private readonly bool allowDuplicateDefault = false;
-    // don't rename this field. XML defs depend on this name
-    private readonly bool allowMultipleDefault = false;
-
-    public override HediffMakerDef GetHediffMakerDef(HediffComp parentComp, HediffCompHandler_SecondaryCondition handler, BodyPartRecord? targetBodyPart)
+    private CachedCdf Cdf
     {
-        Throw.InvalidOperationException.If(hediffMakerDefs is not { Count: > 0 });
-        t_cdfCache ??= new float[hediffMakerDefs.Count];
-        Throw.InvalidOperationException.If(t_cdfCache.Length != hediffMakerDefs.Count);
-        float totalWeight = 0f;
-        for (int i = 0; i < hediffMakerDefs.Count; i++)
+        get
         {
-            float weight = 1f; // Default weight for non-weighted defs
-            if (hediffMakerDefs[i] is WeightedHediffMakerDef weightedDef)
+            if (field is null)
             {
-                weight = weightedDef.Weight;
+                float[] cdf = new float[HediffMakerDefs.Count];
+                float totalWeight = 0f;
+                for (int i = 0; i < cdf.Length; ++i)
+                {
+                    float weight = 1f; // Default weight for non-weighted defs
+                    if (HediffMakerDefs[i] is WeightedHediffMakerDef weightedDef)
+                    {
+                        weight = weightedDef.Weight;
+                        if (weight <= 0f)
+                        {
+                            Logger.Warning($"HediffMakerDef for {weightedDef.HediffDef.defName} has a zero-or-negative weight. Treating it as a small positive weight.");
+                            weight = Mathf.Epsilon;
+                        }
+                    }
+                    totalWeight += weight;
+                    cdf[i] = totalWeight;
+                }
+                field = new CachedCdf(cdf, totalWeight);
             }
-            totalWeight += weight;
-            t_cdfCache[i] = totalWeight;
+            return field;
         }
+    }
+
+    private static bool ValidateHediffMakerDefs(IReadOnlyList<HediffMakerDef> defs) => defs is { Count: > 0 };
+
+    public override HediffMakerDef GetHediffMakerDef(HediffComp parentComp, HediffCompHandler_SecondaryCondition handler)
+    {
+        IReadOnlyList<HediffMakerDef> hediffMakerDefs = HediffMakerDefs;
+        (float[] cdf, float totalWeight) = Cdf;
+        Throw.InvalidOperationException.If(hediffMakerDefs.Count != cdf.Length, "Cached CDF length does not match the number of HediffMakerDefs. This should never happen.");
         float randomValue = Rand.Range(0f, totalWeight);
-        int index = BinarySearch(t_cdfCache, randomValue);
-        if (index < 0 || index >= hediffMakerDefs.Count)
-        {
-            throw new InvalidOperationException($"{nameof(HediffMakerProperties_RandomFromList)}: Random index {index} is out of bounds for hediff maker defs list.");
-        }
-        HediffMakerDef selectedDef = hediffMakerDefs[index];
-        // apply defaults if not set
-        return new HediffMakerDef
-        (
-            selectedDef.HediffDef,
-            selectedDef.MinSeverityOrDefault(minSeverityDefault),
-            selectedDef.MaxSeverityOrDefault(maxSeverityDefault),
-            selectedDef.AllowDuplicateOrDefault(allowDuplicateDefault),
-            selectedDef.AllowMultipleOrDefault(allowMultipleDefault)
-        );
+        int index = BinarySearch(cdf, randomValue);
+        return hediffMakerDefs[index];
     }
 
     // Binary search to find the index of the first element greater than or equal to the target value
     // assumes that the array is sorted in ascending order and non-empty
-    private static int BinarySearch(float[] array, float target)
+    private static int BinarySearch(ReadOnlySpan<float> array, float target)
     {
         int low = 0;
         int high = array.Length - 1;
@@ -79,4 +79,6 @@ public class HediffMakerProperties_RandomFromList : HediffMakerProperties
         }
         return low; // Return the index of the first element greater than the target
     }
+
+    private sealed record CachedCdf(float[] Cdf, float TotalWeight);
 }
