@@ -35,6 +35,8 @@ Another adverse effect of morphine is the impediment of resuscitation efforts in
 
 **Treatment**: Currently, no specific antidote for morphine overdose has been implemented in the game. Treatment for overdose involves supportive care and treating symptoms as they arise.
 
+**Addiction**: The first dose almost always causes a morphine addiction. The addiction adds a morphine need. That need drains over time; when it is empty, withdrawal begins (a strong mood penalty, and a higher chance of a mental break). Another dose of morphine, whether a doctor injects it or the pawn uses the autoinjector, refills the need and ends withdrawal. The addiction itself fades only with abstinence. With Biotech, dependency, resistance, and immunity genes for morphine are already generated from the chemical. A dependency gene prevents a new addiction. Resistance halves tolerance buildup and overdose chance. Immunity blocks both.
+
 **Thoughts per Stage**:
 > _"**Slight buzz** (+3) &mdash; Ah... yeah... things aren't as sharp anymore."_  
 > _"**Warm pudding limbs** (+10) &mdash; Yeah... that's the stuff. My limbs feel like warm pudding."_  
@@ -43,9 +45,6 @@ Another adverse effect of morphine is the impediment of resuscitation efforts in
 
 > [!WARNING]
 > Due to its adverse effects on the respiratory systems, morphine should be used with caution, and patients should be closely monitored for any signs of complications.
-
-> [!NOTE]
-> While a decisive factor in real-world medical scenarios, the addictive properties of morphine are not currently simulated in the game.
 
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---

@@ -1,5 +1,6 @@
 ﻿using MoreInjuries.AI.Jobs.Outcomes;
 using MoreInjuries.Extensions;
+using RimWorld;
 using Verse;
 using Verse.AI;
 
@@ -22,6 +23,11 @@ public abstract class JobDriver_OutcomeDoerBase : JobDriver_UseMedicalDevice
             Logger.ConfigError($"failed to apply drug because the device has no {nameof(JobOutcomeProperties_ModExtension)} or has no outcome doers defined for {device.def.defName}");
             EndJobWith(JobCondition.Incompletable);
             return false;
+        }
+        CompDrug? drugComp = device.TryGetComp<CompDrug>();
+        if (drugComp != null && drugComp.Props.Addictive && drugComp.Props.chemical != null)
+        {
+            drugComp.PostIngested(patient);
         }
         device.DecreaseStack();
         foreach (JobOutcomeDoer doer in outcomeDoers)

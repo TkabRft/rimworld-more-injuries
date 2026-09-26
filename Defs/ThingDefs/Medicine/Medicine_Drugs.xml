@@ -154,10 +154,11 @@
           <toleranceChemical>MI_Ketamine_Chemical</toleranceChemical>
         </li>
         <li Class="IngestionOutcomeDoer_GiveHediff">
-					<hediffDef>MI_KetamineTolerance</hediffDef>
-					<severity>0.1</severity>
-					<divideByBodySize>true</divideByBodySize>
-					<toleranceChemical>MI_Ketamine_Chemical</toleranceChemical>
+ 					<hediffDef>MI_KetamineTolerance</hediffDef>
+ 					<severity>0.1</severity>
+ 					<divideByBodySize>true</divideByBodySize>
+ 					<multiplyByGeneToleranceFactors>true</multiplyByGeneToleranceFactors>
+ 					<toleranceChemical>MI_Ketamine_Chemical</toleranceChemical>
 				</li>
       </outcomeDoers>
     </ingestible>

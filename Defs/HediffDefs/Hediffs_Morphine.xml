@@ -195,7 +195,7 @@
   </ChemicalDef>
 
   <NeedDef ParentName="DrugAddictionNeedBase">
-    <defName>MI_Morphine_Chemical_Need</defName>
+    <defName>Chemical_MI_Morphine_Chemical</defName>
     <needClass>Need_Chemical</needClass>
     <label>morphine</label>
     <description>Because of a morphine addiction, this person needs to regularly consume the drug to avoid withdrawal symptoms.</description>
@@ -223,7 +223,8 @@
     <description>A chemical addiction to morphine. Long-term use of morphine has caused neurological adaptations at the cellular level, so the brain can no longer function properly without the drug.
 \nWithout regular doses of morphine, withdrawal symptoms will begin. However, extended abstinence will force the brain to adapt back to its normal state, resolving the addiction.</description>
     <hediffClass>Hediff_Addiction</hediffClass>
-    <chemicalNeed>MI_Morphine_Chemical_Need</chemicalNeed>
+    <causesNeed>Chemical_MI_Morphine_Chemical</causesNeed>
+    <chemicalNeed>Chemical_MI_Morphine_Chemical</chemicalNeed>
     <comps>
       <li Class="HediffCompProperties_SeverityPerDay">
         <severityPerDay>-0.0333</severityPerDay>
@@ -237,7 +238,7 @@
         <label>withdrawal</label>
 		    <socialFightChanceFactor>2.0</socialFightChanceFactor>
         <statOffsets>
-					<MentalBreakThreshold>10</MentalBreakThreshold>
+					<MentalBreakThreshold>0.12</MentalBreakThreshold>
 				</statOffsets>	
         <mentalStateGivers>        
           <li>

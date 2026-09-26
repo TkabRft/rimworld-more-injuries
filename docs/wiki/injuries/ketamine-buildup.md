@@ -31,6 +31,8 @@ flowchart LR
 
 **Treatment**: Ketamine is automatically metabolized by the body over time. Supportive care in cases of overdose may include administering [epinephrine](/docs/wiki/medical-devices.md#epinephrine-autoinjector) to stimulate breathing and counteract respiratory depression.
 
+**Addiction**: Each dose has a 5% chance to cause a ketamine addiction. The addiction adds a ketamine need. That need drains over time; when it is empty, withdrawal begins (a mood penalty, harder learning, and a higher chance of a mental break). Another dose of ketamine, whether a doctor injects it or the pawn uses the autoinjector, refills the need and ends withdrawal. The addiction itself fades only with abstinence. With Biotech, dependency, resistance, and immunity genes for ketamine are already generated from the chemical. A dependency gene prevents a new addiction. Resistance halves tolerance buildup and overdose chance. Immunity blocks both.
+
 > [!TIP]
 > Anesthetics offer a wide range of possibilities in RimWorld gameplay. From ensuring hostile pawns stay unconscious while rendering first aid before capturing them, safely "calming down" colonists on violent mental breaks, or even for self-sedation and "playing dead" as a last resort in combat when escape is not an option. Feel free to experiment with the new possibilites. Beware though that sedating someone without medical necessity is considered a hostile action.
 
