@@ -217,6 +217,9 @@ public partial class MoreInjuriesSettings : ModSettings
     internal partial ref bool AnomalyEnableConditionsForShamblers { get; }
 
     [SettingsEntry<bool>(DefaultValue = true)]
+    internal partial ref bool AnomalyRegenerationTreatsStructuralDamage { get; }
+
+    [SettingsEntry<bool>(DefaultValue = true)]
     internal partial ref bool EnableParalysis { get; }
 
     [SettingsEntry<float>(DefaultValue = 6f)]

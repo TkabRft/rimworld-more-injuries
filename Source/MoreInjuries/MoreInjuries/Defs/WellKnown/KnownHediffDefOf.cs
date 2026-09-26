@@ -16,7 +16,12 @@ public static class KnownHediffDefOf
     public static HediffDef Acidosis = null!;
     public static HediffDef AdrenalineRush = null!;
     public static HediffDef BoneFragmentLaceration = null!;
+    public static HediffDef BrainDamage_Confusion = null!;
+    public static HediffDef BrainDamage_FrontalLobe = null!;
     public static HediffDef BrainDamage_Hypoxia = null!;
+    public static HediffDef BrainDamage_LanguageAphasia = null!;
+    public static HediffDef BrainDamage_MotorDysfunction = null!;
+    public static HediffDef BrainDamage_VisualAgnosia = null!;
     public static HediffDef CardiacArrest = null!;
     public static HediffDef ChokingOnBlood = null!;
     public static HediffDef ChokingOnTourniquet = null!;

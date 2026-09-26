@@ -28,6 +28,7 @@
           <li Class="MoreInjuries.HealthConditions.HeavyBleeding.HeavyBleedingWorkerFactory" />
           <li Class="MoreInjuries.HealthConditions.ProvideFirstAidWorkerFactory" />
           <li Class="MoreInjuries.HealthConditions.Drugs.DrugWorkerFactory" />
+          <li Class="MoreInjuries.Integrations.Anomaly.RegenerationTreatmentWorkerFactory" />
         </workerFactories>
       </li>
     </modExtensions>

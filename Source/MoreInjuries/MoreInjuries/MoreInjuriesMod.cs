@@ -316,6 +316,8 @@ public class MoreInjuriesMod : Mod
         {
             list.CheckboxLabeled("MI_Settings_Features_Misc_IntegrationAnomalyLabel".Translate(ANOMALY_ENABLE_CONDITIONS_FOR_SHAMBLERS_DEFAULT.NamedDefault()), ref Settings.AnomalyEnableConditionsForShamblers,
                 "MI_Settings_Features_Misc_IntegrationAnomalyTooltip".Translate());
+            list.CheckboxLabeled("MI_Settings_Features_Misc_AnomalyRegenerationTreatsStructuralDamageLabel".Translate(ANOMALY_REGENERATION_TREATS_STRUCTURAL_DAMAGE_DEFAULT.NamedDefault()), ref Settings.AnomalyRegenerationTreatsStructuralDamage,
+                "MI_Settings_Features_Misc_AnomalyRegenerationTreatsStructuralDamageTooltip".Translate());
         }
         list.Label("MI_Settings_Features_Misc_BleedingReductionFactorEnclosedLabel".Translate(Settings.ClosedInternalWouldBleedingModifier.NamedValue(), CLOSED_INTERNAL_WOULD_BLEEDING_MODIFIER_DEFAULT.NamedDefault()), -1,
             "MI_Settings_Features_Misc_BleedingReductionFactorEnclosedTooltip".Translate());

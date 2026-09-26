@@ -1,5 +1,7 @@
 # Paralysis
 
+Status: `implemented`. code-synced: 2026-09-26.
+
 <!-- @generate_breadcrumb_trail {"template": "_:file_folder: {0}_", "connector": " :arrow_right: "} -->
 _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [Injuries and Medical Conditions A-Z](/docs/wiki/injuries/README.md) :arrow_right: [Paralysis](/docs/wiki/injuries/paralysis.md)_
 <!-- @end_generated_block -->
@@ -31,7 +33,7 @@ flowchart LR
 > _"**Limited mobility** (-5) &mdash; Moving is difficult and frustrating. I feel trapped in my own body, and even simple tasks are exhausting."_  
 > _"**Complete paralysis** (-10) &mdash; I can't move. My body won't respond, no matter how hard I try. I'm like a vegetable - locked inside myself. Nothing will ever be the same again."_
 
-**Treatment**: By itself, paralysis is an irreversible condition that cannot be treated with conventional medicine. However, bionic implants or prosthetics may be used to restore partial or full function to the affected body parts. There have also been reports of successful experimental treatments on distant glitterworlds using [cellular regenerative neurosurgery](/docs/wiki/surgeries.md#cellular-regenerative-neurosurgery) to repair damaged nerve tissue and restore function to paralyzed limbs.
+**Treatment**: By itself, paralysis is an irreversible condition that cannot be treated with conventional medicine. However, bionic implants or prosthetics may be used to restore partial or full function to the affected body parts. There have also been reports of successful experimental treatments on distant glitterworlds using [cellular regenerative neurosurgery](/docs/wiki/surgeries.md#cellular-regenerative-neurosurgery) to repair damaged nerve tissue and restore function to paralyzed limbs. Pawns with regeneration keep the paralysis while a spinal injury, including a scar, remains on that part. Once that injury is gone, the paralysis fades. Ordinary ghoul regeneration takes about four days from full severity. Surgery remains the cure for pawns without regeneration. This can be turned off in the mod settings when Anomaly is installed.
 
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---

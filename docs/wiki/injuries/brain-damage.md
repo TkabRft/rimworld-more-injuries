@@ -1,5 +1,7 @@
 # Brain Damage
 
+Status: `implemented`. code-synced: 2026-09-26.
+
 <!-- @generate_breadcrumb_trail {"template": "_:file_folder: {0}_", "connector": " :arrow_right: "} -->
 _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [Injuries and Medical Conditions A-Z](/docs/wiki/injuries/README.md) :arrow_right: [Brain Damage](/docs/wiki/injuries/brain-damage.md)_
 <!-- @end_generated_block -->
@@ -7,6 +9,8 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 In this context, "brain damage" refers to a range of temporary or permanent neurological conditions that can occur as a result of traumatic brain injury, stroke, or [cerebral hypoxia](/docs/wiki/injuries/hypoxia.md#cerebral-hypoxia). Brain damage can manifest in various ways, including cognitive impairments, motor dysfunction, and changes in personality. The severity and type of brain damage depend on the extent of the injury and the specific areas of the brain affected.
 
 Brain damage may not always be immediately apparent, as some symptoms may take time to develop as the patient recovers from the initial injury. In some cases, brain damage may be reversible with experimental treatments, such as [mechanite therapy](/docs/wiki/injuries/mechanite-therapy.md#mechanite-therapy) or [cellular regenerative neurosurgery](/docs/wiki/surgeries.md#cellular-regenerative-neurosurgery), which can help repair damaged brain tissue and restore normal function. However, these futuristic treatments require advanced research and technology, and may be expensive and time-consuming to perform.
+
+Pawns with regeneration slowly clear agnosia, aphasia, executive dysfunction, hippocampal damage, and motor dysfunction after the brain injury, including any scar, is gone. Ordinary ghoul regeneration takes about four days from full severity. A personality shift is not cleared. This can be turned off in the mod settings when Anomaly is installed.
 
 ```mermaid
 ---
@@ -117,7 +121,7 @@ Motor dysfunction refers to a range of movement disorders that can occur as a re
 > **In-Game Description**
 > _"Due to severe brain damage, {0} has undergone a significant shift in personality. They may have become more skilled in certain areas, but also may have lost some of their previous skills. This change is permanent and may require some reorientation for their role in the colony."_
 
-**Effects**: Permanent change in personality, which includes a redistribution of skills corresponding to the extend of the brain damage. For example, a pawn may become more skilled in combat or social interactions, but lose some of their previous skills in crafting or research. This change is permanent and may require some reorientation for their role in the colony.
+**Effects**: Permanent change in personality, which includes a redistribution of skills corresponding to the extend of the brain damage. For example, a pawn may become more skilled in combat or social interactions, but lose some of their previous skills in crafting or research. This change is permanent and may require some reorientation for their role in the colony. Regeneration does not undo it.
 
 > [!NOTE]
 > This feature can be disabled in the mod settings if you prefer not to have personality shifts as a result of brain damage.

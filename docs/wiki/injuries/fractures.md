@@ -1,6 +1,8 @@
 
 # Fractures
 
+Status: `implemented`. code-synced: 2026-09-26.
+
 <!-- @generate_breadcrumb_trail {"template": "_:file_folder: {0}_", "connector": " :arrow_right: "} -->
 _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [Injuries and Medical Conditions A-Z](/docs/wiki/injuries/README.md) :arrow_right: [Fractures](/docs/wiki/injuries/fractures.md)_
 <!-- @end_generated_block -->
@@ -33,7 +35,7 @@ flowchart LR
 
 **Effects**: A bone fracture will cause the affected limb to be unable to bear weight or move properly, causing full immobility of the corresponding body part and `+15%` pain. Bone fractures may also cause [bone fragment lacerations](#bone-fragment-laceration) if bone fragments break off and cut into the surrounding tissue.
 
-**Treatment**: Bone fractures must be treated using a [splint](/docs/wiki/medical-devices.md#splint) to immobilize the bone and promote [healing over time](#healing-bone-fracture), or [osteosynthetic surgery](/docs/wiki/surgeries.md#osteosynthetic-surgery) to realign and stabilize the bone with metal implants, allowing for a quick recovery.
+**Treatment**: Bone fractures must be treated using a [splint](/docs/wiki/medical-devices.md#splint) to immobilize the bone and promote [healing over time](#healing-bone-fracture), or [osteosynthetic surgery](/docs/wiki/surgeries.md#osteosynthetic-surgery) to realign and stabilize the bone with metal implants, allowing for a quick recovery. Pawns with regeneration, such as ghouls, set the break without a splint. The limb stays badly impaired at first. Ordinary ghoul regeneration then clears it in about two days. Stronger regeneration is faster, and rapid regeneration clears it in minutes. A real splint still starts the heal in better shape. This can be turned off in the mod settings when Anomaly is installed.
 
 ## Healing Bone Fracture
 
@@ -41,11 +43,11 @@ flowchart LR
 > _"**Healing bone fracture** &mdash; A bone fracture that is in the process of healing. The bone is still weak and restricted in movement, but the limb is slowly regaining function as the bone knits back together.  
 > Over time, the bone will become stronger and the limb will regain full function."_
 
-**Causes**: A [bone fracture](#bone-fracture) that has been stabilized with a [splint](/docs/wiki/medical-devices.md#splint) and is in the process of healing.
+**Causes**: A [bone fracture](#bone-fracture) that has been stabilized with a [splint](/docs/wiki/medical-devices.md#splint) and is in the process of healing. Regeneration can also set the break without a splint. That heal starts at full severity, worse than a skilled splint.
 
 **Effects**: The affected limb will be usable but restricted in movement. Over time, the effects will slowly diminish as the bone heals and the limb regains full function.
 
-**Treatment**: Healing bone fractures do not require any additional treatment and will naturally heal over the course of several days to weeks, depending on how skillfully the [splint](/docs/wiki/medical-devices.md#splint) was applied.
+**Treatment**: Healing bone fractures do not require any additional treatment and will naturally heal over the course of several days to weeks, depending on how skillfully the [splint](/docs/wiki/medical-devices.md#splint) was applied. Regeneration speeds that healing and never slows a splinted bone. The recovery time shown on the health tab does not include regeneration, so the bone finishes sooner than that label suggests.
 
 ## Bone Fragment Laceration
 

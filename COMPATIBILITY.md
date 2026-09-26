@@ -31,6 +31,10 @@ These mods are known to be compatible with More Injuries, but they aren't direct
 - Death Rattle
 - Diseases+
 
+### Partial Support
+
+- Anomaly (DLC): Regeneration clears fractures without a splint, and fades spinal paralysis and permanent brain damage other than a personality shift after the injury on that body part is gone. Chronophagy, unnatural healing, healer mech serum, luciferium, and biosculpter cycles are unchanged.
+
 ### Incompatible Mods
 
 If a mod is listed here, it is known to cause issues with More Injuries and is not recommended for use together.
