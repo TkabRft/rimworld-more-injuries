@@ -1,7 +1,5 @@
 # Hemorrhagic Stroke
 
-Status: `added, not verified`. code-synced: 2026-09-26.
-
 <!-- @generate_breadcrumb_trail {"template": "_:file_folder: {0}_", "connector": " :arrow_right: "} -->
 _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [Injuries and Medical Conditions A-Z](/docs/wiki/injuries/README.md) :arrow_right: [Hemorrhagic Stroke](/docs/wiki/injuries/hemorrhagic-stroke.md)_
 <!-- @end_generated_block -->
@@ -33,8 +31,9 @@ flowchart LR
 
 *See the section on the [pathophysiological system](/docs/wiki/pathophysiological-system.md#pathophysiological-system) for more information on the graphical representation.*
 
-**Causes**: Head trauma uses the same score as [concussion](/docs/wiki/injuries/concussion.md#concussion): incoming damage scaled by XML damage-type weights, hit location, and the part's hit points. The hemorrhagic stroke threshold is higher than the concussion threshold, so the same hit adds less stroke. The stroke chance is the severity added at that threshold.  
-Extreme blood pressure from [adrenaline overdose](/docs/wiki/injuries/adrenaline-rush.md#adrenaline-rush) and [coagulopathy](/docs/wiki/injuries/coagulopathy.md#coagulopathy) still cause hemorrhagic stroke on their own. If simulation of [hydrostatic shock](/docs/wiki/injuries/hydrostatic-shock.md#hydrostatic-shock) is enabled in the mod settings, high-energy projectiles that cause massive temporary cavity formation and pressure waves in the tissue may also cause a hemorrhagic stroke.
+**Causes**: The hemorrhagic stroke setting controls every More Injuries source. While it is off, head trauma, [hydrostatic shock](/docs/wiki/injuries/hydrostatic-shock.md#hydrostatic-shock), [coagulopathy](/docs/wiki/injuries/coagulopathy.md#coagulopathy), and [adrenaline overdose](/docs/wiki/injuries/adrenaline-rush.md#adrenaline-rush) neither create a stroke nor add to one that is already there. Turning it off does not remove an existing stroke, does not disable [surgical treatment](/docs/wiki/surgeries.md#trepanation), and does not stop an existing stroke from progressing on its own.  
+Head trauma uses the same score as [concussion](/docs/wiki/injuries/concussion.md#concussion): incoming damage scaled by XML damage-type weights, hit location, and the part's hit points. The hemorrhagic stroke threshold is higher than the concussion threshold, so the same hit adds less stroke. The stroke chance is the severity added at that threshold. Concussion is a separate setting.  
+[Adrenaline overdose](/docs/wiki/injuries/adrenaline-rush.md#adrenaline-rush) and [coagulopathy](/docs/wiki/injuries/coagulopathy.md#coagulopathy) can cause a stroke only while the stroke setting is on. Their other effects continue either way. [Hydrostatic shock](/docs/wiki/injuries/hydrostatic-shock.md#hydrostatic-shock) can cause a stroke only when both that setting and the stroke setting are on.
 
 **Effects**: Headache, memory loss, confusion, vomiting, rapid loss of consciousness, [cerebral hypoxia](/docs/wiki/injuries/hypoxia.md#cerebral-hypoxia), and death if not surgically treated. If the patient survives, they may suffer from permanent brain damage, including memory loss, cognitive impairment, and motor function issues.
 

@@ -1,7 +1,5 @@
 # Hypoxia
 
-Status: `added, not verified`. code-synced: 2026-09-25.
-
 <!-- @generate_breadcrumb_trail {"template": "_:file_folder: {0}_", "connector": " :arrow_right: "} -->
 _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [Injuries and Medical Conditions A-Z](/docs/wiki/injuries/README.md) :arrow_right: [Hypoxia](/docs/wiki/injuries/hypoxia.md)_
 <!-- @end_generated_block -->
@@ -36,7 +34,7 @@ flowchart LR
 **Causes**: Hypoperfusion due to [hypovolemic shock](/docs/wiki/injuries/hypovolemic-shock.md#hypovolemic-shock) or [cardiac arrest](/docs/wiki/injuries/cardiac-arrest.md#cardiac-arrest), reduced oxygen-carrying abilities of the blood due to [hemodilution](/docs/wiki/injuries/hemodilution.md#hemodilution), or other conditions that prevent adequate oxygen supply to the affected area.  
 [Hypothermia](/docs/wiki/injuries/hypothermia.md#hypothermia) may slow down the progression of hypoxia, as the reduced cellular metabolism at extremely low body temperatures can protect the body from further damage, albeit within limits.
 
-**Effects**: Damage to the affected tissue, and anaerobic metabolism leading to the production of lactic acid and [acidosis](/docs/wiki/injuries/acidosis.md#acidosis). If not treated immediately, hypoxia can lead to tissue damage, multiple organ failure, and death. Deathless and Breathless (`VacuumResistance_Total`) block new organ hypoxia and cerebral hypoxia, and they block neural symptoms from an existing cerebral hypoxia hediff. The blood-loss path that used to add cerebral hypoxia is severity 0, so it does not apply brain damage.
+**Effects**: Damage to the affected tissue, and anaerobic metabolism leading to the production of lactic acid and [acidosis](/docs/wiki/injuries/acidosis.md#acidosis). If not treated immediately, hypoxia can lead to tissue damage, multiple organ failure, and death. With Biotech, the Deathless gene blocks new organ hypoxia and cerebral hypoxia, and it blocks neural symptoms from an existing cerebral hypoxia. With Odyssey, the Breathless gene does the same. Either gene is enough. A pawn with no genes is not protected by this. Preventing direct death by blood loss does not itself add brain hypoxia.
 
 **Treatment**: Rapid correction of the underlying cause of hypoxia is essential. This may involve resuscitation measures to restore blood flow and oxygen supply to the affected area, such as [saline IV infusions](/docs/wiki/medical-devices.md#saline-iv-bag) or, preferably, [blood transfusions](/docs/wiki/medical-devices.md#blood-bag) to restore blood volume, or [cardiopulmonary resuscitation (CPR)](/docs/wiki/research.md#cardiopulmonary-resuscitation-cpr) to restore circulation and oxygenation in cases of cardiac arrest. Additionally, treating the damaged tissue with conventional medicine can help improve recovery and reduce the risk of further complications. In cases of hypoxia caused by [hemodilution](/docs/wiki/injuries/hemodilution.md#hemodilution), it is necessary to administer [blood products](/docs/wiki/medical-devices.md#blood-bag) to restore red blood cell and plasma levels.
 
@@ -62,17 +60,16 @@ flowchart LR
   hemodilution[hemodilution] ==> hypoxia
   hemorrhagic_stroke[hemorrhagic stroke] ==> hypoxia
   hypothermia[hypothermia] ==> hypoxia
-  blood_loss[blood loss*] ==> | severity = 100% | hypoxia
   hypoxia ==> acidosis[acidosis]
   hypoxia ==> brain_damage[brain damage]
   hypoxia ==> death[death]
 
-  linkStyle 0,1,2,3,5,6,7,8 stroke: #b10000
+  linkStyle 0,1,2,3,5,6,7 stroke: #b10000
   linkStyle 4 stroke: #549b68
   style hypoxia stroke-width: 4px
 ```
 
-*\*If `Prevent direct death by blood loss` is enabled in the mod settings, then blood loss reaching 100% will kill over time through cerebral hypoxia*.
+Enabling `Prevent direct death by blood loss` stops immediate death at full blood loss. It does not itself add cerebral hypoxia. Death can still follow from other active mechanisms, such as [hypovolemic shock](/docs/wiki/injuries/hypovolemic-shock.md#hypovolemic-shock). Forced blood harvesting can still kill.
 
 *See the section on the [pathophysiological system](/docs/wiki/pathophysiological-system.md#pathophysiological-system) for more information on the graphical representation.*
 

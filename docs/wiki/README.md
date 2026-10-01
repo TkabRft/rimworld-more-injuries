@@ -14,6 +14,8 @@ _If you would like to contribute to this project or improve the documentation, p
 The More Injuries mod aims to increase the simulation depth of RimWorld's medical system by adding a variety of new injuries, medical conditions, and treatment options, as well as simulating body part damage in more detail and introducing pathophysiological interactions between injuries and medical conditions; meaning that injuries and medical conditions can affect each other in complex ways, leading to cascading effects that can be difficult to manage. The mod also adds new body parts, medical devices, procedures, surgeries, research projects, and work types to enhance the medical gameplay experience.
 Its goal is to make the medical system more challenging and interesting in some aspects, while also making it more realistic and immersive. A detailed mod settings menu is provided to allow players to customize many aspects of the mod to their liking.
 
+Adding the mod to a colony that was saved without it is described in [save compatibility](/docs/wiki/save-compatibility.md#save-compatibility).
+
 ## Table of Contents
 
 <!-- @generate_toc {"source": ".", "indent": 2} -->
@@ -105,6 +107,7 @@ Its goal is to make the medical system more challenging and interesting in some 
     - [Epinephrine Synthesis](/docs/wiki/research.md#epinephrine-synthesis)
     - [Ketamine Synthesis](/docs/wiki/research.md#ketamine-synthesis)
     - [Cellular Regenerative Medicine](/docs/wiki/research.md#cellular-regenerative-medicine)
+  - [Save compatibility](/docs/wiki/save-compatibility.md#save-compatibility)
   - [Surgeries](/docs/wiki/surgeries.md#surgeries)
     - [Cellular Regenerative Neurosurgery](/docs/wiki/surgeries.md#cellular-regenerative-neurosurgery)
     - [Cellular Regenerative Otologic Surgery](/docs/wiki/surgeries.md#cellular-regenerative-otologic-surgery)

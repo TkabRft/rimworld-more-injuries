@@ -39,10 +39,11 @@ During the initial emergency treatment of hypovolemic shock, its progression can
 > As time is of the essence when treating hypovolemic shock, it is recommended to have a stockpile of [saline IV bags](/docs/wiki/medical-devices.md#saline-iv-bag), [blood bags](/docs/wiki/medical-devices.md#blood-bag), or other blood transfusion items ready in your hospital to quickly treat patients with severe blood loss. You may even want to assign some medically skilled pawns to be dedicated combat medics who keep a few blood bags in their inventory at all times to immediately stabilize and treat injured pawns on the battlefield. This can be achieved by telling the medic to "pick up" a number of blood bags (or including blood bags in [Combat Extended](https://github.com/CombatExtended-Continued/CombatExtended) loadouts) and then telling the drafted medic to `transfuse blood (from inventory, stabilize)` to the injured pawn.
 
 > [!TIP]
-> If you prefer realistic trauma simulation, consider enabling the experimental `Prevent direct death by blood loss` option in the mod settings. This will prevent pawns from dying immediately once blood loss reaches 100%. Instead, they will receive cerebral hypoxia over time as the cardiovascular system collapses completely, buying you a few minutes to restore blood volume and save them at the cost of potentially permanent brain damage.
+> If you prefer to avoid an instant death at full blood loss, consider enabling the experimental `Prevent direct death by blood loss` option in the mod settings. This stops pawns from dying immediately once blood loss reaches 100%. It does not itself add cerebral hypoxia. Other active mechanisms, such as this shock, can still injure and kill them. Forced blood harvesting can still kill.
 
 > [!NOTE]
-> **Biotech DLC**: Deathresting sanguaphages will automatically recover from hypovolemic shock over time, as they can regenerate blood on their own.
+> **Biotech DLC**: Deathresting sanguaphages will automatically recover from hypovolemic shock over time, as they can regenerate blood on their own. The Deathless gene clears hypovolemic shock and blocks this shock from causing cardiac arrest.  
+> **Odyssey DLC**: The Breathless gene does the same for shock and for cardiac arrest caused by this shock. Either gene is enough. A pawn with no genes is not protected by this.
 
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---

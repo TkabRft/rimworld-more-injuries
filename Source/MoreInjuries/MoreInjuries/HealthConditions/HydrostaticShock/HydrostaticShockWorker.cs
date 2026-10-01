@@ -11,6 +11,10 @@ internal sealed class HydrostaticShockWorker(MoreInjuryComp parent) : InjuryWork
 
     public void PostTakeDamage(DamageWorker.DamageResult damage, ref readonly DamageInfo dinfo)
     {
+        if (!MoreInjuriesMod.Settings.EnableHemorrhagicStroke)
+        {
+            return;
+        }
         Pawn patient = Pawn;
         if (damage is { diminished: false, totalDamageDealt: > 31f }
             && dinfo.Def == DamageDefOf.Bullet

@@ -36,7 +36,8 @@ flowchart LR
 **Treatment**: Stopping the bleeding of the mouth, throat, or chest will prevent further blood from entering the airways and slow the progression of the condition. If the patient is conscious, they may be able to cough up the blood on their own and clear the airway. If the patient is unconscious, the airways must be cleared using a specialized [airway suction device](/docs/wiki/medical-devices.md#airway-suction-device) or by compressing the chest using [CPR](/docs/wiki/medical-devices.md#cpr) to expel the blood and restore breathing. To unlock [CPR](/docs/wiki/medical-devices.md#cpr), you must first complete the [cardiopulmonary resuscitation (CPR)](/docs/wiki/research.md#cardiopulmonary-resuscitation-cpr) research project.
 
 > [!NOTE]
-> **Biotech DLC**: Deathresting sanguaphages will always be able to cough up the blood on their own and clear the airway - once the bleeding has been stopped.
+> **Biotech DLC**: Deathresting sanguaphages will always be able to cough up the blood on their own and clear the airway - once the bleeding has been stopped.  
+> **Odyssey DLC**: The Breathless gene greatly slows further worsening of choking on blood and choking on a tourniquet, to about 5% of the normal increase. It does not stop choking, and it does not clear an airway that is already blocked.
 
 ## Choking on Tourniquet
 

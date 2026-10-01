@@ -21,9 +21,13 @@ public static class Patch_Pawn_GuestTracker_GuestTrackerTick
             && KnownResearchProjectDefOf.BasicFirstAid.IsFinished
             && Recipe_ExtractBloodBag.CanSafelyBeQueued(pawn)
             && __instance.GuestStatus is GuestStatus.Prisoner
-            && __instance.IsInteractionEnabled(KnownPrisonerInteractionModeDefOf.BloodBagFarm))
+            && __instance.IsInteractionEnabled(KnownPrisonerInteractionModeDefOf.BloodBagFarm)
+            && !HasExtractWholeBloodBagBill(pawn))
         {
             HealthCardUtility.CreateSurgeryBill(pawn, KnownRecipeDefOf.ExtractWholeBloodBag, part: null!, sendMessages: false);
         }
     }
+
+    private static bool HasExtractWholeBloodBagBill(Pawn pawn) =>
+        pawn.BillStack?.Bills?.Find(static bill => bill.recipe == KnownRecipeDefOf.ExtractWholeBloodBag) is not null;
 }

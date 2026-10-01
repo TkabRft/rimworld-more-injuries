@@ -29,6 +29,7 @@ Package `Th3Fr3d.ExtendedInjuries`. Namespace `MoreInjuries`. Supported versions
 | Compatibility | `COMPATIBILITY.md` | `Patches/Mod_*.xml`, `Patches/Dlc_*.xml`, `Integrations/` |
 | Localization | `Languages/TRANSLATING.md` | `Languages/`, `MoreInjuries.LocalizationTests` |
 | Save upgrade | none until blocked | `Versioning/` |
+| Adding the mod to an old save | `docs/wiki/save-compatibility.md` | `Patches/Patch_Pawn_ExposeData.cs` |
 | Style | `docs/coding-style.md` | neighboring file in the same feature folder |
 | Build or install | `INSTALL.md` | this file's Validation section |
 
@@ -75,18 +76,13 @@ Expand only when blocked.
 
 ## Documentation updates
 
-Root `AGENTS.md` owns the workspace rule. This mod follows it.
+Root `AGENTS.md` owns the workspace rule. This mod follows it. Every page under `docs/`, including the wiki, is English only. Do not add or leave documentation in another language. `Languages/` is localization, not documentation.
 
-After a mechanic change:
+`docs/wiki/` is the player manual. Other files under `docs/` are developer documentation. Do not put implementation notes in the wiki, or player-manual text in developer docs.
 
-1. update the owning wiki page from **current source**;
-2. mark it `added, not verified`;
-3. update this file only if the feature's owner path or validation command changed;
-4. update `COMPATIBILITY.md` only if support or conflict status changed;
-5. remove the mechanic from any "missing" or "deferred" list once it exists;
-6. set `code-synced: YYYY-MM-DD` on the owner page.
+After a player-visible mechanic change, update the owning wiki page from **current source**. After a developer-facing change, update the owning page under `docs/` outside the wiki. Update this file only if the feature map, owner path, or validation command changed. Update `COMPATIBILITY.md` only if support or conflict status changed. Remove the mechanic from any "missing" or "deferred" list once it exists. Set `code-synced: YYYY-MM-DD` only on a developer doc under `docs/`, never in `docs/wiki/`. Never delete an existing wiki link. Never change an existing id (`defName`, `chemicalNeed`, or any other identifier already in defs, saves, translations, or patches).
 
-Statuses: `implemented` | `added, not verified` | `partial` | `missing` | `deferred`.
+Statuses: `implemented` | `partial` | `missing` | `deferred`. Do not use `added, not verified`.
 
 Do not copy mechanic numbers into this router. Internal refactors with unchanged behavior need no doc churn.
 

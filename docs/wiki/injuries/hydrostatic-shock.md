@@ -11,7 +11,7 @@ Hydrostatic shock, also known as Hydro-shock, is the controversial concept that 
 
 Due to the controversial nature of the concept, it is implemented as an optional feature that can be enabled in the mod settings.
 
-If enabled, high-energy projectiles, such as bullets, may cause [hemorrhagic stroke](/docs/wiki/injuries/hemorrhagic-stroke.md#hemorrhagic-stroke), even if the projectile does not directly hit the head.
+If hydrostatic shock and hemorrhagic stroke are both enabled, high-energy projectiles, such as bullets, may cause [hemorrhagic stroke](/docs/wiki/injuries/hemorrhagic-stroke.md#hemorrhagic-stroke), even if the projectile does not directly hit the head. Turning off hemorrhagic stroke stops that outcome. It does not remove a stroke that is already present.
 
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---

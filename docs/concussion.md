@@ -1,6 +1,6 @@
 # Concussion and trauma stroke
 
-Status: `added, not verified`. code-synced: 2026-09-26.
+Status: `implemented`. code-synced: 2026-09-26.
 
 Owner for the shared head-trauma path that applies `Concussion` and `HemorrhagicStroke`. Player pages: `docs/wiki/injuries/concussion.md`, `docs/wiki/injuries/hemorrhagic-stroke.md`.
 
@@ -65,4 +65,11 @@ Shipped human multipliers: `Brain` `3.0`, `Skull` `1.5`, `Head` `0.5`, `Ear` / `
 
 ## Stroke causes outside this worker
 
-Unchanged: hydrostatic shock (`HydrostaticShockWorker`), adrenaline overdose, and coagulopathy.
+`EnableHemorrhagicStroke` is the shared gate for every More Injuries source that creates or worsens `HemorrhagicStroke`. It is read at runtime. Turning it off does not remove an existing stroke, does not disable the cure recipes, and does not stop the hediff's own progression.
+
+| Source | Gate |
+|---|---|
+| Head trauma | `HeadInjuryWorker` checks the setting before `TryApplyOutcome` for `HemorrhagicStroke`. Concussion stays on its own setting. |
+| Hydrostatic shock | `HydrostaticShockWorker` requires `EnableHydrostaticShock` to run and `EnableHemorrhagicStroke` before applying the stroke. |
+| Coagulopathy | The brain-stroke handler in `Hediffs_Coagulopathy.xml` has `HediffModifier_Settings_FeatureFlag` key `EnableHemorrhagicStroke`. Other coagulopathy handlers are unchanged. |
+| Adrenaline overdose | The stroke handler in `Hediffs_Adrenaline.xml` has the same flag. Other adrenaline handlers are unchanged. |

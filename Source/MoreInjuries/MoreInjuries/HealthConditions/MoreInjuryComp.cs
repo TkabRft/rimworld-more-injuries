@@ -29,7 +29,7 @@ public class MoreInjuryComp : ThingComp
 
     public bool CallbackActive { get; private set; } = false;
 
-    internal bool FailedLoading { get; set; } = false;
+    internal bool MissingJobParameterCache { get; set; } = false;
 
     public MoreInjuryCompProperties Properties => (MoreInjuryCompProperties)props;
 
@@ -83,13 +83,18 @@ public class MoreInjuryComp : ThingComp
             {
                 foreach (IExposable jobParameter in jobParameters)
                 {
+                    if (jobParameter is null)
+                    {
+                        Logger.Warning($"Skipped a null jobParameters entry for Pawn {parent?.ToStringSafe()}.");
+                        continue;
+                    }
                     _weakJobParameters.Add(new Std::WeakReference<IExposable>(jobParameter));
                 }
             }
             else
             {
-                Logger.Log($"Failed to load jobParameters cache from Pawn {parent?.ToStringSafe()}! Either MoreInjuries was newly added or the save file is corrupt :O");
-                FailedLoading = true;
+                Logger.Log($"jobParameters cache was absent for Pawn {parent?.ToStringSafe()}. Treating it as an empty cache.");
+                MissingJobParameterCache = true;
             }
         }
     }

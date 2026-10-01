@@ -81,7 +81,7 @@ Keep in mind that the human body is a complex system and requires some time to s
 > While More Injuries attempts to approximate the complexities of real-world trauma care, it is understandable if you don't want to deal with the added complexity of the lethal triad of trauma in your game. Keep in mind that you can customize many aspects of the mod in the mod settings. If you want to disable the advanced trauma simulation, you can do so by un-checking the `Enable advanced trauma simulation` option.
 
 > [!TIP]
-> If you prefer realistic trauma simulation, consider enabling the experimental `Prevent direct death by blood loss` option in the mod settings. This will prevent pawns from dying immediately once blood loss reaches 100%. Instead, they will receive cerebral hypoxia over time as the cardiovascular system collapses completely, buying you a few minutes to restore blood volume and save them at the cost of potentially permanent brain damage.
+> If you prefer to avoid an instant death at full blood loss, consider enabling the experimental `Prevent direct death by blood loss` option in the mod settings. This stops pawns from dying immediately once blood loss reaches 100%. It does not itself add cerebral hypoxia. Other active mechanisms, such as [hypovolemic shock](/docs/wiki/injuries/hypovolemic-shock.md#hypovolemic-shock), can still injure and kill them. Forced blood harvesting can still kill.
 
 ## Hemodilution Simulation
 

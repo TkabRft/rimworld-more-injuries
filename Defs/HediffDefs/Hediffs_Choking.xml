@@ -9,7 +9,7 @@
     <modExtensions>
       <li Class="MoreInjuries.HealthConditions.Secondary.HediffModifier_SeverityModifiers_ModExtension">
         <modifiers>
-          <li MayRequire="Ludeon.RimWorld.Biotech">
+          <li MayRequire="Ludeon.RimWorld.Odyssey">
             <apply>OnIncrease</apply>
             <modifier Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Genes_WhenPresent">
               <geneModifiers>
@@ -182,7 +182,7 @@
     <modExtensions>
       <li Class="MoreInjuries.HealthConditions.Secondary.HediffModifier_SeverityModifiers_ModExtension">
         <modifiers>
-          <li MayRequire="Ludeon.RimWorld.Biotech">
+          <li MayRequire="Ludeon.RimWorld.Odyssey">
             <apply>OnIncrease</apply>
             <modifier Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Genes_WhenPresent">
               <geneModifiers>

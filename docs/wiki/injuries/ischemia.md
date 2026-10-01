@@ -12,7 +12,7 @@ Ischemia occurs when blood flow to a tissue is restricted, leading to a shortage
 
 **Causes**: Application of a tourniquet.
 
-**Effects**: Pain, reduced mobility of the affected limb, and [gangrene](/docs/wiki/injuries/gangrene.md#gangrene) if left applied for too long. If removed carelessly after prolonged application, it can lead to systemic [acidosis](/docs/wiki/injuries/acidosis.md#acidosis) as stagnant blood is quickly reintroduced into the circulation.
+**Effects**: Pain, reduced mobility of the affected limb, and [gangrene](/docs/wiki/injuries/gangrene.md#gangrene) if left applied for too long. If removed carelessly after prolonged application, it can lead to systemic [acidosis](/docs/wiki/injuries/acidosis.md#acidosis) as stagnant blood is quickly reintroduced into the circulation. With Odyssey, the Breathless gene greatly slows further worsening of the tourniquet condition, to about 5% of the normal increase. It does not remove the tourniquet or stop ischemia.
 
 **Treatment**: Remove the tourniquet as soon as possible and provide appropriate medical care to the affected limb. If possible, remove the tourniquet in a controlled manner (`Remove tourniquet from {BODYPART} (safely)`), which takes more time but eliminates the risk of introducing systemic [acidosis](/docs/wiki/injuries/acidosis.md#acidosis).
 

@@ -106,8 +106,8 @@
   <MI_Settings_Features_HypovolemicShock_EnableLabel>Enable hypovolemic shock mechanics (default: {DEFAULT})</MI_Settings_Features_HypovolemicShock_EnableLabel>
   <!-- EN: If enabled, pawns that lose a significant amount of blood may suffer from hypovolemic shock, which can be fatal if not treated in time. The body needs a certain amount of blood to function properly, and losing too much can lead to organ failure and death.\n\nMust be treated with a blood transfusion to stabilize the patient. -->
   <MI_Settings_Features_HypovolemicShock_EnableTooltip>If enabled, pawns that lose a significant amount of blood may suffer from hypovolemic shock, which can be fatal if not treated in time. The body needs a certain amount of blood to function properly, and losing too much can lead to organ failure and death.\n\nMust be treated with a blood transfusion to stabilize the patient.</MI_Settings_Features_HypovolemicShock_EnableTooltip>
-  <!-- EN: Chance of hypovolemic shock to cause hypoxia (every 300 ticks/5s): {VALUE} (default: {DEFAULT}) -->
-  <MI_Settings_Features_HypovolemicShock_HypoxiaChanceLabel>Chance of hypovolemic shock to cause hypoxia (every 300 ticks/5s): {VALUE} (default: {DEFAULT})</MI_Settings_Features_HypovolemicShock_HypoxiaChanceLabel>
+  <!-- EN: Chance of hypovolemic shock to cause hypoxia (checked every 250 and 500 ticks): {VALUE} (default: {DEFAULT}) -->
+  <MI_Settings_Features_HypovolemicShock_HypoxiaChanceLabel>Chance of hypovolemic shock to cause hypoxia (checked every 250 and 500 ticks): {VALUE} (default: {DEFAULT})</MI_Settings_Features_HypovolemicShock_HypoxiaChanceLabel>
   <!-- EN: Losing a lot of blood will lead to organs not receiving enough oxygen to function properly. This can ultimately lead to organ failure and death.\n\nTreat the patient with a blood transfusion in time to prevent this from happening. -->
   <MI_Settings_Features_HypovolemicShock_HypoxiaChanceTooltip>Losing a lot of blood will lead to organs not receiving enough oxygen to function properly. This can ultimately lead to organ failure and death.\n\nTreat the patient with a blood transfusion in time to prevent this from happening.</MI_Settings_Features_HypovolemicShock_HypoxiaChanceTooltip>
   <!-- EN: Reduction factor for hypoxia chance when patient is tended: {VALUE} (default: {DEFAULT}) -->
@@ -120,8 +120,8 @@
   <MI_Settings_Features_HypovolemicShock_EnableCardiacArrestTooltip>If enabled, pawns that lose a very large amount of blood may suffer from cardiac arrest, which can be fatal if not treated in time. The heart needs a certain amount of blood to function properly, and losing too much can lead to heart failure and death.\n\nA skilled doctor can attempt to resuscitate the patient with CPR.</MI_Settings_Features_HypovolemicShock_EnableCardiacArrestTooltip>
   <!-- EN: Chance of cardiac arrest on high blood loss: {VALUE} (default: {DEFAULT}) -->
   <MI_Settings_Features_HypovolemicShock_CardiacArrestChanceLabel>Chance of cardiac arrest on high blood loss: {VALUE} (default: {DEFAULT})</MI_Settings_Features_HypovolemicShock_CardiacArrestChanceLabel>
-  <!-- EN: The likelihood of a pawn suffering from cardiac arrest after losing a very large amount of blood. Evaluated every 300 ticks/5s. -->
-  <MI_Settings_Features_HypovolemicShock_CardiacArrestChanceTooltip>The likelihood of a pawn suffering from cardiac arrest after losing a very large amount of blood. Evaluated every 300 ticks/5s.</MI_Settings_Features_HypovolemicShock_CardiacArrestChanceTooltip>
+  <!-- EN: The likelihood of a pawn suffering from cardiac arrest after losing a very large amount of blood. Evaluated every 250 ticks. -->
+  <MI_Settings_Features_HypovolemicShock_CardiacArrestChanceTooltip>The likelihood of a pawn suffering from cardiac arrest after losing a very large amount of blood. Evaluated every 250 ticks.</MI_Settings_Features_HypovolemicShock_CardiacArrestChanceTooltip>
   <!-- EN: Minimum defibrillator success rate for unskilled user: {VALUE} (default: {DEFAULT}) -->
   <MI_Settings_Features_HypovolemicShock_CardiacArrestDefibrillationChanceLabel>Minimum defibrillator success rate for unskilled user: {VALUE} (default: {DEFAULT})</MI_Settings_Features_HypovolemicShock_CardiacArrestDefibrillationChanceLabel>
   <!-- EN: The minimum likelihood of a defibrillator successfully resuscitating a patient when used by an unskilled user (Medicine skill < 8).\n\nThe actual success rate scales with the user's medicine skill: max(<this setting>, <medicine skill> / 8). -->
@@ -139,8 +139,8 @@
   <MI_Settings_Features_LethalTriad_EnableTooltip>If enabled, the mod will simulate the lethal triad of trauma, which consists of hypothermia, acidosis, and coagulopathy. These conditions can lead to a rapid deterioration of the patient's condition and can be fatal if not treated in time.</MI_Settings_Features_LethalTriad_EnableTooltip>
   <!-- EN: Prevent direct death by blood loss (default: {DEFAULT}) -->
   <MI_Settings_Features_LethalTriad_PreventDeathByBloodLoss_Label>Prevent direct death by blood loss (default: {DEFAULT})</MI_Settings_Features_LethalTriad_PreventDeathByBloodLoss_Label>
-  <!-- EN: If enabled, pawns will not die directly from blood loss, but will instead receive hypoxia damage to the brain until death sets in. -->
-  <MI_Settings_Features_LethalTriad_PreventDeathByBloodLoss_Tooltip>If enabled, pawns will not die directly from blood loss, but will instead receive hypoxia damage to the brain until death sets in.</MI_Settings_Features_LethalTriad_PreventDeathByBloodLoss_Tooltip>
+  <!-- EN: If enabled, pawns will not die directly from blood loss. This setting does not itself add brain hypoxia. Lethal complications still depend on the other mechanisms that are currently active, such as hypovolemic shock. -->
+  <MI_Settings_Features_LethalTriad_PreventDeathByBloodLoss_Tooltip>If enabled, pawns will not die directly from blood loss. This setting does not itself add brain hypoxia. Lethal complications still depend on the other mechanisms that are currently active, such as hypovolemic shock.</MI_Settings_Features_LethalTriad_PreventDeathByBloodLoss_Tooltip>
   <!-- EN: Hypoxia to acidosis conversion factor: {VALUE} (default: {DEFAULT}) -->
   <MI_Settings_Features_LethalTriad_HypoxiaAcidosisConversionFactorLabel>Hypoxia to acidosis conversion factor: {VALUE} (default: {DEFAULT})</MI_Settings_Features_LethalTriad_HypoxiaAcidosisConversionFactorLabel>
   <!-- EN: The factor by which the hypoxia severity is converted to acidosis severity. This is used to determine the severity of acidosis based on the severity of hypoxia. A value of 0 means that hypoxia does not contribute to acidosis at all (disabled), while a value of 5 means that 5% of all hypoxia damage contributes to acidosis severity. The actual conversion is done by multiplying the hypoxia severity by this factor. -->
@@ -180,12 +180,12 @@
   <!-- EN: Severity added when a hit reaches the concussion threshold. Evaluated per damage event. If set to 1, a hit at or above the threshold adds a full concussion. Lower values reduce added severity even when the threshold is met. -->
   <MI_Settings_Features_Concussion_ConcussionChanceTooltip>Severity added when a hit reaches the concussion threshold. Evaluated per damage event. If set to 1, a hit at or above the threshold adds a full concussion. Lower values reduce added severity even when the threshold is met.</MI_Settings_Features_Concussion_ConcussionChanceTooltip>
   <!-- ============ Feature: Hemorrhagic Stroke ============ -->
-  <!-- EN: Hemorrhagic Stroke (Head Injury) -->
-  <MI_Settings_Features_HemorrhagicStroke>Hemorrhagic Stroke (Head Injury)</MI_Settings_Features_HemorrhagicStroke>
+  <!-- EN: Hemorrhagic Stroke -->
+  <MI_Settings_Features_HemorrhagicStroke>Hemorrhagic Stroke</MI_Settings_Features_HemorrhagicStroke>
   <!-- EN: Enable hemorrhagic stroke mechanics (default: {DEFAULT}) -->
   <MI_Settings_Features_HemorrhagicStroke_EnableLabel>Enable hemorrhagic stroke mechanics (default: {DEFAULT})</MI_Settings_Features_HemorrhagicStroke_EnableLabel>
-  <!-- EN: If enabled, pawns that receive severe head injuries may suffer from a hemorrhagic stroke, which can be fatal if not treated in time. -->
-  <MI_Settings_Features_HemorrhagicStroke_EnableTooltip>If enabled, pawns that receive severe head injuries may suffer from a hemorrhagic stroke, which can be fatal if not treated in time.</MI_Settings_Features_HemorrhagicStroke_EnableTooltip>
+  <!-- EN: If enabled, More Injuries can cause and worsen hemorrhagic stroke from head trauma, hydrostatic shock, coagulopathy, and adrenaline overdose. Turning this off does not remove an existing stroke, does not disable stroke treatment, and does not stop an existing stroke from progressing on its own. -->
+  <MI_Settings_Features_HemorrhagicStroke_EnableTooltip>If enabled, More Injuries can cause and worsen hemorrhagic stroke from head trauma, hydrostatic shock, coagulopathy, and adrenaline overdose. Turning this off does not remove an existing stroke, does not disable stroke treatment, and does not stop an existing stroke from progressing on its own.</MI_Settings_Features_HemorrhagicStroke_EnableTooltip>
   <!-- EN: Raw head trauma threshold for guaranteed hemorrhagic stroke: {VALUE} (default: {DEFAULT}) -->
   <MI_Settings_Features_HemorrhagicStroke_DamageThresholdLabel>Raw head trauma threshold for guaranteed hemorrhagic stroke: {VALUE} (default: {DEFAULT})</MI_Settings_Features_HemorrhagicStroke_DamageThresholdLabel>
   <!-- EN: The trauma score required for one full hemorrhagic stroke application. A hit at or above this threshold adds severity equal to the hemorrhagic stroke chance. Trauma is incoming damage scaled by damage type, hit location, and the part's hit points. Hits below the threshold add proportionally less. -->

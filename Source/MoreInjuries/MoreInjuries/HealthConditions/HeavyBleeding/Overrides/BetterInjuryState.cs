@@ -79,7 +79,18 @@ public class BetterInjuryState<TOwner>(TOwner owner) : IExposable, IInjuryState 
         set => _temporarilyTamponadedMultiplierBase = value;
     }
 
-    public float TemporarilyTamponadedMultiplier => Mathf.Lerp(1, _temporarilyTamponadedMultiplierBase, _reducedBleedRateTicksTotal / _reducedBleedRateTicksRemaining);
+    public float TemporarilyTamponadedMultiplier
+    {
+        get
+        {
+            if (_reducedBleedRateTicksTotal <= 0)
+            {
+                return 1f;
+            }
+            float remainingFraction = (float)_reducedBleedRateTicksRemaining / _reducedBleedRateTicksTotal;
+            return Mathf.Lerp(1f, _temporarilyTamponadedMultiplierBase, remainingFraction);
+        }
+    }
 
     public bool IsTemporarilyCoagulated => this is
     {

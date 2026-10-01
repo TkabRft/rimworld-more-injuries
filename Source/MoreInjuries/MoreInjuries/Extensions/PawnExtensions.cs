@@ -30,23 +30,31 @@ public static class PawnExtensions
 
     public static bool HasOxygenDeficiencyImmunity(this Pawn pawn)
     {
-        if (!ModsConfig.BiotechActive || pawn.genes is null)
+        if (pawn.genes is null)
         {
             return false;
         }
 
-        GeneDef deathlessGene = DefDatabase<GeneDef>.GetNamedSilentFail("Deathless");
-        if (deathlessGene != null && pawn.genes.HasActiveGene(deathlessGene))
+        if (ModsConfig.BiotechActive && HasActiveGene(pawn, "Deathless"))
         {
             return true;
         }
 
-        GeneDef breathlessGene = DefDatabase<GeneDef>.GetNamedSilentFail("VacuumResistance_Total");
-        if (breathlessGene != null && pawn.genes.HasActiveGene(breathlessGene))
+        if (ModsConfig.OdysseyActive && HasActiveGene(pawn, "VacuumResistance_Total"))
         {
             return true;
         }
 
         return false;
+    }
+
+    private static bool HasActiveGene(Pawn pawn, string defName)
+    {
+        if (pawn.genes is not Pawn_GeneTracker genes)
+        {
+            return false;
+        }
+        GeneDef geneDef = DefDatabase<GeneDef>.GetNamedSilentFail(defName);
+        return geneDef != null && genes.HasActiveGene(geneDef);
     }
 }

@@ -19,8 +19,6 @@ public static class Patch_ITab_Pawn_Visitor_NonExclusiveInteractionToggled
         }
         if (enabled)
         {
-            PrisonerInteractionModeDef otherMode;
-            RecipeDef otherRecipe;
             if (mode == KnownPrisonerInteractionModeDefOf.BloodBagFarm)
             {
                 if (!KnownResearchProjectDefOf.BasicFirstAid.IsFinished)
@@ -29,23 +27,18 @@ public static class Patch_ITab_Pawn_Visitor_NonExclusiveInteractionToggled
                     pawn.guest.ToggleNonExclusiveInteraction(mode, enabled: false);
                     return;
                 }
-                otherMode = PrisonerInteractionModeDefOf.HemogenFarm;
-                otherRecipe = RecipeDefOf.ExtractHemogenPack;
+                if (ModsConfig.BiotechActive)
+                {
+                    DisableOtherInteraction(pawn, mode, PrisonerInteractionModeDefOf.HemogenFarm, RecipeDefOf.ExtractHemogenPack);
+                }
             }
-            else if (mode == PrisonerInteractionModeDefOf.HemogenFarm)
+            else if (ModsConfig.BiotechActive && mode == PrisonerInteractionModeDefOf.HemogenFarm)
             {
-                otherMode = KnownPrisonerInteractionModeDefOf.BloodBagFarm;
-                otherRecipe = KnownRecipeDefOf.ExtractWholeBloodBag;
+                DisableOtherInteraction(pawn, mode, KnownPrisonerInteractionModeDefOf.BloodBagFarm, KnownRecipeDefOf.ExtractWholeBloodBag);
             }
             else
             {
                 return;
-            }
-            if (pawn.guest.IsInteractionEnabled(otherMode))
-            {
-                Messages.Message("MI_Message_OptionMutuallyExclusive".Translate(mode.label, otherMode.label), pawn, MessageTypeDefOf.RejectInput);
-                pawn.guest.ToggleNonExclusiveInteraction(otherMode, enabled: false);
-                pawn.BillStack?.Bills?.RemoveAll(b => b.recipe == otherRecipe);
             }
         }
         if (mode != KnownPrisonerInteractionModeDefOf.BloodBagFarm)
@@ -69,5 +62,16 @@ public static class Patch_ITab_Pawn_Visitor_NonExclusiveInteractionToggled
             }
             pawn.BillStack!.Bills.Remove(bill);
         }
+    }
+
+    private static void DisableOtherInteraction(Pawn pawn, PrisonerInteractionModeDef mode, PrisonerInteractionModeDef otherMode, RecipeDef otherRecipe)
+    {
+        if (!pawn.guest.IsInteractionEnabled(otherMode))
+        {
+            return;
+        }
+        Messages.Message("MI_Message_OptionMutuallyExclusive".Translate(mode.label, otherMode.label), pawn, MessageTypeDefOf.RejectInput);
+        pawn.guest.ToggleNonExclusiveInteraction(otherMode, enabled: false);
+        pawn.BillStack?.Bills?.RemoveAll(bill => bill.recipe == otherRecipe);
     }
 }
