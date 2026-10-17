@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- EN: not in withdrawal -->
+  <MI_DrugInfo_Satisfied>not in withdrawal</MI_DrugInfo_Satisfied>
+  <!-- EN: Effects: {0} -->
+  <MI_DrugInfo_State>Effects: {0}</MI_DrugInfo_State>
+  <!-- EN: Effects: {0} (from {1} severity) -->
+  <MI_DrugInfo_Stage>Effects: {0} (from {1} severity)</MI_DrugInfo_Stage>
+  <!-- EN: No additional stage modifiers. -->
+  <MI_DrugInfo_NoStageEffects>No additional stage modifiers.</MI_DrugInfo_NoStageEffects>
+  <!-- EN: Severity recovery rate -->
+  <MI_DrugInfo_Recovery>Severity recovery rate</MI_DrugInfo_Recovery>
+  <!-- EN: {0} per day -->
+  <MI_DrugInfo_PerDay>{0} per day</MI_DrugInfo_PerDay>
+  <!-- EN: The configured decrease in severity while this condition is recovering. The time remaining depends on current severity and the condition's normal recovery rules. Addiction recovery requires abstinence. -->
+  <MI_DrugInfo_RecoveryExplanation>The configured decrease in severity while this condition is recovering. The time remaining depends on current severity and the condition's normal recovery rules. Addiction recovery requires abstinence.</MI_DrugInfo_RecoveryExplanation>
+  <!-- EN: Drug effect with tolerance -->
+  <MI_DrugInfo_Tolerance>Drug effect with tolerance</MI_DrugInfo_Tolerance>
+  <!-- EN: At {0} tolerance: {1} of the drug effect -->
+  <MI_DrugInfo_ToleranceSample>At {0} tolerance: {1} of the drug effect</MI_DrugInfo_ToleranceSample>
+  <!-- EN: Tolerance changes the effect of {0}. These samples use the same effect calculation as the pawn's tolerance condition. -->
+  <MI_DrugInfo_ToleranceExplanation>Tolerance changes the effect of {0}. These samples use the same effect calculation as the pawn's tolerance condition.</MI_DrugInfo_ToleranceExplanation>
+</LanguageData>

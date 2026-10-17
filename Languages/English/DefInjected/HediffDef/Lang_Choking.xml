@@ -19,6 +19,8 @@
   <ChokingOnBlood.stages.very_severe.label>very severe</ChokingOnBlood.stages.very_severe.label>
   <!-- EN: extreme -->
   <ChokingOnBlood.stages.extreme.label>extreme</ChokingOnBlood.stages.extreme.label>
+  <!-- EN: lethal -->
+  <ChokingOnBlood.stages.lethal.label>lethal</ChokingOnBlood.stages.lethal.label>
   <!-- EN: terminal -->
   <ChokingOnBlood.stages.terminal.label>terminal</ChokingOnBlood.stages.terminal.label>
   <!-- EN: fatal -->

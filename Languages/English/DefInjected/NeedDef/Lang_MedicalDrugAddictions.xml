@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- EN: morphine -->
+  <Chemical_MI_Morphine_Chemical.label>morphine</Chemical_MI_Morphine_Chemical.label>
+  <!-- EN: Because of a morphine addiction, this person needs to regularly consume the drug to avoid withdrawal symptoms. -->
+  <Chemical_MI_Morphine_Chemical.description>Because of a morphine addiction, this person needs to regularly consume the drug to avoid withdrawal symptoms.</Chemical_MI_Morphine_Chemical.description>
+  <!-- EN: ketamine -->
+  <Chemical_MI_Ketamine_Chemical.label>ketamine</Chemical_MI_Ketamine_Chemical.label>
+  <!-- EN: Because of a ketamine addiction, this person needs to regularly consume the drug to avoid withdrawal symptoms. -->
+  <Chemical_MI_Ketamine_Chemical.description>Because of a ketamine addiction, this person needs to regularly consume the drug to avoid withdrawal symptoms.</Chemical_MI_Ketamine_Chemical.description>
+</LanguageData>

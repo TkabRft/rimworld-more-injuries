@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-  <HediffDef ParentName="DiseaseBase">
+  <HediffDef Class="MoreInjuries.HealthConditions.Drugs.MedicalDrugHediffDef" ParentName="DiseaseBase">
     <defName>KetamineBuildup</defName>
     <label>ketamine buildup</label>
     <labelNoun>a buildup of ketamine</labelNoun>
@@ -111,7 +111,7 @@
     </stages>
   </HediffDef>
 
-  <HediffDef ParentName="DiseaseBase">
+  <HediffDef Class="MoreInjuries.HealthConditions.Drugs.MedicalDrugHediffDef" ParentName="DiseaseBase">
     <defName>ChloroformBuildup</defName>
     <label>chloroform buildup</label>
     <labelNoun>a buildup of chloroform</labelNoun>
@@ -266,7 +266,7 @@
     <listPriority>25</listPriority>
   </NeedDef>
 
-  <HediffDef ParentName="DrugToleranceBase">
+  <HediffDef Class="MoreInjuries.HealthConditions.Drugs.MedicalDrugHediffDef" ParentName="DrugToleranceBase">
     <defName>MI_KetamineTolerance</defName>
     <label>ketamine tolerance</label>
     <description>A built-up tolerance to ketamine. The more severe this tolerance is, the more ketamine it takes to get the same effect.</description>
@@ -280,13 +280,12 @@
     </comps>
   </HediffDef>
 
-  <HediffDef ParentName="AddictionBase">
+  <HediffDef Class="MoreInjuries.HealthConditions.Drugs.MedicalDrugHediffDef" ParentName="AddictionBase">
     <defName>MI_KetamineAddiction</defName>
     <label>ketamine addiction</label>
     <description>A psychological dependence on ketamine. Chronic use has altered neurotransmitter systems involved in mood and cognition, creating a powerful craving for the dissociative state it provides.
 \nWithout ketamine, severe psychological withdrawal symptoms will manifest. However, prolonged abstinence will allow brain chemistry to gradually return to normal, resolving the addiction.</description>
     <hediffClass>Hediff_Addiction</hediffClass>
-    <causesNeed>Chemical_MI_Ketamine_Chemical</causesNeed>
     <chemicalNeed>Chemical_MI_Ketamine_Chemical</chemicalNeed>
     <comps>
       <li Class="HediffCompProperties_SeverityPerDay">

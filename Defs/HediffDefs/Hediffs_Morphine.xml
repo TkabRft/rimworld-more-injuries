@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-  <HediffDef ParentName="DiseaseBase">
+  <HediffDef Class="MoreInjuries.HealthConditions.Drugs.MedicalDrugHediffDef" ParentName="DiseaseBase">
     <defName>MorphineBuildup</defName>
     <label>morphine high</label>
     <labelNoun>being high on morphine</labelNoun>
@@ -203,7 +203,7 @@
     <listPriority>25</listPriority>
   </NeedDef>
 
-  <HediffDef ParentName="DrugToleranceBase">
+  <HediffDef Class="MoreInjuries.HealthConditions.Drugs.MedicalDrugHediffDef" ParentName="DrugToleranceBase">
     <defName>MI_MorphineTolerance</defName>
     <label>morphine tolerance</label>
     <description>A built-up tolerance to morphine. The more severe this tolerance is, the more morphine it takes to get the same effect.</description>
@@ -217,13 +217,12 @@
     </comps>
   </HediffDef>
 
-  <HediffDef ParentName="AddictionBase">
+  <HediffDef Class="MoreInjuries.HealthConditions.Drugs.MedicalDrugHediffDef" ParentName="AddictionBase">
     <defName>MI_MorphineAddiction</defName>
     <label>morphine addiction</label>
     <description>A chemical addiction to morphine. Long-term use of morphine has caused neurological adaptations at the cellular level, so the brain can no longer function properly without the drug.
 \nWithout regular doses of morphine, withdrawal symptoms will begin. However, extended abstinence will force the brain to adapt back to its normal state, resolving the addiction.</description>
     <hediffClass>Hediff_Addiction</hediffClass>
-    <causesNeed>Chemical_MI_Morphine_Chemical</causesNeed>
     <chemicalNeed>Chemical_MI_Morphine_Chemical</chemicalNeed>
     <comps>
       <li Class="HediffCompProperties_SeverityPerDay">

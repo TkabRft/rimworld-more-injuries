@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- EN: morphine tolerance -->
+  <MI_MorphineTolerance.label>morphine tolerance</MI_MorphineTolerance.label>
+  <!-- EN: A built-up tolerance to morphine. The more severe this tolerance is, the more morphine it takes to get the same effect. -->
+  <MI_MorphineTolerance.description>A built-up tolerance to morphine. The more severe this tolerance is, the more morphine it takes to get the same effect.</MI_MorphineTolerance.description>
+  <!-- EN: morphine addiction -->
+  <MI_MorphineAddiction.label>morphine addiction</MI_MorphineAddiction.label>
+  <!-- EN: A chemical addiction to morphine. Long-term use of morphine has caused neurological adaptations at the cellular level, so the brain can no longer function properly without the drug.
+\nWithout regular doses of morphine, withdrawal symptoms will begin. However, extended abstinence will force the brain to adapt back to its normal state, resolving the addiction. -->
+  <MI_MorphineAddiction.description>A chemical addiction to morphine. Long-term use of morphine has caused neurological adaptations at the cellular level, so the brain can no longer function properly without the drug.
+\nWithout regular doses of morphine, withdrawal symptoms will begin. However, extended abstinence will force the brain to adapt back to its normal state, resolving the addiction.</MI_MorphineAddiction.description>
+  <!-- EN: withdrawal -->
+  <MI_MorphineAddiction.stages.withdrawal.label>withdrawal</MI_MorphineAddiction.stages.withdrawal.label>
+  <!-- EN: ketamine tolerance -->
+  <MI_KetamineTolerance.label>ketamine tolerance</MI_KetamineTolerance.label>
+  <!-- EN: A built-up tolerance to ketamine. The more severe this tolerance is, the more ketamine it takes to get the same effect. -->
+  <MI_KetamineTolerance.description>A built-up tolerance to ketamine. The more severe this tolerance is, the more ketamine it takes to get the same effect.</MI_KetamineTolerance.description>
+  <!-- EN: ketamine addiction -->
+  <MI_KetamineAddiction.label>ketamine addiction</MI_KetamineAddiction.label>
+  <!-- EN: A psychological dependence on ketamine. Chronic use has altered neurotransmitter systems involved in mood and cognition, creating a powerful craving for the dissociative state it provides.
+\nWithout ketamine, severe psychological withdrawal symptoms will manifest. However, prolonged abstinence will allow brain chemistry to gradually return to normal, resolving the addiction. -->
+  <MI_KetamineAddiction.description>A psychological dependence on ketamine. Chronic use has altered neurotransmitter systems involved in mood and cognition, creating a powerful craving for the dissociative state it provides.
+\nWithout ketamine, severe psychological withdrawal symptoms will manifest. However, prolonged abstinence will allow brain chemistry to gradually return to normal, resolving the addiction.</MI_KetamineAddiction.description>
+  <!-- EN: withdrawal -->
+  <MI_KetamineAddiction.stages.withdrawal.label>withdrawal</MI_KetamineAddiction.stages.withdrawal.label>
+</LanguageData>

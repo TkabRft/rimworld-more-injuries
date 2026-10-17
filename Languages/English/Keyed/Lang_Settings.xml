@@ -210,8 +210,8 @@
   <MI_Settings_Features_Adrenaline>Adrenaline</MI_Settings_Features_Adrenaline>
   <!-- EN: Enable adrenaline mechanics (default: {DEFAULT}) -->
   <MI_Settings_Features_Adrenaline_EnableLabel>Enable adrenaline mechanics (default: {DEFAULT})</MI_Settings_Features_Adrenaline_EnableLabel>
-  <!-- EN: If enabled, pawns that take damage may receive a rush of adrenaline that temporarily boosts moving capabilitites and numbs the perception of pain. -->
-  <MI_Settings_Features_Adrenaline_EnableTooltip>If enabled, pawns that take damage may receive a rush of adrenaline that temporarily boosts moving capabilitites and numbs the perception of pain.</MI_Settings_Features_Adrenaline_EnableTooltip>
+  <!-- EN: If enabled, pawns that take damage may receive a rush of adrenaline that temporarily boosts moving capabilitites and numbs the perception of pain. While this is off, drafted first aid does not inject epinephrine. -->
+  <MI_Settings_Features_Adrenaline_EnableTooltip>If enabled, pawns that take damage may receive a rush of adrenaline that temporarily boosts moving capabilitites and numbs the perception of pain. While this is off, drafted first aid does not inject epinephrine.</MI_Settings_Features_Adrenaline_EnableTooltip>
   <!-- EN: Damage threshold for certain adrenaline rush: {VALUE} (default: {DEFAULT}) -->
   <MI_Settings_Features_Adrenaline_DamageThresholdLabel>Damage threshold for certain adrenaline rush: {VALUE} (default: {DEFAULT})</MI_Settings_Features_Adrenaline_DamageThresholdLabel>
   <!-- EN: The amount of damage required to always cause an adrenaline rush, which provides a significant boost to moving capabilities and numbs the perception of pain for a short time. If the damage taken exceeds this threshold, an adrenaline rush is guaranteed to occur. Otherwise, the chance is determined by the adrenaline chance on damage. -->
