@@ -1,5 +1,7 @@
-﻿using MoreInjuries.Debug;
+using MoreInjuries.Debug;
+using MoreInjuries.Defs.WellKnown;
 using MoreInjuries.Extensions;
+using MoreInjuries.HealthConditions.HypovolemicShock;
 using MoreInjuries.HealthConditions.Secondary;
 using MoreInjuries.HealthConditions.Secondary.Linked;
 using MoreInjuries.Roslyn.Future.ThrowHelpers;
@@ -46,36 +48,43 @@ public sealed class HediffComp_Acidosis : HediffComp
     {
         DebugAssert.IsNotNull(_severityChangeHistory);
         SeverityHistoryEntry historyEntry = _severityChangeHistory.MoveNext();
-        SampleLinkedHediffSeverities(historyEntry, parent.pawn, initializing);
+        SampleLinkedHediffSeverities(historyEntry, parent.pawn, initializing, out ShockInputs shockInputs);
         HediffComp_CausedBy? causedBy = parent.GetComp<HediffComp_CausedBy>();
         float averageSeverityChange = _severityChangeHistory.CalculateAverageChange(causedBy);
-        float severity = parent.Severity;
-        float newSeverity;
-        if (averageSeverityChange > Mathf.Epsilon)
+        float shockProduction = GetShockProductionPerDay(shockInputs);
+        if (shockProduction > 0f)
         {
-            // if the average severity change is positive, we increase the severity
-            newSeverity = severity + averageSeverityChange;
-            parent.Severity = newSeverity;
+            // Definition labels are localized at load time; avoid formatting a stage label every update.
+            string shockLabel = shockInputs.Shock!.def.label;
+            causedBy?.AddCause(shockLabel, shockLabel);
+        }
+        if (initializing)
+        {
+            // Keep a newly created shock-driven condition, but grant no free production/clearance tick.
+            if (shockProduction > 0f && averageSeverityChange <= Mathf.Epsilon)
+            {
+                return;
+            }
+            shockProduction = 0f;
+        }
+        float severity = parent.Severity;
+        float newSeverity = AcidosisProgressionModel.Advance(severity, averageSeverityChange, shockProduction,
+            Properties.RecoveryPerDay, Properties.RecoveryPerDayWhileShocked,
+            (float)Properties.TickInterval / GenDate.TicksPerDay);
+        if (newSeverity < Mathf.Epsilon)
+        {
+            parent.pawn.health.RemoveHediff(parent);
         }
         else
         {
-            // otherwise, we decrease with the recovery rate
-            newSeverity = severity - (Properties.RecoveryPerDay * Properties.TickInterval / GenDate.TicksPerDay);
-            if (newSeverity < Mathf.Epsilon)
-            {
-                // remove the hediff
-                parent.pawn.health.RemoveHediff(parent);
-            }
-            else
-            {
-                parent.Severity = newSeverity;
-            }
+            parent.Severity = newSeverity;
         }
         Logger.LogDebug($"Severity of {parent.Label} changed: {severity:F2} -> {newSeverity:F2}");
     }
 
-    private void SampleLinkedHediffSeverities(SeverityHistoryEntry entry, Pawn pawn, bool initializing)
+    private void SampleLinkedHediffSeverities(SeverityHistoryEntry entry, Pawn pawn, bool initializing, out ShockInputs shockInputs)
     {
+        shockInputs = default;
         float totalSeverity = 0f;
         List<string>? hediffLabels = entry.HediffLabels;
         if (hediffLabels is not null)
@@ -88,6 +97,22 @@ public sealed class HediffComp_Acidosis : HediffComp
         }
         foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
         {
+            if (hediff.def == KnownHediffDefOf.HypovolemicShock)
+            {
+                shockInputs.Shock = hediff;
+            }
+            else if (hediff.def == HediffDefOf.BloodLoss)
+            {
+                shockInputs.BloodLoss = hediff;
+            }
+            else if (hediff.def == KnownHediffDefOf.AdrenalineRush)
+            {
+                shockInputs.Adrenaline = hediff;
+            }
+            else if (ModsConfig.BiotechActive && hediff.def == HediffDefOf.Deathrest)
+            {
+                shockInputs.Deathresting = true;
+            }
             LinkedSeverityProperties_ModExtension? modExtension = hediff.def.GetCachedModExtension<LinkedSeverityProperties_ModExtension>();
             if (modExtension is not null && modExtension.LinkedSeverityHandlers.TryGetValue(parent.def, out HediffCompHandler_LinkedSeverity? handler))
             {
@@ -110,6 +135,27 @@ public sealed class HediffComp_Acidosis : HediffComp
         _previousSeverity = totalSeverity;
         entry.SeverityChange = severityChange;
         entry.HediffLabels = hediffLabels;
+    }
+
+    private float GetShockProductionPerDay(ShockInputs inputs)
+    {
+        if (inputs.Shock is not { } shock || Properties.ShockAcidosisPerDayCurve is not { } curve
+            || !ShockTreatment.CanDriveAcidosis(parent.pawn, inputs.Deathresting))
+        {
+            return 0f;
+        }
+        float effectiveShock = ShockPerfusionModel.EffectiveShock(shock.Severity, inputs.BloodLoss?.Severity ?? 0f);
+        return AcidosisProgressionModel.ShockProductionPerDay(curve.Evaluate(effectiveShock),
+            ShockTreatment.Quality(shock), inputs.Adrenaline?.Severity ?? 0f,
+            MoreInjuriesMod.Settings.HypoxiaAcidosisConversionFactor);
+    }
+
+    private struct ShockInputs
+    {
+        internal Hediff? Shock;
+        internal Hediff? BloodLoss;
+        internal Hediff? Adrenaline;
+        internal bool Deathresting;
     }
 
     private class SeverityHistoryEntry : IExposable

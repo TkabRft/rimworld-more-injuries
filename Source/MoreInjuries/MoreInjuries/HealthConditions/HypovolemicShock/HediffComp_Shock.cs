@@ -25,12 +25,17 @@ public class HediffComp_Shock : HediffComp
     {
         HediffInfo info = default;
         int hediffsFound = 0;
-        for (int i = 0; i < pawn.health.hediffSet.hediffs.Count && hediffsFound < 2; ++i)
+        for (int i = 0; i < pawn.health.hediffSet.hediffs.Count && hediffsFound < 3; ++i)
         {
             Hediff hediff = pawn.health.hediffSet.hediffs[i];
             if (hediff.def == KnownHediffDefOf.AdrenalineRush)
             {
                 info.AdrenalineRush = hediff;
+                hediffsFound++;
+            }
+            else if (hediff.def == KnownHediffDefOf.Acidosis)
+            {
+                info.Acidosis = hediff;
                 hediffsFound++;
             }
             else if (hediff.def == HediffDefOf.BloodLoss)
@@ -77,7 +82,8 @@ public class HediffComp_Shock : HediffComp
         {
             return;
         }
-        (Hediff? bloodLoss, Hediff? adrenaline) = GetHediffInfo(pawn);
+        HediffInfo info = GetHediffInfo(pawn);
+        (Hediff? bloodLoss, Hediff? adrenaline) = info;
         bool deathresting = ModsConfig.BiotechActive && pawn.health.hediffSet.HasHediff(HediffDefOf.Deathrest);
         bool tended = parent.IsTended();
         if (!tended && !deathresting)
@@ -86,13 +92,19 @@ public class HediffComp_Shock : HediffComp
             FixedNow = false;
         }
         parent.Severity = ShockPerfusionModel.Advance(parent.Severity, bloodLoss?.Severity ?? 0f,
-            adrenaline?.Severity ?? 0f, tended, FixedNow,
+            adrenaline?.Severity ?? 0f, ShockTreatment.Quality(parent),
             deathresting || !MoreInjuriesMod.Settings.EnableHypovolemicShock);
+        if (info.Acidosis is null && ShockPerfusionModel.EffectiveShock(parent.Severity, bloodLoss?.Severity ?? 0f) > 0.5f
+            && ShockTreatment.CanDriveAcidosis(pawn, deathresting))
+        {
+            HealthUtility.AdjustSeverity(pawn, KnownHediffDefOf.Acidosis, 0.001f);
+        }
     }
 
     private struct HediffInfo
     {
         internal Hediff? BloodLoss;
+        internal Hediff? Acidosis;
         internal Hediff? AdrenalineRush;
 
         public readonly void Deconstruct(out Hediff? bloodLoss, out Hediff? adrenaline)

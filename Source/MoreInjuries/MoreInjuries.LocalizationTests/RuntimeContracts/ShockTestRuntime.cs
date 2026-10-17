@@ -8,10 +8,27 @@ namespace Verse
         public object? Extension;
     }
 
-    public sealed partial class Hediff
+    public partial class Hediff
     {
         public HediffDef def = null!;
-        public bool Tended;
+        public string Label => def.Label;
+        public List<HediffComp> TestComps = [];
+        public T? TryGetComp<T>() where T : HediffComp
+        {
+            foreach (HediffComp comp in TestComps) { if (comp is T match) { return match; } }
+            return null;
+        }
+        public T? GetComp<T>() where T : HediffComp => TryGetComp<T>();
+        public bool Tended
+        {
+            get => TryGetComp<HediffComp_TendDuration>()?.IsTended == true;
+            set
+            {
+                HediffComp_TendDuration? tend = TryGetComp<HediffComp_TendDuration>();
+                if (tend is null) { tend = new() { parent = this, tendQuality = 1f }; TestComps.Add(tend); }
+                tend.tendTicksLeft = value ? 10000 : 0;
+            }
+        }
     }
 
     public sealed partial class Pawn
@@ -24,7 +41,7 @@ namespace Verse
         public bool HasComp<T>() => Tracked;
     }
 
-    public sealed class RaceProperties
+    public sealed partial class RaceProperties
     {
         public bool IsAnomalyEntity;
         public bool IsFlesh = true;
@@ -37,36 +54,55 @@ namespace Verse
         public static bool BiotechActive;
     }
 
-    public sealed class HealthTracker
+    public sealed partial class HealthTracker
     {
         public HediffSet hediffSet = new();
         public void RemoveHediff(Hediff hediff) => hediffSet.hediffs.Remove(hediff);
     }
 
-    public sealed class HediffSet
+    public sealed partial class HediffSet
     {
         public List<Hediff> hediffs = [];
         public Hediff? GetFirstHediffOfDef(HediffDef def) => hediffs.Find(hediff => hediff.def == def);
         public bool HasHediff(HediffDef def) => GetFirstHediffOfDef(def) is not null;
     }
 
-    public static class Scribe_Values
+    public sealed class HediffComp_TendDuration : HediffComp
     {
-        public static void Look(ref bool value, string key, bool defaultValue) { }
+        public float tendQuality;
+        public int tendTicksLeft;
+        public bool IsTended => tendTicksLeft > 0;
     }
-}
 
-namespace Verse
-{
+    public sealed partial class Thing;
+
+    public static class GenDate
+    {
+        public const int TicksPerHour = 2500;
+        public const int TicksPerDay = 60000;
+    }
+
     public static class HealthUtility
     {
         public static void AdjustSeverity(Pawn pawn, HediffDef def, float amount)
         {
             Hediff? hediff = pawn.health.hediffSet.GetFirstHediffOfDef(def);
             if (hediff is not null) { hediff.Severity += amount; return; }
-            pawn.health.hediffSet.hediffs.Add(new() { pawn = pawn, def = def, Severity = amount });
+            hediff = new() { pawn = pawn, def = def, Severity = amount };
+            pawn.health.hediffSet.hediffs.Add(hediff);
+            if (def == MoreInjuries.Defs.WellKnown.KnownHediffDefOf.Acidosis)
+            {
+                var comp = new MoreInjuries.HealthConditions.Acidosis.HediffComp_Acidosis
+                {
+                    parent = hediff, props = new MoreInjuries.HealthConditions.Acidosis.HediffCompProperties_Acidosis()
+                };
+                hediff.TestComps.Add(comp);
+                hediff.TestComps.Add(new MoreInjuries.HealthConditions.Secondary.HediffComp_CausedBy { parent = hediff });
+                comp.CompPostPostAdd(null);
+            }
         }
     }
+
 }
 
 namespace RimWorld
@@ -83,6 +119,9 @@ namespace MoreInjuries.Defs.WellKnown
     public static class KnownHediffDefOf
     {
         public static readonly Verse.HediffDef AdrenalineRush = new();
+        public static readonly Verse.HediffDef Acidosis = new() { Label = "acidosis" };
+        public static readonly Verse.HediffDef HypovolemicShock = new() { Label = "hypovolemic shock" };
+        public static readonly Verse.HediffDef Hemodilution = new();
     }
 }
 
@@ -105,11 +144,15 @@ namespace MoreInjuries
     public sealed class TestSettings
     {
         public bool EnableHypovolemicShock = true;
+        public bool EnableAdvancedTraumaSimulation = true;
+        public float HypoxiaAcidosisConversionFactor = 0.015f;
     }
 
     public static partial class Logger
     {
         public static void LogVerbose(string message) { }
+        public static void LogDebug(string message) { }
+        public static void Warning(string message) { }
     }
 }
 
@@ -120,9 +163,12 @@ namespace MoreInjuries.HealthConditions
 
 namespace UnityEngine
 {
-    public static class Mathf
+    public static partial class Mathf
     {
         public static float Clamp01(float value) => Math.Clamp(value, 0f, 1f);
+        public static float Min(float a, float b) => Math.Min(a, b);
+        public static int CeilToInt(float a) => (int)Math.Ceiling(a);
+        public const float Epsilon = float.Epsilon;
     }
 }
 
@@ -131,5 +177,17 @@ namespace MoreInjuries.HealthConditions.HypovolemicShock
     public partial class HediffCompProperties_Shock
     {
         public partial Verse.SimpleCurve BleedSeverityCurve => new(_ => 1f);
+    }
+}
+
+namespace Verse
+{
+    public static class Find
+    {
+        public static readonly TickManager TickManager = new();
+    }
+    public sealed class TickManager
+    {
+        public int TicksGame;
     }
 }

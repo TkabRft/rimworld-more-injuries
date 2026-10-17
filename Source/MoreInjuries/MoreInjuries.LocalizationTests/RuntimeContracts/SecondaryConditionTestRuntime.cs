@@ -17,7 +17,7 @@ namespace Verse
         public virtual void CompExposeData() { }
     }
 
-    public sealed partial class Hediff
+    public partial class Hediff
     {
         public Pawn pawn = null!;
         public float Severity;
@@ -51,6 +51,9 @@ namespace MoreInjuries.Roslyn.SourceGen.XmlBinding.Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class XmlBindableAttribute : Attribute;
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public sealed class XmlBindingAttribute<T>(string name, T defaultValue = default!) : Attribute;
 
     [AttributeUsage(AttributeTargets.Property)]
     public sealed class XmlBindingAttribute(string name) : Attribute

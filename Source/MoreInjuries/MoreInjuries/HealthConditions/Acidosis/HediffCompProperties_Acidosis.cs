@@ -1,4 +1,5 @@
-﻿using MoreInjuries.Roslyn.SourceGen.XmlBinding.Attributes;
+using MoreInjuries.Roslyn.SourceGen.XmlBinding.Attributes;
+using Verse;
 
 namespace MoreInjuries.HealthConditions.Acidosis;
 
@@ -16,4 +17,10 @@ public sealed partial class HediffCompProperties_Acidosis : HediffCompProperties
 
     [XmlBinding<float>("initializationSeverityThreshold", defaultValue: 5f)]
     public partial float InitializationSeverityThreshold { get; }
+
+    [XmlBinding("shockAcidosisPerDayCurve")]
+    public partial SimpleCurve? ShockAcidosisPerDayCurve { get; }
+
+    [XmlBinding<float>("recoveryPerDayWhileShocked", defaultValue: 0.5f)]
+    public partial float RecoveryPerDayWhileShocked { get; }
 }

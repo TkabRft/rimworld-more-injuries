@@ -3,7 +3,7 @@
   <HediffDef ParentName="DiseaseBase">
     <defName>HypovolemicShock</defName>
     <label>hypovolemic shock</label>
-    <description>A life-threatening state caused by insufficient blood flow to the body. Hypovolemic shock is a medical emergency; if left untreated, the insufficient blood flow can cause damage to organs, leading to hypoxia and multiple organ failure.\n\nShock develops when blood loss exceeds 45%. Severity changes gradually with the remaining blood-volume deficit. Stopping the bleeding prevents further loss; restoring blood volume with transfusions or IV fluids allows recovery. Tending and adrenaline provide temporary support but do not replace missing blood. Existing hypoxic injuries and other complications still require treatment.</description>
+    <description>A life-threatening state caused by insufficient blood flow to the body. Hypovolemic shock is a medical emergency; if left untreated, the insufficient blood flow can cause damage to organs, leading to hypoxia and multiple organ failure.\n\nShock develops when blood loss exceeds 45%. Severity changes gradually with the remaining blood-volume deficit. Stopping the bleeding prevents further loss; restoring blood volume with transfusions or IV fluids allows recovery. The quality of shock tending determines how much it slows worsening, assists recovery, and reduces hypoxia risk. Sustained severe shock can also build acidosis before new organ injuries appear. Adrenaline buys time without lowering the underlying shock target. Existing injuries and complications still require treatment.</description>
     <tendable>true</tendable>
     <maxSeverity>1</maxSeverity>
     <alwaysShowSeverity>true</alwaysShowSeverity>
@@ -50,10 +50,10 @@
           <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.HediffCompHandler_SecondaryCondition_Tick">
             <tickInterval>500</tickInterval>
             <chanceModifiers>
-              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Conditional_Tended">
-                <onTrue Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Settings_Gauge">
+              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_TendQuality">
+                <atFullQuality Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Settings_Gauge">
                   <key>OrganHypoxiaChanceReductionFactor</key>
-                </onTrue>
+                </atFullQuality>
               </li>
             </chanceModifiers>
             <hediffMakerProps Class="MoreInjuries.HealthConditions.Secondary.Handlers.HediffMakers.HediffMakerProperties_SingleHediff">
@@ -76,10 +76,10 @@
           <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.HediffCompHandler_SecondaryCondition_Tick">
             <tickInterval>250</tickInterval>
             <chanceModifiers>
-              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Conditional_Tended">
-                <onTrue Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Settings_Gauge">
+              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_TendQuality">
+                <atFullQuality Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Settings_Gauge">
                   <key>OrganHypoxiaChanceReductionFactor</key>
-                </onTrue>
+                </atFullQuality>
               </li>
             </chanceModifiers>
             <hediffMakerProps Class="MoreInjuries.HealthConditions.Secondary.Handlers.HediffMakers.HediffMakerProperties_SingleHediff">
@@ -105,10 +105,10 @@
             <tickInterval>250</tickInterval>
             <baseChance>0.375</baseChance>
             <chanceModifiers>
-              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Conditional_Tended">
-                <onTrue Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Settings_Gauge">
+              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_TendQuality">
+                <atFullQuality Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Settings_Gauge">
                   <key>OrganHypoxiaChanceReductionFactor</key>
-                </onTrue>
+                </atFullQuality>
               </li>
               <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_LinkedHediff_SimpleCurve">
                 <hediffDef>BrainDamage_Hypoxia</hediffDef>

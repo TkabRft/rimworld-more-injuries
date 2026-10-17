@@ -14,18 +14,16 @@
 
     <ItemGroup>
         <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+        <Using Include="System.Diagnostics.CodeAnalysis" />
     </ItemGroup>
 
+    <!-- Exercise the production scheduler headlessly, with the small Verse stand-ins under RuntimeContracts. -->
     <ItemGroup>
         <Compile Include="..\MoreInjuries\AI\Jobs\JobDriver_OutcomeDoerBase.cs" Link="RuntimeContracts\Production\JobDriver_OutcomeDoerBase.cs" />
         <Compile Include="..\MoreInjuries\AI\Jobs\Outcomes\JobOutcomeDoer_IngestDrug.cs" Link="RuntimeContracts\Production\JobOutcomeDoer_IngestDrug.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\Drugs\MedicalDrugAdministration.cs" Link="RuntimeContracts\Production\MedicalDrugAdministration.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\Drugs\MedicalDrugHediffDef.cs" Link="RuntimeContracts\Production\MedicalDrugHediffDef.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\Drugs\IngestionOutcomeDoer_ChloroformBuildup.cs" Link="RuntimeContracts\Production\IngestionOutcomeDoer_ChloroformBuildup.cs" />
-    </ItemGroup>
-
-    <!-- Exercise the production scheduler headlessly, with the small Verse stand-ins under RuntimeContracts. -->
-    <ItemGroup>
         <Compile Include="..\MoreInjuries\HealthConditions\Secondary\HediffCompProperties_SecondaryCondition.cs" Link="RuntimeContracts\Production\HediffCompProperties_SecondaryCondition.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\Secondary\HediffComp_SecondaryCondition.cs" Link="RuntimeContracts\Production\HediffComp_SecondaryCondition.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\HeavyBleeding\BloodLossPolicy.cs" Link="RuntimeContracts\Production\BloodLossPolicy.cs" />
@@ -35,5 +33,10 @@
         <Compile Include="..\MoreInjuries\HealthConditions\HeavyBleeding\BloodLossConstants.cs" Link="RuntimeContracts\Production\BloodLossConstants.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\HypovolemicShock\HediffComp_Shock.cs" Link="RuntimeContracts\Production\HediffComp_Shock.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\HypovolemicShock\HediffCompProperties_Shock.cs" Link="RuntimeContracts\Production\HediffCompProperties_Shock.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\HypovolemicShock\ShockTreatment.cs" Link="RuntimeContracts\Production\ShockTreatment.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\Acidosis\AcidosisProgressionModel.cs" Link="RuntimeContracts\Production\AcidosisProgressionModel.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\Acidosis\HediffComp_Acidosis.cs" Link="RuntimeContracts\Production\HediffComp_Acidosis.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\Acidosis\HediffCompProperties_Acidosis.cs" Link="RuntimeContracts\Production\HediffCompProperties_Acidosis.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\Secondary\Handlers\Modifiers\HediffModifier_TendQuality.cs" Link="RuntimeContracts\Production\HediffModifier_TendQuality.cs" />
     </ItemGroup>
 </Project>
