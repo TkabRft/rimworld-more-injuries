@@ -1,4 +1,4 @@
-﻿using MoreInjuries.AI.Jobs;
+using MoreInjuries.AI.Jobs;
 using MoreInjuries.Caching;
 using MoreInjuries.Defs.WellKnown;
 using MoreInjuries.HealthConditions.Hemodilution;
@@ -32,7 +32,7 @@ public sealed class JobDriver_UseBloodBag : JobDriver_TransfusionBase
     public static int JobGetMedicalDeviceCountToFullyHeal(Pawn patient, bool fullyHeal)
     {
         int requiredTransfusionsForBloodLoss = JobGetMedicalDeviceCountToFullyHealBloodLoss(patient, JobDeviceDef, fullyHeal, out Hediff? bloodLoss);
-        float bloodBagFluidVolume = GetFluidVolumePerBag(JobDeviceDef);
+        float bloodBagFluidVolume = GetNormalizedFluidVolumePerBag(JobDeviceDef);
         float bloodLossSeverity = bloodLoss?.Severity ?? 0f;
         int requiredTransfusionsForHemodilution = 0;
         if (patient.health.hediffSet.TryGetHediff(KnownHediffDefOf.Hemodilution, out Hediff hemodilution))

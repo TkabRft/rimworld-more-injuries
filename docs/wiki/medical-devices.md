@@ -116,6 +116,8 @@ With Dub's Bad Hygiene active, this infusion also restores thirst.
 **Mass**: 0.75 kg  
 **Bulk (Combat Extended)**: 1.5
 
+Blood bags retain their 35-percentage-point blood-loss reduction. Their effect on existing hemodilution depends on the starting state: from 80% blood loss and 40% dilution, one bag leaves 45% blood loss and about 31% dilution. Restoring volume can stop shock-driven acid production before the shock entry has fully subsided.
+
 ## Chloroform-Soaked Cloth
 
 <p>
@@ -393,6 +395,8 @@ If Dub's Bad Hygiene is loaded, each saline infusion will restore hydration by 3
 
 > [!NOTE]
 > When Dub's Bad Hygiene is loaded, saline IV bags require water bottles as an additional ingredient. You can create water bottles by right-clicking on a water source (e.g., sink) and selecting the option stockpile X amount of water bottles. Pawns will not automatically bottle water as part of production bill for saline IV bags.
+
+Saline retains its 15-percentage-point blood-loss reduction per bag. From 80% blood loss with no dilution, one bag produces about 11.1% hemodilution. Automatic full treatment can safely give five bags in that starting state; a sixth would reach 45% dilution and cross the usual 44.9% safety limit. Coagulopathy from other causes can still block automatic saline. The forced single-infusion option continues to bypass those checks.
 
 ## Splint
 

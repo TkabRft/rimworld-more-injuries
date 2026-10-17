@@ -38,5 +38,15 @@
         <Compile Include="..\MoreInjuries\HealthConditions\Acidosis\HediffComp_Acidosis.cs" Link="RuntimeContracts\Production\HediffComp_Acidosis.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\Acidosis\HediffCompProperties_Acidosis.cs" Link="RuntimeContracts\Production\HediffCompProperties_Acidosis.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\Secondary\Handlers\Modifiers\HediffModifier_TendQuality.cs" Link="RuntimeContracts\Production\HediffModifier_TendQuality.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\Hemodilution\HemodilutionEvaluator.cs" Link="RuntimeContracts\Production\HemodilutionEvaluator.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\Hemodilution\DynamicProcedureCall_CalculateHemodilution.cs" Link="RuntimeContracts\Production\DynamicProcedureCall_CalculateHemodilution.cs" />
+        <Compile Include="..\MoreInjuries\Caching\WeakTimedDataCache.cs" Link="RuntimeContracts\Production\WeakTimedDataCache.cs" />
+        <Compile Include="..\MoreInjuries\Caching\TimedDataCacheBase.cs" Link="RuntimeContracts\Production\TimedDataCacheBase.cs" />
+        <Compile Include="..\MoreInjuries\Caching\TimedDataEntry.cs" Link="RuntimeContracts\Production\TimedDataEntry.cs" />
+        <Compile Include="..\MoreInjuries\Caching\TimedDataEntryBase.cs" Link="RuntimeContracts\Production\TimedDataEntryBase.cs" />
+        <Compile Include="..\MoreInjuries\Caching\ITimedDataEntry.cs" Link="RuntimeContracts\Production\ITimedDataEntry.cs" />
+        <Compile Include="..\MoreInjuries\Caching\IDataCache.cs" Link="RuntimeContracts\Production\IDataCache.cs" />
+        <Compile Include="..\MoreInjuries\Caching\ITimedCache.cs" Link="RuntimeContracts\Production\ITimedCache.cs" />
+        <Compile Include="..\MoreInjuries.Tests\HealthConditions\Hemodilution\HemodilutionEvaluatorTests.cs" Link="RuntimeContracts\ExistingHemodilutionEvaluatorTests.cs" />
     </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿using MoreInjuries.AI.Jobs;
+using MoreInjuries.AI.Jobs;
 using MoreInjuries.Caching;
 using MoreInjuries.Debug;
 using MoreInjuries.Defs.WellKnown;
@@ -97,7 +97,7 @@ public sealed class JobDriver_UseSalineBag : JobDriver_TransfusionBase
         {
             return 0;
         }
-        float fluidVolumePerBag = GetFluidVolumePerBag(JobDeviceDef);
+        float fluidVolumePerBag = GetNormalizedFluidVolumePerBag(JobDeviceDef);
         float hemodilutionSeverity = 0f;
         if (patient.health.hediffSet.TryGetHediff(KnownHediffDefOf.Hemodilution, out Hediff hemodilution))
         {

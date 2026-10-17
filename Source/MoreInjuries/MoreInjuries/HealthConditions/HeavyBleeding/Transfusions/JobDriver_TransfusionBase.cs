@@ -1,6 +1,7 @@
-﻿using MoreInjuries.AI.Audio;
+using MoreInjuries.AI.Audio;
 using MoreInjuries.AI.Jobs;
 using MoreInjuries.Caching;
+using MoreInjuries.HealthConditions.Hemodilution;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -29,7 +30,11 @@ public abstract class JobDriver_TransfusionBase : JobDriver_OutcomeDoerBase
 
     private protected abstract WeakTimedDataCache<Pawn, TransfusionState, bool, TimedDataEntry<TransfusionState>> PawnTransfusionStateCache { get; }
 
+    // Preserve this existing API in severity units; dilution calculations use the normalized getter below.
     protected static float GetFluidVolumePerBag(ThingDef ivFluidDef) => s_transfusionPropertiesCache.GetData(ivFluidDef).BloodLossSeverityReduction;
+
+    protected static float GetNormalizedFluidVolumePerBag(ThingDef ivFluidDef)
+        => HemodilutionEvaluator.FluidVolumeFromBloodLossReduction(GetFluidVolumePerBag(ivFluidDef));
 
     internal protected static int JobGetMedicalDeviceCountToFullyHealBloodLoss(Pawn patient, ThingDef ivFluidDef, bool fullyHeal, out Hediff? bloodLoss)
     {
