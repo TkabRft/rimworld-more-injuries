@@ -1,64 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Patch>
   <Operation Class="PatchOperationFindMod">
-    <mods>
-      <li>Humanoid Alien Races</li>
-    </mods> 
+    <mods><li>Humanoid Alien Races</li></mods>
     <match Class="PatchOperationSequence">
       <operations>
-        <!-- if the AlienRace specifies a compatibility node with isFlesh=true, add our comp to it -->
+        <!-- HAR defaults omitted isFlesh to true, including inside an existing compatibility block.
+             Patch concrete races, preserving explicit opt-outs and existing comp entries. -->
         <li Class="PatchOperationConditional">
-          <xpath>/Defs/AlienRace.ThingDef_AlienRace[alienRace/compatibility[isFlesh="true"]]</xpath>
-          <match Class="PatchOperationConditional">
-            <!-- if <comps> already exists -->
-            <xpath>/Defs/AlienRace.ThingDef_AlienRace[alienRace/compatibility[isFlesh="true"]]/comps</xpath>
-            <match Class="PatchOperationAdd">
-              <xpath>/Defs/AlienRace.ThingDef_AlienRace[alienRace/compatibility[isFlesh="true"]]/comps</xpath>
-              <value>
-                <li Class="MoreInjuries.HealthConditions.MoreInjuryCompProperties">
-                  <workerFactoryDef>InjuryWorkerDef</workerFactoryDef>
-                </li>
-              </value>
-            </match>
-            <!-- otherwise, create <comps> -->
-            <nomatch Class="PatchOperationAdd">
-              <xpath>/Defs/AlienRace.ThingDef_AlienRace[alienRace/compatibility[isFlesh="true"]]</xpath>
-              <value>
-                <comps>
-                  <li Class="MoreInjuries.HealthConditions.MoreInjuryCompProperties">
-                    <workerFactoryDef>InjuryWorkerDef</workerFactoryDef>
-                  </li>
-                </comps>
-              </value>
-            </nomatch>
+          <xpath>/Defs/AlienRace.ThingDef_AlienRace[not(@Abstract="True" or @Abstract="true") and not(alienRace/compatibility/isFlesh[translate(normalize-space(.), "FALSE", "false")="false"])]/comps[not(li[@Class="MoreInjuries.HealthConditions.MoreInjuryCompProperties"]) ]</xpath>
+          <match Class="PatchOperationAdd">
+            <xpath>/Defs/AlienRace.ThingDef_AlienRace[not(@Abstract="True" or @Abstract="true") and not(alienRace/compatibility/isFlesh[translate(normalize-space(.), "FALSE", "false")="false"])]/comps[not(li[@Class="MoreInjuries.HealthConditions.MoreInjuryCompProperties"]) ]</xpath>
+            <value>
+              <li Class="MoreInjuries.HealthConditions.MoreInjuryCompProperties">
+                <workerFactoryDef>InjuryWorkerDef</workerFactoryDef>
+              </li>
+            </value>
           </match>
         </li>
-        <!-- if the AlienRace doesn't specify a compatibility node, assume isFlesh=true and add our comp to it -->
         <li Class="PatchOperationConditional">
-          <!-- Match defs missing the compatibility node -->
-          <xpath>/Defs/AlienRace.ThingDef_AlienRace[not(alienRace/compatibility)]</xpath>
-          <match Class="PatchOperationConditional">
-            <!-- If comps already exist, add our comp -->
-            <xpath>/Defs/AlienRace.ThingDef_AlienRace[not(alienRace/compatibility)]/comps</xpath>
-            <match Class="PatchOperationAdd">
-              <xpath>/Defs/AlienRace.ThingDef_AlienRace[not(alienRace/compatibility)]/comps</xpath>
-              <value>
+          <xpath>/Defs/AlienRace.ThingDef_AlienRace[not(@Abstract="True" or @Abstract="true") and not(alienRace/compatibility/isFlesh[translate(normalize-space(.), "FALSE", "false")="false"])][not(comps)]</xpath>
+          <match Class="PatchOperationAdd">
+            <xpath>/Defs/AlienRace.ThingDef_AlienRace[not(@Abstract="True" or @Abstract="true") and not(alienRace/compatibility/isFlesh[translate(normalize-space(.), "FALSE", "false")="false"])][not(comps)]</xpath>
+            <value>
+              <comps>
                 <li Class="MoreInjuries.HealthConditions.MoreInjuryCompProperties">
                   <workerFactoryDef>InjuryWorkerDef</workerFactoryDef>
                 </li>
-              </value>
-            </match>
-            <!-- Otherwise, create comps -->
-            <nomatch Class="PatchOperationAdd">
-              <xpath>/Defs/AlienRace.ThingDef_AlienRace[not(alienRace/compatibility)]</xpath>
-              <value>
-                <comps>
-                  <li Class="MoreInjuries.HealthConditions.MoreInjuryCompProperties">
-                    <workerFactoryDef>InjuryWorkerDef</workerFactoryDef>
-                  </li>
-                </comps>
-              </value>
-            </nomatch>
+              </comps>
+            </value>
           </match>
         </li>
       </operations>

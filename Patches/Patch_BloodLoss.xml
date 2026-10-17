@@ -32,28 +32,16 @@
     <value>
       <li Class="MoreInjuries.HealthConditions.Secondary.HediffCompProperties_SecondaryCondition">
         <handlers>
-          <!-- map blood loss severity to hypovolemic shock chance -->
+          <!-- start hypovolemic shock when volume compensation is exceeded -->
           <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.HediffCompHandler_SecondaryCondition_Tick">
             <tickInterval>250</tickInterval>
             <chanceModifiers>
               <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Settings_FeatureFlag">
                 <key>EnableHypovolemicShock</key>
               </li>
-              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_SimpleCurve">
-                <severityCurve>
-                  <points>
-                    <li>0, 0</li>
-                    <!-- don't apply shock until severity reaches 0.45 -->
-                    <!-- (otherwise we'll get annoying "medical emergency" messages for minor injuries) -->
-                    <li>0.45, 0</li>
-                    <!-- ~1 hour -->
-                    <li>0.6, 0.0915</li>
-                    <!-- ~0.5 hours -->
-                    <li>1, 0.1396</li>
-                  </points>
-                </severityCurve>
-              </li>
-              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_DisallowUntracked"></li>
+              <!-- Reliable onset above the compensated-volume threshold; severity then approaches its target gradually. -->
+              <li Class="MoreInjuries.HealthConditions.HypovolemicShock.HediffModifier_HypovolemicShockOnset"></li>
+              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_DisallowUnsupportedTrauma"></li>
               <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_DisallowDeathResting"></li>
             </chanceModifiers>
             <hediffMakerProps Class="MoreInjuries.HealthConditions.Secondary.Handlers.HediffMakers.HediffMakerProperties_SingleHediff">
@@ -73,7 +61,7 @@
               <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Settings_FeatureFlag">
                 <key>PreventDeathByBloodLoss</key>
               </li>
-              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_DisallowUntracked"></li>
+              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_DisallowUnsupportedTrauma"></li>
               <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_DisallowDeathResting"></li>
               <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Genes_Disallow" MayRequire="Ludeon.RimWorld.Biotech">
                 <geneDefs>
@@ -113,7 +101,7 @@
               <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Settings_FeatureFlag_Disabled">
                 <key>PreventDeathByBloodLoss</key>
               </li>
-              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_DisallowUntracked"></li>
+              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_DisallowUnsupportedTrauma"></li>
               <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_SimpleCurve">
                 <severityCurve>
                   <points>
@@ -128,7 +116,7 @@
           <li Class="MoreInjuries.HealthConditions.HeavyBleeding.HediffCompHandler_SecondaryCondition_BloodLossDeath">
             <tickInterval>60</tickInterval>
             <chanceModifiers>
-              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_RequireUntracked"></li>
+              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_RequireUnsupportedTrauma"></li>
               <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_SimpleCurve">
                 <severityCurve>
                   <points>

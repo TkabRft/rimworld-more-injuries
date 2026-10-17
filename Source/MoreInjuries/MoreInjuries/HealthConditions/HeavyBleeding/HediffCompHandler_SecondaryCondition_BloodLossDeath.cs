@@ -26,6 +26,12 @@ public sealed partial class HediffCompHandler_SecondaryCondition_BloodLossDeath 
 
     public void Handle(HediffComp_SecondaryCondition comp)
     {
+        // Enforce the setting at the write boundary as well as in XML chance modifiers.
+        // Forced harvesting uses Apply directly and retains its existing behavior.
+        if (!BloodLossPolicy.AllowDirectDeath(TraumaEligibility.Supports(comp.Pawn), MoreInjuriesMod.Settings.PreventDeathByBloodLoss))
+        {
+            return;
+        }
         if (!ShouldSkip(comp))
         {
             Apply(comp.parent);

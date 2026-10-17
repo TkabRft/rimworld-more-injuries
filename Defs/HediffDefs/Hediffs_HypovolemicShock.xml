@@ -3,7 +3,7 @@
   <HediffDef ParentName="DiseaseBase">
     <defName>HypovolemicShock</defName>
     <label>hypovolemic shock</label>
-    <description>A life-threatening state caused by insufficient blood flow to the body. Hypovolemic shock is a medical emergency; if left untreated, the insufficient blood flow can cause damage to organs, leading to hypoxia and multiple organ failure.\n\nSeverity scales directly with blood loss severity until 55% severity, after which it continues to worsen, even if bleeding is stopped. Must be treated with blood transfusion or other means to restore blood volume. Progession can also be slowed by administering adrenaline to increase heart rate and blood pressure.</description>
+    <description>A life-threatening state caused by insufficient blood flow to the body. Hypovolemic shock is a medical emergency; if left untreated, the insufficient blood flow can cause damage to organs, leading to hypoxia and multiple organ failure.\n\nShock develops when blood loss exceeds 45%. Severity changes gradually with the remaining blood-volume deficit. Stopping the bleeding prevents further loss; restoring blood volume with transfusions or IV fluids allows recovery. Tending and adrenaline provide temporary support but do not replace missing blood. Existing hypoxic injuries and other complications still require treatment.</description>
     <tendable>true</tendable>
     <maxSeverity>1</maxSeverity>
     <alwaysShowSeverity>true</alwaysShowSeverity>
@@ -11,7 +11,8 @@
     <comps>
       <li Class="HediffCompProperties_TendDuration">
         <baseTendDurationHours>4</baseTendDurationHours>
-        <severityPerDayTended>-1.5</severityPerDayTended>
+        <!-- The shock controller owns progression and recovery, including tending support. -->
+        <severityPerDayTended>0</severityPerDayTended>
       </li>
       <li Class="HediffCompProperties_Discoverable">
         <sendLetterWhenDiscovered>false</sendLetterWhenDiscovered>

@@ -1,16 +1,12 @@
-﻿using MoreInjuries.Defs.WellKnown;
+using MoreInjuries.Defs.WellKnown;
 using MoreInjuries.Extensions;
-using MoreInjuries.HealthConditions.HeavyBleeding;
 using RimWorld;
-using UnityEngine;
 using Verse;
 
 namespace MoreInjuries.HealthConditions.HypovolemicShock;
 
 public class HediffComp_Shock : HediffComp
 {
-    private const int CYCLE_LENGTH = 150;
-
     private bool _fixedNow = false;
 
     private HediffCompProperties_Shock Properties => (HediffCompProperties_Shock)props;
@@ -77,43 +73,21 @@ public class HediffComp_Shock : HediffComp
             return;
         }
 
-        if (!pawn.IsHashIntervalTick(CYCLE_LENGTH))
+        if (!pawn.IsHashIntervalTick(ShockPerfusionModel.CYCLE_LENGTH))
         {
             return;
         }
         (Hediff? bloodLoss, Hediff? adrenaline) = GetHediffInfo(pawn);
-        // adrenaline increases blood pressure, which can offset the severity of the shock a bit,
-        // at max 1.5x the normal recovery rate or 1/1.5 = 0.67x the normal increase rate
-        float adrenalineBloodPressureOffset = Mathf.Clamp01((adrenaline?.Severity ?? 0f) / 2f) + 1f;
-        if (bloodLoss is not { Severity: > BloodLossConstants.BLOOD_LOSS_THRESHOLD } || FixedNow)
+        bool deathresting = ModsConfig.BiotechActive && pawn.health.hediffSet.HasHediff(HediffDefOf.Deathrest);
+        bool tended = parent.IsTended();
+        if (!tended && !deathresting)
         {
-            // the patient is stable, start recovery
-            parent.Severity -= 0.0075f * adrenalineBloodPressureOffset;
-            return;
+            // A previous successful tend does not confer permanent protection against later hemorrhage.
+            FixedNow = false;
         }
-        if (!PastFixedPoint)
-        {
-            // scale the severity of the shock based on the severity of the blood loss
-            parent.Severity = bloodLoss.Severity;
-            return;
-        }
-        if (bloodLoss is null)
-        {
-            return;
-        }
-        // we're past the point where the body can still compensate for the blood loss,
-        // total circulatory failure is imminent. from now on, the severity of the shock increases
-        // by itself, but at a reduced rate if the patient is tended.
-        float maxSeverityIncrease = 0.015f * bloodLoss.Severity / adrenalineBloodPressureOffset;
-        if (parent.IsTended())
-        {
-            // if the patient is tended, the severity should increase slower, with a bit of randomness
-            parent.Severity += Rand.Range(0, maxSeverityIncrease);
-        }
-        else
-        {
-            parent.Severity += maxSeverityIncrease;
-        }
+        parent.Severity = ShockPerfusionModel.Advance(parent.Severity, bloodLoss?.Severity ?? 0f,
+            adrenaline?.Severity ?? 0f, tended, FixedNow,
+            deathresting || !MoreInjuriesMod.Settings.EnableHypovolemicShock);
     }
 
     private struct HediffInfo
