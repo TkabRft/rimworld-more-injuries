@@ -14,7 +14,9 @@
     </PropertyGroup>
     
     <ItemGroup Condition="'$(ModBadHygiene)'!='enable'">
+        <!-- XML names the hydration bridge whenever DBH is active, including in Release builds. -->
         <Compile Remove="Integrations\DubsBadHygiene\**" />
-        <None Include="Integrations\DubsBadHygiene\**" />
+        <Compile Include="Integrations\DubsBadHygiene\OutcomeDoer_TransfusionHydration.cs" />
+        <None Include="Integrations\DubsBadHygiene\**" Exclude="Integrations\DubsBadHygiene\OutcomeDoer_TransfusionHydration.cs" />
     </ItemGroup>
 </Project>
