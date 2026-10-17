@@ -507,6 +507,10 @@ Applying a tourniquet is part of the [First Aid](#first-aid) order for *drafted*
 > [!WARNING]
 > While generally easy to handle, severly incompetent doctors (medicine and intellectual skill below 3) may have a hard time applying a tourniquet correctly, potentially even having the not-so-bright idea to apply it to the neck. It goes without saying that such misuses of a tourniquet are not recommended and may lead to the patient [choking to death](/docs/wiki/injuries/choking.md#choking-on-tourniquet).
 
+The delayed vital failure module gives an emergency window for [cardiac arrest](/docs/wiki/injuries/cardiac-arrest.md#cardiac-arrest) and [respiratory failure](/docs/wiki/injuries/respiratory-failure.md#respiratory-failure). CPR and early defibrillation can restart a functioning pump, while airway treatment addresses choking. Neither procedure replaces a destroyed heart or lungs. Existing organ-replacement operations remain the treatment for complete organ loss.
+
+Transfusions improve the perfusion-related source of [cerebral hypoxia](/docs/wiki/injuries/hypoxia.md#cerebral-hypoxia); blood also treats dilution. Resuscitation does not erase brain injury already sustained. No ventilator, dialysis machine, or elective induced-coma operation is included in this version.
+
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---
 _[back to the top](#medical-devices-and-procedures)_

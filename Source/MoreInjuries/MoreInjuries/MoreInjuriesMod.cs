@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using MoreInjuries.Initialization;
 using MoreInjuries.Localization;
 using RimWorld;
@@ -145,6 +145,9 @@ public class MoreInjuriesMod : Mod
         list.Label("MI_Settings_Features_Spalling_ChanceLabel".Translate(Settings.SpallingChance.NamedValue(), SPALLING_CHANCE_DEFAULT.NamedDefault()), -1,
             "MI_Settings_Features_Spalling_ChanceTooltip".Translate());
         Settings.SpallingChance = (float)Math.Round(list.Slider(Settings.SpallingChance, 0f, 1f), 2);
+        list.GapLine();
+        list.CheckboxLabeled("MI_Settings_VitalFailure_EnableLabel".Translate(), ref Settings.EnableDelayedVitalFailure,
+            "MI_Settings_VitalFailure_EnableTooltip".Translate());
         // hypovolemic shock and cardiac arrest
         list.GapLine();
         Text.Font = GameFont.Medium;

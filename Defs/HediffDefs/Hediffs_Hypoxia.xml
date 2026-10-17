@@ -4,7 +4,7 @@
     <defName>OrganHypoxia</defName>
     <label>hypoxia</label>
     <labelNoun>insufficient oxygen</labelNoun>
-    <description>Insufficient oxygen supply to this part of the body has caused cells to start metabolizing anaerobically, leading to the production of lactic acid and acidosis, and to eventually die, causing tissue damage. If the underlying cause of the hypoxia is not immediately treated, the affected tissue will continue to deteriorate, eventually leading to multiple organ failure and death.</description>
+    <description>Insufficient oxygen supply to this part of the body has caused cells to start metabolizing anaerobically, leading to the production of lactic acid and acidosis, and to eventually die, causing tissue damage. If the underlying cause of the hypoxia is not immediately treated, the affected tissue will continue to deteriorate, eventually leading to multiple organ failure and death.\n\nWith delayed vital failure enabled, ongoing systemic oxygen deprivation prevents ordinary healing of this injury. Restoring circulation and breathing permits normal recovery.</description>
     <defaultLabelColor>(100, 15, 15)</defaultLabelColor>
     <modExtensions>
       <li Class="MoreInjuries.HealthConditions.Secondary.Linked.LinkedSeverityProperties_ModExtension">
@@ -101,7 +101,7 @@
   <HediffDef ParentName="InjuryBase">
     <defName>BrainDamage_Hypoxia</defName>
     <label>cerebral hypoxia</label>
-    <description>Prolonged lack of oxygen to the brain has caused neurological damage. Depending on the severity and duration of the hypoxia, damaged cells may be able to recover, or they may die off and cause permanent brain damage and disability. There's nothing else to do but wait and see.</description>
+    <description>Prolonged lack of oxygen to the brain has caused neurological damage. Depending on the severity and duration of the hypoxia, damaged cells may be able to recover, or they may die off and cause permanent brain damage and disability. There's nothing else to do but wait and see.\n\nWith delayed vital failure enabled, sustained oxygen deprivation steadily adds cerebral injury, with some variation in its pace. Complete deprivation can become fatal in approximately three game hours; severity 8 is terminal. Treating the injury cannot replace oxygen delivery. After circulation and breathing recover, ordinary injury healing resumes, while lasting neurological disabilities may remain.</description>
     <defaultLabelColor>(100, 15, 15)</defaultLabelColor>
     <modExtensions>
       <li Class="MoreInjuries.HealthConditions.Secondary.Linked.LinkedSeverityProperties_ModExtension">

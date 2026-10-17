@@ -22,6 +22,8 @@ Package `Th3Fr3d.ExtendedInjuries`. Namespace `MoreInjuries`. Supported versions
 | Cascading conditions | `docs/wiki/pathophysiological-system.md`, `docs/wiki/concepts.md` | `HealthConditions/Secondary/` |
 | Devices, drugs, CPR, transfusions | `docs/wiki/medical-devices.md` | `Defs/ThingDefs/Medicine/`, `AI/`, `HealthConditions/Drugs/`, `HealthConditions/HeavyBleeding/` |
 | Blood-loss scheduling, drug information cards, chemical gene icons, optional hydration | `docs/medical-runtime.md` | `HealthConditions/Secondary/`, `HealthConditions/Drugs/`, `Initialization/`, `Integrations/DubsBadHygiene/` |
+| Delayed vital failure, systemic cerebral hypoxia, resuscitation death rules | `docs/vital-failure.md` | `HealthConditions/VitalFailure/`, `Patches/Patch_VitalFailure.cs` |
+| Future medical expansion and Death Rattle transition | `docs/medical-expansion-todo.md` | `docs/vital-failure.md` |
 | Body parts | `docs/wiki/body-parts.md` | `Defs/BodyPartDefs/`, `Patches/Patch_BodyParts.xml` |
 | Research | `docs/wiki/research.md` | `Defs/Research/` |
 | Surgeries | `docs/wiki/surgeries.md` | `Defs/RecipeDefs/Surgeries/`, `Patches/Patch_Surgeries.xml` |

@@ -1,0 +1,383 @@
+using MoreInjuries.Defs.WellKnown;
+using MoreInjuries.Extensions;
+using MoreInjuries.HealthConditions.HeavyBleeding;
+using MoreInjuries.HealthConditions.HypovolemicShock;
+using MoreInjuries.HealthConditions.Secondary;
+using RimWorld;
+using Verse;
+
+namespace MoreInjuries.HealthConditions.VitalFailure;
+
+public sealed class VitalFailureComp : ThingComp
+{
+    private bool _dirty = true;
+    private bool _active;
+    private bool _evaluating;
+    private int _lastProgressTick = -1;
+    private readonly Hediff?[] _failures = new Hediff?[6];
+    private Hediff? _arrest;
+    private Hediff? _heartAttack;
+    private Hediff? _brainInjury;
+    private bool _oxygenProtected;
+    private bool _deathresting;
+    private float _underlyingPumping;
+    private float _deprivation;
+
+    private Pawn Patient => (Pawn)parent;
+    internal bool ReadingUnderlying { get; private set; }
+    internal bool CreatingCirculatoryFailure { get; private set; }
+    internal float Deprivation => _deprivation;
+
+    internal static bool EnabledFor(Pawn pawn) => MoreInjuriesMod.Settings.EnableDelayedVitalFailure
+        && !pawn.Dead && pawn.RaceProps.IsFlesh && TraumaEligibility.Supports(pawn)
+        && (MoreInjuriesMod.Settings.AnomalyEnableConditionsForShamblers || !pawn.IsShambler);
+
+    internal static VitalFailureComp? For(Pawn pawn) => pawn.TryGetComp<VitalFailureComp>();
+
+    internal void Invalidate() => _dirty = true;
+
+    internal static bool OwnsOxygenProgression(Pawn pawn) => EnabledFor(pawn) && For(pawn) is not null;
+
+    internal static bool OwnsSystemicCerebralSource(Pawn pawn, HediffDef source, HediffDef target)
+        => target == KnownHediffDefOf.BrainDamage_Hypoxia
+            && (source == KnownHediffDefOf.HypovolemicShock || source == KnownHediffDefOf.CardiacArrest
+                || source == KnownHediffDefOf.Hemodilution) && OwnsOxygenProgression(pawn);
+
+    internal static bool ForcesPumping(Pawn pawn)
+    {
+        if (!EnabledFor(pawn) || For(pawn) is not { ReadingUnderlying: false })
+        {
+            return false;
+        }
+        foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
+        {
+            if (hediff.def == KnownHediffDefOf.CardiacArrest || IsTerminalHeartAttack(hediff))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    internal static bool IsTerminalHeartAttack(Hediff hediff) => hediff.def == KnownHediffDefOf.HeartAttack
+        && hediff.Severity >= hediff.def.lethalSeverity && hediff.def.lethalSeverity > 0f;
+
+    internal bool MayDelay(PawnCapacityDef capacity)
+    {
+        if (!EnabledFor(Patient) || VitalAnatomy.For(Patient.RaceProps.body).BrainsDestroyed(Patient.health.hediffSet))
+        {
+            return false;
+        }
+        return capacity == PawnCapacityDefOf.Consciousness || capacity == PawnCapacityDefOf.Breathing
+            || capacity == PawnCapacityDefOf.BloodPumping || capacity == PawnCapacityDefOf.BloodFiltration
+            || capacity == VitalFailureDefOf.Metabolism;
+    }
+
+    public override void PostExposeData()
+    {
+        base.PostExposeData();
+        Scribe_Values.Look(ref _lastProgressTick, "lastVitalProgressTick", -1);
+        _dirty = true;
+    }
+
+    internal void TickHealth(int delta)
+    {
+        Pawn pawn = Patient;
+        if (!pawn.IsHashIntervalTick(VitalFailureModel.INTERVAL, delta))
+        {
+            return;
+        }
+        int now = Find.TickManager.TicksGame;
+        if (_lastProgressTick == now)
+        {
+            return;
+        }
+        if (_active)
+        {
+            _dirty = true;
+        }
+        Refresh();
+        if (!EnabledFor(pawn) || !_active || _lastProgressTick == now)
+        {
+            return;
+        }
+        _lastProgressTick = now;
+        _evaluating = true;
+        try
+        {
+            float factor = Rand.Range(0.8f, 1.2f);
+            float dayFraction = (float)VitalFailureModel.INTERVAL / GenDate.TicksPerDay;
+            if (_arrest is not null && !_oxygenProtected && !_deathresting)
+            {
+                Advance(_arrest, ((HediffCompProperties_SeverityPerDay)_arrest.TryGetComp<HediffComp_VitalArrest>()!.props).severityPerDay,
+                    factor, dayFraction);
+                if (pawn.Dead)
+                {
+                    return;
+                }
+            }
+            for (int i = 0; i < _failures.Length; i++)
+            {
+                if (_failures[i] is { } failure)
+                {
+                    Advance(failure, failure.def.GetModExtension<VitalFailureProperties>().SeverityPerDay, factor, dayFraction);
+                    if (pawn.Dead)
+                    {
+                        return;
+                    }
+                }
+            }
+            if (_deprivation > 0f && !_oxygenProtected && !_deathresting)
+            {
+                if (_brainInjury is null && VitalAnatomy.For(pawn.RaceProps.body).SurvivingBrain(pawn.health.hediffSet) is { } brain)
+                {
+                    _brainInjury = pawn.health.AddHediff(KnownHediffDefOf.BrainDamage_Hypoxia, brain);
+                    _brainInjury.Severity = VitalFailureModel.INITIAL_SEVERITY;
+                }
+                if (_brainInjury is not null)
+                {
+                    Advance(_brainInjury, VitalFailureDefOf.MI_VitalFailureConfig.CerebralSeverityPerDay * _deprivation,
+                        factor, dayFraction);
+                }
+            }
+        }
+        finally
+        {
+            _evaluating = false;
+            _dirty = true;
+        }
+    }
+
+    private static void Advance(Hediff hediff, float rate, float factor, float dayFraction)
+        => hediff.Severity = VitalFailureModel.Advance(hediff.Severity, rate, factor, dayFraction);
+
+    // Called before state checks, never from a capacity getter. Reentrant refreshes do no work.
+    internal void Refresh()
+    {
+        if (_evaluating || !_dirty || Scribe.mode is LoadSaveMode.LoadingVars or LoadSaveMode.ResolvingCrossRefs)
+        {
+            return;
+        }
+        _evaluating = true;
+        try
+        {
+            RefreshCore();
+        }
+        finally
+        {
+            _evaluating = false;
+            _dirty = false;
+        }
+    }
+
+    private void RefreshCore()
+    {
+        Pawn pawn = Patient;
+        HediffSet set = pawn.health.hediffSet;
+        _arrest = _heartAttack = _brainInjury = null;
+        Hediff? shock = null;
+        float bloodLoss = 0f, dilution = 0f, adrenaline = 0f, hypothermia = 0f;
+        _deathresting = false;
+        for (int i = 0; i < _failures.Length; i++)
+        {
+            _failures[i] = null;
+        }
+        foreach (Hediff hediff in set.hediffs)
+        {
+            if (hediff.def == KnownHediffDefOf.CardiacArrest)
+            {
+                _arrest = hediff;
+            }
+            else if (hediff.def == KnownHediffDefOf.HeartAttack)
+            {
+                _heartAttack = hediff;
+            }
+            else if (hediff.def == KnownHediffDefOf.BrainDamage_Hypoxia)
+            {
+                _brainInjury = hediff;
+            }
+            else if (hediff.def == KnownHediffDefOf.HypovolemicShock)
+            {
+                shock = hediff;
+            }
+            else if (hediff.def == HediffDefOf.BloodLoss)
+            {
+                bloodLoss = hediff.Severity;
+            }
+            else if (hediff.def == KnownHediffDefOf.Hemodilution)
+            {
+                dilution = hediff.Severity;
+            }
+            else if (hediff.def == KnownHediffDefOf.AdrenalineRush)
+            {
+                adrenaline = hediff.Severity;
+            }
+            else if (hediff.def == HediffDefOf.Hypothermia)
+            {
+                hypothermia = hediff.Severity;
+            }
+            else if (ModsConfig.BiotechActive && hediff.def == HediffDefOf.Deathrest)
+            {
+                _deathresting = true;
+            }
+            else
+            {
+                for (int i = 0; i < _failures.Length; i++)
+                {
+                    if (hediff.def == FailureDef(i))
+                    {
+                        _failures[i] = hediff;
+                        break;
+                    }
+                }
+            }
+        }
+        if (!EnabledFor(pawn))
+        {
+            _deprivation = 0f;
+            _active = false;
+            for (int i = 0; i < _failures.Length; i++)
+            {
+                Remove(ref _failures[i]);
+            }
+            return;
+        }
+        VitalAnatomy anatomy = VitalAnatomy.For(pawn.RaceProps.body);
+        _oxygenProtected = pawn.HasOxygenDeficiencyImmunity();
+        ReadingUnderlying = true;
+        float breathing, consciousness, filtration, metabolism;
+        try
+        {
+            _underlyingPumping = Capacity(pawn, PawnCapacityDefOf.BloodPumping);
+            breathing = Capacity(pawn, PawnCapacityDefOf.Breathing);
+            consciousness = Capacity(pawn, PawnCapacityDefOf.Consciousness);
+            filtration = Capacity(pawn, PawnCapacityDefOf.BloodFiltration);
+            metabolism = Capacity(pawn, VitalFailureDefOf.Metabolism);
+        }
+        finally { ReadingUnderlying = false; }
+        bool terminalHeartAttack = _heartAttack is not null && IsTerminalHeartAttack(_heartAttack);
+        if (!_oxygenProtected && !_deathresting && (_underlyingPumping <= VitalFailureModel.ZERO_FUNCTION || terminalHeartAttack) && _arrest is null)
+        {
+            CreatingCirculatoryFailure = true;
+            try { _arrest = pawn.health.AddHediff(KnownHediffDefOf.CardiacArrest); }
+            finally { CreatingCirculatoryFailure = false; }
+            _arrest.Severity = VitalFailureModel.INITIAL_SEVERITY;
+            if (_arrest.TryGetComp<HediffComp_VitalArrest>() is { } arrestComp)
+            {
+                arrestComp.MechanicalFailure = !terminalHeartAttack;
+            }
+        }
+        else if (_arrest is not null && (_oxygenProtected || _deathresting
+            || _arrest.TryGetComp<HediffComp_VitalArrest>() is { MechanicalFailure: true } && _underlyingPumping > VitalFailureModel.ZERO_FUNCTION))
+        {
+            Remove(ref _arrest);
+        }
+        Sync(0, !_oxygenProtected && !_deathresting && breathing <= VitalFailureModel.ZERO_FUNCTION);
+        bool liver = VitalAnatomy.AllFailed(set, anatomy.Livers);
+        bool renal = VitalAnatomy.AllFailed(set, anatomy.Kidneys);
+        Sync(1, liver);
+        Sync(2, renal);
+        Sync(3, filtration <= VitalFailureModel.ZERO_FUNCTION && !liver && !renal);
+        Sync(4, metabolism <= VitalFailureModel.ZERO_FUNCTION);
+        Sync(5, consciousness <= VitalFailureModel.ZERO_FUNCTION && !anatomy.BrainsDestroyed(set) && !_deathresting && !_oxygenProtected);
+
+        VitalFailureConfigDef config = VitalFailureDefOf.MI_VitalFailureConfig;
+        float shockSource = shock is not null && MoreInjuriesMod.Settings.EnableHypovolemicShock
+            ? config.ShockDeprivationCurve.Evaluate(ShockPerfusionModel.EffectiveShock(shock.Severity, bloodLoss))
+                * ShockPerfusionModel.GrowthMultiplier(ShockTreatment.Quality(shock)) / ShockPerfusionModel.Support(adrenaline) : 0f;
+        _deprivation = _oxygenProtected || _deathresting ? 0f
+            : VitalFailureModel.Deprivation(shockSource, breathing, _arrest is null ? _underlyingPumping : 0f,
+                config.DilutionDeprivationCurve.Evaluate(dilution)) * config.HypothermiaProtectionCurve.Evaluate(hypothermia);
+        _active = _deprivation > 0f || _arrest is not null;
+        for (int i = 0; i < _failures.Length; i++)
+        {
+            _active |= _failures[i] is not null;
+        }
+        if (_brainInjury is not null && _deprivation > 0f)
+        {
+            HediffComp_CausedBy? causes = _brainInjury.TryGetComp<HediffComp_CausedBy>();
+            if (_arrest is not null)
+            {
+                causes?.AddCause(_arrest);
+            }
+            if (shockSource > 0f && shock is not null)
+            {
+                causes?.AddCause(shock);
+            }
+            if (_failures[0] is { } respiratory)
+            {
+                causes?.AddCause(respiratory);
+            }
+        }
+    }
+
+    private static float Capacity(Pawn pawn, PawnCapacityDef def) => def.Worker.CanHaveCapacity(pawn.RaceProps.body)
+        ? def.Worker.CalculateCapacityLevel(pawn.health.hediffSet) : 1f;
+
+    private static HediffDef FailureDef(int index) => index switch
+    {
+        0 => VitalFailureDefOf.MI_RespiratoryFailure,
+        1 => VitalFailureDefOf.MI_LiverFailure,
+        2 => VitalFailureDefOf.MI_RenalFailure,
+        3 => VitalFailureDefOf.MI_FiltrationFailure,
+        4 => VitalFailureDefOf.MI_MetabolicFailure,
+        _ => VitalFailureDefOf.MI_Coma
+    };
+
+    private void Sync(int index, bool failed)
+    {
+        if (failed && _failures[index] is null)
+        {
+            Hediff failure = Patient.health.AddHediff(FailureDef(index));
+            failure.Severity = VitalFailureModel.INITIAL_SEVERITY;
+            _failures[index] = failure;
+        }
+        else if (!failed)
+        {
+            Remove(ref _failures[index]);
+        }
+    }
+
+    private void Remove(ref Hediff? hediff)
+    {
+        if (hediff is not null)
+        {
+            Patient.health.RemoveHediff(hediff);
+            hediff = null;
+        }
+    }
+
+    internal bool CanRestoreCirculation()
+    {
+        bool previous = ReadingUnderlying;
+        ReadingUnderlying = true;
+        try
+        {
+            return Capacity(Patient, PawnCapacityDefOf.BloodPumping) > VitalFailureModel.ZERO_FUNCTION;
+        }
+        finally
+        {
+            ReadingUnderlying = previous;
+        }
+    }
+
+    internal void RestoreCirculation()
+    {
+        Invalidate();
+        Refresh();
+        if (!CanRestoreCirculation())
+        {
+            return;
+        }
+        _evaluating = true;
+        try
+        {
+            if (_heartAttack is not null && IsTerminalHeartAttack(_heartAttack))
+            {
+                Remove(ref _heartAttack);
+            }
+            Remove(ref _arrest);
+        }
+        finally { _evaluating = false; _dirty = true; }
+    }
+}

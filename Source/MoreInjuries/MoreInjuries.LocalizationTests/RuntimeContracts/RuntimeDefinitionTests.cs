@@ -8,6 +8,39 @@ namespace MoreInjuries.LocalizationTests.RuntimeContracts;
 [TestClass]
 public sealed class RuntimeDefinitionTests
 {
+    [TestMethod]
+    public void VitalFailureHookTargetsMatchPinnedApi()
+    {
+        string assetsPath = Path.Combine(ModRoot, "Source", "MoreInjuries", "artifacts", "obj", "MoreInjuries", "project.assets.json");
+        using JsonDocument assets = JsonDocument.Parse(File.ReadAllText(assetsPath));
+        string reference = assets.RootElement.GetProperty("packageFolders").EnumerateObject()
+            .Select(folder => Path.Combine(folder.Name, "krafs.rimworld.ref", "1.6.4633", "ref", "net472", "Assembly-CSharp.dll"))
+            .First(File.Exists);
+        using PEReader reader = new(File.OpenRead(reference));
+        MetadataReader metadata = reader.GetMetadataReader();
+        var expected = new Dictionary<string, string[]>
+        {
+            ["Verse.Pawn_HealthTracker"] = ["CheckForStateChange", "ShouldBeDeadFromRequiredCapacity", "HealthTickInterval"],
+            ["Verse.PawnCapacitiesHandler"] = ["Notify_CapacityLevelsDirty"],
+            ["Verse.Hediff"] = ["CauseDeathNow"],
+            ["Verse.Hediff_Injury"] = ["Heal"],
+            ["RimWorld.PawnCapacityWorker_BloodPumping"] = ["CalculateCapacityLevel"]
+        };
+        foreach (TypeDefinitionHandle handle in metadata.TypeDefinitions)
+        {
+            TypeDefinition type = metadata.GetTypeDefinition(handle);
+            string name = metadata.GetString(type.Namespace) + "." + metadata.GetString(type.Name);
+            if (!expected.Remove(name, out string[]? methods)) { continue; }
+            HashSet<string> present = type.GetMethods().Select(method => metadata.GetString(metadata.GetMethodDefinition(method).Name)).ToHashSet();
+            foreach (string method in methods) { Assert.Contains(method, present, name); }
+            if (name is "Verse.Pawn_HealthTracker" or "Verse.PawnCapacitiesHandler")
+            {
+                Assert.IsTrue(type.GetFields().Any(field => metadata.GetString(metadata.GetFieldDefinition(field).Name) == "pawn"), name);
+            }
+        }
+        Assert.IsEmpty(expected);
+    }
+
     internal static string ModRoot
     {
         get

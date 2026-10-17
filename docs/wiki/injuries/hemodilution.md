@@ -11,7 +11,8 @@ Hemodilution is a condition that occurs when the concentration of red blood cell
 > _"**Hemodilution** &mdash; Hemodilution is the dilution of the concentration of red blood cells and plasma constituents by partially substituting the blood with colloids or crystalloids. It often occurs as a result of excessive fluid resuscitation, particularly in trauma patients, when large volumes of saline or other intravenous fluids are administered to restore blood volume and pressure after significant blood loss.<br>
 > While the body can compensate for some degree of hemodilution, excessive dilution can lead to a significant reduction in the oxygen-carrying capacity of the blood and impair coagulation. In severe cases, it can result in hypoxia and dilutional coagulopathy, both of which can lead to increased risk of hemorrhage, organ failure, and death if not managed appropriately.<br>
 > Hemodilution is typically treated by carefully managing fluid resuscitation, using blood products to restore red blood cell and plasma levels, and monitoring the patient's hemodynamic status closely to prevent complications.<br>
-> A saline bag reduces blood-loss severity by 15 percentage points but adds dilution. A blood bag reduces blood-loss severity by 35 percentage points and reduces existing dilution. Automatic saline treatment stops before its dilution safety limit and may be refused when other causes of coagulopathy are present. A forced single infusion bypasses those safety checks."_
+> A saline bag reduces blood-loss severity by 15 percentage points but adds dilution. A blood bag reduces blood-loss severity by 35 percentage points and reduces existing dilution. Automatic saline treatment stops before its dilution safety limit and may be refused when other causes of coagulopathy are present. A forced single infusion bypasses those safety checks.<br>
+> With delayed vital failure enabled, dilution above 45% can contribute to accumulating cerebral hypoxia. Blood products can address this oxygen-carrying deficit; further saline can worsen it."_
 
 ```mermaid
 ---
@@ -37,6 +38,8 @@ Each saline bag reduces blood-loss severity by 15 percentage points while increa
 **Effects**: Hemodilution can lead to a significant reduction in the oxygen-carrying capacity of the blood and impair coagulation. Minor and moderate stages reduce consciousness by an offset (`-0.2`, then `-0.4`) instead of a hard cap. Severe combines a 0.8 cap with a `-0.5` offset. Extreme caps consciousness at 0.2. The terminal stage still caps it at 0.01. In severe cases it can result in loss of consciousness, [hypoxia](/docs/wiki/injuries/hypoxia.md#hypoxia) and [dilutional coagulopathy](/docs/wiki/injuries/coagulopathy.md#coagulopathy), both of which can lead to increased risk of [hemorrhage](/docs/wiki/injuries/hemorrhage.md#hemorrhage-spontaneous), organ failure, and death if not managed appropriately.
 
 **Treatment**: Hemodilution will resolve on its own over time as the body regenerates red blood cells and plasma constituents. However, in severe cases of hemodilution, it may be necessary to administer [blood products](/docs/wiki/medical-devices.md#blood-bag) to restore red blood cell and plasma levels immediately, as well as carefully managing fluid resuscitation to prevent further dilution.
+
+With delayed vital failure enabled, hemodilution above 45% contributes to ongoing [cerebral hypoxia](/docs/wiki/injuries/hypoxia.md#cerebral-hypoxia). If severe shock or failed breathing/circulation is also present, the strongest systemic source determines cerebral progression. Blood products can reduce dilution; saline can worsen this oxygen-carrying deficit.
 
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---

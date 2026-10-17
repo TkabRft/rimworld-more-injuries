@@ -1,4 +1,6 @@
-﻿using MoreInjuries.Extensions;
+using MoreInjuries.Extensions;
+using MoreInjuries.Defs.WellKnown;
+using MoreInjuries.HealthConditions.VitalFailure;
 using MoreInjuries.HealthConditions.Secondary.Handlers.HediffMakers;
 using MoreInjuries.HealthConditions.Secondary.Handlers.TargetEvaluators;
 using MoreInjuries.Roslyn.SourceGen.XmlBinding.Attributes;
@@ -34,6 +36,10 @@ public abstract partial class HediffCompHandler_SecondaryCondition : HediffCompH
 
     public virtual bool ShouldSkip(HediffComp_SecondaryCondition comp, HediffDef hediffDef)
     {
+        if (VitalFailureComp.OwnsSystemicCerebralSource(comp.Pawn, comp.parent.def, hediffDef))
+        {
+            return true;
+        }
         if (ShouldSkip(comp))
         {
             return true;

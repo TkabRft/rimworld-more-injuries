@@ -111,6 +111,7 @@ namespace RimWorld
     {
         public static readonly Verse.HediffDef BloodLoss = new();
         public static readonly Verse.HediffDef Deathrest = new();
+        public static readonly Verse.HediffDef Hypothermia = new();
     }
 }
 
@@ -122,6 +123,11 @@ namespace MoreInjuries.Defs.WellKnown
         public static readonly Verse.HediffDef Acidosis = new() { Label = "acidosis" };
         public static readonly Verse.HediffDef HypovolemicShock = new() { Label = "hypovolemic shock" };
         public static readonly Verse.HediffDef Hemodilution = new();
+        public static readonly Verse.HediffDef CardiacArrest = new();
+        public static readonly Verse.HediffDef HeartAttack = new() { lethalSeverity = 1f };
+        public static readonly Verse.HediffDef BrainDamage_Hypoxia = new();
+        public static readonly Verse.HediffDef OrganHypoxia = new();
+        public static readonly Verse.HediffDef ChokingOnBlood = new();
     }
 }
 
@@ -144,6 +150,9 @@ namespace MoreInjuries
     public sealed class TestSettings
     {
         public bool EnableHypovolemicShock = true;
+        public bool EnableDelayedVitalFailure = true;
+        public float DefibrillatorMinimumSuccessRate = .5f;
+        public bool AnomalyEnableConditionsForShamblers = true;
         public bool EnableAdvancedTraumaSimulation = true;
         public float HypoxiaAcidosisConversionFactor = 0.015f;
     }

@@ -4,6 +4,8 @@ code-synced: 2026-10-18
 
 ## Current contracts
 
+The [vital failure owner](vital-failure.md) defines the new delayed-death and systemic cerebral progression paths. Its module supersedes systemic cerebral chance rolls while enabled; the shock and acidosis balance below remains unchanged.
+
 | Area | Status and contract |
 |---|---|
 | Secondary-condition scheduling | `implemented`. Preserve handler order, individual hash intervals, and random-value consumption. The wake interval is their greatest common divisor. A nullable cache distinguishes an uncomputed schedule from a genuinely empty one, including zero-initialized properties. |
@@ -52,7 +54,7 @@ The direct blood-loss hypoxia gain remains zero. Drug stages, concrete dose/reco
 
 The reported 1–2% to 60–90% jump was existing behavior in `077997d`: the next shock update copied blood-loss severity while shock was below 55%, then subsequent updates used autonomous growth. It was not another scheduler failure. Repeated random onset checks could also delay visible shock until very high blood loss.
 
-`ShockPerfusionModel` replaces those rules. These are explicit game-balance parameters, not clinically validated cutoffs. Clinical references informing the direction are the [European trauma guideline](https://doi.org/10.1186/s13054-023-04327-7) and the [ATLS classification validation study](https://pubmed.ncbi.nlm.nih.gov/22835498/). The implementation approximates perfusion using the existing volume deficit; it does not simulate blood pressure, cardiac output, or a separate lactate variable. Tissue injury accumulates through the existing hypoxia handlers, and hypoxia still drives acidosis and coagulopathy.
+`ShockPerfusionModel` replaces those rules. These are explicit game-balance parameters, not clinically validated cutoffs. Clinical references informing the direction are the [European trauma guideline](https://doi.org/10.1186/s13054-023-04327-7) and the [ATLS classification validation study](https://pubmed.ncbi.nlm.nih.gov/22835498/). The implementation approximates perfusion using the existing volume deficit; it does not simulate blood pressure, cardiac output, or a separate lactate variable. Random organ injury retains the existing hypoxia handlers. With [delayed vital failure](vital-failure.md) enabled, systemic cerebral injury accumulates through its unified controller. Hypoxia still drives acidosis and coagulopathy.
 
 | Blood-loss gauge | Model's missing-volume mapping | Shock target before treatment |
 |---|---|---|
@@ -107,7 +109,7 @@ HAR's installed 1.6 `CompatibilityInfo` defaults `isFlesh` to true. The XML inte
 
 ## Validation
 
-The Release build passes. `MoreInjuries.LocalizationTests` contains source-linked headless scheduler, quality-scaled shock progression, persistent-shock acidosis, native treatment expiry/re-tending, resuscitation, feature-toggle, deathrest, immunity, eligibility, reliable-onset, direct-death policy, nested save/load, transfusion rounding/overflow, dynamic outcome unit conversion, production cache invalidation, and warmed zero-allocation tests, plus HAR XML fixtures, reference-assembly field checks, Release XML-type coverage for defs and patches, texture-format checks, and localization checks. All 50 focused tests pass, including the eight administration cases and six inherited-component/information-card cases described above. The test runtime supplies minimal Verse/Unity stand-ins; it is not a substitute for game acceptance.
+The Release build passes. `MoreInjuries.LocalizationTests` contains source-linked headless scheduler, quality-scaled shock progression, persistent-shock acidosis, native treatment expiry/re-tending, resuscitation, feature-toggle, deathrest, immunity, eligibility, reliable-onset, direct-death policy, nested save/load, transfusion rounding/overflow, dynamic outcome unit conversion, production cache invalidation, and warmed zero-allocation tests, plus HAR XML fixtures, reference-assembly field checks, Release XML-type coverage for defs and patches, texture-format checks, and localization checks. All 70 focused tests pass, including the eight administration cases, six inherited-component/information-card cases, and the [vital failure coverage](vital-failure.md). The test runtime supplies minimal Verse/Unity stand-ins; it is not a substitute for game acceptance.
 
 Drug stage, concrete dose/recovery comp, severity-cap, and chemical-need XML values were compared against `077997d` and are unchanged; the redundant base drug component is now removed. All six replacement PNGs have alpha channels, transparent corners, and visible foregrounds. The current 1.6 package was refreshed and checked for XML validity, copied-file hashes, required paths, and source/build artifact exclusion. The legacy 1.5 binary is not part of this current-version test snapshot.
 
@@ -123,7 +125,7 @@ The localization loader now accepts multiline English comments and repeated, ide
 - Compare epinephrine high after direct use and injection. Check chloroform direct-use baseline and doctor-skill dosing, sedation social consequences, and single-bag blood/saline consumption.
 
 - Restart with the refreshed package and Bad Hygiene active: no unknown `causesNeed`, missing hydration class, missing blood-template, or missing saline-def errors.
-- With shock and blood-loss death prevention enabled, use ordinary bleeding on a human, a fleshy HAR pawn, and a fleshbeast. Shock must begin at the first eligible check above 45%, rise gradually, and generate complications when severe. Reaching the cap must not itself cause direct blood-loss death. Repeat with Death Rattle active.
+- With shock and blood-loss death prevention enabled, use ordinary bleeding on a human, a fleshy HAR pawn, and a fleshbeast. Shock must begin at the first eligible check above 45%, rise gradually, and generate complications when severe. Reaching the cap must not itself cause direct blood-loss death. Use a separate loadout without Death Rattle for the built-in vital failure module; existing Death Rattle saves are not migrated.
 - Confirm shock approaches a stable target at constant blood loss, recovers gradually after transfusion, and does not recover completely from tending alone while the deficit remains severe. Check existing Deathless and Breathless protections and deathrest separately.
 - Compare fresh 15-30% and 80-100% shock tends, including expiry and replacement. Severe shock should build acidosis even before a new hypoxic injury; low-quality tending should offer modest protection. Random injuries can shorten the controlled balance window.
 - Give one adrenaline dose: worsening should slow while the blood-loss target stays unchanged. Give blood or forced saline: acid production should drop as volume improves, with the visible shock condition recovering gradually. Check automatic saline still refuses unsafe coagulopathy states.

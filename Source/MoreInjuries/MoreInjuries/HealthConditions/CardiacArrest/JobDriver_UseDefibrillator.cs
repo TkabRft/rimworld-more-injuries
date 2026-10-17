@@ -1,8 +1,9 @@
-﻿using MoreInjuries.AI.Audio;
+using MoreInjuries.AI.Audio;
 using MoreInjuries.AI.Jobs;
 using MoreInjuries.AI.TreatmentModifiers;
 using MoreInjuries.Defs.WellKnown;
 using MoreInjuries.Extensions;
+using MoreInjuries.HealthConditions.VitalFailure;
 using MoreInjuries.Things;
 using UnityEngine;
 using Verse;
@@ -30,7 +31,9 @@ public class JobDriver_UseDefibrillator : JobDriver_UseMedicalDevice
         // must be white-listed ...
         Array.IndexOf(TargetHediffDefs, hediff.def) is int index && index >= 0
         // ... and not in the later stages of CardiacArrest
-        && (hediff.def != KnownHediffDefOf.CardiacArrest || hediff.CurStageIndex == 0);
+        && (hediff.def != KnownHediffDefOf.CardiacArrest || hediff.CurStageIndex == 0)
+        && (!VitalFailureComp.OwnsOxygenProgression(hediff.pawn)
+            || VitalFailureComp.For(hediff.pawn)?.CanRestoreCirculation() == true);
 
     protected override int GetMedicalDeviceCountToFullyHeal(Pawn patient)
     {
@@ -44,18 +47,37 @@ public class JobDriver_UseDefibrillator : JobDriver_UseMedicalDevice
 
     protected override bool ApplyDevice(Pawn doctor, Pawn patient, Thing? device)
     {
+        VitalFailureComp? vital = VitalFailureComp.OwnsOxygenProgression(patient) ? VitalFailureComp.For(patient) : null;
+        if (vital is not null && !vital.CanRestoreCirculation())
+        {
+            return false;
+        }
         float minSuccessRate = MoreInjuriesMod.Settings.DefibrillatorMinimumSuccessRate;
         Hediff? heartAttack = patient.health.hediffSet.hediffs.Find(static hediff => hediff.def == KnownHediffDefOf.HeartAttack);
         float doctorSkill = doctor.GetMedicalSkillLevelOrDefault();
         // determine the chance of success based on the doctor's medicine skill and the job driver effectiveness modifier
         if (heartAttack is not null && Rand.Chance(Mathf.Max(minSuccessRate, doctorSkill / 10f * heartAttack.GetTreatmentEffectivenessModifier(job.def))))
         {
-            patient.health.RemoveHediff(heartAttack);
+            if (vital is not null && VitalFailureComp.IsTerminalHeartAttack(heartAttack))
+            {
+                vital.RestoreCirculation();
+            }
+            else
+            {
+                patient.health.RemoveHediff(heartAttack);
+            }
         }
         Hediff? cardiacArrest = patient.health.hediffSet.hediffs.Find(static hediff => hediff.def == KnownHediffDefOf.CardiacArrest && hediff.CurStageIndex == 0);
         if (cardiacArrest is not null && Rand.Chance(Mathf.Max(minSuccessRate, doctorSkill / 10f * cardiacArrest.GetTreatmentEffectivenessModifier(job.def))))
         {
-            patient.health.RemoveHediff(cardiacArrest);
+            if (vital is not null)
+            {
+                vital.RestoreCirculation();
+            }
+            else
+            {
+                patient.health.RemoveHediff(cardiacArrest);
+            }
         }
         if (device is not null)
         {

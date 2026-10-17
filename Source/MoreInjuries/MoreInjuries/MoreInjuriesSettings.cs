@@ -1,4 +1,4 @@
-﻿using MoreInjuries.Roslyn.Metadata.KeyedMembers;
+using MoreInjuries.Roslyn.Metadata.KeyedMembers;
 using MoreInjuries.Roslyn.Metadata.Settings;
 using Verse;
 
@@ -142,6 +142,10 @@ public partial class MoreInjuriesSettings : ModSettings
 
     [SettingsEntry<bool>(DefaultValue = true)]
     internal partial ref bool EnableApplySplintJob { get; }
+
+    // delayed vital failure
+    [SettingsEntry<bool>(DefaultValue = true)]
+    internal partial ref bool EnableDelayedVitalFailure { get; }
 
     // hypovolemic shock, cardiac arrest, and the trauma triad of death
     [SettingsEntry<bool>(DefaultValue = true)]

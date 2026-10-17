@@ -1,7 +1,5 @@
 # Brain Damage
 
-Status: `implemented`. code-synced: 2026-09-26.
-
 <!-- @generate_breadcrumb_trail {"template": "_:file_folder: {0}_", "connector": " :arrow_right: "} -->
 _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [Injuries and Medical Conditions A-Z](/docs/wiki/injuries/README.md) :arrow_right: [Brain Damage](/docs/wiki/injuries/brain-damage.md)_
 <!-- @end_generated_block -->
@@ -125,6 +123,8 @@ Motor dysfunction refers to a range of movement disorders that can occur as a re
 
 > [!NOTE]
 > This feature can be disabled in the mod settings if you prefer not to have personality shifts as a result of brain damage.
+
+Acute [cerebral hypoxia](/docs/wiki/injuries/hypoxia.md#cerebral-hypoxia) and the lasting disabilities listed here are separate conditions. With delayed vital failure enabled, untreated oxygen deprivation can steadily worsen cerebral injury and become fatal even when lasting neurological damage is disabled. Restoring oxygen delivery permits the acute injury to heal, while lasting disabilities can still require their own treatment.
 
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---

@@ -1,4 +1,5 @@
-﻿using MoreInjuries.Extensions;
+using MoreInjuries.Extensions;
+using MoreInjuries.HealthConditions.VitalFailure;
 using RimWorld;
 using System.Linq;
 using Verse;
@@ -11,7 +12,8 @@ public class HediffComp_CardiacArrest : HediffComp
     {
         Pawn pawn = parent.pawn;
 
-        if (pawn.HasOxygenDeficiencyImmunity() || HasArtificialHeart(pawn))
+        if (pawn.HasOxygenDeficiencyImmunity() || HasArtificialHeart(pawn)
+            && !(VitalFailureComp.For(pawn) is { CreatingCirculatoryFailure: true } && VitalFailureComp.EnabledFor(pawn)))
         {
             pawn.health.RemoveHediff(parent);
             return;

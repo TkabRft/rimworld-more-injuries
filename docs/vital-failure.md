@@ -1,0 +1,67 @@
+# Delayed vital failure and systemic hypoxia
+
+code-synced: 2026-10-18
+
+## Current contract
+
+Status: `implemented` for the current RimWorld 1.6 build. `EnableDelayedVitalFailure` defaults to true. The module covers tracked fleshy pawns and supported bleeding fleshy Anomaly entities, all factions, respecting the shambler setting. Ordinary animals and mechanical pawns remain excluded. See the [player hypoxia guide](wiki/injuries/hypoxia.md) and [future expansion work](medical-expansion-todo.md).
+
+This is an independent implementation using More Injuries conditions and treatments. Death Rattle's package is declared incompatible. Startup reports the unsupported combination; separate loadouts are required. No Death Rattle classes, identifiers, saved conditions, or settings are imported. Existing saves containing Death Rattle must not be treated as migrated saves.
+
+## Death policy and anatomy
+
+`VitalFailure_Initializer` adds a lightweight `VitalFailureComp` once to eligible pawn defs after XML processing. It does not inject the full injury-worker pipeline into Anomaly entities. Anatomy is cached by BodyDef using consciousness-source, pumping-source, liver, and kidney tags. All members of a present organ group must be nonfunctional before that group's failure is created. A group absent from the anatomy is not considered a missing organ. Added/replacement parts are evaluated through the native part-efficiency API.
+
+The required-capacity guard suppresses only the supported first failed capacity and checks for other unsupported lethal capacities before returning. Structural destruction of all consciousness sources retains native death. Unrelated hediff lethality, lethal-damage thresholds, execution, forced blood harvesting, and the existing direct blood-loss policy remain unchanged.
+
+Circulatory arrest reuses `CardiacArrest`. The new condition identifiers are `MI_RespiratoryFailure`, `MI_LiverFailure`, `MI_RenalFailure`, `MI_FiltrationFailure`, `MI_MetabolicFailure`, and `MI_Coma`. Generic filtration failure is used only when filtration is zero without complete liver/renal failure. Coma requires zero consciousness with a structurally surviving consciousness source; it does not itself drive oxygen deprivation.
+
+All failure entries start at 0.001 severity. New failure defs are lethal at 1; cardiac lethality at 1 is guarded at runtime so disabling the module preserves legacy arrest behavior. Base daily rates are 8 for circulation/respiration, 1 for liver/generic filtration, 0.2 for renal failure/coma, and 0.34 for metabolism. Apply a shared fresh random factor in [0.8, 1.2] on each 250-tick update. Complete circulation/breathing failure averages approximately three game hours, with mathematical bounds of 2.5-3.75 hours plus tick alignment before other protection or treatment.
+
+Failure is removed when its underlying function returns. Mechanically caused arrest is distinguished from spontaneous arrest: restoring pumping resolves mechanical failure, whereas arrhythmia requires resuscitation. Terminal vanilla heart attack enters the arrest path instead of killing immediately once that arrest is registered. Oxygen immunity does not suppress an unrelated, unconverted lethal heart attack or liver disease.
+
+## Cerebral progression
+
+The controller reads actual XML curves from `MI_VitalFailureConfig`:
+
+- Shock deprivation: (0,0), (0.5,0), (0.75,0.1), (0.9,0.4), (1,1), using existing effective shock. Multiply this source only by `(1 - 0.5q) / support`, with native active tend quality and existing adrenaline support.
+- Breathing and pumping deprivation: `clamp01(1 - capacity / 0.5)`. Active arrest or terminal heart attack represents absent effective pumping. Coma does not substitute for either capacity.
+- Dilution deprivation: (0,0), (0.45,0), (0.75,0.25), (1,1).
+- Combine sources by maximum, then apply existing hypothermia protection: (0,1), (0.2,0.8), (0.6,0.45), (1,0.2).
+
+Add `64 * deprivation * randomFactor * (250 / 60000)` to the existing `BrainDamage_Hypoxia`, attached to a surviving consciousness source. Severity 8 is terminal while the module owns progression and oxygen protection/deathrest does not apply. No oxygen-debt counter, new brain condition, or history buffer is stored.
+
+Systemic cerebral rolls from shock, arrest, and hemodilution are skipped only when this controller owns progression. Random organ-injury handlers and focal sources such as stroke remain. Lasting neurological outcomes retain existing identifiers, chance handlers, and settings. Disabling lasting neurological damage does not disable acute cerebral deterioration. Native healing of organ/cerebral hypoxia is blocked during systemic deprivation and resumes after the source stops; tending cannot erase an unresolved oxygen deficit.
+
+The [shock/acidosis implementation](medical-runtime.md) is retained, including maximum-based acidosis input. Direct blood-loss hypoxia remains zero. The existing OrganHypoxiaChance setting still governs random organ injury; it does not zero the module's cerebral progression.
+
+## Treatments and guards
+
+The pumping worker reports zero while arrest is active. Underlying pumping is read through a recursion-safe, read-only query that bypasses that override. Treatment-selection predicates do not mutate the health collection.
+
+Production CPR and defibrillator methods retain skill, drug modifiers, research, and medical-care restrictions. Successful restart of a functioning pump clears arrest and an initiating terminal heart attack together, without erasing brain injury. A defibrillator cannot treat a nonfunctional pump; CPR cannot permanently restore one. Restoring a mechanically failed pump removes its failure. Artificial hearts retain the old spontaneous-arrest protection, while controller-created circulatory failure can represent a nonfunctional artificial pump. Existing airway treatments and organ-replacement operations remain available; new ventilation/dialysis equipment is deferred.
+
+Deathless/Breathless oxygen immunity and active deathrest suppress new systemic oxygen injury and oxygen-failure conditions. Liver, renal, filtration, and metabolic disease are not made oxygen-immune. Native gene/deathrest handling still governs their eventual outcome; the module does not call Pawn.Kill.
+
+## Hooks, scheduling, and persistence
+
+Narrow Harmony targets are `Pawn_HealthTracker.CheckForStateChange`, `Pawn_HealthTracker.HealthTickInterval`, `Pawn_HealthTracker.ShouldBeDeadFromRequiredCapacity`, `PawnCapacitiesHandler.Notify_CapacityLevelsDirty`, `PawnCapacityWorker_BloodPumping.CalculateCapacityLevel`, `Hediff.CauseDeathNow`, and `Hediff_Injury.Heal`. Capacity getters never create or remove conditions. Reentrant state checks can delay supported capacity death without recursively refreshing the controller.
+
+The native health tick drives the 250-tick gate, covering map, caravan, and world-pawn health processing. Healthy snapshots are reused until invalidated; active conditions request a fresh scheduled snapshot. References are collected in one scan per refresh, with fixed per-pawn failure slots and per-body anatomy arrays. Existing 150/250-tick shock/acidosis scheduling and transfusion caches are unchanged. There is no global pawn scan, worker thread, or per-tick allocation. Existing native capacity/cause processing can allocate; the numeric helpers allocate zero managed bytes after warm-up.
+
+Existing condition severities provide progression state. The new `lastVitalProgressTick` save key prevents replaying an eligible update after reload. The replacement arrest comp retains native severity-per-day serialization and adds `mechanicalFailure` to preserve arrest origin. Existing save keys and public signatures are unchanged. LoadingVars/ResolvingCrossRefs never create conditions. Turning the module off restores normal capacity-death rules and removes its newly owned failure entries at refresh; it is not a safe treatment operation.
+
+## Validation
+
+Release compilation succeeds against the pinned 1.6.4633 reference and Harmony 2.3.6. All 70 focused behavior/localization tests pass, including the earlier shock/acidosis and drug tests. Production-linked tests cover the controller, anatomy, death/healing guards, native-arrest adapter, actual CPR/defibrillator methods, source ownership, actual XML curves/rates, seeded rescue windows and pawn offsets, natural blood recovery, transfusion rescue, mechanical replacement, paired organs, multiple brains, immunity/deathrest/eligibility, recursive checks, scheduling, save/reload, and zero-allocation numeric helpers. Metadata tests verify hook methods and injected pawn fields against the pinned reference.
+
+The runtime test harness supplies minimal Verse/Unity boundaries; it does not execute the game's serializer, capacity implementation, jobs, or Harmony patch chain. XML parsing, localization coverage, release XML-type coverage, and package load-layout/hash validation pass. The current 1.6 local package contains 221 runtime files. No legacy 1.5 behavior is claimed as tested by this snapshot.
+
+## Manual game acceptance
+
+- Start a separate test loadout without Death Rattle; confirm no XML/type/patch errors and inspect all new condition descriptions.
+- Test absent pumping/breathing, terminal heart attack, and prolonged full shock. Confirm a usable rescue window, worsening cerebral hypoxia, and terminal deterioration without successful treatment.
+- Compare poor/good shock tends, expiry, adrenaline, cold, transfusions, and renewed bleeding. Restored volume should stop its ongoing source before visible shock disappears.
+- Run successful/failed CPR and early defibrillation; verify brain injury remains and a missing heart cannot be restarted. Restore an actual pump/lung or clear an airway.
+- Test single/both kidneys, liver/metabolic/filtration failure, custom HAR anatomy, multiple brains, fleshbeasts, and excluded animals. Preserve immediate structural brain death and forced-harvesting behavior.
+- Test immunity, deathrest, shamblers, disabled module, save/reload, and caravan/world-pawn progression. Custom alien anatomy and third-party death patches require game acceptance.

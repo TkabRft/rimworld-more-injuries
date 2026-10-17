@@ -17,6 +17,18 @@
         <Using Include="System.Diagnostics.CodeAnalysis" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureProperties.cs" Link="RuntimeContracts\Production\VitalFailureProperties.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureModel.cs" Link="RuntimeContracts\Production\VitalFailureModel.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalAnatomy.cs" Link="RuntimeContracts\Production\VitalAnatomy.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureComp.cs" Link="RuntimeContracts\Production\VitalFailureComp.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\HediffComp_VitalArrest.cs" Link="RuntimeContracts\Production\HediffComp_VitalArrest.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\CardiacArrest\JobDriver_PerformCpr.cs" Link="RuntimeContracts\Production\JobDriver_PerformCpr.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\CardiacArrest\JobDriver_UseDefibrillator.cs" Link="RuntimeContracts\Production\JobDriver_UseDefibrillator.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\CardiacArrest\HediffComp_CardiacArrest.cs" Link="RuntimeContracts\Production\HediffComp_CardiacArrest.cs" />
+        <Compile Include="..\MoreInjuries\Patches\Patch_VitalFailure.cs" Link="RuntimeContracts\Production\Patch_VitalFailure.cs" />
+    </ItemGroup>
+
     <!-- Exercise the production scheduler headlessly, with the small Verse stand-ins under RuntimeContracts. -->
     <ItemGroup>
         <Compile Include="..\MoreInjuries\AI\Jobs\JobDriver_OutcomeDoerBase.cs" Link="RuntimeContracts\Production\JobDriver_OutcomeDoerBase.cs" />

@@ -1,7 +1,5 @@
 # Cardiac Arrest
 
-Status: `added, not verified`. code-synced: 2026-09-25.
-
 <!-- @generate_breadcrumb_trail {"template": "_:file_folder: {0}_", "connector": " :arrow_right: "} -->
 _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [Injuries and Medical Conditions A-Z](/docs/wiki/injuries/README.md) :arrow_right: [Cardiac Arrest](/docs/wiki/injuries/cardiac-arrest.md)_
 <!-- @end_generated_block -->
@@ -9,8 +7,9 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 Cardiac arrest is a sudden loss of blood flow resulting from the failure of the heart to effectively pump blood. It is generally divided into two categories: `ventricular fibrillation` and asystole (flatline, `clinical death`). `Ventricular fibrillation` is a condition in which the heart's electrical signals become disorganized, causing the heart to quiver or "fibrillate" instead of pumping blood effectively. In cases of `ventricular fibrillation`, a [defibrillator](/docs/wiki/medical-devices.md#defibrillator) can be used to shock the heart back into a normal rhythm, which may be faster and more effective than [CPR](/docs/wiki/medical-devices.md#cpr). If left untreated, `ventricular fibrillation` can progress to `clinical death`, which is a condition in which the heart stops beating completely and [CPR](/docs/wiki/medical-devices.md#cpr) must be performed to restore blood flow and hopefully restart the heart. Applying a [defibrillator](/docs/wiki/medical-devices.md#defibrillator) to a clinically dead patient will not be effective and may cause additional harm.
 
 > **In-Game Description**
-> _"**Cardiac arrest** &mdash; Cardiac arrest is a sudden loss of blood flow resulting from the failure of the heart to effectively pump blood. The lack of blood flow causes the body to stop working properly, resulting in loss of consciousness and death if not treated immediately. Causes for cardiac arrest include conditions that starve the heart of oxygen, such as extreme blood loss.  
-> A skilled doctor must perform CPR to restore blood flow and hopefully restart the heart. In early stages of cardiac arrest, during ventricular fibrillation, a defibrillator can also be used to shock the heart back into a normal rhythm, which may be faster and more effective than CPR."_
+> _"**Cardiac arrest** &mdash; Cardiac arrest is a sudden loss of blood flow resulting from the failure of the heart to effectively pump blood. The lack of blood flow causes the body to stop working properly, resulting in loss of consciousness and death if not treated immediately. Causes for cardiac arrest include conditions that starve the heart of oxygen, such as extreme blood loss.<br>
+> A skilled doctor must perform CPR to restore blood flow and hopefully restart the heart. In early stages of cardiac arrest, during ventricular fibrillation, a defibrillator can also be used to shock the heart back into a normal rhythm, which may be faster and more effective than CPR.<br>
+> With delayed vital failure enabled, circulation stops during arrest. Untreated arrest becomes fatal in approximately three game hours and causes accumulating cerebral hypoxia. CPR or an early defibrillator attempt can restart a functioning pump; a missing or nonfunctional heart requires a functioning replacement. Restarting circulation does not erase existing brain injury."_
 
 ```mermaid
 ---
@@ -50,6 +49,10 @@ style cardiac_arrest stroke-width: 4px
 > **Biotech DLC**: Sanguaphages are immune to cardiac arrest and will automatically recover from it once entering deathrest. The Deathless gene also removes cardiac arrest as soon as it is applied.  
 > **Odyssey DLC**: The Breathless gene removes cardiac arrest as soon as it is applied. It does not require Biotech.  
 > A prosthetic or bionic heart does the same. Ventricular fibrillation caps consciousness at 0.1 rather than 0.01. Clinical death still caps it at 0.01. A pawn with no genes is not protected by either gene.
+
+With delayed vital failure enabled, arrest means absent effective pumping and ordinarily gives about three game hours for rescue. Its severity and cerebral hypoxia both worsen; successful resuscitation stops the arrest without erasing brain injury. A terminal vanilla heart attack enters this treatable arrest pathway.
+
+CPR and a permitted early defibrillator attempt can restart a functioning heart. They cannot replace a missing or nonfunctional heart. Mechanical failure resolves when an effective pump is restored. Artificial hearts retain protection from spontaneous shock-induced arrest, but a nonfunctional artificial pump can still fail.
 
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---

@@ -28,7 +28,6 @@ The following mods are officially supported by More Injuries and even integrate 
 
 These mods are known to be compatible with More Injuries, but they aren't directly integrated into More Injuries, and there may not necessarily be cross-interactions between features. We won't list every compatible mod here, but rather focus on those frequently asked about:
 
-- Death Rattle
 - Diseases+
 
 ### Partial Support
@@ -40,4 +39,4 @@ These mods are known to be compatible with More Injuries, but they aren't direct
 
 If a mod is listed here, it is known to cause issues with More Injuries and is not recommended for use together.
 
-*Currently, no incompatibilities have been verifiably pinpointed to any specific mods, although there have been reports of issues with massive mod lists that may or may not be related to More Injuries.*
+- Death Rattle Continued (`Troopersmith1.DeathRattle`): incompatible by design with the built-in delayed vital failure replacement. Use separate loadouts. This version does not migrate existing Death Rattle conditions or provide a safe removal pipeline. See [vital failure](docs/vital-failure.md) and [deferred transition work](docs/medical-expansion-todo.md).

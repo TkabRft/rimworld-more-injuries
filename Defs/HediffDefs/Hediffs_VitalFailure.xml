@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <HediffDef Name="MI_VitalFailureBase" Abstract="True">
+    <hediffClass>HediffWithComps</hediffClass>
+    <initialSeverity>0.001</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <lethalSeverity>1</lethalSeverity>
+    <tendable>false</tendable>
+    <alwaysShowSeverity>true</alwaysShowSeverity>
+    <defaultLabelColor>(1, 0.2, 0.2)</defaultLabelColor>
+    <comps><li Class="MoreInjuries.HealthConditions.Secondary.HediffCompProperties_CausedBy" /></comps>
+    <stages>
+      <li><lifeThreatening>true</lifeThreatening></li>
+      <li><minSeverity>0.5</minSeverity><label>severe</label><lifeThreatening>true</lifeThreatening><capMods><li><capacity>Consciousness</capacity><setMax>0.5</setMax></li></capMods></li>
+      <li><minSeverity>0.8</minSeverity><label>near death</label><lifeThreatening>true</lifeThreatening><capMods><li><capacity>Consciousness</capacity><setMax>0.1</setMax></li></capMods></li>
+    </stages>
+  </HediffDef>
+  <HediffDef ParentName="MI_VitalFailureBase">
+    <defName>MI_RespiratoryFailure</defName>
+    <label>respiratory failure</label>
+    <description>Breathing has stopped. Restore the airway or functioning lungs immediately. Without restored oxygen delivery, cerebral hypoxia accumulates and this failure becomes fatal in approximately three game hours.</description>
+    <modExtensions><li Class="MoreInjuries.HealthConditions.VitalFailure.VitalFailureProperties"><severityPerDay>8</severityPerDay></li></modExtensions>
+  </HediffDef>
+  <HediffDef ParentName="MI_VitalFailureBase">
+    <defName>MI_LiverFailure</defName>
+    <label>acute liver failure</label>
+    <description>No functioning liver tissue remains. A functioning replacement can resolve this failure. Without it, failure progresses toward death over approximately one game day.</description>
+    <modExtensions><li Class="MoreInjuries.HealthConditions.VitalFailure.VitalFailureProperties"><severityPerDay>1</severityPerDay></li></modExtensions>
+  </HediffDef>
+  <HediffDef ParentName="MI_VitalFailureBase">
+    <defName>MI_RenalFailure</defName>
+    <label>acute renal failure</label>
+    <description>No functioning kidney tissue remains. One functioning kidney or a suitable replacement can resolve this failure. Untreated complete failure becomes fatal over approximately five game days.</description>
+    <modExtensions><li Class="MoreInjuries.HealthConditions.VitalFailure.VitalFailureProperties"><severityPerDay>0.2</severityPerDay></li></modExtensions>
+  </HediffDef>
+  <HediffDef ParentName="MI_VitalFailureBase">
+    <defName>MI_FiltrationFailure</defName>
+    <label>blood filtration failure</label>
+    <description>Blood filtration has stopped without an identified complete liver or kidney failure. Restore the underlying filtration capacity. Untreated failure becomes fatal over approximately one game day.</description>
+    <modExtensions><li Class="MoreInjuries.HealthConditions.VitalFailure.VitalFailureProperties"><severityPerDay>1</severityPerDay></li></modExtensions>
+  </HediffDef>
+  <HediffDef ParentName="MI_VitalFailureBase">
+    <defName>MI_MetabolicFailure</defName>
+    <label>metabolic failure</label>
+    <description>Metabolism has stopped. Restore the affected organs or capacity. Untreated failure becomes fatal over approximately three game days.</description>
+    <modExtensions><li Class="MoreInjuries.HealthConditions.VitalFailure.VitalFailureProperties"><severityPerDay>0.34</severityPerDay></li></modExtensions>
+  </HediffDef>
+  <HediffDef ParentName="MI_VitalFailureBase">
+    <defName>MI_Coma</defName>
+    <label>coma</label>
+    <description>Consciousness has fallen to zero, although the brain is structurally present. Treat the cause. This condition resolves when consciousness returns; persistent untreated coma becomes fatal over approximately five game days. Coma alone does not imply oxygen deprivation.</description>
+    <modExtensions><li Class="MoreInjuries.HealthConditions.VitalFailure.VitalFailureProperties"><severityPerDay>0.2</severityPerDay></li></modExtensions>
+  </HediffDef>
+</Defs>

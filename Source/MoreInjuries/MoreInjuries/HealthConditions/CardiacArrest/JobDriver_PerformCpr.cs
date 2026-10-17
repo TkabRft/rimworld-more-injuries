@@ -1,8 +1,9 @@
-﻿using MoreInjuries.AI.Audio;
+using MoreInjuries.AI.Audio;
 using MoreInjuries.AI.Jobs;
 using MoreInjuries.AI.TreatmentModifiers;
 using MoreInjuries.Defs.WellKnown;
 using MoreInjuries.Extensions;
+using MoreInjuries.HealthConditions.VitalFailure;
 using UnityEngine;
 using Verse;
 using Verse.AI;
@@ -64,6 +65,17 @@ public class JobDriver_PerformCpr : JobDriver_UseMedicalDevice_TargetsHediffDefs
             if (newSeverity > 0)
             {
                 cardiacArrest.Severity = newSeverity;
+            }
+            else if (VitalFailureComp.OwnsOxygenProgression(patient) && VitalFailureComp.For(patient) is { } vital)
+            {
+                if (vital.CanRestoreCirculation())
+                {
+                    vital.RestoreCirculation();
+                }
+                else
+                {
+                    cardiacArrest.Severity = VitalFailureModel.INITIAL_SEVERITY;
+                }
             }
             else
             {

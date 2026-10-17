@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- EN: respiratory failure -->
+  <MI_RespiratoryFailure.label>respiratory failure</MI_RespiratoryFailure.label>
+  <!-- EN: Breathing has stopped. Restore the airway or functioning lungs immediately. Without restored oxygen delivery, cerebral hypoxia accumulates and this failure becomes fatal in approximately three game hours. -->
+  <MI_RespiratoryFailure.description>Breathing has stopped. Restore the airway or functioning lungs immediately. Without restored oxygen delivery, cerebral hypoxia accumulates and this failure becomes fatal in approximately three game hours.</MI_RespiratoryFailure.description>
+  <!-- EN: severe -->
+  <MI_RespiratoryFailure.stages.1.label>severe</MI_RespiratoryFailure.stages.1.label>
+  <!-- EN: near death -->
+  <MI_RespiratoryFailure.stages.2.label>near death</MI_RespiratoryFailure.stages.2.label>
+  <!-- EN: acute liver failure -->
+  <MI_LiverFailure.label>acute liver failure</MI_LiverFailure.label>
+  <!-- EN: No functioning liver tissue remains. A functioning replacement can resolve this failure. Without it, failure progresses toward death over approximately one game day. -->
+  <MI_LiverFailure.description>No functioning liver tissue remains. A functioning replacement can resolve this failure. Without it, failure progresses toward death over approximately one game day.</MI_LiverFailure.description>
+  <!-- EN: severe -->
+  <MI_LiverFailure.stages.1.label>severe</MI_LiverFailure.stages.1.label>
+  <!-- EN: near death -->
+  <MI_LiverFailure.stages.2.label>near death</MI_LiverFailure.stages.2.label>
+  <!-- EN: acute renal failure -->
+  <MI_RenalFailure.label>acute renal failure</MI_RenalFailure.label>
+  <!-- EN: No functioning kidney tissue remains. One functioning kidney or a suitable replacement can resolve this failure. Untreated complete failure becomes fatal over approximately five game days. -->
+  <MI_RenalFailure.description>No functioning kidney tissue remains. One functioning kidney or a suitable replacement can resolve this failure. Untreated complete failure becomes fatal over approximately five game days.</MI_RenalFailure.description>
+  <!-- EN: severe -->
+  <MI_RenalFailure.stages.1.label>severe</MI_RenalFailure.stages.1.label>
+  <!-- EN: near death -->
+  <MI_RenalFailure.stages.2.label>near death</MI_RenalFailure.stages.2.label>
+  <!-- EN: blood filtration failure -->
+  <MI_FiltrationFailure.label>blood filtration failure</MI_FiltrationFailure.label>
+  <!-- EN: Blood filtration has stopped without an identified complete liver or kidney failure. Restore the underlying filtration capacity. Untreated failure becomes fatal over approximately one game day. -->
+  <MI_FiltrationFailure.description>Blood filtration has stopped without an identified complete liver or kidney failure. Restore the underlying filtration capacity. Untreated failure becomes fatal over approximately one game day.</MI_FiltrationFailure.description>
+  <!-- EN: severe -->
+  <MI_FiltrationFailure.stages.1.label>severe</MI_FiltrationFailure.stages.1.label>
+  <!-- EN: near death -->
+  <MI_FiltrationFailure.stages.2.label>near death</MI_FiltrationFailure.stages.2.label>
+  <!-- EN: metabolic failure -->
+  <MI_MetabolicFailure.label>metabolic failure</MI_MetabolicFailure.label>
+  <!-- EN: Metabolism has stopped. Restore the affected organs or capacity. Untreated failure becomes fatal over approximately three game days. -->
+  <MI_MetabolicFailure.description>Metabolism has stopped. Restore the affected organs or capacity. Untreated failure becomes fatal over approximately three game days.</MI_MetabolicFailure.description>
+  <!-- EN: severe -->
+  <MI_MetabolicFailure.stages.1.label>severe</MI_MetabolicFailure.stages.1.label>
+  <!-- EN: near death -->
+  <MI_MetabolicFailure.stages.2.label>near death</MI_MetabolicFailure.stages.2.label>
+  <!-- EN: coma -->
+  <MI_Coma.label>coma</MI_Coma.label>
+  <!-- EN: Consciousness has fallen to zero, although the brain is structurally present. Treat the cause. This condition resolves when consciousness returns; persistent untreated coma becomes fatal over approximately five game days. Coma alone does not imply oxygen deprivation. -->
+  <MI_Coma.description>Consciousness has fallen to zero, although the brain is structurally present. Treat the cause. This condition resolves when consciousness returns; persistent untreated coma becomes fatal over approximately five game days. Coma alone does not imply oxygen deprivation.</MI_Coma.description>
+  <!-- EN: severe -->
+  <MI_Coma.stages.1.label>severe</MI_Coma.stages.1.label>
+  <!-- EN: near death -->
+  <MI_Coma.stages.2.label>near death</MI_Coma.stages.2.label>
+</LanguageData>

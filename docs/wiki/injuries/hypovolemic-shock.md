@@ -8,7 +8,8 @@ When a pawn loses a significant amount of blood, there may not be enough blood v
 
 > **In-Game Description**
 > _"**Hypovolemic shock** &mdash; A life-threatening state caused by insufficient blood flow to the body. Hypovolemic shock is a medical emergency; if left untreated, the insufficient blood flow can cause damage to organs, leading to hypoxia and multiple organ failure.<br>
-> Shock develops when blood loss exceeds 45%. Severity changes gradually with the remaining blood-volume deficit. Stopping the bleeding prevents further loss; restoring blood volume with transfusions or IV fluids allows recovery. The quality of shock tending determines how much it slows worsening, assists recovery, and reduces hypoxia risk. Sustained severe shock can also build acidosis before new organ injuries appear. Adrenaline buys time without lowering the underlying shock target. Existing injuries and complications still require treatment."_
+> Shock develops when blood loss exceeds 45%. Severity changes gradually with the remaining blood-volume deficit. Stopping the bleeding prevents further loss; restoring blood volume with transfusions or IV fluids allows recovery. The quality of shock tending determines how much it slows worsening, assists recovery, and reduces hypoxia risk. Sustained severe shock can also build acidosis before new organ injuries appear. Adrenaline buys time without lowering the underlying shock target. Existing injuries and complications still require treatment.<br>
+> With delayed vital failure enabled, sustained severe shock also steadily increases cerebral hypoxia. Good shock tending and adrenaline can slow this perfusion-related damage, but do not replace missing blood."_
 
 ```mermaid
 ---
@@ -50,6 +51,8 @@ With advanced trauma simulation enabled, sustained severe shock can build [acido
 > [!NOTE]
 > **Biotech DLC**: Deathresting sanguaphages will automatically recover from hypovolemic shock over time, as they can regenerate blood on their own. The Deathless gene clears hypovolemic shock and blocks this shock from causing cardiac arrest.  
 > **Odyssey DLC**: The Breathless gene does the same for shock and for cardiac arrest caused by this shock. Either gene is enough. A pawn with no genes is not protected by this.
+
+With delayed vital failure enabled, sustained severe shock also steadily builds [cerebral hypoxia](/docs/wiki/injuries/hypoxia.md#cerebral-hypoxia), independently of random organ-injury rolls. Tending quality and adrenaline reduce the shock-related contribution; they cannot compensate for absent pumping or breathing. Restoring blood volume reduces the perfusion-related source immediately, even while visible shock subsides gradually.
 
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---
