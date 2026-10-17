@@ -1,4 +1,5 @@
 ﻿using MoreInjuries.Debug;
+using MoreInjuries.Extensions;
 using MoreInjuries.HealthConditions.Secondary;
 using MoreInjuries.HealthConditions.Secondary.Linked;
 using MoreInjuries.Roslyn.Future.ThrowHelpers;
@@ -87,7 +88,7 @@ public sealed class HediffComp_Acidosis : HediffComp
         }
         foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
         {
-            LinkedSeverityProperties_ModExtension? modExtension = hediff.def.GetModExtension<LinkedSeverityProperties_ModExtension>();
+            LinkedSeverityProperties_ModExtension? modExtension = hediff.def.GetCachedModExtension<LinkedSeverityProperties_ModExtension>();
             if (modExtension is not null && modExtension.LinkedSeverityHandlers.TryGetValue(parent.def, out HediffCompHandler_LinkedSeverity? handler))
             {
                 float effectiveSeverity = handler.Evaluate(hediff);

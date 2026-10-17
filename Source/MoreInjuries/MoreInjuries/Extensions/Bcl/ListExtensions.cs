@@ -1,5 +1,6 @@
 ﻿using MoreInjuries.Roslyn.Future.Extensions;
 using System.Collections.Generic;
+using Verse;
 
 namespace MoreInjuries.Extensions.Bcl;
 
@@ -11,6 +12,6 @@ public static class ListExtensions
         {
             return default;
         }
-        return list[Random.Shared.Next(list.Count)];
+        return list[Rand.Range(0, list.Count)];
     }
 }

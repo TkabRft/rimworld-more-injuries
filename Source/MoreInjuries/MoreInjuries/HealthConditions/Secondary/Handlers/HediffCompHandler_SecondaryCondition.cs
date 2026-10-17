@@ -41,7 +41,7 @@ public abstract partial class HediffCompHandler_SecondaryCondition : HediffCompH
         Hediff hediff = comp.parent;
         float chance = 1f;
         // apply modifiers from the downstream hediff
-        if (ApplyDownstreamModifiers && hediffDef.GetModExtension<HediffModifier_DownstreamChanceModifiers_ModExtension>() is { } downstream)
+        if (ApplyDownstreamModifiers && hediffDef.GetCachedModExtension<HediffModifier_DownstreamChanceModifiers_ModExtension>() is { } downstream)
         {
             chance *= downstream.GetModifier(hediff, compHandler: this);
         }

@@ -1,4 +1,5 @@
 ﻿using MoreInjuries.Caching;
+using MoreInjuries.Extensions;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -35,7 +36,7 @@ public sealed class HediffComp_LinkedSeverity : HediffComp
         List<LinkedSeverityData> linkedSeverities = result.Value;
         foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
         {
-            LinkedSeverityProperties_ModExtension? modExtension = hediff.def.GetModExtension<LinkedSeverityProperties_ModExtension>();
+            LinkedSeverityProperties_ModExtension? modExtension = hediff.def.GetCachedModExtension<LinkedSeverityProperties_ModExtension>();
             if (modExtension is not null && modExtension.LinkedSeverityHandlers.TryGetValue(parent.def, out HediffCompHandler_LinkedSeverity? handler))
             {
                 float effectiveSeverity = handler.Evaluate(hediff);

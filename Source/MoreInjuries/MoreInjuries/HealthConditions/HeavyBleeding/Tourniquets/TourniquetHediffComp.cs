@@ -6,7 +6,6 @@ using MoreInjuries.Roslyn.Future.Extensions;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
-using Random = System.Random;
 
 namespace MoreInjuries.HealthConditions.HeavyBleeding.Tourniquets;
 
@@ -128,7 +127,7 @@ public sealed class TourniquetHediffComp : HediffComp
             Span<bool> childPartStatus = stackalloc bool[childCount];
             for (int remaining = childCount; remaining > 0; remaining--)
             {
-                int remainingChildIndex = Random.Shared.Next(remaining);
+                int remainingChildIndex = Rand.Range(0, remaining);
                 int childIndex = 0;
                 for (int i = 0; i < childCount; i++)
                 {

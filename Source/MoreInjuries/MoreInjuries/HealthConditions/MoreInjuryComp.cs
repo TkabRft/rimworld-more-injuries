@@ -105,9 +105,18 @@ public class MoreInjuryComp : ThingComp
         {
             return;
         }
-        foreach (ICompTickHandler handler in _compTickHandlers.GetActive())
+        int count = _compTickHandlers.Count;
+        if (count == 0)
         {
-            handler.CompTick();
+            return;
+        }
+        for (int i = 0; i < count; i++)
+        {
+            ICompTickHandler handler = _compTickHandlers[i];
+            if (handler.IsEnabled)
+            {
+                handler.CompTick();
+            }
         }
     }
 
@@ -117,9 +126,14 @@ public class MoreInjuryComp : ThingComp
         {
             return;
         }
-        foreach (INotify_UsedVerbHandler handler in _usedVerbHandlers.GetActive())
+        int count = _usedVerbHandlers.Count;
+        for (int i = 0; i < count; i++)
         {
-            handler.Notify_UsedVerb(pawn, verb);
+            INotify_UsedVerbHandler handler = _usedVerbHandlers[i];
+            if (handler.IsEnabled)
+            {
+                handler.Notify_UsedVerb(pawn, verb);
+            }
         }
     }
 
@@ -132,11 +146,16 @@ public class MoreInjuryComp : ThingComp
         }
         UIBuilder<Gizmo> builder = s_gizmosBuilder;
         builder.Clear();
-        foreach (ICompGetGizmosExtraHandler handler in _compGetGizmosExtraHandlers.GetActive())
+        int count = _compGetGizmosExtraHandlers.Count;
+        for (int i = 0; i < count; i++)
         {
-            handler.AddGizmosExtra(builder);
+            ICompGetGizmosExtraHandler handler = _compGetGizmosExtraHandlers[i];
+            if (handler.IsEnabled)
+            {
+                handler.AddGizmosExtra(builder);
+            }
         }
-        return builder.Options;
+        return new List<Gizmo>(builder.Options);
     }
 
     public override IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selectedPawn)
@@ -147,11 +166,16 @@ public class MoreInjuryComp : ThingComp
         }
         UIBuilder<FloatMenuOption> builder = s_floatMenuOptionsBuilder;
         builder.Clear();
-        foreach (ICompFloatMenuOptionsHandler handler in _compFloatMenuOptionsHandlers.GetActive())
+        int count = _compFloatMenuOptionsHandlers.Count;
+        for (int i = 0; i < count; i++)
         {
-            handler.AddFloatMenuOptions(builder, selectedPawn);
+            ICompFloatMenuOptionsHandler handler = _compFloatMenuOptionsHandlers[i];
+            if (handler.IsEnabled)
+            {
+                handler.AddFloatMenuOptions(builder, selectedPawn);
+            }
         }
-        return builder.Options;
+        return new List<FloatMenuOption>(builder.Options);
     }
 
     public override void PostPostApplyDamage(DamageInfo dinfo, float totalDamageDealt)
@@ -162,9 +186,14 @@ public class MoreInjuryComp : ThingComp
         }
         if (parent.Map is not null)
         {
-            foreach (IPostPostApplyDamageHandler handler in _postPostApplyDamageHandlers.GetActive())
+            int count = _postPostApplyDamageHandlers.Count;
+            for (int i = 0; i < count; i++)
             {
-                handler.PostPostApplyDamage(in dinfo);
+                IPostPostApplyDamageHandler handler = _postPostApplyDamageHandlers[i];
+                if (handler.IsEnabled)
+                {
+                    handler.PostPostApplyDamage(in dinfo);
+                }
             }
         }
         base.PostPostApplyDamage(dinfo, totalDamageDealt);
@@ -185,9 +214,14 @@ public class MoreInjuryComp : ThingComp
 
         if (MoreInjuriesMod.Settings.AnomalyEnableConditionsForShamblers || parent is Pawn { IsShambler: false })
         {
-            foreach (IPostTakeDamageHandler handler in _postTakeDamageHandlers.GetActive())
+            int count = _postTakeDamageHandlers.Count;
+            for (int i = 0; i < count; i++)
             {
-                handler.PostTakeDamage(damage, in _damageInfo);
+                IPostTakeDamageHandler handler = _postTakeDamageHandlers[i];
+                if (handler.IsEnabled)
+                {
+                    handler.PostTakeDamage(damage, in _damageInfo);
+                }
             }
         }
         CallbackActive = false;
@@ -200,9 +234,14 @@ public class MoreInjuryComp : ThingComp
         {
             return;
         }
-        foreach (IPostApplyDamageToPartHandler handler in _postApplyDamageToPartHandlers.GetActive())
+        int count = _postApplyDamageToPartHandlers.Count;
+        for (int i = 0; i < count; i++)
         {
-            handler.ApplyDamageToPart(in dinfo, pawn, result);
+            IPostApplyDamageToPartHandler handler = _postApplyDamageToPartHandlers[i];
+            if (handler.IsEnabled)
+            {
+                handler.ApplyDamageToPart(in dinfo, pawn, result);
+            }
         }
     }
 
@@ -217,17 +256,23 @@ public class MoreInjuryComp : ThingComp
             _handlers = [.. handlers];
         }
 
-        public IEnumerable<THandler> GetActive()
+        public int Count
         {
-            THandler[]? handlers = _handlers;
-            DebugAssert.IsNotNull(handlers);
-            for (int i = 0; i < handlers.Length; ++i)
+            get
             {
-                THandler handler = handlers[i];
-                if (handler.IsEnabled)
-                {
-                    yield return handler;
-                }
+                THandler[]? handlers = _handlers;
+                DebugAssert.IsNotNull(handlers);
+                return handlers.Length;
+            }
+        }
+
+        public THandler this[int index]
+        {
+            get
+            {
+                THandler[]? handlers = _handlers;
+                DebugAssert.IsNotNull(handlers);
+                return handlers[index];
             }
         }
     }

@@ -24,7 +24,7 @@ internal sealed class Poolable<T>(IPool<Poolable<T>> pool, Predicate<T>? canPool
     public void Initialize()
     {
         DebugAssert.IsTrue(_isPooled, "Cannot initialize a Poolable object that was already initialized.");
-        if (factory is not null)
+        if (_value is null && factory is not null)
         {
             _value = factory.Invoke();
         }

@@ -26,21 +26,31 @@ public class HediffComp_SecondaryCondition : HediffComp
 
     public override void CompPostTick(ref float severityAdjustment)
     {
-        if (ValidState)
+        if (!ValidState)
         {
-            // we move the ShouldSkip check inside the loop to ensure that we don't evaluate the curve even if there are no handlers to process this tick
-            bool processedHandler = false;
-            foreach (IHediffComp_SecondaryCondition_TickHandler handler in Properties.TickHandlers)
+            return;
+        }
+        int wakeInterval = Properties.TickWakeInterval;
+        if (wakeInterval == 0)
+        {
+            return;
+        }
+        if (wakeInterval > 0 && !Pawn.IsHashIntervalTick(wakeInterval))
+        {
+            return;
+        }
+        // we move the ShouldSkip check inside the loop to ensure that we don't evaluate the curve even if there are no handlers to process this tick
+        bool processedHandler = false;
+        foreach (IHediffComp_SecondaryCondition_TickHandler handler in Properties.TickHandlers)
+        {
+            if (Pawn.IsHashIntervalTick(handler.TickInterval))
             {
-                if (Pawn.IsHashIntervalTick(handler.TickInterval))
+                if (!processedHandler && ShouldSkip())
                 {
-                    if (!processedHandler && ShouldSkip())
-                    {
-                        return;
-                    }
-                    handler.Handle(this);
-                    processedHandler = true;
+                    return;
                 }
+                handler.Handle(this);
+                processedHandler = true;
             }
         }
     }

@@ -2,6 +2,7 @@
 using MoreInjuries.Extensions.Bcl;
 using MoreInjuries.Localization;
 using RimWorld;
+using System.Collections.Generic;
 using System.Text;
 using Verse;
 
@@ -9,39 +10,17 @@ namespace MoreInjuries.HealthConditions.HeavyBleeding.Overrides;
 
 public class BetterInjury : Hediff_Injury, IStatefulInjury, IInjuryStateOwner
 {
+    private static readonly WeakTimedDataCache<Pawn, IReadOnlyList<BodyPartRecord>, TimedDataEntry<IReadOnlyList<BodyPartRecord>>> s_blockingExternalParts = new
+    (
+        minCacheRefreshIntervalTicks: GenTicks.TickRareInterval,
+        dataProvider: CollectBlockingExternalParts
+    );
+
     private readonly BetterInjuryState<BetterInjury> _state;
-    private readonly TimedDataField<BetterInjury, bool, TimedDataEntry<bool>> _isInternalInjuryCache;
 
     public BetterInjury()
     {
         _state = new BetterInjuryState<BetterInjury>(this);
-        _isInternalInjuryCache = new TimedDataField<BetterInjury, bool, TimedDataEntry<bool>>
-        (
-            owner: this,
-            minRefreshIntervalTicks: GenTicks.TickRareInterval,
-            dataProvider: static self =>
-            {
-                // returns true if we are an internal injury and all related external injuries are tended to the best of our ability
-                // so Plugged <=> this is an internal injury that is still bleeding and all related external injuries are tended, hemostat applied, or aren't bleeding
-                foreach (Hediff hediff in self.pawn.health.hediffSet.hediffs)
-                {
-                    // must be an external injury that is still bleeding
-                    if (hediff is IStatefulInjury injury and HediffWithComps { Part.depth: BodyPartDepth.Outside, def.injuryProps.bleedRate: > 0 }
-                        // must be related to this injury
-                        && (hediff.Part == self.Part || hediff.Part == self.Part.parent || hediff.Part.parent == self.Part || hediff.Part.parent == self.Part.parent)
-                        // must be tendable now (an active injury)
-                        && hediff.TendableNow())
-                    {
-                        // if the external injury is still bleeding (not tended), we are not plugged
-                        if (injury.State.CoagulationFlags.IsEmpty && !hediff.IsTended())
-                        {
-                            return false;
-                        }
-                    }
-                }
-                return true;
-            }
-        );
     }
 
     public IInjuryState State => _state;
@@ -69,11 +48,11 @@ public class BetterInjury : Hediff_Injury, IStatefulInjury, IInjuryStateOwner
             {
                 return false;
             }
-            return _isInternalInjuryCache.GetData();
+            return !HasRelatedBlockingExternalWound(forceRefresh: false);
         }
     }
 
-    public bool GetIsClosedInternalWound(bool forceRefresh = false) => _isInternalInjuryCache.GetData(forceRefresh);
+    public bool GetIsClosedInternalWound(bool forceRefresh = false) => !HasRelatedBlockingExternalWound(forceRefresh);
 
     public override float BleedRate => base.BleedRate * _state.EffectiveBleedRateMultiplier;
 
@@ -88,7 +67,42 @@ public class BetterInjury : Hediff_Injury, IStatefulInjury, IInjuryStateOwner
     public override void Tick()
     {
         base.Tick();
-        _state.Tick();
+        if (_state.IsTimedTamponadeActive)
+        {
+            _state.Tick();
+        }
+    }
+
+    private bool HasRelatedBlockingExternalWound(bool forceRefresh)
+    {
+        BodyPartRecord? part = Part;
+        IReadOnlyList<BodyPartRecord> blockingParts = s_blockingExternalParts.GetData(pawn, forceRefresh);
+        for (int i = 0; i < blockingParts.Count; i++)
+        {
+            BodyPartRecord other = blockingParts[i];
+            if (other == part || (part is not null && (other == part.parent || other.parent == part || other.parent == part.parent)))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static IReadOnlyList<BodyPartRecord> CollectBlockingExternalParts(Pawn pawn)
+    {
+        List<BodyPartRecord>? blockingParts = null;
+        foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
+        {
+            if (hediff is IStatefulInjury injury and HediffWithComps { Part: { depth: BodyPartDepth.Outside } part, def.injuryProps.bleedRate: > 0 }
+                && hediff.TendableNow()
+                && injury.State.CoagulationFlags.IsEmpty
+                && !hediff.IsTended())
+            {
+                blockingParts ??= [];
+                blockingParts.Add(part);
+            }
+        }
+        return (IReadOnlyList<BodyPartRecord>?)blockingParts ?? Array.Empty<BodyPartRecord>();
     }
 
     public override void ExposeData()

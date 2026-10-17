@@ -15,7 +15,6 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 using Verse.AI;
-using Random = System.Random;
 
 namespace MoreInjuries.AI.Jobs;
 
@@ -72,7 +71,7 @@ public sealed class JobDriver_ProvideFirstAid : JobDriver
                 if (bleedRate > MoreInjuriesMod.Settings.MinBleedRateForAutoTourniquet
                     && MedicalDeviceHelper.FindMedicalDevice(doctor, patient, KnownThingDefOf.Tourniquet, fromInventoryOnly: true) is Thing tourniquet
                     // for medically and intellectually challenged doctors, there's a small chance of certain accidents...
-                    && (bodyPart.def != KnownBodyPartDefOf.Neck || !pawnKnowsWhatTheyreDoing && Random.Shared.NextDouble() < 0.2d))
+                    && (bodyPart.def != KnownBodyPartDefOf.Neck || !pawnKnowsWhatTheyreDoing && Rand.Chance(0.2f)))
                 {
                     job = JobDriver_UseTourniquet.GetDispatcher(doctor, patient, tourniquet, bodyPart).CreateJob();
                     return StartJobAndScheduleScan(doctor, patient, job);
@@ -107,7 +106,8 @@ public sealed class JobDriver_ProvideFirstAid : JobDriver
         if (patient.health.hediffSet.hediffs.Any(JobDriver_UseDefibrillator.JobCanTreat))
         {
             // check if we can administer epinephrine to make the cardiac arrest shockable / boost CPR effectiveness
-            if ((!patient.health.hediffSet.TryGetHediff(KnownHediffDefOf.AdrenalineRush, out Hediff? epinephrine) || epinephrine.Severity < JobDriver_UseEpinephrine.SAFETY_THRESHOLD)
+            if (MoreInjuriesMod.Settings.EnableAdrenaline
+                && (!patient.health.hediffSet.TryGetHediff(KnownHediffDefOf.AdrenalineRush, out Hediff? epinephrine) || epinephrine.Severity < JobDriver_UseEpinephrine.SAFETY_THRESHOLD)
                 && MedicalDeviceHelper.FindMedicalDevice(doctor, patient, KnownThingDefOf.Epinephrine, fromInventoryOnly: true) is Thing epinephrineInjector)
             {
                 job = JobDriver_UseEpinephrine.GetDispatcher(doctor, patient, epinephrineInjector).CreateJob();

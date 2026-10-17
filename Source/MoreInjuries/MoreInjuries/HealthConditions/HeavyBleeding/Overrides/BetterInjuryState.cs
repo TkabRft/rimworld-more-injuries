@@ -1,4 +1,5 @@
 ﻿using MoreInjuries.Caching;
+using MoreInjuries.Extensions;
 using MoreInjuries.Extensions.Bcl;
 using MoreInjuries.HealthConditions.HeavyBleeding.Overrides.BleedRateModifiers;
 using MoreInjuries.Localization;
@@ -91,6 +92,8 @@ public class BetterInjuryState<TOwner>(TOwner owner) : IExposable, IInjuryState 
             return Mathf.Lerp(1f, _temporarilyTamponadedMultiplierBase, remainingFraction);
         }
     }
+
+    public bool IsTimedTamponadeActive => !CoagulationFlags.IsEmpty && _reducedBleedRateTicksRemaining > 0;
 
     public bool IsTemporarilyCoagulated => this is
     {
@@ -192,10 +195,7 @@ public class BetterInjuryState<TOwner>(TOwner owner) : IExposable, IInjuryState 
         Scribe_Values.Look(ref _temporarilyTamponadedMultiplierBase, "temporarilyTamponadedMultiplierBase");
         Scribe_Values.Look(ref _coagulationMultiplier, "overriddenBleedRate");
         Scribe_Values.Look(ref _reducedBleedRateTicksTotal, "reducedBleedRateTicksTotal");
-        if (_reducedBleedRateTicksRemaining % 300 == 0)
-        {
-            Scribe_Values.Look(ref _reducedBleedRateTicksRemaining, "reducedBleedRateTicksRemaining", 30000);
-        }
+        Scribe_Values.Look(ref _reducedBleedRateTicksRemaining, "reducedBleedRateTicksRemaining", 30000);
     }
 
     public void Tick()
@@ -215,7 +215,7 @@ public class BetterInjuryState<TOwner>(TOwner owner) : IExposable, IInjuryState 
         List<HediffCrossInteraction>? crossInteractions = null;
         foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
         {
-            if (hediff.def.GetModExtension<BleedRateModifier_ModExtension>() is { Modifier: var modifier })
+            if (hediff.def.GetCachedModExtension<BleedRateModifier_ModExtension>() is { Modifier: var modifier })
             {
                 crossInteractions ??= [];
                 crossInteractions.Add(new HediffCrossInteraction(hediff, modifier));
