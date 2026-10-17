@@ -11,7 +11,7 @@ internal abstract partial class LocalizationInfoRepository(string language)
 
     public string Language { get; } = language;
 
-    [GeneratedRegex(@"^<!-- EN: (?<comment>.+) -->$")]
+    [GeneratedRegex(@"^<!-- EN: (?<comment>.+) -->$", RegexOptions.Singleline)]
     private static partial Regex CommentNodeRegex { get; }
 
     [GeneratedRegex(@"^<!-- OPTS: (?<options>{\s*(""(?<key_1>[A-Za-z][A-Za-z0-9_\-]*)"":\s*(?<value_1>(true|false)))(,\s*""(?<key_n>[A-Za-z][A-Za-z0-9_\-]*)"":\s*(?<value_n>(true|false)))*\s*}) -->$")]
@@ -68,7 +68,9 @@ internal abstract partial class LocalizationInfoRepository(string language)
                 if (CommentNodeRegex.Match(commentNodeString) is { Success: true } commentMatch)
                 {
                     Group commentGroup = commentMatch.Groups["comment"];
-                    comment = commentGroup.Value;
+                    // XNode.ToString serializes newlines using the host convention; XElement.Value
+                    // retains XML-normalized LF. Compare the actual text, not line-ending encoding.
+                    comment = commentGroup.Value.Replace("\r\n", "\n", StringComparison.Ordinal);
                     continue;
                 }
                 if (OptionsNodeRegex.Matches(commentNodeString) is { Count: > 0 } optionsMatches)

@@ -15,4 +15,17 @@
     <ItemGroup>
         <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
     </ItemGroup>
+
+    <!-- Exercise the production scheduler headlessly, with the small Verse stand-ins under RuntimeContracts. -->
+    <ItemGroup>
+        <Compile Include="..\MoreInjuries\HealthConditions\Secondary\HediffCompProperties_SecondaryCondition.cs" Link="RuntimeContracts\Production\HediffCompProperties_SecondaryCondition.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\Secondary\HediffComp_SecondaryCondition.cs" Link="RuntimeContracts\Production\HediffComp_SecondaryCondition.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\HeavyBleeding\BloodLossPolicy.cs" Link="RuntimeContracts\Production\BloodLossPolicy.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\HeavyBleeding\TraumaEligibility.cs" Link="RuntimeContracts\Production\TraumaEligibility.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\HypovolemicShock\ShockPerfusionModel.cs" Link="RuntimeContracts\Production\ShockPerfusionModel.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\HypovolemicShock\HediffModifier_HypovolemicShockOnset.cs" Link="RuntimeContracts\Production\HediffModifier_HypovolemicShockOnset.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\HeavyBleeding\BloodLossConstants.cs" Link="RuntimeContracts\Production\BloodLossConstants.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\HypovolemicShock\HediffComp_Shock.cs" Link="RuntimeContracts\Production\HediffComp_Shock.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\HypovolemicShock\HediffCompProperties_Shock.cs" Link="RuntimeContracts\Production\HediffCompProperties_Shock.cs" />
+    </ItemGroup>
 </Project>

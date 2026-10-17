@@ -92,7 +92,12 @@ internal sealed class DefDatabase
             string key = DefKeyBuilder.CreateKey(field, defNode, defName);
             if (typedDefs.TryGetValue(key, out LocalizationValue? existingValue))
             {
-                context.ReportDuplicateKeyFor(field, existingValue);
+                // Multiple severity stages can intentionally share a label and its translation.
+                // Conflicting text or duplicate fields outside the stage list remain errors.
+                if (field.Parent?.Parent?.Name.LocalName != "stages" || existingValue.Value != field.Value || existingValue.Path != context.RelativePath)
+                {
+                    context.ReportDuplicateKeyFor(field, existingValue);
+                }
                 continue;
             }
             string? value = field.Value;
