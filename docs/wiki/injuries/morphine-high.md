@@ -46,6 +46,8 @@ Another adverse effect of morphine is the impediment of resuscitation efforts in
 > [!WARNING]
 > Due to its adverse effects on the respiratory systems, morphine should be used with caution, and patients should be closely monitored for any signs of complications.
 
+**Inspecting effects**: Open the linked morphine high, tolerance, or addiction information card to see numerical effects. High stages list their severity thresholds and modifiers; addiction cards distinguish withdrawal from the satisfied state. Tolerance cards show drug-effect samples and the configured recovery rate. With Biotech, morphine gene icons show its autoinjector over a large heart for dependency, a half-shield for resistance, or a full shield for immunity.
+
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---
 _[back to the top](#morphine-high)_

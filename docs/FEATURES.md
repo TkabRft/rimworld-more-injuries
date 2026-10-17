@@ -21,6 +21,7 @@ Package `Th3Fr3d.ExtendedInjuries`. Namespace `MoreInjuries`. Supported versions
 | concussion / trauma stroke | `docs/concussion.md` | `HealthConditions/HeadInjury/` and `Defs/Internal/HeadTraumaProperties.xml` |
 | Cascading conditions | `docs/wiki/pathophysiological-system.md`, `docs/wiki/concepts.md` | `HealthConditions/Secondary/` |
 | Devices, drugs, CPR, transfusions | `docs/wiki/medical-devices.md` | `Defs/ThingDefs/Medicine/`, `AI/`, `HealthConditions/Drugs/`, `HealthConditions/HeavyBleeding/` |
+| Blood-loss scheduling, drug information cards, chemical gene icons, optional hydration | `docs/medical-runtime.md` | `HealthConditions/Secondary/`, `HealthConditions/Drugs/`, `Initialization/`, `Integrations/DubsBadHygiene/` |
 | Body parts | `docs/wiki/body-parts.md` | `Defs/BodyPartDefs/`, `Patches/Patch_BodyParts.xml` |
 | Research | `docs/wiki/research.md` | `Defs/Research/` |
 | Surgeries | `docs/wiki/surgeries.md` | `Defs/RecipeDefs/Surgeries/`, `Patches/Patch_Surgeries.xml` |
@@ -69,7 +70,7 @@ Expand only when blocked.
 - Do not rename a `defName`, job def, or `Scribe` key without a migration in `Versioning/` and a user decision.
 - Do not add a temporary recipe, def alias, or setting for a disposable test save.
 - Player-visible text goes through `Languages/`. English is the source language.
-- Optional mods stay optional. Biotech, Combat Extended, Dub's Bad Hygiene, Humanoid Alien Races, and RBSE integrations must not run unless that mod is active. Bad Hygiene C# is behind `MOD_BAD_HYGIENE`.
+- Optional mods stay optional. Biotech, Combat Extended, Dub's Bad Hygiene, Humanoid Alien Races, and RBSE integrations must not run unless that mod is active. Typed Bad Hygiene API use is behind `MOD_BAD_HYGIENE`; the XML-visible hydration bridge also builds without that flag and invokes the loaded optional API at runtime.
 - Do not add a dependency, `loadAfter` entry, or Harmony target without approval.
 - Do not change `packageId`, namespace, supported versions, the RimWorld ref, or the Harmony package unless requested.
 - Wiki blocks marked `@generate_toc`, `@generate_breadcrumb_trail`, or `@generate_link_to_top` are owned by `MoreInjuries.WikiGen`. Edit headings and prose. Do not hand-maintain the generated block. Regenerate only when headings or the page tree changed.

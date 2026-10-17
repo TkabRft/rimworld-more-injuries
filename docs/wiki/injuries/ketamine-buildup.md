@@ -36,6 +36,8 @@ flowchart LR
 > [!TIP]
 > Anesthetics offer a wide range of possibilities in RimWorld gameplay. From ensuring hostile pawns stay unconscious while rendering first aid before capturing them, safely "calming down" colonists on violent mental breaks, or even for self-sedation and "playing dead" as a last resort in combat when escape is not an option. Feel free to experiment with the new possibilites. Beware though that sedating someone without medical necessity is considered a hostile action.
 
+**Inspecting effects**: Open the linked ketamine buildup, tolerance, or addiction information card to see numerical effects. Buildup stages list their severity thresholds and modifiers; addiction cards distinguish withdrawal from the satisfied state. Tolerance cards show drug-effect samples and the configured recovery rate. With Biotech, ketamine gene icons show its autoinjector over a large heart for dependency, a half-shield for resistance, or a full shield for immunity.
+
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---
 _[back to the top](#ketamine-buildup)_

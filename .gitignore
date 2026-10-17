@@ -375,5 +375,8 @@ artifacts/
 # local config files
 hostconfig.json
 
+# Local game-ready package
+/Release/
+
 # articles that aren't open-access
 /assets/simulation/**/sci-hub-*.pdf

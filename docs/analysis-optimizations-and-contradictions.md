@@ -1,12 +1,12 @@
 # Verified analysis and fix plan
 
-code-synced: 2026-09-26
+code-synced: 2026-10-17
 
 This document replaces the original list of "confirmed contradictions". Observations were checked against current C# and XML. User decisions take priority over earlier recommendations.
 
 ## Done 2026-09-26
 
-Plans 1–3 and separate fixes A, B, and C are implemented. Optimizations in the last section were not done. Items in the "do not change" table were not changed.
+Plans 1–3 and separate fixes A, B, and C were implemented on 2026-09-26. The current working tree also contains the optimizations summarized below. The later scheduler regression, blood-loss safeguards, and medical XML fixes are documented in [medical runtime](medical-runtime.md). Items in the "do not change" table were not changed.
 
 | Stage | Status |
 |---|---|
@@ -16,7 +16,7 @@ Plans 1–3 and separate fixes A, B, and C are implemented. Optimizations in the
 | A. Save loading | `implemented`. A missing `jobParameters` node is an empty cache, not a reason to delete wounds or resurrect a pawn. Targeted bionic relocation is kept and does not require mass wound deletion. |
 | B. Temporary tamponade | `implemented`. The multiplier is `Lerp(1, base, remaining / total)`, with a guard against zero total time. |
 | C. Repeat blood draw | `implemented`. The periodic handler does not add a second bill for the same recipe. Hemogen mode and the recipe are read only when Biotech is active. The notification filter was not changed. |
-| Optimizations | not done |
+| Optimizations | `partial`. Indexed handler walks, wound-part snapshots, pool reuse, and def-extension caching are present. The scheduler cache is repaired and covered by baseline comparisons. Performance measurements remain outside this repair. |
 
 ## User decisions and scope
 
@@ -166,9 +166,9 @@ Documentation closeout: player description in `docs/wiki/medical-devices.md`, te
 |---|---|
 | Choking: two severity mechanisms | Constant growth and random change do coexist. With no source and the ability to cough, and with no extra modifiers, the mean change including constant growth is about −0.0625 per step. Removing +2/day automatically is not planned |
 | Choking: repeated addition | There is no check for an existing state, but the final merge or coexistence, and the effect of several breathing caps, need an engine check. Do not call `setMax` a stacking penalty. Merging sources needs a separate decision |
-| Shock: two severity mechanisms | Direct changes and `severityPerDayTended=-1.5` can compete. The 55% threshold applies to current shock; there is no permanent no-return flag. Recovery starts at blood loss ≤0.449. A balance change is not planned yet |
-| Shock: treatment quality | The curve contains values above 1, but a universal 100% quality cap is not proven. Do not declare stabilization impossible |
-| Shock: intervals in tooltips | Confirmed inaccuracy: the text says 300 ticks; the code uses 250/500. If the text is fixed separately, sync translations and `docs/wiki/injuries/hypovolemic-shock.md`. Do not change intervals to match the text |
+| Shock: two severity mechanisms | `implemented`: the approved continuous volume/perfusion model owns severity changes; the competing tended severity rate is zero. Reliable onset, bounded progression, and resuscitation-dependent recovery replace the old 55% branch. See [medical runtime](medical-runtime.md). |
+| Shock: treatment quality | The existing quality curve is retained. A successful tend adds temporary support while tended; it no longer permanently cancels the missing-volume deficit. |
+| Shock: intervals in tooltips | Current English text uses the existing 250/500-tick complication intervals. Onset remains checked every 250 ticks; severity updates every 150 ticks. |
 | Repeat fracture of a healing bone | Possible. This is not a proven bug; a ban would add protection against a repeat fracture. Do not change it without a mechanic decision |
 | Dry gangrene | Four days is a random-intensity parameter, not a required delay. Over a full day the infection chance is about 22.1%; auto-amputation competes with infection. Do not fix the balance automatically |
 | Epinephrine | A separate menu item depends on `EnableAdrenaline`, but `JobDriver_ProvideFirstAid` can administer the drug without that flag. The claim that there is no other path is wrong. Define the shared use policy separately |
@@ -177,21 +177,21 @@ Documentation closeout: player description in `docs/wiki/medical-devices.md`, te
 | Six Harmony postfixes | The current arrangement is confirmed. This plan does not require new patches or a change of patch type |
 | XML flags, resuscitation, and the lung setting alias | Using flags in XML, treating vanilla HeartAttack, and keeping the old `LungCollapseChanceOnDamage` key are intentional |
 
-## Optimizations: a separate stage after the fixes
+## Optimizations: current implementation and remaining research
 
-There are no performance measurements yet. The order below is not a ranking of expected speedup. Do not do optimizations together with the DLC alignment or the stroke toggle.
+There are no performance measurements yet. The order below is not a ranking of expected speedup. The current implementation preserves the existing working-tree optimization work rather than reverting it.
 
-1. Remove the iterator allocation from the tick walk in `HandlerChain.GetActive`, while keeping the dynamic settings check.
+1. `implemented`: handler chains use indexed walks and keep the dynamic settings check.
 2. Do not add a strict `Human` filter in the damage handler: `Patches/Mod_HumanoidAlienRaces.xml` adds the component to alien races. Separately check callback reset for the off-map case and for an exception. A false bind of the next hit is not proven.
-3. Repeated wound walks can be reduced only while keeping body-part relations, individual results, and cache-update rules. One bool per pawn is not enough.
+3. `implemented`: the wound cache records blocking external body parts, keeping the relation checks per injury rather than storing one bool per pawn.
 4. A shared snapshot for acidosis and related states needs a check of change order in the same tick. The same interval does not prove they are equivalent.
-5. Fix the repeated list creation in `Poolable.Initialize` as its own small change. Do not also change the shared pool contract and every lock.
+5. `implemented`: `Poolable.Initialize` reuses an existing value. The working-tree pool is a main-thread fixed-capacity stack; the old thread-safety claim no longer describes it.
 6. Consider caching `GeneDef` separately from immunity-check frequency. Moving the check to 150 ticks changes reaction time.
 7. Boxing settings values through `object` is confirmed, but modifiers are already evaluated after the interval check. The two death handlers cannot be replaced by opposite branches of one flag: tracked and untracked pawns differ.
 8. Repeated acidosis causes are already deduplicated. Clearing them changes the displayed history and does not remove the ring-buffer walk. Define the required semantics first.
-9. If LINQ random selection is replaced, keep inclusions, exclusions, no repeats, probabilities, and, where possible, random-value consumption.
+9. `partial`: list and tourniquet branch selection use `Verse.Rand`. Any further random-walk changes must preserve inclusions, exclusions, no repeats, and probabilities.
 
-Smaller proposals: estimate data preparation for the gangrene walk, including the early exit; cache unchanged def extensions; measure the benefit of replacing `Any`. A manual loop instead of `Contains` does not remove the linear search, and owner plus severity do not prove the wound is still in the list. An early exit on zero adrenaline damage is a behavior change, not a pure optimization. The unused def type `SingleExecutionPerInterval` does not create current tick cost.
+Def-extension caching is implemented in the working tree. Remaining smaller proposals: estimate data preparation for the gangrene walk, including the early exit, and measure the benefit of replacing `Any`. A manual loop instead of `Contains` does not remove the linear search, and owner plus severity do not prove the wound is still in the list. An early exit on zero adrenaline damage is a behavior change, not a pure optimization. The unused def type `SingleExecutionPerInterval` does not create current tick cost.
 
 Closeout for this stage: record measurement results, behavior-preservation checks, and the change scope in this developer doc. Do not change the wiki for internal optimizations that do not change behavior. For an adrenaline change, the owner is `docs/wiki/injuries/adrenaline-rush.md`.
 

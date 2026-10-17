@@ -33,7 +33,8 @@ These mods are known to be compatible with More Injuries, but they aren't direct
 
 ### Partial Support
 
-- Anomaly (DLC): Regeneration clears fractures without a splint, and fades spinal paralysis and permanent brain damage other than a personality shift after the injury on that body part is gone. Chronophagy, unnatural healing, healer mech serum, luciferium, and biosculpter cycles are unchanged.
+- Humanoid Alien Races: The integration adds injury tracking to fleshy races, including races that omit `isFlesh` inside a compatibility block. Explicit false values remain excluded. Mixed comp lists and already-present injury comps are handled without duplicate insertion. Custom alien anatomy and individual race mods still need game acceptance.
+- Anomaly (DLC): Bleeding fleshy entities, including fleshbeasts, participate in hypovolemic shock and its trauma complications, and respect the direct blood-loss death prevention setting. Ordinary animals, mechanical entities, and entities with a zero race bleed rate are not added by this integration. This covers trauma physiology; automatic medical-device work scanning remains limited to humanlike patients. Regeneration clears fractures without a splint, and fades spinal paralysis and permanent brain damage other than a personality shift after the injury on that body part is gone. Chronophagy, unnatural healing, healer mech serum, luciferium, and biosculpter cycles are unchanged.
 
 ### Incompatible Mods
 

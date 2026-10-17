@@ -36,6 +36,8 @@ flowchart LR
 > [!TIP]
 > Anesthetics offer a wide range of possibilities in RimWorld gameplay. From ensuring hostile pawns stay unconscious while rendering first aid before capturing them, safely "calming down" colonists on violent mental breaks, or even for self-sedation and "playing dead" as a last resort in combat when escape is not an option. Feel free to experiment with the new possibilites. Beware though that sedating someone without medical necessity is considered a hostile action.
 
+**Inspecting effects**: The linked chloroform buildup information card lists each dose stage, its severity threshold, its numerical modifiers, and the configured recovery rate.
+
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---
 _[back to the top](#chloroform-buildup)_

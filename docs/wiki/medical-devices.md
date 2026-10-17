@@ -61,7 +61,7 @@ In order to effectively treat the new injuries and medical conditions introduced
 
 </p>
 
-**Used for**: Temporarily reducing the bleed rate of wounds to allow the patient to be stabilized by a doctor. Bandages are a simple and effective way to slow the progression of blood loss and prevent the patient from going into [hypovolemic shock](/docs/wiki/injuries/hypovolemic-shock.md#hypovolemic-shock) until more advanced medical treatment can be provided. This type of elastic bandage allows to reduce the bleed rate of the wound by up to 80% and lasts approximately 12 hours until fully soaked with blood. The reduction is strongest when the bandage is applied and fades in proportion to the time left, reaching no extra reduction when the timer ends. Bandages are a good choice for treating minor to moderate bleeding wounds, but may not be as effective as [hemostatic agents](#hemostatic-agent) in stopping severe bleeding.
+**Used for**: Temporarily reducing the bleed rate of wounds to allow the patient to be stabilized by a doctor. Bandages are a simple and effective way to slow the progression of blood loss and prevent the patient from going into [hypovolemic shock](/docs/wiki/injuries/hypovolemic-shock.md#hypovolemic-shock) until more advanced medical treatment can be provided. This type of elastic bandage allows to reduce the bleed rate of the wound by up to 80% and lasts approximately 12 hours until fully soaked with blood. The reduction is strongest when the bandage is applied and fades in proportion to the time left, reaching no extra reduction when the timer ends. The remaining time is saved with the wound. Bandages are a good choice for treating minor to moderate bleeding wounds, but may not be as effective as [hemostatic agents](#hemostatic-agent) in stopping severe bleeding.
 
 **Usage**:
 
@@ -90,8 +90,10 @@ Blood bags are one of the two options for fluid resuscitation in patients suffer
 
 </p>
 
-**Used for**: Restoring blood volume in patients suffering from severe blood loss and [hypovolemic shock](/docs/wiki/injuries/hypovolemic-shock.md#hypovolemic-shock). Blood transfusion is the only way to fully stabilize and save the patient's life in severe cases of [hypovolemic shock](/docs/wiki/injuries/hypovolemic-shock.md#hypovolemic-shock). It is recommended to keep a ready supply of blood bags in your hospital supply room for emergency situations. You may even want to keep a few blood bags in the inventory of your combat medics to perform immediate blood transfusions on the battlefield.  
+**Used for**: Restoring blood volume in patients suffering from severe blood loss and [hypovolemic shock](/docs/wiki/injuries/hypovolemic-shock.md#hypovolemic-shock). Restoring blood volume is essential in severe cases of [hypovolemic shock](/docs/wiki/injuries/hypovolemic-shock.md#hypovolemic-shock). It is recommended to keep a ready supply of blood bags in your hospital supply room for emergency situations. You may even want to keep a few blood bags in the inventory of your combat medics to perform immediate blood transfusions on the battlefield.   Shock now subsides gradually as the blood-volume deficit improves; a transfusion does not instantly remove existing hypoxic injuries.
 Blood bags are also the only way to stabilize pawns with severe [hemodilution](/docs/wiki/injuries/hemodilution.md#hemodilution) or patients with advanced [acidosis](/docs/wiki/injuries/acidosis.md#acidosis) and [coagulopathy](/docs/wiki/injuries/coagulopathy.md#coagulopathy) to restore their blood volume and allow them to recover. Blood bags can be stored in a refrigerator or freezer to keep them fresh for longer periods of time.
+
+With Dub's Bad Hygiene active, this infusion also restores thirst.
 
 **Usage**:
 
@@ -144,8 +146,6 @@ Blood bags are also the only way to stabilize pawns with severe [hemodilution](/
 > Anesthetics offer a wide range of possibilities in RimWorld gameplay. From ensuring hostile pawns stay unconscious while rendering first aid before capturing them, safely "calming down" colonists on violent mental breaks, or even for self-sedation and "playing dead" as a last resort in combat when escape is not an option. Feel free to experiment with the new possibilites. Beware though that sedating someone without medical necessity is considered a hostile action.
 
 ## CPR
-
-Status: `added, not verified`. code-synced: 2026-09-26.
 
 Cardiopulmonary resuscitation (CPR) is an emergency procedure that combines chest compressions with artificial ventilation to manually preserve brain function until further measures can be taken to restore spontaneous blood circulation and breathing in a person who is in [cardiac arrest](/docs/wiki/injuries/cardiac-arrest.md#cardiac-arrest), suffering from a [heart attack](https://rimworldwiki.com/wiki/Ailments#Heart_attack), or is [choking on blood](/docs/wiki/injuries/choking.md#choking-on-blood).
 
@@ -225,7 +225,7 @@ Alternatively, the pain relief from the adrenaline rush can help to wake up a pa
 **Usage**:
 
 1. Tell a *drafted* pawn capable of doctoring to use the epinephrine autoinjector on a patient using the `Inject epinephrine` option in the right-click context menu. The epinephrine autoinjector must be accessible in a stockpile or the doctor's inventory. Self-treatment is possible.
-2. Administration of epinephrine is part of the resuscitation efforts in the [First Aid](#first-aid) order for *drafted* pawns.
+2. Administration of epinephrine during [First Aid](#first-aid) happens only while adrenaline mechanics are on. The injector can still be used from the right-click menu, crafted, and taken directly.
 3. Alternatively, as epinephrine is considered a drug, it can be administered as part of the normal medical treatment using the *operations* tab of the patient or by telling the pawn to injest the drug directly by right-clicking on the drug and selecting `Use epinephrine autoinjector`.
 
 **Production**: At a drug lab.  
@@ -251,7 +251,7 @@ Tell a *drafted* pawn capable of doctoring to provide first aid to a patient usi
 
 1. If the patient is suffering from severe bleeding on the limbs, the doctor will first apply a [tourniquet](#tourniquet) to the affected limb(s) to stop the bleeding. The tourniquets are applied in the order of severity and must be in the doctor's inventory. Otherwise, this step will be skipped.
 2. The doctor will now attempt to reduce the severity of any externally, bleeding injury by applying [bandages](#bandage) or [hemostatic agents](#hemostatic-agent) to the wounds, temporarily reducing bleed rates and buying time for further treatment.
-3. The doctor will then attempt to treat cardiac arrest through [defibrillation](#defibrillator) or [CPR](#cpr), if necessary. Depending on the current [adrenaline level](/docs/wiki/injuries/adrenaline-rush.md#adrenaline-rush) of the patient, the doctor may also administer an [epinephrine autoinjector](#epinephrine-autoinjector) to increase chances for successful defibrillation.
+3. The doctor will then attempt to treat cardiac arrest through [defibrillation](#defibrillator) or [CPR](#cpr), if necessary. Depending on the current [adrenaline level](/docs/wiki/injuries/adrenaline-rush.md#adrenaline-rush) of the patient, the doctor may also administer an [epinephrine autoinjector](#epinephrine-autoinjector) to increase chances for successful defibrillation. That injection happens only while adrenaline mechanics are on. With the setting off, first aid still defibrillates or performs CPR.
 4. An [airway suction device](#airway-suction-device) will be used to clear the airway of any obstructions.
 5. If neither a [defibrillator](#defibrillator) nor an [airway suction device](#airway-suction-device) is available, but treatment is required, the doctor will start performing [CPR](#cpr) to stabilize the patient.
 6. The doctor will determine if fluid fluid resuscitation is necessary to restore blood volume in cases of severe blood loss and [hypovolemic shock](/docs/wiki/injuries/hypovolemic-shock.md#hypovolemic-shock). If so, they will prefer performing a [saline IV infusion](#saline-iv-bag) to restore blood volume, as it is easier to produce and store. If a saline IV bag is not available or would not be safe to perform due to [hemodilution](/docs/wiki/injuries/hemodilution.md#hemodilution) or pre-existing [coagulopathy](/docs/wiki/injuries/coagulopathy.md#coagulopathy) and [acidosis](/docs/wiki/injuries/acidosis.md#acidosis), the doctor will instead use a [blood bag](#blood-bag) to restore blood volume. If neither is available, the doctor will skip this step.
@@ -278,7 +278,7 @@ After each step (and while doing vanilla treatment), the doctor will re-evaluate
 
 </p>
 
-**Used for**: Temporarily reducing the bleed rate of wounds to allow the patient to be stabilized by a doctor. Hemostatic agents are a fast-acting and effective way to stop severe bleeding and prevent the patient from going into [hypovolemic shock](/docs/wiki/injuries/hypovolemic-shock.md#hypovolemic-shock) until more advanced medical treatment can be provided. This chemical compound is designed to promote blood clotting and reduce the flow of blood from wounds, allowing to reduce the bleed rate of the wound by up to 95% and lasts approximately 8 hours until its active ingredients are depleted. The reduction is strongest when the agent is applied and fades in proportion to the time left, reaching no extra reduction when the timer ends. Hemostatic agents are an excellent choice for treating severe bleeding wounds, but may be overkill for minor to moderate bleeding.
+**Used for**: Temporarily reducing the bleed rate of wounds to allow the patient to be stabilized by a doctor. Hemostatic agents are a fast-acting and effective way to stop severe bleeding and prevent the patient from going into [hypovolemic shock](/docs/wiki/injuries/hypovolemic-shock.md#hypovolemic-shock) until more advanced medical treatment can be provided. This chemical compound is designed to promote blood clotting and reduce the flow of blood from wounds, allowing to reduce the bleed rate of the wound by up to 95% and lasts approximately 8 hours until its active ingredients are depleted. The reduction is strongest when the agent is applied and fades in proportion to the time left, reaching no extra reduction when the timer ends. The remaining time is saved with the wound. Hemostatic agents are an excellent choice for treating severe bleeding wounds, but may be overkill for minor to moderate bleeding.
 
 **Usage**:
 
