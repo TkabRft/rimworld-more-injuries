@@ -1,6 +1,6 @@
 # Blood loss, medical drug information, and optional hydration
 
-code-synced: 2026-10-17
+code-synced: 2026-10-18
 
 ## Current contracts
 
@@ -11,11 +11,32 @@ code-synced: 2026-10-17
 | Shock progression | `implemented`. Reliable 250-tick onset above 45% blood loss, then bounded 150-tick changes toward a deficit-dependent target. No blood-loss copy or autonomous escalation above 55% shock. Tending and adrenaline support circulation without permanently erasing the volume deficit. |
 | Trauma eligibility | `implemented`. Existing tracked pawns plus bleeding fleshy Anomaly entities while Anomaly is active. No ordinary-animal expansion or whole injury-worker injection into entities. HAR XML respects default-true `isFlesh`, explicit false values, existing comp entries, and mixed lists with and without comps. |
 | Forced blood harvesting | `implemented`. The existing direct call to `Apply` remains separate and can kill at full blood loss, independently of the ordinary-bleeding toggle. |
-| Drug information cards | `implemented`. `MedicalDrugHediffDef.SpecialDisplayStats` retains base entries and adds the game's own per-stage display statistics, severity thresholds, addiction states, and configured severity recovery rates. Tolerance samples call the game's drug-effect comp on an unattached condition; no pawn health state or ingestion action is changed. |
+| Drug information cards | `implemented`. `MedicalDrugHediffDef.SpecialDisplayStats` retains base entries and adds the game's own per-stage display statistics, severity thresholds, addiction states, and configured severity recovery rates. Tolerance samples call the game's drug-effect comp on an unattached condition. A private preview subclass sets the protected numeric severity field directly, avoiding native stage-change notifications that require a pawn; no pawn health state or ingestion action is changed. |
+| Medical drug administration | `implemented`. Epinephrine, morphine, ketamine, and chloroform administration delegates to the same `Thing.Ingested` pipeline as direct use. Vanilla owns addiction, need satisfaction, tolerance, chemical gene notifications, overdose, and drug-use notifications. The job supplies one live split unit and preserves its social outcomes. Chloroform retains doctor-skill dosing through its ingestion outcome. |
 | Chemical gene icons | `implemented`. Six RGBA textures occupy the vanilla chemical-template paths for the two existing chemical defs. Injector foregrounds use large heart, half-shield, and full-shield backgrounds for dependency, resistance, and immunity. A Biotech-guarded initializer restricts path assignment to those chemicals and templates. Automatic gene generation and identifiers are unchanged. |
 | Bad Hygiene hydration | `implemented`. The XML-visible hydration outcome class is available in normal Release builds. With the optional compile flag it uses the typed API; otherwise it resolves and caches `Drink(float)` on the loaded thirst type after checking the active mod. This preserves Bad Hygiene's clamping and gain timestamp without a required DLL reference. |
 
 The player explanations belong to the [shock](wiki/injuries/hypovolemic-shock.md), [morphine](wiki/injuries/morphine-high.md), [ketamine](wiki/injuries/ketamine-buildup.md), and [medical-device](wiki/medical-devices.md) pages. Chloroform and adrenaline also expose their existing stages on information cards.
+
+## Unified medical drug administration
+
+`JobDriver_OutcomeDoerBase` supplies one live unit to the configured outcomes and destroys it afterward only if it was not already consumed. This also preserves single-unit consumption for blood and saline outcomes, including failure cleanup. Drug definitions use `JobOutcomeDoer_IngestDrug` after any social outcomes, with physiological effects defined only in `ingestible/outcomeDoers`.
+
+`MedicalDrugAdministration` calls `Thing.Ingested(patient, 0f)` on that unit. It does not call the drug comp separately: vanilla runs `PrePostIngested` (addiction and chemical-need satisfaction), ingestion outcomes (high and tolerance), and `PostIngested` (overdose and notifications) exactly once. Vanilla also notifies chemical-dependency genes. The former job called only `CompDrug.PostIngested`, which could cause overdose without ever rolling addiction or satisfying withdrawal; its separate high outcomes omitted tolerance and its modifiers.
+
+Chloroform's ingestion outcome retains the existing minimum/maximum doctor-skill curves. The synchronous administration scope identifies both doctor and dose, restores previous context on nested calls or exceptions, and exposes no context to unrelated doses. Direct use and vanilla operation bills retain the existing 0.35 buildup baseline. No saved fields, identifiers, gene balance, dependency pins, or Harmony patches changed. Existing saves need no migration; subsequent injections now carry the intended addiction and tolerance risks.
+
+The eight source-linked administration cases cover single-item and stacked drugs, social-outcome ordering, one entry into vanilla ingestion, non-drug device consumption, failed-outcome cleanup, nested/exception context restoration, chloroform dose selection, and the four drug definitions. The boundary to vanilla ingestion is a stand-in; the tests do not execute the game's addiction RNG or replace in-game acceptance. The pinned reference API and production Release build validate the real call signatures.
+
+
+## Inherited drug components and information-card failures
+
+Medical drug definitions now inherit vanilla's non-drug components and declare exactly one concrete `CompProperties_Drug` each. `MedicalDrugBase` no longer contributes an unconfigured drug component. Verse XML inheritance appends `li` entries even when their `Class` attributes match; the former base component therefore preceded the configured component on all four drugs. `ThingDef.GetCompProperties<T>` returns the first match, so `DrugStatsUtility.GetAddictivenessAtTolerance` read zero addictiveness and no chemical despite morphine's later 0.99 entry. The full ingestion pipeline alone could not correct this definition error. Removing the redundant component restores the configured chemical and chance for both direct use and injections without clearing inherited Forbiddable or third-party components.
+
+The blank, lagging drug information card has a separate deterministic failure path. An item's ingestion outcome enumerates the tolerance def's `SpecialDisplayStats`; its detached `HediffWithComps` sample previously used the native `Severity` setter. Moving from the small stage to the 0.5 stage dereferences `pawn.health`, but the preview has no pawn. Repeated card rendering can repeat that exception. `TolerancePreviewHediff.SetPreviewSeverity` now changes only the protected numeric backing field. The vanilla drug-effect comp still computes the displayed samples; no fake pawn, ingestion, broad exception catch, or runtime patch is needed.
+
+Before these fixes, the added regression cases failed for all four inherited component lists and for the production information-card enumeration. Afterward, all six cases pass. The component tests resolve the mod's actual parent chain with the verified minimal Core drug-base fixture and list-append semantics, assert one drug comp plus the retained Forbiddable comp, and check the configured chemical/chance. The source-linked card test enumerates all display entries three times with a setter fixture that reproduces the native pawnless stage-change failure. These are targeted headless reproductions, not a running-game mod-stack test.
+
 
 ## Regression evidence and limits
 
@@ -25,7 +46,7 @@ The normal-initialization differential tests compare callback identity, ordering
 
 The unsupported `causesNeed` nodes were removed from the two addiction defs. Their valid `chemicalNeed` links and existing need identifiers are retained. The missing Release hydration class caused both the blood outcome template and the saline ThingDef to fail parsing; the absent-template and absent-SalineBag errors were downstream failures, not missing identifiers to replace.
 
-The direct blood-loss hypoxia gain remains zero. Drug stages, doses, recovery comps, gene balance, settings defaults, save keys, and dependency pins are unchanged. Shock onset and progression deliberately changed after the user selected the continuous model following the repaired build's game test. Death Rattle's [capacity/death handling](https://github.com/kittycat2002/Death-Rattle-Continued/blob/master/1.6/Source/HarmonyPatches.cs) is separate from a hediff's intrinsic lethal severity; this fix enforces More Injuries' own blood-loss contract without patching Death Rattle.
+The direct blood-loss hypoxia gain remains zero. Drug stages, concrete dose/recovery values, gene balance, settings defaults, save keys, and dependency pins are unchanged; the redundant unconfigured base drug component is removed. Shock onset and progression deliberately changed after the user selected the continuous model following the repaired build's game test. Death Rattle's [capacity/death handling](https://github.com/kittycat2002/Death-Rattle-Continued/blob/master/1.6/Source/HarmonyPatches.cs) is separate from a hediff's intrinsic lethal severity; this fix enforces More Injuries' own blood-loss contract without patching Death Rattle.
 
 ## Continuous shock model
 
@@ -54,17 +75,21 @@ HAR's installed 1.6 `CompatibilityInfo` defaults `isFlesh` to true. The XML inte
 
 ## Validation
 
-The Release build passes. `MoreInjuries.LocalizationTests` contains source-linked headless scheduler, continuous shock progression, stabilization, resuscitation, feature-toggle, deathrest, immunity, eligibility, reliable-onset, and direct-death policy tests, plus HAR XML fixtures, reference-assembly field checks, Release XML-type coverage for defs and patches, texture-format checks, and localization checks. All 21 tests pass. The test runtime supplies minimal Verse/Unity stand-ins; it is not a substitute for game acceptance.
+The Release build passes. `MoreInjuries.LocalizationTests` contains source-linked headless scheduler, continuous shock progression, stabilization, resuscitation, feature-toggle, deathrest, immunity, eligibility, reliable-onset, and direct-death policy tests, plus HAR XML fixtures, reference-assembly field checks, Release XML-type coverage for defs and patches, texture-format checks, and localization checks. All 35 focused tests pass, including eight administration cases and six inherited-component/information-card cases. The test runtime supplies minimal Verse/Unity stand-ins; it is not a substitute for game acceptance.
 
-Drug stage, comp, severity-cap, and chemical-need XML values were compared against `077997d` and are unchanged. All six replacement PNGs have alpha channels, transparent corners, and visible foregrounds. The current 1.6 package was refreshed and checked for XML validity, copied-file hashes, required paths, and source/build artifact exclusion. The legacy 1.5 binary is not part of this current-version test snapshot.
+Drug stage, concrete dose/recovery comp, severity-cap, and chemical-need XML values were compared against `077997d` and are unchanged; the redundant base drug component is now removed. All six replacement PNGs have alpha channels, transparent corners, and visible foregrounds. The current 1.6 package was refreshed and checked for XML validity, copied-file hashes, required paths, and source/build artifact exclusion. The legacy 1.5 binary is not part of this current-version test snapshot.
 
 The localization loader now accepts multiline English comments and repeated, identical stage-label translations. It still rejects conflicting text and duplicate fields outside stage lists. Missing English entries for the existing drug additions were supplied without renaming existing keys.
 
 ## Game acceptance checklist
 
+- Compare epinephrine high after direct use and injection. Check chloroform direct-use baseline and doctor-skill dosing, sedation social consequences, and single-bag blood/saline consumption.
+
+- On an unprotected pawn, compare morphine and ketamine direct use with doctor injections and self-injection. Confirm one item is consumed, morphine usually causes addiction immediately, tolerance builds, and a later injection refills the chemical need and ends withdrawal. Clearing the high and overdose alone must not prevent addiction. Check dependency, resistance, and immunity genes separately.
+
 - Restart with the refreshed package and Bad Hygiene active: no unknown `causesNeed`, missing hydration class, missing blood-template, or missing saline-def errors.
 - With shock and blood-loss death prevention enabled, use ordinary bleeding on a human, a fleshy HAR pawn, and a fleshbeast. Shock must begin at the first eligible check above 45%, rise gradually, and generate complications when severe. Reaching the cap must not itself cause direct blood-loss death. Repeat with Death Rattle active.
 - Confirm shock approaches a stable target at constant blood loss, recovers gradually after transfusion, and does not recover completely from tending alone while the deficit remains severe. Check existing Deathless and Breathless protections and deathrest separately.
 - Check an ordinary animal, mechanical entity, and nonbleeding entity remain excluded. Check the disabled prevention setting and forced harvesting separately; do not conflate their intentional death policies.
-- Open the linked high, tolerance, and addiction cards, including withdrawal and overdose states. Verify numerical text and all six gene icons. Start without Biotech and without Bad Hygiene to confirm optional behavior.
+- Open the morphine and ketamine item information cards and their linked high, tolerance, and addiction cards repeatedly, including withdrawal and overdose states. Confirm the cards populate without blank rendering, repeated errors, or severe lag. Verify numerical text and all six gene icons. Start without Biotech and without Bad Hygiene to confirm optional behavior.
 - Save and reload an existing affected pawn. No identifier or persistence migration is required. Existing shock adopts the new progression rule at its next update, preserving its current severity rather than snapping to the new target.

@@ -1,6 +1,4 @@
 ﻿using MoreInjuries.AI.Jobs.Outcomes;
-using MoreInjuries.Extensions;
-using RimWorld;
 using Verse;
 using Verse.AI;
 
@@ -24,22 +22,29 @@ public abstract class JobDriver_OutcomeDoerBase : JobDriver_UseMedicalDevice
             EndJobWith(JobCondition.Incompletable);
             return false;
         }
-        CompDrug? drugComp = device.TryGetComp<CompDrug>();
-        if (drugComp != null && drugComp.Props.Addictive && drugComp.Props.chemical != null)
+        // Outcomes receive one live unit. Drug ingestion consumes it itself; other
+        // medical devices are consumed here after their outcomes have run.
+        Thing dose = device.SplitOff(1);
+        try
         {
-            drugComp.PostIngested(patient);
-        }
-        device.DecreaseStack();
-        foreach (JobOutcomeDoer doer in outcomeDoers)
-        {
-            bool success = doer.TryDoOutcome(doctor, patient, device);
-            if (!success)
+            foreach (JobOutcomeDoer doer in outcomeDoers)
             {
-                Logger.Error($"failed to apply injector with outcome doer {doer.GetType().Name}");
-                EndJobWith(JobCondition.Incompletable);
-                return false;
+                bool success = doer.TryDoOutcome(doctor, patient, dose);
+                if (!success)
+                {
+                    Logger.Error($"failed to apply injector with outcome doer {doer.GetType().Name}");
+                    EndJobWith(JobCondition.Incompletable);
+                    return false;
+                }
+            }
+            return true;
+        }
+        finally
+        {
+            if (!dose.Destroyed)
+            {
+                dose.Destroy();
             }
         }
-        return true;
     }
 }

@@ -48,12 +48,12 @@ public sealed class MedicalDrugHediffDef : HediffDef
             {
                 // Ask the game's own tolerance comp for its effect, rather than duplicating its formula.
                 // This condition is never attached to a pawn and no ingestion or health action is run.
-                HediffWithComps sample = new() { def = this };
+                TolerancePreviewHediff sample = new() { def = this };
                 HediffComp_DrugEffectFactor effectComp = new() { parent = sample, props = tolerance };
                 List<string> samples = [];
                 foreach (float severity in new[] { 0.1f, 0.5f, 1f })
                 {
-                    sample.Severity = severity;
+                    sample.SetPreviewSeverity(severity);
                     float effect = 1f;
                     effectComp.CompModifyChemicalEffect(tolerance.chemical, ref effect);
                     samples.Add("MI_DrugInfo_ToleranceSample".Translate(severity.ToStringPercent(), effect.ToStringPercent()));
@@ -64,5 +64,12 @@ public sealed class MedicalDrugHediffDef : HediffDef
                     "MI_DrugInfo_ToleranceExplanation".Translate(tolerance.chemical.LabelCap) + "\n\n" + effects, 4200);
             }
         }
+    }
+
+    private sealed class TolerancePreviewHediff : HediffWithComps
+    {
+        // The native Severity setter notifies pawn health when stages change.
+        // A detached display sample has no pawn; only set its numeric backing field.
+        public void SetPreviewSeverity(float severity) => severityInt = severity;
     }
 }

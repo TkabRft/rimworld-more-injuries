@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <LangVersion>latest</LangVersion>
@@ -14,6 +14,14 @@
 
     <ItemGroup>
         <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\MoreInjuries\AI\Jobs\JobDriver_OutcomeDoerBase.cs" Link="RuntimeContracts\Production\JobDriver_OutcomeDoerBase.cs" />
+        <Compile Include="..\MoreInjuries\AI\Jobs\Outcomes\JobOutcomeDoer_IngestDrug.cs" Link="RuntimeContracts\Production\JobOutcomeDoer_IngestDrug.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\Drugs\MedicalDrugAdministration.cs" Link="RuntimeContracts\Production\MedicalDrugAdministration.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\Drugs\MedicalDrugHediffDef.cs" Link="RuntimeContracts\Production\MedicalDrugHediffDef.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\Drugs\IngestionOutcomeDoer_ChloroformBuildup.cs" Link="RuntimeContracts\Production\IngestionOutcomeDoer_ChloroformBuildup.cs" />
     </ItemGroup>
 
     <!-- Exercise the production scheduler headlessly, with the small Verse stand-ins under RuntimeContracts. -->

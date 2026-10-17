@@ -314,7 +314,7 @@ After each step (and while doing vanilla treatment), the doctor will re-evaluate
 1. Tell a *drafted* pawn capable of doctoring to use the ketamine autoinjector on a patient using the `Sedate (ketamine)` option in the right-click context menu. The ketamine must be accessible in a stockpile or the doctor's inventory. Self-treatment is possible.
 2. Alternatively, since ketamine is considered a drug, it can be administered as part of the normal medical treatment using the *operations* tab of the patient or by telling the pawn to ingest the drug directly by right-clicking on the drug and selecting `Use ketamine autoinjector`.
 
-Doctor use and direct use can both cause a ketamine addiction and satisfy it. See [ketamine buildup](/docs/wiki/injuries/ketamine-buildup.md#ketamine-buildup).
+Doctor use and direct use apply the same drug effects, tolerance buildup, addiction checks, and overdose rules. Both can cause a ketamine addiction and satisfy an existing one. Open the autoinjector information card to inspect its drug and addiction statistics. See [ketamine buildup](/docs/wiki/injuries/ketamine-buildup.md#ketamine-buildup).
 
 **Production**: At a drug lab.  
 **Production Skill Requirement**: `Crafting` at level 6, `Intellectual` at level 5  
@@ -345,7 +345,7 @@ Doctor use and direct use can both cause a ketamine addiction and satisfy it. Se
 1. Tell a *drafted* pawn capable of doctoring to use the morphine autoinjector on a patient using the `Inject morphine` option in the right-click context menu. The morphine must be accessible in a stockpile or the doctor's inventory. Self-treatment is possible.
 2. Alternatively, since morphine is considered a drug, it can be administered as part of the normal medical treatment using the *operations* tab of the patient or by telling the pawn to ingest the drug directly by right-clicking on the drug and selecting `Use morphine autoinjector`.
 
-Doctor use and direct use can both cause a morphine addiction and satisfy it. See [morphine high](/docs/wiki/injuries/morphine-high.md#morphine-high).
+Doctor use and direct use apply the same drug effects, tolerance buildup, addiction checks, and overdose rules. Both can cause a morphine addiction and satisfy an existing one. Open the autoinjector information card to inspect its drug and addiction statistics. See [morphine high](/docs/wiki/injuries/morphine-high.md#morphine-high).
 
 **Production**: At a drug lab.  
 **Production Skill Requirement**: `Crafting` at level 5, `Intellectual` at level 3  

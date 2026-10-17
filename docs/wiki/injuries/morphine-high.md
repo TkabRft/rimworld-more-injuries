@@ -35,7 +35,7 @@ Another adverse effect of morphine is the impediment of resuscitation efforts in
 
 **Treatment**: Currently, no specific antidote for morphine overdose has been implemented in the game. Treatment for overdose involves supportive care and treating symptoms as they arise.
 
-**Addiction**: The first dose almost always causes a morphine addiction. The addiction adds a morphine need. That need drains over time; when it is empty, withdrawal begins (a strong mood penalty, and a higher chance of a mental break). Another dose of morphine, whether a doctor injects it or the pawn uses the autoinjector, refills the need and ends withdrawal. The addiction itself fades only with abstinence. With Biotech, dependency, resistance, and immunity genes for morphine are already generated from the chemical. A dependency gene prevents a new addiction. Resistance halves tolerance buildup and overdose chance. Immunity blocks both.
+**Addiction**: At zero tolerance and without protective genes, the first dose has a 99% chance to cause a morphine addiction. Existing tolerance increases the chance. The addiction adds a morphine need. That need drains over time; when it is empty, withdrawal begins (a strong mood penalty, and a higher chance of a mental break). Another dose of morphine, whether a doctor injects it or the pawn uses the autoinjector, refills the need and ends withdrawal. The addiction itself fades only with abstinence. With Biotech, dependency, resistance, and immunity genes for morphine are already generated from the chemical. A dependency gene prevents a new addiction. Resistance halves tolerance buildup and overdose chance. Immunity blocks both.
 
 **Thoughts per Stage**:
 > _"**Slight buzz** (+3) &mdash; Ah... yeah... things aren't as sharp anymore."_  
@@ -46,7 +46,9 @@ Another adverse effect of morphine is the impediment of resuscitation efforts in
 > [!WARNING]
 > Due to its adverse effects on the respiratory systems, morphine should be used with caution, and patients should be closely monitored for any signs of complications.
 
-**Inspecting effects**: Open the linked morphine high, tolerance, or addiction information card to see numerical effects. High stages list their severity thresholds and modifiers; addiction cards distinguish withdrawal from the satisfied state. Tolerance cards show drug-effect samples and the configured recovery rate. With Biotech, morphine gene icons show its autoinjector over a large heart for dependency, a half-shield for resistance, or a full shield for immunity.
+**Dose consistency**: Doctor injections and direct use apply the same morphine dose, addiction check, tolerance buildup, and overdose rules. Tolerance can weaken the high while increasing addiction risk; body size and chemical genes apply where configured. An injection also satisfies an existing addiction.
+
+**Inspecting effects**: Open the morphine autoinjector information card or the linked morphine high, tolerance, or addiction information card to see numerical effects. High stages list their severity thresholds and modifiers; addiction cards distinguish withdrawal from the satisfied state. Tolerance cards show drug-effect samples and the configured recovery rate. With Biotech, morphine gene icons show its autoinjector over a large heart for dependency, a half-shield for resistance, or a full shield for immunity.
 
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---

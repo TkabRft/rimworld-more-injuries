@@ -28,11 +28,6 @@
       <chairSearchRadius>0</chairSearchRadius>
       <foodType>Processed, Fluid</foodType>
     </ingestible>
-    <comps>
-      <li Class="CompProperties_Drug">
-        <listOrder>1000</listOrder>
-      </li>
-    </comps>
   </ThingDef>
 
   <ThingDef Name="AutoInjectorBase" ParentName="MedicalDrugBase" Abstract="True">
@@ -51,10 +46,7 @@
     <modExtensions>
       <li Class="MoreInjuries.AI.Jobs.Outcomes.JobOutcomeProperties_ModExtension">
         <outcomeDoers>
-          <li Class="MoreInjuries.AI.Jobs.Outcomes.JobOutcomeDoer_HediffOffset">
-            <hediffDef>AdrenalineRush</hediffDef>
-            <severityOffset>0.75</severityOffset>
-          </li>
+          <li Class="MoreInjuries.AI.Jobs.Outcomes.JobOutcomeDoer_IngestDrug" />
         </outcomeDoers>
       </li>
     </modExtensions>
@@ -124,14 +116,7 @@
             </condition>
             <thoughtDef>SedatedMe</thoughtDef>
           </li>
-          <li Class="MoreInjuries.AI.Jobs.Outcomes.JobOutcomeDoer_HediffOffset">
-            <hediffDef>Anesthetic</hediffDef>
-            <severityOffset>1.2</severityOffset>
-          </li>
-          <li Class="MoreInjuries.AI.Jobs.Outcomes.JobOutcomeDoer_HediffOffset">
-            <hediffDef>KetamineBuildup</hediffDef>
-            <severityOffset>0.35</severityOffset>
-          </li>
+          <li Class="MoreInjuries.AI.Jobs.Outcomes.JobOutcomeDoer_IngestDrug" />
         </outcomeDoers>
       </li>
     </modExtensions>
@@ -218,32 +203,7 @@
             </condition>
             <thoughtDef>SedatedMe</thoughtDef>
           </li>
-          <li Class="MoreInjuries.AI.Jobs.Outcomes.JobOutcomeDoer_HediffOffset">
-            <hediffDef>Anesthetic</hediffDef>
-            <severityOffset>1.2</severityOffset>
-          </li>
-          <li Class="MoreInjuries.AI.Jobs.Outcomes.JobOutcomeDoer_HediffOffset_DoctorSkillCurve">
-            <hediffDef>ChloroformBuildup</hediffDef>
-            <minSeverityOffsetByDoctorSkill>
-              <points>
-                <!-- always at least 0.35 -->
-                <li>0, 0.35</li>
-                <!-- highly skilled doctors can reduce risk of overdose, since they know what they're doing -->
-                <li>20, 0.3</li>
-              </points>
-            </minSeverityOffsetByDoctorSkill>
-            <maxSeverityOffsetByDoctorSkill>
-              <points>
-                <!-- untrained doctors may cause toxic dosage -->
-                <li>0, 0.85</li>
-                <!-- drops quickly with skill to less severe overdose -->
-                <li>4, 0.65</li>
-                <li>8, 0.5</li>
-                <!-- but there is always a risk of overdose (> 0.4) -->
-                <li>20, 0.45</li>
-              </points>
-            </maxSeverityOffsetByDoctorSkill>
-          </li>
+          <li Class="MoreInjuries.AI.Jobs.Outcomes.JobOutcomeDoer_IngestDrug" />
         </outcomeDoers>
       </li>
     </modExtensions>
@@ -260,10 +220,29 @@
           <hediffDef>Anesthetic</hediffDef>
           <severity>1.2</severity>
         </li>
-        <li Class="IngestionOutcomeDoer_GiveHediff">
+        <li Class="MoreInjuries.HealthConditions.Drugs.IngestionOutcomeDoer_ChloroformBuildup">
           <hediffDef>ChloroformBuildup</hediffDef>
           <!-- if you chloroform yourself, you drop unconscious as soon as you have reached the minimum severity offset, so pretty safe (probably not, but it's easier to implement) -->
           <severity>0.35</severity>
+          <minSeverityOffsetByDoctorSkill>
+            <points>
+              <!-- always at least 0.35 -->
+              <li>0, 0.35</li>
+              <!-- highly skilled doctors can reduce risk of overdose, since they know what they're doing -->
+              <li>20, 0.3</li>
+            </points>
+          </minSeverityOffsetByDoctorSkill>
+          <maxSeverityOffsetByDoctorSkill>
+            <points>
+              <!-- untrained doctors may cause toxic dosage -->
+              <li>0, 0.85</li>
+              <!-- drops quickly with skill to less severe overdose -->
+              <li>4, 0.65</li>
+              <li>8, 0.5</li>
+              <!-- but there is always a risk of overdose (> 0.4) -->
+              <li>20, 0.45</li>
+            </points>
+          </maxSeverityOffsetByDoctorSkill>
         </li>
       </outcomeDoers>
       <ingestCommandString>Inhale chloroform</ingestCommandString>
@@ -310,10 +289,7 @@
     <modExtensions>
       <li Class="MoreInjuries.AI.Jobs.Outcomes.JobOutcomeProperties_ModExtension">
         <outcomeDoers>
-          <li Class="MoreInjuries.AI.Jobs.Outcomes.JobOutcomeDoer_HediffOffset">
-            <hediffDef>MorphineBuildup</hediffDef>
-            <severityOffset>0.35</severityOffset>
-          </li>
+          <li Class="MoreInjuries.AI.Jobs.Outcomes.JobOutcomeDoer_IngestDrug" />
         </outcomeDoers>
       </li>
     </modExtensions>

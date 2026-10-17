@@ -1,7 +1,12 @@
 // Additional stand-ins used by the source-linked shock progression tests.
 namespace Verse
 {
-    public sealed class HediffDef;
+    public partial class HediffDef
+    {
+        public string label = "condition";
+        public string Label { get => label; set => label = value; }
+        public object? Extension;
+    }
 
     public sealed partial class Hediff
     {
@@ -51,6 +56,19 @@ namespace Verse
     }
 }
 
+namespace Verse
+{
+    public static class HealthUtility
+    {
+        public static void AdjustSeverity(Pawn pawn, HediffDef def, float amount)
+        {
+            Hediff? hediff = pawn.health.hediffSet.GetFirstHediffOfDef(def);
+            if (hediff is not null) { hediff.Severity += amount; return; }
+            pawn.health.hediffSet.hediffs.Add(new() { pawn = pawn, def = def, Severity = amount });
+        }
+    }
+}
+
 namespace RimWorld
 {
     public static class HediffDefOf
@@ -89,7 +107,7 @@ namespace MoreInjuries
         public bool EnableHypovolemicShock = true;
     }
 
-    public static class Logger
+    public static partial class Logger
     {
         public static void LogVerbose(string message) { }
     }
