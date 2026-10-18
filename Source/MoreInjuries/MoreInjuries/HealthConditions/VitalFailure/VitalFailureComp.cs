@@ -19,6 +19,7 @@ public sealed partial class VitalFailureComp : ThingComp
     private Hediff? _arrest;
     private Hediff? _heartAttack;
     private Hediff? _brainInjury;
+    private Hediff? _airwayObstruction;
     private bool _oxygenProtected;
     private bool _deathresting;
     private float _underlyingPumping;
@@ -160,6 +161,12 @@ public sealed partial class VitalFailureComp : ThingComp
                 {
                     _brainInjury = pawn.health.AddHediff(KnownHediffDefOf.BrainDamage_Hypoxia, brain);
                     _brainInjury.Severity = VitalFailureModel.INITIAL_SEVERITY * CerebralInjury.Scale(pawn, brain);
+                    if (_failures[0] is { } respiratory)
+                    {
+                        HediffComp_CausedBy? causes = _brainInjury.TryGetComp<HediffComp_CausedBy>();
+                        causes?.AddCause(respiratory);
+                        if (_airwayObstruction is not null) { causes?.AddCause(_airwayObstruction); }
+                    }
                     GatherNeurologicalInjury(_brainInjury);
                 }
                 if (_brainInjury is not null)
@@ -211,7 +218,7 @@ public sealed partial class VitalFailureComp : ThingComp
     {
         Pawn pawn = Patient;
         HediffSet set = pawn.health.hediffSet;
-        _arrest = _heartAttack = _brainInjury = null;
+        _arrest = _heartAttack = _brainInjury = _airwayObstruction = null;
         Hediff? shock = null, choking = null;
         float bloodLoss = 0f, dilution = 0f, adrenaline = 0f, hypothermia = 0f;
         _deathresting = false;
@@ -248,6 +255,7 @@ public sealed partial class VitalFailureComp : ThingComp
             else if (hediff.def == KnownHediffDefOf.ChokingOnBlood)
             {
                 choking = hediff;
+                _airwayObstruction = hediff;
             }
             else if (hediff.def == KnownHediffDefOf.HypovolemicShock)
             {

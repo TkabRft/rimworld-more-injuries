@@ -11,6 +11,30 @@ namespace MoreInjuries.LocalizationTests.RuntimeContracts;
 public sealed class AirwayRegressionTests
 {
     [TestMethod]
+    public void SuctionFloorReuseDurationAndCardiacCprRemainUnchanged()
+    {
+        foreach (int skill in new[] { 0, 2, 4, 6, 8, 15 })
+        {
+            Pawn patient = VitalFailureTests.Patient(), doctor = VitalFailureTests.Patient(); doctor.MedicalSkill = skill;
+            Hediff choking = VitalFailureTests.Add(patient, KnownHediffDefOf.ChokingOnBlood, 1);
+            Thing device = new();
+            Rand.ChanceHandler = chance => { Assert.AreEqual(Math.Max(.25f, skill / 8f), chance); return chance >= 1f; };
+            MoreInjuries.HealthConditions.Choking.JobDriver_UseSuctionDevice suction = new();
+            Assert.AreEqual(600, suction.TestBaseDuration);
+            suction.TestApply(doctor, patient, device);
+            Assert.AreEqual(skill < 8, patient.health.hediffSet.hediffs.Contains(choking));
+            Assert.IsFalse(device.Destroyed);
+        }
+        Rand.ChanceHandler = null!;
+        Pawn pawn = VitalFailureTests.Patient(); pawn.MedicalSkill = 15; Rand.RangeFraction = .5f;
+        Hediff arrest = VitalFailureTests.Add(pawn, KnownHediffDefOf.CardiacArrest, .95f);
+        MoreInjuries.HealthConditions.CardiacArrest.JobDriver_PerformCpr cpr = new();
+        Assert.AreEqual(360, cpr.TestBaseDuration);
+        cpr.TestApply(pawn, pawn);
+        Assert.AreEqual(.95f - 1f / (1f + MathF.Exp(-5f)) * .625f, arrest.Severity, .00001f);
+    }
+
+    [TestMethod]
     public void CprChokingReductionIsScaledButSuctionStillClearsFully()
     {
         foreach (int skill in new[] { 0, 5, 10, 15, 20 })

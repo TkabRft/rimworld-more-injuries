@@ -3,7 +3,7 @@
   <HediffDef ParentName="DiseaseBase">
     <defName>ChokingOnBlood</defName>
     <label>choking on blood</label>
-    <description>Blood obstructs breathing. Stop the bleeding and clear the airway with CPR or a suction device. Conscious patients may cough it clear themselves.</description>
+    <description>Blood obstructs breathing and can cause fatal cerebral hypoxia. Stop bleeding and clear the airway with suction; CPR provides weaker emergency clearance. Conscious patients may cough it clear themselves.</description>
     <defaultLabelColor>(255, 102, 102)</defaultLabelColor>
     <tendable>false</tendable>
     <modExtensions>

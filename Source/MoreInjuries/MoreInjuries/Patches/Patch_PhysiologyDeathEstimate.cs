@@ -18,7 +18,7 @@ internal static class Patch_PhysiologyDeathEstimate
             || VitalFailureComp.For(pawn) is not { } controller
             || !controller.TryGetPrognosis(out PhysiologySnapshot source, out PhysiologyEstimate estimate)) { return; }
         Rect footer = new(rect.x, rect.yMax - Text.LineHeight, rect.width, Text.LineHeight);
-        string remaining = source.Protected ? "MI_Prognosis_Protected".Translate()
+        string remaining = source.NativeComaProtection || source.Protected && source.ProtectionTicks <= 0 ? "MI_Prognosis_Protected".Translate()
             : estimate.Ticks == int.MaxValue ? "MI_Prognosis_NoPrediction".Translate()
             : "MI_Prognosis_Time".Translate(GenDate.ToStringTicksToPeriod(estimate.Ticks));
         string label = "MI_Prognosis_Footer".Translate(source.BleedRate.ToStringPercent(), remaining);

@@ -46,6 +46,7 @@ namespace MoreInjuries.AI.Jobs
         protected virtual bool IsTreatable(Hediff hediff) => true;
         protected virtual int GetMedicalDeviceCountToFullyHeal(Pawn patient) => 0;
         public bool TestApply(Pawn doctor, Pawn patient, Thing? device = null) => ApplyDevice(doctor, patient, device);
+        public int TestBaseDuration => BaseTendDuration;
     }
     public abstract class JobDriver_UseMedicalDevice_TargetsHediffDefs : JobDriver_UseMedicalDevice
     {

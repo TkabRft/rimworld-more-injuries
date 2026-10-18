@@ -3,8 +3,8 @@
   <!-- Localization for ChokingOnBlood -->
   <!-- EN: choking on blood -->
   <ChokingOnBlood.label>choking on blood</ChokingOnBlood.label>
-  <!-- EN: Blood obstructs breathing. Stop the bleeding and clear the airway with CPR or a suction device. Conscious patients may cough it clear themselves. -->
-  <ChokingOnBlood.description>Blood obstructs breathing. Stop the bleeding and clear the airway with CPR or a suction device. Conscious patients may cough it clear themselves.</ChokingOnBlood.description>
+  <!-- EN: Blood obstructs breathing and can cause fatal cerebral hypoxia. Stop bleeding and clear the airway with suction; CPR provides weaker emergency clearance. Conscious patients may cough it clear themselves. -->
+  <ChokingOnBlood.description>Blood obstructs breathing and can cause fatal cerebral hypoxia. Stop bleeding and clear the airway with suction; CPR provides weaker emergency clearance. Conscious patients may cough it clear themselves.</ChokingOnBlood.description>
   <!-- EN: {0} is choking on blood! -->
   <ChokingOnBlood.comps.HediffComp_MessageAfterTicks.message>{0} is choking on blood!</ChokingOnBlood.comps.HediffComp_MessageAfterTicks.message>
   <!-- EN: initial -->

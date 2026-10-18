@@ -8,6 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\NativeExposureModel.cs" Link="RuntimeContracts\Production\NativeExposureModel.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\PrognosisFailures.cs" Link="RuntimeContracts\Production\PrognosisFailures.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\PrognosisTrend.cs" Link="RuntimeContracts\Production\PrognosisTrend.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\PrognosisCapacity.cs" Link="RuntimeContracts\Production\PrognosisCapacity.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\Choking\AutomaticAirwayTreatment.cs" Link="RuntimeContracts\Production\AutomaticAirwayTreatment.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\Choking\JobDriver_UseSuctionDevice.cs" Link="RuntimeContracts\Production\JobDriver_UseSuctionDevice.cs" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />

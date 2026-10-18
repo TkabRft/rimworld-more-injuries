@@ -12,7 +12,9 @@ internal static class PrognosisRescueHints
 {
     internal static string Tooltip(in PhysiologySnapshot source, in PhysiologyEstimate estimate)
     {
-        if (source.Protected) { return "MI_Prognosis_Protected".Translate(); }
+        if (source.NativeComaProtection || source.Protected && source.ProtectionTicks <= 0) { return "MI_Prognosis_Protected".Translate(); }
+        if (estimate.CapacityLabel is not null)
+        { return "MI_Prognosis_CapacityFailure".Translate(estimate.CapacityLabel); }
         if (estimate.Ticks == int.MaxValue || estimate.Cause is null) { return "MI_Prognosis_NoCause".Translate(); }
         string cause = estimate.Cause.LabelCap;
         if (estimate.Cause == KnownHediffDefOf.BrainDamage_Hypoxia

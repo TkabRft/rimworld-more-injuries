@@ -19,9 +19,15 @@ public sealed partial class VitalFailureComp
     private bool _hasPrognosis;
     private int _prognosisTick = -1;
     private int _prognosisSettings;
+    private readonly Hediff?[] _prognosisFailures = new Hediff?[6];
+    private readonly float[] _prognosisFailureRates = new float[7];
+    private readonly HediffDef[] _prognosisFailureDefs = new HediffDef[7];
     internal string PrognosisTooltip { get; private set; } = string.Empty;
 
     partial void InvalidatePrognosis() => _hasPrognosis = false;
+    partial void BeginNativePrognosis();
+    partial void CaptureNativeCondition(ref PhysiologySnapshot result, Hediff condition);
+    partial void FinishNativePrognosis(ref PhysiologySnapshot result);
 
     internal bool TryGetPrognosis(out PhysiologySnapshot source, out PhysiologyEstimate estimate)
     {
@@ -36,15 +42,18 @@ public sealed partial class VitalFailureComp
         {
             PhysiologySnapshot current = CapturePrognosis();
             _prognosisSource = current;
-            _prognosis = PhysiologyPrognosis.Estimate(in current, VitalFailureDefOf.MI_VitalFailureConfig,
-                HediffDefOf.BloodLoss, KnownHediffDefOf.BrainDamage_Hypoxia);
+            _prognosis = current.Relevant ? PhysiologyPrognosis.Estimate(in current, VitalFailureDefOf.MI_VitalFailureConfig,
+                HediffDefOf.BloodLoss, KnownHediffDefOf.BrainDamage_Hypoxia) : new(int.MaxValue, null);
             PrognosisTooltip = PrognosisRescueHints.Tooltip(in current, in _prognosis);
+            if (current.UnmodeledRisk) { PrognosisTooltip += "\n" + "MI_Prognosis_OtherRisks".Translate(); }
+            if (_prognosis.Ticks != int.MaxValue && current.TrendCount > 0)
+            { PrognosisTooltip += "\n" + "MI_Prognosis_CurrentConditions".Translate(); }
             _prognosisTick = now;
             _prognosisSettings = settings;
             _hasPrognosis = true;
         }
         source = _prognosisSource;
-        estimate = new(_prognosis.Ticks == int.MaxValue ? int.MaxValue : Math.Max(0, _prognosis.Ticks - (now - _prognosisTick)), _prognosis.Cause);
+        estimate = new(_prognosis.Ticks == int.MaxValue ? int.MaxValue : Math.Max(0, _prognosis.Ticks - (now - _prognosisTick)), _prognosis.Cause, _prognosis.CapacityLabel);
         return source.Relevant;
     }
 
@@ -65,11 +74,14 @@ public sealed partial class VitalFailureComp
             NextVitalTick = NextGate(pawn, VitalFailureModel.INTERVAL)
         };
         if (!CanUpdate(pawn)) { return result; }
+        BeginNativePrognosis();
+        Array.Clear(_prognosisFailures, 0, _prognosisFailures.Length);
         bool deathresting = ModsConfig.BiotechActive && pawn.health.hediffSet.HasHediff(HediffDefOf.Deathrest), arrest = false;
         result.OxygenProtected |= deathresting;
         float hypothermia = 0f;
         foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
         {
+            CaptureNativeCondition(ref result, hediff);
             if (hediff.def == HediffDefOf.BloodLoss) { result.BloodLoss = hediff.Severity; }
             else if (hediff.def == KnownHediffDefOf.HypovolemicShock)
             {
@@ -78,17 +90,21 @@ public sealed partial class VitalFailureComp
                 if (hediff.TryGetComp<HediffComp_TendDuration>() is { IsTended: true } tend) { result.TendTicks = s_tendTicks(tend); }
             }
             else if (hediff.def == KnownHediffDefOf.BrainDamage_Hypoxia) { result.ClinicalBrain = CerebralInjury.ClinicalSeverity(hediff); }
-            else if (hediff.def == KnownHediffDefOf.Hemodilution) { result.Dilution = hediff.Severity; }
+            else if (hediff.def == KnownHediffDefOf.Hemodilution)
+            {
+                result.Dilution = hediff.Severity;
+                result.DilutionDecayPerDay = Math.Max(0f, -KnownDailyRate(hediff));
+            }
             else if (hediff.def == HediffDefOf.Hypothermia) { hypothermia = hediff.Severity; }
             else if (hediff.def == KnownHediffDefOf.AdrenalineRush)
             {
                 result.Adrenaline = hediff.Severity;
-                result.AdrenalineDecayPerDay = Math.Max(0f, -(hediff.TryGetComp<HediffComp_SeverityPerDay>()?.SeverityChangePerDay() ?? 0f));
+                result.AdrenalineDecayPerDay = Math.Max(0f, -KnownDailyRate(hediff));
             }
-            else if (hediff.def == NeurologicalDefOf.MI_ArtificialComa)
+            else if (hediff.def == NeurologicalDefOf.MI_ArtificialComa && !pawn.health.hediffSet.HasHediff(NeurologicalDefOf.WakeUpHigh))
             {
                 result.ComaMultiplier = NeurologicalDefOf.MI_NeurologicalConfig.ComaHypoxiaMultiplier;
-                AddPrognosisFailure(ref result, hediff, hediff.TryGetComp<HediffComp_SeverityPerDay>()?.SeverityChangePerDay() ?? 0f);
+                AddPrognosisFailure(ref result, hediff, KnownDailyRate(hediff));
             }
             else if (hediff.def == KnownHediffDefOf.ChokingOnBlood) { result.Choking = true; }
             else if (hediff.def == KnownHediffDefOf.LungCollapse)
@@ -102,31 +118,53 @@ public sealed partial class VitalFailureComp
                 arrest = true;
                 result.Arrest = true;
                 result.EarlyArrest |= hediff.CurStageIndex == 0;
-                if (!result.OxygenProtected) { AddPrognosisFailure(ref result, hediff,
-                    ((HediffCompProperties_SeverityPerDay)hediff.TryGetComp<HediffComp_VitalArrest>()!.props).severityPerDay, 1f); }
+                result.Failures.Set(6, hediff.Severity);
+                result.PersistentArrest |= hediff.TryGetComp<HediffComp_VitalArrest>() is not { MechanicalFailure: true };
             }
-            else if (IsTerminalHeartAttack(hediff)) { arrest = true; result.Arrest = true; result.EarlyArrest = true; }
-            else if (hediff.def.GetModExtension<VitalFailureProperties>() is { } failure
-                && (hediff.def != VitalFailureDefOf.MI_RespiratoryFailure && hediff.def != VitalFailureDefOf.MI_Coma || !result.OxygenProtected))
-            { AddPrognosisFailure(ref result, hediff, failure.SeverityPerDay); }
+            else if (IsTerminalHeartAttack(hediff)) { arrest = true; result.Arrest = true; result.EarlyArrest = true; result.PersistentArrest = true; }
+            else if (hediff.def.GetModExtension<VitalFailureProperties>() is not null)
+            {
+                for (int i = 0; i < _prognosisFailures.Length; i++)
+                { if (hediff.def == FailureDef(i)) { _prognosisFailures[i] = hediff; break; } }
+            }
         }
         result.BleedRate = pawn.health.hediffSet.BleedRateTotal;
         result.CanDevelopShock = !result.OxygenProtected && TraumaEligibility.Supports(pawn) && MoreInjuriesMod.Settings.EnableHypovolemicShock;
         result.DirectBloodDeath = !result.OxygenProtected && BloodLossPolicy.AllowDirectDeath(TraumaEligibility.Supports(pawn), MoreInjuriesMod.Settings.PreventDeathByBloodLoss);
         result.CanHaveBrain = VitalAnatomy.For(pawn.RaceProps.body).SurvivingBrain(pawn.health.hediffSet) is not null;
+        VitalAnatomy anatomy = VitalAnatomy.For(pawn.RaceProps.body);
         if (result.VitalEnabled)
         {
             result.Breathing = VitalPhysiology.BreathesAir(pawn) ? Capacity(pawn, PawnCapacityDefOf.Breathing) : 1f;
             result.Pumping = arrest ? 0f : Capacity(pawn, PawnCapacityDefOf.BloodPumping);
             if (arrest) { result.RestartableHeart = CanRestoreCirculation(); }
+            bool liver = VitalAnatomy.AllFailed(pawn.health.hediffSet, anatomy.Livers);
+            bool renal = VitalAnatomy.AllFailed(pawn.health.hediffSet, anatomy.Kidneys);
+            result.LiverFailed = liver; result.RenalFailed = renal; result.ManageFailures = true;
+            for (int i = 0; i < _prognosisFailures.Length; i++)
+            {
+                HediffDef def = FailureDef(i);
+                result.Failures.Set(i, _prognosisFailures[i]?.Severity ?? 0f);
+                _prognosisFailureDefs[i] = def;
+                _prognosisFailureRates[i] = def.GetModExtension<VitalFailureProperties>().SeverityPerDay;
+            }
+            _prognosisFailureDefs[6] = KnownHediffDefOf.CardiacArrest;
+            _prognosisFailureRates[6] = (KnownHediffDefOf.CardiacArrest.comps?.Find(static props => props is HediffCompProperties_VitalArrest)
+                as HediffCompProperties_VitalArrest)?.severityPerDay ?? 8f;
+            result.FailureRates = _prognosisFailureRates; result.FailureDefs = _prognosisFailureDefs;
         }
+        FinishNativePrognosis(ref result);
         if (result.Failure.Cause == NeurologicalDefOf.MI_ArtificialComa)
         {
             result.CanWakeUp = VitalPhysiology.CanReceiveCare(pawn) && Recipe_InduceArtificialComa.CanReverse(pawn);
         }
         result.ColdProtection = VitalFailureDefOf.MI_VitalFailureConfig.HypothermiaProtectionCurve.Evaluate(hypothermia);
-        result.Relevant = result.BleedRate > 0.01f || result.BloodLoss > 0f || result.ShockPresent || result.ClinicalBrain > 0f
-            || result.Failure.Cause is not null || result.VitalEnabled && (result.Pumping < .5f || result.Breathing < .5f || result.Dilution > .45f);
+        result.Relevant |= result.BleedRate > 0.01f || result.BloodLoss > 0f || result.ShockPresent || result.ClinicalBrain > 0f
+            || result.Failure.Cause is not null || result.LiverFailed || result.RenalFailed
+            || result.VitalEnabled && (result.Pumping < .5f || result.Breathing < .5f || result.Dilution > .45f
+                || Capacity(pawn, PawnCapacityDefOf.BloodFiltration) <= VitalFailureModel.ZERO_FUNCTION
+                || Capacity(pawn, VitalFailureDefOf.Metabolism) <= VitalFailureModel.ZERO_FUNCTION
+                || Capacity(pawn, PawnCapacityDefOf.Consciousness) <= VitalFailureModel.ZERO_FUNCTION);
         return result;
     }
 
@@ -138,8 +176,20 @@ public sealed partial class VitalFailureComp
 
     private static void AddPrognosisFailure(ref PhysiologySnapshot result, Hediff condition, float rate, float terminal = -1f)
     {
-        int ticks = PhysiologyPrognosis.UntilTerminal(condition.Severity, terminal > 0f ? terminal : condition.def.lethalSeverity, rate);
+        PrognosisTrend trend = new()
+        {
+            Cause = condition.def, Severity = condition.Severity, Maximum = condition.def.maxSeverity,
+            Terminal = terminal > 0f ? terminal : condition.def.lethalSeverity, Rate = rate, ImmunityTicks = -1,
+            Interval = 200, NextTick = NextGate(condition.pawn, 200)
+        };
+        int ticks = trend.UntilTerminal();
         if (ticks < result.Failure.Ticks) { result.Failure = new(ticks, condition.def); }
+    }
+
+    private static float KnownDailyRate(Hediff condition)
+    {
+        HediffComp_SeverityPerDay? comp = condition.TryGetComp<HediffComp_SeverityPerDay>();
+        return comp?.GetType() == typeof(HediffComp_SeverityPerDay) ? comp.SeverityChangePerDay() : 0f;
     }
 
 }

@@ -16,4 +16,10 @@
   <MI_Prognosis_NoCause>No projected fatal cause</MI_Prognosis_NoCause>
   <!-- EN: Projected cause: {0}\n{1} -->
   <MI_Prognosis_Tooltip>Projected cause: {0}\n{1}</MI_Prognosis_Tooltip>
+  <!-- EN: Other hazards or random complications may cause earlier death. -->
+  <MI_Prognosis_OtherRisks>Other hazards or random complications may cause earlier death.</MI_Prognosis_OtherRisks>
+  <!-- EN: Assumes current exposure and care continue, with no further treatment. -->
+  <MI_Prognosis_CurrentConditions>Assumes current exposure and care continue, with no further treatment.</MI_Prognosis_CurrentConditions>
+  <!-- EN: Projected cause: loss of {0}. Treat the underlying condition. -->
+  <MI_Prognosis_CapacityFailure>Projected cause: loss of {0}. Treat the underlying condition.</MI_Prognosis_CapacityFailure>
 </LanguageData>

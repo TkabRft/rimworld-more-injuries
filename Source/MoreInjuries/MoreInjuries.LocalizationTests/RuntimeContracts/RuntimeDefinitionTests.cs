@@ -27,6 +27,10 @@ public sealed class RuntimeDefinitionTests
             ["Verse.PatchOperation"] = ["Apply"],
             ["Verse.ScribeSaver"] = ["InitSaving", "FinalizeSaving"],
             ["Verse.PawnCapacitiesHandler"] = ["Notify_CapacityLevelsDirty"],
+            ["Verse.PawnCapacityUtility"] = ["CalculateCapacityLevel"],
+            ["Verse.GenClosest"] = ["ClosestThingReachable"],
+            ["Verse.HediffComp_Immunizable"] = ["SeverityChangePerDay"],
+            ["Verse.ImmunityRecord"] = ["ImmunityChangePerTick"],
             ["Verse.Hediff"] = ["CauseDeathNow"],
             ["Verse.Hediff_Injury"] = ["Heal"],
             ["RimWorld.PawnCapacityWorker_BloodPumping"] = ["CalculateCapacityLevel"]
@@ -38,6 +42,11 @@ public sealed class RuntimeDefinitionTests
             if (!expected.Remove(name, out string[]? methods)) { continue; }
             HashSet<string> present = type.GetMethods().Select(method => metadata.GetString(metadata.GetMethodDefinition(method).Name)).ToHashSet();
             foreach (string method in methods) { Assert.Contains(method, present, name); }
+            if (name == "Verse.HediffComp_Immunizable")
+            {
+                Assert.IsTrue(type.GetFields().Any(field => metadata.GetString(metadata.GetFieldDefinition(field).Name)
+                    == "severityPerDayNotImmuneRandomFactor"), "Forecast reads the persisted roll without calling Rand.");
+            }
             if (name is "Verse.Pawn_HealthTracker" or "Verse.PawnCapacitiesHandler")
             {
                 Assert.IsTrue(type.GetFields().Any(field => metadata.GetString(metadata.GetFieldDefinition(field).Name) == "pawn"), name);
