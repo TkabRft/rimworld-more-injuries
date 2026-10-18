@@ -10,6 +10,19 @@ namespace MoreInjuries.LocalizationTests.RuntimeContracts;
 [TestClass]
 public sealed class ExpandedPrognosisTests
 {
+    [TestMethod]
+    public void NativeSnapshotNeverInvokesSeededImmunityAccessorOrHealthTicks()
+    {
+        string source = File.ReadAllText(Path.Combine(RuntimeDefinitionTests.ModRoot,
+            "Source/MoreInjuries/MoreInjuries/HealthConditions/VitalFailure/VitalFailureComp.NativePrognosis.cs"));
+        Assert.DoesNotContain(".ImmunityChangePerTick(", source);
+        Assert.DoesNotContain("Rand.", source.Replace("// The native ImmunityChangePerTick accessor itself calls seeded Rand. Use its mean instead.", ""));
+        Assert.DoesNotContain(".TickInterval(", source);
+        Assert.DoesNotContain(".CompPostTick(", source);
+        Assert.DoesNotContain(".AddHediff(", source);
+        Assert.DoesNotContain(".RemoveHediff(", source);
+    }
+
     private static PhysiologySnapshot Stable()
     {
         _ = VitalFailureTests.Patient();

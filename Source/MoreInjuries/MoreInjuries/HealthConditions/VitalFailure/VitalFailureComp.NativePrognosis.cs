@@ -105,7 +105,8 @@ public sealed partial class VitalFailureComp
                     if (immune.FullyImmune) { trend.ImmunityTicks = 0; }
                     else
                     {
-                        float gain = Patient.health.immunity.GetImmunityRecord(condition.def)?.ImmunityChangePerTick(Patient, true, condition) ?? 0f;
+                        // The native ImmunityChangePerTick accessor itself calls seeded Rand. Use its mean instead.
+                        float gain = immune.Props.immunityPerDaySick * Patient.GetStatValue(StatDefOf.ImmunityGainSpeed) / GenDate.TicksPerDay;
                         trend.ImmunityTicks = gain > 0f ? (int)Math.Min(int.MaxValue, Math.Ceiling((1d - immune.Immunity) / gain)) : -1;
                         // Keep the saved per-disease roll, rather than drawing another factor.
                         trend.Rate = immune.Props.severityPerDayNotImmune * s_diseaseFactor(immune) * factor
@@ -245,12 +246,35 @@ public sealed partial class VitalFailureComp
         {
             FloatRange safe = pawn.SafeTemperatureRange(), comfortable = pawn.ComfortableTemperatureRange();
             float ambient = pawn.AmbientTemperature;
-            CaptureEnvironmentalTrend(ref result, HediffDefOf.Heatstroke,
-                ambient > safe.max ? NativeExposureModel.Heat(HediffGiver_Heat.TemperatureOverageAdjustmentCurve.Evaluate(ambient - safe.max)) : 0f,
-                ambient < comfortable.max);
-            CaptureEnvironmentalTrend(ref result, HediffDefOf.Hypothermia,
-                ambient < safe.min ? NativeExposureModel.Cold(safe.min - ambient) : 0f,
-                ambient > comfortable.min || pawn.Position.GetTerrain(pawn.Map).heatPerTick > 0f);
+            HediffDef? heatDef = null, coldDef = null;
+            if (pawn.RaceProps.hediffGiverSets is { } sets)
+            {
+                foreach (HediffGiverSetDef set in sets)
+                foreach (HediffGiver giver in set.hediffGivers)
+                {
+                    if (giver.GetType() == typeof(HediffGiver_Heat)) { heatDef = giver.hediff; }
+                    if (giver.GetType() == typeof(HediffGiver_Hypothermia))
+                    {
+                        coldDef = pawn.RaceProps.FleshType == FleshTypeDefOf.Insectoid
+                            ? ((HediffGiver_Hypothermia)giver).hediffInsectoid : giver.hediff;
+                    }
+                }
+            }
+            if (heatDef is not null)
+            {
+                CaptureEnvironmentalTrend(ref result, heatDef,
+                    ambient > safe.max ? NativeExposureModel.Heat(HediffGiver_Heat.TemperatureOverageAdjustmentCurve.Evaluate(ambient - safe.max)) : 0f,
+                    ambient < comfortable.max);
+            }
+            if (coldDef is not null)
+            {
+                CaptureEnvironmentalTrend(ref result, coldDef,
+                    ambient < safe.min ? NativeExposureModel.Cold(safe.min - ambient) : 0f,
+                    ambient > comfortable.min || pawn.Position.GetTerrain(pawn.Map).heatPerTick > 0f);
+            }
+            if (heatDef is null && pawn.health.hediffSet.HasHediff(HediffDefOf.Heatstroke)
+                || coldDef is null && pawn.health.hediffSet.HasHediff(HediffDefOf.Hypothermia))
+            { result.UnmodeledRisk = true; result.Relevant = true; }
             float toxicity = pawn.Position.GetTerrain(pawn.Map).toxicBuildupFactor;
             if (ModsConfig.BiotechActive && pawn.Position.IsPolluted(pawn.Map)) { toxicity += 1f; }
             if (!pawn.Position.Roofed(pawn.Map))
