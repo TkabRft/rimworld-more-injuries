@@ -25,6 +25,7 @@
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureComp.Neurology.cs" Link="RuntimeContracts\Production\VitalFailureComp.Neurology.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureComp.Prognosis.cs" Link="RuntimeContracts\Production\VitalFailureComp.Prognosis.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\PhysiologyPrognosis.cs" Link="RuntimeContracts\Production\PhysiologyPrognosis.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\PrognosisRescueHints.cs" Link="RuntimeContracts\Production\PrognosisRescueHints.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\HediffComp_VitalArrest.cs" Link="RuntimeContracts\Production\HediffComp_VitalArrest.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\CardiacArrest\JobDriver_PerformCpr.cs" Link="RuntimeContracts\Production\JobDriver_PerformCpr.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\CardiacArrest\JobDriver_UseDefibrillator.cs" Link="RuntimeContracts\Production\JobDriver_UseDefibrillator.cs" />

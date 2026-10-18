@@ -18,6 +18,7 @@ internal struct PhysiologySnapshot
     internal float Adrenaline, AdrenalineDecayPerDay, TendQuality, ComaMultiplier;
     internal int TendTicks, NextBloodTick, NextShockTick, NextVitalTick;
     internal PhysiologyEstimate Failure;
+    internal bool Arrest, EarlyArrest, RestartableHeart, Choking, CollapsedLung, LungNeedsSurgery, CanWakeUp;
 }
 
 // Pure forecast: no Pawn access, RNG, health mutation, or heap allocation.

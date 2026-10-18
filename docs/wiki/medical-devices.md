@@ -517,7 +517,11 @@ Supported owned fleshy nonhuman patients can receive manual CPR, defibrillation 
 
 **Use physiology-aware death estimate** is enabled by default in mod settings. The health-tab footer keeps the bleeding rate and shows an approximate death estimate from current blood loss, shock, oxygen delivery, cerebral injury and active organ failures. It remains useful after bleeding stops or blood loss reaches 100%.
 
-Hover over it for the predicted cause and assumptions. It accounts for natural blood recovery, current tending and expiry, adrenaline decay and artificial coma. Current cold, breathing, pumping and dilution are held constant. It predicts no future treatments or random complications. Other diseases, new injuries and native scripted deaths may kill sooner. A lack of a modeled fatal trend is not a guarantee of safety.
+Hover over it for only the projected cause and a short rescue hint matched to the patient's current problems. For example, blood loss calls for bleeding control and transfusion, while arrest calls for CPR or early defibrillation when the heart can still function. A failed heart needs its function restored. These hints identify potential treatments; success still depends on timing, medical care, research, equipment and the doctor.
+
+The estimate updates only while that pawn's Health tab is open. Closing it or selecting another tab or pawn stops forecast calculations for that patient. Reopening uses current health; actual injuries and treatment continue while the tab is closed.
+
+The forecast accounts for natural blood recovery, current tending and expiry, adrenaline decay and artificial coma. Current cold, breathing, pumping and dilution are held constant. It predicts no future treatments or random complications. Other diseases, new injuries and native scripted deaths may kill sooner. A lack of a projected fatal trend is not a guarantee of safety. Death protection and terminal cerebral injury show a short status instead of a misleading rescue instruction.
 
 Turning the setting off restores the vanilla blood-loss-only countdown, including its zero-time display at full blood loss. The setting affects presentation only; doctor priorities and actual health progression stay the same. A health-tab replacement that skips vanilla drawing retains its own display.
 

@@ -19,6 +19,7 @@ public sealed partial class VitalFailureComp
     private bool _hasPrognosis;
     private int _prognosisTick = -1;
     private int _prognosisSettings;
+    internal string PrognosisTooltip { get; private set; } = string.Empty;
 
     partial void InvalidatePrognosis() => _hasPrognosis = false;
 
@@ -37,6 +38,7 @@ public sealed partial class VitalFailureComp
             _prognosisSource = current;
             _prognosis = PhysiologyPrognosis.Estimate(in current, VitalFailureDefOf.MI_VitalFailureConfig,
                 HediffDefOf.BloodLoss, KnownHediffDefOf.BrainDamage_Hypoxia);
+            PrognosisTooltip = PrognosisRescueHints.Tooltip(in current, in _prognosis);
             _prognosisTick = now;
             _prognosisSettings = settings;
             _hasPrognosis = true;
@@ -88,14 +90,22 @@ public sealed partial class VitalFailureComp
                 result.ComaMultiplier = NeurologicalDefOf.MI_NeurologicalConfig.ComaHypoxiaMultiplier;
                 AddPrognosisFailure(ref result, hediff, hediff.TryGetComp<HediffComp_SeverityPerDay>()?.SeverityChangePerDay() ?? 0f);
             }
+            else if (hediff.def == KnownHediffDefOf.ChokingOnBlood) { result.Choking = true; }
+            else if (hediff.def == KnownHediffDefOf.LungCollapse)
+            {
+                result.CollapsedLung = true;
+                result.LungNeedsSurgery |= hediff.Severity >= .45f;
+            }
             if (!result.VitalEnabled) { continue; }
             if (hediff.def == KnownHediffDefOf.CardiacArrest)
             {
                 arrest = true;
+                result.Arrest = true;
+                result.EarlyArrest |= hediff.CurStageIndex == 0;
                 if (!result.OxygenProtected) { AddPrognosisFailure(ref result, hediff,
                     ((HediffCompProperties_SeverityPerDay)hediff.TryGetComp<HediffComp_VitalArrest>()!.props).severityPerDay, 1f); }
             }
-            else if (IsTerminalHeartAttack(hediff)) { arrest = true; }
+            else if (IsTerminalHeartAttack(hediff)) { arrest = true; result.Arrest = true; result.EarlyArrest = true; }
             else if (hediff.def.GetModExtension<VitalFailureProperties>() is { } failure
                 && (hediff.def != VitalFailureDefOf.MI_RespiratoryFailure && hediff.def != VitalFailureDefOf.MI_Coma || !result.OxygenProtected))
             { AddPrognosisFailure(ref result, hediff, failure.SeverityPerDay); }
@@ -108,6 +118,11 @@ public sealed partial class VitalFailureComp
         {
             result.Breathing = VitalPhysiology.BreathesAir(pawn) ? Capacity(pawn, PawnCapacityDefOf.Breathing) : 1f;
             result.Pumping = arrest ? 0f : Capacity(pawn, PawnCapacityDefOf.BloodPumping);
+            if (arrest) { result.RestartableHeart = CanRestoreCirculation(); }
+        }
+        if (result.Failure.Cause == NeurologicalDefOf.MI_ArtificialComa)
+        {
+            result.CanWakeUp = VitalPhysiology.CanReceiveCare(pawn) && Recipe_InduceArtificialComa.CanReverse(pawn);
         }
         result.ColdProtection = VitalFailureDefOf.MI_VitalFailureConfig.HypothermiaProtectionCurve.Evaluate(hypothermia);
         result.Relevant = result.BleedRate > 0.01f || result.BloodLoss > 0f || result.ShockPresent || result.ClinicalBrain > 0f

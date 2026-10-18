@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- EN: stop bleeding -->
+  <MI_PrognosisHint_Bleeding>stop bleeding</MI_PrognosisHint_Bleeding>
+  <!-- EN: transfuse blood -->
+  <MI_PrognosisHint_Blood>transfuse blood</MI_PrognosisHint_Blood>
+  <!-- EN: tend shock -->
+  <MI_PrognosisHint_Shock>tend shock</MI_PrognosisHint_Shock>
+  <!-- EN: perform CPR -->
+  <MI_PrognosisHint_Cpr>perform CPR</MI_PrognosisHint_Cpr>
+  <!-- EN: perform CPR or defibrillate -->
+  <MI_PrognosisHint_Defibrillate>perform CPR or defibrillate</MI_PrognosisHint_Defibrillate>
+  <!-- EN: restore heart function -->
+  <MI_PrognosisHint_Heart>restore heart function</MI_PrognosisHint_Heart>
+  <!-- EN: clear airway with CPR or suction -->
+  <MI_PrognosisHint_Airway>clear airway with CPR or suction</MI_PrognosisHint_Airway>
+  <!-- EN: repair collapsed lung -->
+  <MI_PrognosisHint_Lung>repair collapsed lung</MI_PrognosisHint_Lung>
+  <!-- EN: tend collapsed lung -->
+  <MI_PrognosisHint_TendLung>tend collapsed lung</MI_PrognosisHint_TendLung>
+  <!-- EN: restore breathing -->
+  <MI_PrognosisHint_Breathing>restore breathing</MI_PrognosisHint_Breathing>
+  <!-- EN: restore liver function -->
+  <MI_PrognosisHint_Liver>restore liver function</MI_PrognosisHint_Liver>
+  <!-- EN: restore kidney function -->
+  <MI_PrognosisHint_Kidney>restore kidney function</MI_PrognosisHint_Kidney>
+  <!-- EN: restore blood filtration -->
+  <MI_PrognosisHint_Filtration>restore blood filtration</MI_PrognosisHint_Filtration>
+  <!-- EN: restore metabolism -->
+  <MI_PrognosisHint_Metabolism>restore metabolism</MI_PrognosisHint_Metabolism>
+  <!-- EN: treat the cause of unconsciousness -->
+  <MI_PrognosisHint_Consciousness>treat the cause of unconsciousness</MI_PrognosisHint_Consciousness>
+  <!-- EN: administer Wake-up -->
+  <MI_PrognosisHint_WakeUp>administer Wake-up</MI_PrognosisHint_WakeUp>
+  <!-- EN: Wake-up is restricted for this patient -->
+  <MI_PrognosisHint_WakeUpRestricted>Wake-up is restricted for this patient</MI_PrognosisHint_WakeUpRestricted>
+  <!-- EN: restore oxygen delivery -->
+  <MI_PrognosisHint_Oxygen>restore oxygen delivery</MI_PrognosisHint_Oxygen>
+  <!-- EN: treat the underlying condition -->
+  <MI_PrognosisHint_Underlying>treat the underlying condition</MI_PrognosisHint_Underlying>
+  <!-- EN: terminal brain injury; no projected rescue -->
+  <MI_PrognosisHint_Terminal>terminal brain injury; no projected rescue</MI_PrognosisHint_Terminal>
+  <!-- EN: Try: {0} -->
+  <MI_PrognosisHint_Advice>Try: {0}</MI_PrognosisHint_Advice>
+</LanguageData>

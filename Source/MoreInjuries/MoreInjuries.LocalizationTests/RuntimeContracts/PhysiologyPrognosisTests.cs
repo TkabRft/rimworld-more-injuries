@@ -27,6 +27,13 @@ public sealed class PhysiologyPrognosisTests
     private static PhysiologyEstimate Forecast(PhysiologySnapshot input) => PhysiologyPrognosis.Estimate(in input,
         VitalFailureDefOf.MI_VitalFailureConfig, HediffDefOf.BloodLoss, KnownHediffDefOf.BrainDamage_Hypoxia);
 
+    private static void OpenHealth(Pawn? pawn)
+    {
+        Find.MainTabsRoot.OpenTab = pawn is null ? null : MainButtonDefOf.Inspect;
+        ((MainTabWindow_Inspect)MainButtonDefOf.Inspect.TabWindow).OpenTabType = typeof(ITab_Pawn_Health);
+        Find.Selector.SingleSelectedThing = pawn;
+    }
+
     private static float ProductionTime(float initialShock, float quality, bool natural, bool coma, int offset)
     {
         Pawn pawn = VitalFailureTests.Patient(offset); Rand.RangeFraction = .5f;
@@ -145,6 +152,7 @@ public sealed class PhysiologyPrognosisTests
     public void UiToggleAndReplacementUiGuardRestoreTheOriginalWithoutReadingHealth()
     {
         Pawn pawn = VitalFailureTests.Patient(); VitalFailureTests.Add(pawn, HediffDefOf.BloodLoss, 1);
+        OpenHealth(pawn);
         Widgets.Draws = 0; int reads = pawn.health.hediffSet.CapacityReads;
         MoreInjuriesMod.Settings.EnablePhysiologyDeathEstimate = false;
         Patch_PhysiologyDeathEstimate.Postfix(new(0, 0, 300, 600), pawn, true);
@@ -158,6 +166,149 @@ public sealed class PhysiologyPrognosisTests
         Assert.AreEqual(2, Widgets.Draws); Assert.AreEqual(new Color(7), GUI.color);
         string source = File.ReadAllText(Path.Combine(RuntimeDefinitionTests.ModRoot, "Source/MoreInjuries/MoreInjuries/Patches/Patch_PhysiologyDeathEstimate.cs"));
         Assert.DoesNotContain("TicksUntilDeathDueToBloodLoss", source);
+        OpenHealth(null);
+    }
+
+    [TestMethod]
+    public void ClosedOtherAndUnselectedHealthTabsDoNoForecastWorkForOneHundredPatients()
+    {
+        Pawn[] patients = Enumerable.Range(0, 100).Select(offset =>
+        {
+            Pawn pawn = VitalFailureTests.Patient(offset);
+            VitalFailureTests.Add(pawn, HediffDefOf.BloodLoss, .9f);
+            return pawn;
+        }).ToArray();
+        Widgets.Draws = 0;
+        foreach (Pawn pawn in patients)
+        {
+            OpenHealth(null);
+            VitalFailureTests.Tick(pawn, 5000);
+            Assert.AreEqual(string.Empty, pawn.Vital!.PrognosisTooltip,
+                "Normal health ticking must not request a forecast.");
+            int reads = pawn.health.hediffSet.CapacityReads;
+            OpenHealth(null);
+            Find.TickManager.TicksGame = 5000;
+            Patch_PhysiologyDeathEstimate.Postfix(new(0, 0, 300, 600), pawn, true);
+            OpenHealth(pawn);
+            ((MainTabWindow_Inspect)MainButtonDefOf.Inspect.TabWindow).OpenTabType = typeof(object);
+            Patch_PhysiologyDeathEstimate.Postfix(new(0, 0, 300, 600), pawn, true);
+            OpenHealth(VitalFailureTests.Patient());
+            Patch_PhysiologyDeathEstimate.Postfix(new(0, 0, 300, 600), pawn, true);
+            Assert.AreEqual(reads, pawn.health.hediffSet.CapacityReads);
+            Assert.AreEqual(string.Empty, pawn.Vital!.PrognosisTooltip);
+        }
+        Assert.AreEqual(0, Widgets.Draws);
+        Pawn selected = patients[0]; OpenHealth(selected);
+        Patch_PhysiologyDeathEstimate.Postfix(new(0, 0, 300, 600), selected, true);
+        Assert.AreEqual(2, Widgets.Draws);
+        int cached = selected.health.hediffSet.CapacityReads;
+        string tooltip = selected.Vital!.PrognosisTooltip;
+        Find.TickManager.TicksGame += 10;
+        Patch_PhysiologyDeathEstimate.Postfix(new(0, 0, 300, 600), selected, true);
+        Assert.AreEqual(cached, selected.health.hediffSet.CapacityReads);
+        Assert.AreSame(tooltip, selected.Vital.PrognosisTooltip);
+        OpenHealth(null); Find.TickManager.TicksGame += 1000;
+        selected.health.hediffSet.Capacities[PawnCapacityDefOf.BloodPumping] = 0;
+        selected.Vital.Invalidate();
+        Patch_PhysiologyDeathEstimate.Postfix(new(0, 0, 300, 600), selected, true);
+        Assert.AreEqual(cached, selected.health.hediffSet.CapacityReads);
+        OpenHealth(selected);
+        Patch_PhysiologyDeathEstimate.Postfix(new(0, 0, 300, 600), selected, true);
+        Assert.IsTrue(selected.health.hediffSet.CapacityReads > cached);
+        Assert.Contains("restore heart function", TooltipHandler.LastTip);
+        OpenHealth(null);
+    }
+
+    [TestMethod]
+    public void RescueHintsUseSavedTextAndCombineOnlyRelevantActionsWithoutDuplicates()
+    {
+        PhysiologySnapshot input = Baseline(); input.BleedRate = 5; input.Dilution = 1;
+        input.Pumping = 0; input.Arrest = true; input.RestartableHeart = true; input.EarlyArrest = true;
+        input.Breathing = 0; input.Choking = true; input.CollapsedLung = true; input.LungNeedsSurgery = true;
+        PhysiologyEstimate estimate = new(1000, KnownHediffDefOf.BrainDamage_Hypoxia);
+        string tip = PrognosisRescueHints.Tooltip(in input, in estimate);
+        Assert.AreEqual("Projected cause: " + estimate.Cause.LabelCap
+            + "\nTry: stop bleeding; transfuse blood; tend shock; perform CPR or defibrillate; clear airway with CPR or suction; repair collapsed lung", tip);
+        Assert.AreEqual(1, tip.Split("transfuse blood").Length - 1);
+        Assert.DoesNotContain("Approximate game time", tip);
+        input.EarlyArrest = false;
+        tip = PrognosisRescueHints.Tooltip(in input, in estimate);
+        Assert.DoesNotContain("defibrillate", tip);
+        input.RestartableHeart = false;
+        tip = PrognosisRescueHints.Tooltip(in input, in estimate);
+        Assert.Contains("restore heart function", tip);
+        input = Baseline(); input.BloodLoss = .2f; input.Shock = 0; input.Breathing = 0;
+        tip = PrognosisRescueHints.Tooltip(in input, in estimate);
+        Assert.Contains("restore breathing", tip); Assert.DoesNotContain("transfuse", tip); Assert.DoesNotContain("shock", tip);
+        input.CollapsedLung = true;
+        Assert.Contains("tend collapsed lung", PrognosisRescueHints.Tooltip(in input, in estimate));
+    }
+
+    [TestMethod]
+    public void FailureHintsProtectionAndTerminalInjuryNeverPromiseUnsupportedRescue()
+    {
+        PhysiologySnapshot input = Baseline();
+        foreach ((HediffDef cause, string hint) in new[]
+        {
+            (VitalFailureDefOf.MI_LiverFailure, "restore liver function"),
+            (VitalFailureDefOf.MI_RenalFailure, "restore kidney function"),
+            (VitalFailureDefOf.MI_FiltrationFailure, "restore blood filtration"),
+            (VitalFailureDefOf.MI_MetabolicFailure, "restore metabolism"),
+            (VitalFailureDefOf.MI_Coma, "treat the cause of unconsciousness")
+        })
+        {
+            PhysiologyEstimate failure = new(1000, cause);
+            string tip = PrognosisRescueHints.Tooltip(in input, in failure);
+            Assert.Contains(hint, tip); Assert.DoesNotContain("transfuse", tip);
+        }
+        PhysiologyEstimate estimate = new(1000, NeurologicalDefOf.MI_ArtificialComa);
+        Assert.DoesNotContain("Try:", PrognosisRescueHints.Tooltip(in input, in estimate));
+        input.CanWakeUp = true;
+        Assert.Contains("Try: administer Wake-up", PrognosisRescueHints.Tooltip(in input, in estimate));
+        estimate = new(0, KnownHediffDefOf.BrainDamage_Hypoxia);
+        input.ClinicalBrain = VitalFailureDefOf.MI_VitalFailureConfig.TerminalCerebralSeverity;
+        string terminal = PrognosisRescueHints.Tooltip(in input, in estimate);
+        Assert.Contains("terminal brain injury", terminal); Assert.DoesNotContain("Try:", terminal);
+        input.Protected = true;
+        Assert.AreEqual("Death protection active", PrognosisRescueHints.Tooltip(in input, in estimate));
+        input.Protected = false; estimate = new(int.MaxValue, null);
+        Assert.AreEqual("No projected fatal cause", PrognosisRescueHints.Tooltip(in input, in estimate));
+        estimate = new(1000, new HediffDef { label = "custom failure" });
+        Assert.Contains("treat the underlying condition", PrognosisRescueHints.Tooltip(in input, in estimate));
+    }
+
+    [TestMethod]
+    public void ProductionSnapshotCachesTreatmentFactsAndRespectsWakeUpRestrictions()
+    {
+        Pawn pawn = VitalFailureTests.Patient();
+        Find.TickManager.TicksGame = 0;
+        Hediff arrest = VitalFailureTests.Add(pawn, KnownHediffDefOf.CardiacArrest, .1f);
+        VitalFailureTests.Add(pawn, KnownHediffDefOf.ChokingOnBlood, .8f);
+        VitalFailureTests.Add(pawn, KnownHediffDefOf.LungCollapse, .7f);
+        pawn.health.hediffSet.Capacities[PawnCapacityDefOf.Breathing] = 0;
+        int conditions = pawn.health.hediffSet.hediffs.Count, rolls = Rand.RangeCalls;
+        pawn.Vital!.TryGetPrognosis(out PhysiologySnapshot captured, out _);
+        Assert.IsTrue(captured.Arrest && captured.EarlyArrest && captured.RestartableHeart);
+        Assert.IsTrue(captured.Choking && captured.CollapsedLung && captured.LungNeedsSurgery);
+        Assert.Contains("defibrillate", pawn.Vital.PrognosisTooltip);
+        arrest.Severity = .8f; pawn.Vital.Invalidate(); pawn.Vital.TryGetPrognosis(out captured, out _);
+        Assert.IsFalse(captured.EarlyArrest); Assert.DoesNotContain("defibrillate", pawn.Vital.PrognosisTooltip);
+        pawn.health.hediffSet.Capacities[PawnCapacityDefOf.BloodPumping] = 0;
+        pawn.Vital.Invalidate(); pawn.Vital.TryGetPrognosis(out captured, out _);
+        Assert.IsFalse(captured.RestartableHeart); Assert.Contains("restore heart function", pawn.Vital.PrognosisTooltip);
+        Assert.AreEqual(conditions, pawn.health.hediffSet.hediffs.Count); Assert.AreEqual(rolls, Rand.RangeCalls);
+
+        pawn = VitalFailureTests.Patient();
+        Hediff coma = VitalFailureTests.Add(pawn, NeurologicalDefOf.MI_ArtificialComa, .8f);
+        coma.TestComps.Add(new HediffComp_SeverityPerDay
+        { parent = coma, props = new HediffCompProperties_SeverityPerDay { severityPerDay = .1f } });
+        pawn.Vital!.TryGetPrognosis(out captured, out _);
+        Assert.IsTrue(captured.CanWakeUp); Assert.Contains("administer Wake-up", pawn.Vital.PrognosisTooltip);
+        pawn.IsMutant = true; pawn.mutant.Def.canUseDrugs = false; pawn.Vital.Invalidate();
+        pawn.Vital.TryGetPrognosis(out captured, out _);
+        Assert.IsFalse(captured.CanWakeUp); Assert.DoesNotContain("Try:", pawn.Vital.PrognosisTooltip);
+        pawn.IsMutant = false; pawn.playerSettings = new() { medCare = MedicalCareCategory.NoCare }; pawn.Vital.Invalidate();
+        pawn.Vital.TryGetPrognosis(out captured, out _); Assert.IsFalse(captured.CanWakeUp);
     }
 
     [TestMethod]

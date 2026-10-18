@@ -20,13 +20,37 @@ namespace Verse
         public static void DrawBoxSolid(UnityEngine.Rect rect, UnityEngine.Color color) => Draws++;
         public static void Label(UnityEngine.Rect rect, string label) => Draws++;
     }
-    public static class TooltipHandler { public static void TipRegion(UnityEngine.Rect rect, string tip) { } }
+    public static class TooltipHandler
+    {
+        public static string LastTip = "";
+        public static void TipRegion(UnityEngine.Rect rect, string tip) => LastTip = tip;
+    }
+    public static partial class Find
+    {
+        public static readonly RimWorld.MainTabsRoot MainTabsRoot = new();
+        public static readonly RimWorld.Selector Selector = new();
+    }
+    internal static class PrognosisTestText
+    {
+        private static readonly Dictionary<string, string> s_text = new[] { "Lang_Prognosis.xml", "Lang_PrognosisHints.xml" }
+            .SelectMany(file => System.Xml.Linq.XDocument.Load(Path.Combine(
+                MoreInjuries.LocalizationTests.RuntimeContracts.RuntimeDefinitionTests.ModRoot,
+                "Languages/English/Keyed", file)).Root!.Elements())
+            .ToDictionary(element => element.Name.LocalName, element => element.Value.Replace("\\n", "\n"));
+        internal static string Translate(string key, object[] arguments) => string.Format(s_text[key], arguments);
+    }
     public static class TruncateBoundary { public static string Truncate(this string label, float width) => label; }
     public partial class HediffDef { public string LabelCap => label; }
     public static partial class GenDate { public static string ToStringTicksToPeriod(int ticks) => ticks.ToString(); }
 }
 namespace RimWorld
 {
+    public sealed class ITab_Pawn_Health;
+    public sealed class MainTabWindow_Inspect { public Type? OpenTabType; }
+    public sealed class MainButtonDef { public object TabWindow = new MainTabWindow_Inspect(); }
+    public static class MainButtonDefOf { public static readonly MainButtonDef Inspect = new(); }
+    public sealed class MainTabsRoot { public MainButtonDef? OpenTab; }
+    public sealed class Selector { public object? SingleSelectedThing; }
     public static class HealthCardUtility
     {
         public static void DrawHediffListing(UnityEngine.Rect rect, Verse.Pawn pawn, bool showBloodLoss) { }

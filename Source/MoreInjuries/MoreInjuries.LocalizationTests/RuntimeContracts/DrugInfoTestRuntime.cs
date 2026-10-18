@@ -80,7 +80,8 @@ namespace Verse
     {
         public static bool NullOrEmpty(this string? value) => string.IsNullOrEmpty(value);
         public static string CapitalizeFirst(this string value) => value;
-        public static string Translate(this string value, params object[] arguments) => value + " " + string.Join(" ", arguments);
+        public static string Translate(this string value, params object[] arguments) => value.StartsWith("MI_Prognosis", StringComparison.Ordinal)
+            ? PrognosisTestText.Translate(value, arguments) : value + " " + string.Join(" ", arguments);
         public static string ToStringPercent(this float value) => value.ToString("P0", System.Globalization.CultureInfo.InvariantCulture);
     }
 }

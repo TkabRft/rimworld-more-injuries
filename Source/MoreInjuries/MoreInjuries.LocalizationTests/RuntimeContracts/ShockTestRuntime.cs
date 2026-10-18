@@ -130,6 +130,7 @@ namespace MoreInjuries.Defs.WellKnown
         public static readonly Verse.HediffDef Concussion = new();
         public static readonly Verse.HediffDef HemorrhagicStroke = new();
         public static readonly Verse.HediffDef ChokingOnBlood = new();
+        public static readonly Verse.HediffDef LungCollapse = new();
     }
 }
 
