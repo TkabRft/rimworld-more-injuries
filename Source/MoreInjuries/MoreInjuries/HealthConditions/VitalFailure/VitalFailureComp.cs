@@ -212,7 +212,7 @@ public sealed partial class VitalFailureComp : ThingComp
         Pawn pawn = Patient;
         HediffSet set = pawn.health.hediffSet;
         _arrest = _heartAttack = _brainInjury = null;
-        Hediff? shock = null;
+        Hediff? shock = null, choking = null;
         float bloodLoss = 0f, dilution = 0f, adrenaline = 0f, hypothermia = 0f;
         _deathresting = false;
         _neurologicalConditions.Clear();
@@ -244,6 +244,10 @@ public sealed partial class VitalFailureComp : ThingComp
             {
                 _brainInjury = hediff;
                 _brainInjury.TryGetComp<HediffComp_CerebralScale>()?.Rebase();
+            }
+            else if (hediff.def == KnownHediffDefOf.ChokingOnBlood)
+            {
+                choking = hediff;
             }
             else if (hediff.def == KnownHediffDefOf.HypovolemicShock)
             {
@@ -363,12 +367,13 @@ public sealed partial class VitalFailureComp : ThingComp
             if (_failures[0] is { } respiratory)
             {
                 causes?.AddCause(respiratory);
+                if (choking is not null) { causes?.AddCause(choking); }
             }
         }
     }
 
     private static float Capacity(Pawn pawn, PawnCapacityDef def) => def.Worker.CanHaveCapacity(pawn.RaceProps.body)
-        ? def.Worker.CalculateCapacityLevel(pawn.health.hediffSet) : 1f;
+        ? PawnCapacityUtility.CalculateCapacityLevel(pawn.health.hediffSet, def) : 1f;
 
     private static HediffDef FailureDef(int index) => index switch
     {

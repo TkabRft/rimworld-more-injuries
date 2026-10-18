@@ -15,6 +15,8 @@ public class JobDriver_PerformCpr : JobDriver_UseMedicalDevice_TargetsHediffDefs
 {
     public const string JOB_LABEL_KEY = "MI_PerformCpr";
 
+    private const float CHOKING_STRENGTH = 0.35f;
+
     public static HediffDef[] TargetHediffDefs { get; } = [KnownHediffDefOf.ChokingOnBlood, KnownHediffDefOf.CardiacArrest];
 
     protected override bool RequiresDevice => false;
@@ -38,7 +40,7 @@ public class JobDriver_PerformCpr : JobDriver_UseMedicalDevice_TargetsHediffDefs
             float doctorSkillFactor = doctorSkill / 15f;
             doctorSkillFactor *= choking.GetTreatmentEffectivenessModifier(job.def);
             // scale severity reduction based on a sigmoid function with a random offset
-            float severityReductionRaw = DiffusedSigmoid(doctorSkillFactor);
+            float severityReductionRaw = DiffusedSigmoid(doctorSkillFactor) * CHOKING_STRENGTH;
             // we only clamp after the fact to allow a theoretical increase in severity for very poorly performed CPR attempts when the negative random offset is high
             float newSeverity = Mathf.Clamp01(severity - severityReductionRaw);
             if (newSeverity > 0)

@@ -78,6 +78,21 @@ namespace Verse
     }
     public static class PawnCapacityUtility
     {
+        public static float CalculateCapacityLevel(HediffSet set, PawnCapacityDef capacity)
+        {
+            float value = capacity.Worker.CalculateCapacityLevel(set), factor = 1f, maximum = float.MaxValue;
+            foreach (Hediff hediff in set.hediffs)
+            {
+                HediffStage? stage = hediff.def.stages?.LastOrDefault(stage => stage.minSeverity <= hediff.Severity);
+                if (stage?.capMods is not { } modifiers) { continue; }
+                foreach (PawnCapacityModifier modifier in modifiers)
+                {
+                    if (modifier.capacity != capacity) { continue; }
+                    value += modifier.offset; factor *= modifier.postFactor; maximum = Math.Min(maximum, modifier.setMax);
+                }
+            }
+            return Math.Max(0f, Math.Min(maximum, value * factor));
+        }
         public static float CalculatePartEfficiency(HediffSet set, BodyPartRecord part) => part.Missing ? 0f : part.Efficiency;
     }
     public sealed class PawnCapacityDef

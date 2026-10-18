@@ -38,6 +38,7 @@ namespace Verse
 
     public sealed class HediffStage
     {
+        public List<PawnCapacityModifier>? capMods;
         public string? label;
         public float minSeverity;
         public float regeneration;
@@ -45,6 +46,12 @@ namespace Verse
         {
             yield return new StatDrawEntry(StatCategoryDefOf.Drug, "Stage effect", "effect", "effect", 0);
         }
+    }
+
+    public sealed class PawnCapacityModifier
+    {
+        public PawnCapacityDef capacity = null!;
+        public float offset, setMax = float.MaxValue, postFactor = 1f;
     }
 
     public class HediffCompProperties { public Type compClass = null!; }

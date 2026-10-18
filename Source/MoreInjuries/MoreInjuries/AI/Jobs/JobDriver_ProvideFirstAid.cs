@@ -124,12 +124,7 @@ public sealed class JobDriver_ProvideFirstAid : JobDriver
         // is the patient choking?
         if (patient.health.hediffSet.hediffs.Any(static hediff => Array.IndexOf(JobDriver_UseSuctionDevice.TargetHediffDefs, hediff.def) != -1))
         {
-            if (MedicalDeviceHelper.FindMedicalDevice(doctor, patient, KnownThingDefOf.SuctionDevice, JobDriver_UseSuctionDevice.TargetHediffDefs, fromInventoryOnly: true) is Thing suctionDevice)
-            {
-                job = JobDriver_UseSuctionDevice.GetDispatcher(doctor, patient, suctionDevice).CreateJob();
-                return StartJobAndScheduleScan(doctor, patient, job);
-            }
-            job = JobDriver_PerformCpr.GetDispatcher(doctor, patient).CreateJob();
+            job = AutomaticAirwayTreatment.CreateJob(doctor, patient);
             return StartJobAndScheduleScan(doctor, patient, job);
         }
         // do we need to perform CPR?

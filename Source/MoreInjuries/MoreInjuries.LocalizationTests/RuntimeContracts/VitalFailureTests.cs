@@ -366,7 +366,7 @@ public sealed class VitalFailureTests
         Assert.AreEqual(3f, brain.Severity);
         Hediff choke = Add(pawn, KnownHediffDefOf.ChokingOnBlood, .5f);
         cpr.TestApply(doctor, pawn);
-        Assert.IsFalse(pawn.health.hediffSet.hediffs.Contains(choke));
+        Assert.IsTrue(choke.Severity > 0f && choke.Severity < .5f, "Airway CPR is now a weaker fallback than suction.");
     }
 
     [TestMethod]

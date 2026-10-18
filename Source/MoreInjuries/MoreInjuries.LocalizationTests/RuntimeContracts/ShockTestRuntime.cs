@@ -150,7 +150,7 @@ namespace MoreInjuries
         public static readonly TestSettings Settings = new();
     }
 
-    public sealed class TestSettings
+    public sealed partial class TestSettings
     {
         public bool EnableHypovolemicShock = true;
         public bool EnableNeuralDamage = true;

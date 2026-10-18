@@ -62,9 +62,9 @@ namespace MoreInjuries.Things
 }
 namespace MoreInjuries.Defs.WellKnown
 {
-    public static class KnownThingDefOf { public static readonly ThingDef Defibrillator = new(); }
-    public static class KnownSoundDefOf { public static readonly object PerformCpr = new(); public static readonly object Defibrillator = new(); }
-    public static class KnownJobDefOf { public static readonly object PerformCpr = new(); public static readonly object UseDefibrillator = new(); }
+    public static class KnownThingDefOf { public static readonly ThingDef Defibrillator = new(); public static readonly ThingDef SuctionDevice = new(); }
+    public static class KnownSoundDefOf { public static readonly object PerformCpr = new(); public static readonly object Defibrillator = new(); public static readonly object UseSuctionDevice = new(); }
+    public static class KnownJobDefOf { public static readonly object PerformCpr = new(); public static readonly object UseDefibrillator = new(); public static readonly object UseSuctionDevice = new(); }
 }
 namespace RimWorld
 {

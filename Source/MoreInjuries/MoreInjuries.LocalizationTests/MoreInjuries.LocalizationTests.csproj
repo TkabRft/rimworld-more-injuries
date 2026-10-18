@@ -8,6 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="..\MoreInjuries\HealthConditions\Choking\AutomaticAirwayTreatment.cs" Link="RuntimeContracts\Production\AutomaticAirwayTreatment.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\Choking\JobDriver_UseSuctionDevice.cs" Link="RuntimeContracts\Production\JobDriver_UseSuctionDevice.cs" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
         <PackageReference Include="MSTest" Version="4.2.2" />
     </ItemGroup>
