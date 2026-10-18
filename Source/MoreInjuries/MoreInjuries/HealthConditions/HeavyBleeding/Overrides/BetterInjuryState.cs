@@ -165,9 +165,8 @@ public class BetterInjuryState<TOwner>(TOwner owner) : IExposable, IInjuryState 
             if (hasCustomInfo)
             {
                 double effectiveBleedRate = Math.Round(EffectiveBleedRateMultiplier * 100f, 2);
-                builder.AppendLine()
-                    .AppendLine("MI_InjuryBleeding_EffectiveBleedRate_Tooltip"
-                        .Translate(effectiveBleedRate.Named(Named.Params.PERCENT)));
+                builder.AppendLine("MI_InjuryBleeding_EffectiveBleedRate_Tooltip"
+                    .Translate(effectiveBleedRate.Named(Named.Params.PERCENT)));
             }
             IReadOnlyList<HediffCrossInteraction> crossInteractions = s_crossInteractionCache.GetData(owner.pawn);
             for (int i = 0; i < crossInteractions.Count; i++)
@@ -179,7 +178,7 @@ public class BetterInjuryState<TOwner>(TOwner owner) : IExposable, IInjuryState 
                 }
                 HediffCrossInteraction interaction = crossInteractions[i];
                 float modifier = interaction.Modifier.GetModifierFor(hediff: interaction.Hediff, bleedingHediff: owner);
-                double modifierPercentage = Math.Round((modifier - 1f) * 100f, 2);
+                string modifierPercentage = ((modifier - 1f) * 100f).ToString("+0.##;-0.##;0");
                 builder.AppendLine("MI_InjuryBleeding_CrossInteraction_Tooltip".Translate(
                     interaction.Hediff.Named(Named.Params.HEDIFF),
                     modifierPercentage.Named(Named.Params.PERCENT)));
