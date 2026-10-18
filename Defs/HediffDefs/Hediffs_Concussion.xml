@@ -9,6 +9,7 @@
     <maxSeverity>1</maxSeverity>
     <defaultLabelColor>(140,140,0)</defaultLabelColor>
     <comps>
+      <li Class="MoreInjuries.HealthConditions.BrainDamage.HediffCompProperties_NeurologicalSource" />
       <li Class="HediffCompProperties_SeverityPerDay">
         <severityPerDay>-0.5</severityPerDay>
       </li>

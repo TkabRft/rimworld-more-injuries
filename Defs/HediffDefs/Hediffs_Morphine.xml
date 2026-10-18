@@ -9,6 +9,7 @@
     <isBad>true</isBad>
     <maxSeverity>1</maxSeverity>
     <modExtensions>
+      <li Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalSourceProperties"><profile>MI_Neuro_Coma</profile></li>
       <li Class="MoreInjuries.HealthConditions.Secondary.Linked.LinkedSeverityProperties_ModExtension">
         <modifiedHediffs>
           <li>

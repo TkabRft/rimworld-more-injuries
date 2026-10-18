@@ -85,6 +85,7 @@
       </li>
     </modExtensions>
     <comps>
+      <li Class="MoreInjuries.HealthConditions.BrainDamage.HediffCompProperties_NeurologicalSource" />
       <li Class="MoreInjuries.HealthConditions.VitalFailure.HediffCompProperties_VitalArrest">
         <severityPerDay>8.0</severityPerDay>
       </li>

@@ -88,14 +88,22 @@ public abstract partial class HediffCompHandler_SecondaryCondition : HediffCompH
             // otherwise, we update the existing hediff's severity
             UpdateHediffCause(existingHediff, comp);
             existingHediff.Severity += GetSeverity(comp, hediffMakerDef, targetBodyPart);
+            if (hediffDef == KnownHediffDefOf.BrainDamage_Hypoxia)
+            {
+                existingHediff.TryGetComp<HediffComp_NeurologicalSource>()?.SetProfile(NeurologicalOutcomes.SourceProfile(comp.parent));
+            }
         }
     }
 
     private static float GetSeverity(HediffComp_SecondaryCondition comp, HediffMakerDef maker, BodyPartRecord? targetPart)
     {
         float severity = maker.GetInitialSeverity();
-        return maker.HediffDef == KnownHediffDefOf.BrainDamage_Hypoxia
-            ? severity * CerebralInjury.Scale(comp.Pawn, targetPart) : severity;
+        if (maker.HediffDef == KnownHediffDefOf.BrainDamage_Hypoxia)
+        {
+            BodyPartRecord? brain = targetPart ?? comp.Pawn.health.hediffSet.GetBrain();
+            severity *= CerebralInjury.Scale(comp.Pawn, brain);
+        }
+        return severity;
     }
 
     protected virtual Hediff MakeHediff(HediffComp_SecondaryCondition sourceComp, HediffDef hediffDef, BodyPartRecord? targetBodyPart, float severity)
@@ -104,6 +112,10 @@ public abstract partial class HediffCompHandler_SecondaryCondition : HediffCompH
         hediff.Severity = severity;
         UpdateHediffCause(hediff, sourceComp);
         sourceComp.Pawn.health.AddHediff(hediff, targetBodyPart);
+        if (hediffDef == KnownHediffDefOf.BrainDamage_Hypoxia || hediffDef == KnownHediffDefOf.CardiacArrest || hediffDef == KnownHediffDefOf.HemorrhagicStroke)
+        {
+            hediff.TryGetComp<HediffComp_NeurologicalSource>()?.SetProfile(NeurologicalOutcomes.SourceProfile(sourceComp.parent));
+        }
         return hediff;
     }
 

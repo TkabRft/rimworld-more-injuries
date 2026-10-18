@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <HediffDef ParentName="BrainDamageBase">
+    <defName>MI_DiffuseBrainDamage</defName>
+    <label>diffuse brain damage</label>
+    <description>Widespread lasting neurological damage reduces the efficiency of the affected brain. It does not ordinarily heal. Advanced neurological treatment or appropriate regeneration may restore function. Severe damage can leave the patient in a vegetative state.</description>
+    <chronic>true</chronic>
+    <modExtensions>
+      <li Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalConditionProperties"><animalEligible>true</animalEligible></li>
+    </modExtensions>
+    <stages>
+      <li><label>minor</label><partEfficiencyOffset>-0.05</partEfficiencyOffset></li>
+      <li><label>minor</label><minSeverity>0.2</minSeverity><partEfficiencyOffset>-0.15</partEfficiencyOffset></li>
+      <li><label>major</label><minSeverity>0.4</minSeverity><partEfficiencyOffset>-0.30</partEfficiencyOffset></li>
+      <li><label>major</label><minSeverity>0.6</minSeverity><partEfficiencyOffset>-0.50</partEfficiencyOffset></li>
+      <li><label>extreme</label><minSeverity>0.8</minSeverity><partEfficiencyOffset>-0.75</partEfficiencyOffset></li>
+      <li><label>vegetative state</label><minSeverity>1</minSeverity><partEfficiencyOffset>-0.75</partEfficiencyOffset><painFactor>0</painFactor><capMods><li><capacity>Consciousness</capacity><setMax>0.1</setMax></li></capMods></li>
+    </stages>
+  </HediffDef>
+</Defs>

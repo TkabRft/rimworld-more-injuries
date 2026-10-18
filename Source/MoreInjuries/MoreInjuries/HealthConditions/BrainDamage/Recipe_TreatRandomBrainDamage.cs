@@ -8,7 +8,13 @@ namespace MoreInjuries.HealthConditions.BrainDamage;
 
 public class Recipe_TreatRandomBrainDamage : Recipe_Surgery
 {
-    public override IEnumerable<BodyPartRecord> GetPartsToApplyOn(Pawn pawn, RecipeDef recipe) => [pawn.health.hediffSet.GetBrain()];
+    public override IEnumerable<BodyPartRecord> GetPartsToApplyOn(Pawn pawn, RecipeDef recipe)
+    {
+        foreach (BodyPartRecord brain in VitalFailure.VitalAnatomy.For(pawn.RaceProps.body).Brains)
+        {
+            if (!pawn.health.hediffSet.PartIsMissing(brain)) { yield return brain; }
+        }
+    }
 
     public override bool AvailableOnNow(Thing thing, BodyPartRecord? part = null)
     {

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <RecipeDef ParentName="EPIA_SurgerySyntheticRepair" MayRequire="vat.epoeforked">
+    <defName>MI_TreatDiffuseBrainDamage_Neurocure</defName>
+    <label>heal diffuse brain damage</label>
+    <description>Install a neuro-cure framework to treat diffuse brain damage.</description>
+    <workerClass>Recipe_RemoveHediff</workerClass>
+    <removesHediff>MI_DiffuseBrainDamage</removesHediff>
+    <jobString>Treating diffuse brain damage.</jobString>
+    <successfullyRemovedHediffMessage>{0} has successfully treated {1}'s diffuse brain damage.</successfullyRemovedHediffMessage>
+    <surgerySuccessChanceFactor>0.75</surgerySuccessChanceFactor>
+    <deathOnFailedSurgeryChance>0.05</deathOnFailedSurgeryChance><workAmount>3000</workAmount>
+    <ingredients>
+      <li><filter><categories><li>Medicine</li></categories></filter><count>3</count></li>
+      <li><filter><thingDefs><li>NeurocureFramework</li></thingDefs></filter><count>1</count></li>
+    </ingredients>
+    <fixedIngredientFilter><categories><li>Medicine</li></categories><thingDefs><li>NeurocureFramework</li></thingDefs></fixedIngredientFilter>
+    <skillRequirements><Medicine>13</Medicine></skillRequirements>
+    <appliedOnFixedBodyParts><li>Brain</li></appliedOnFixedBodyParts>
+    <researchPrerequisite>BrainSurgery</researchPrerequisite>
+  </RecipeDef>
+</Defs>

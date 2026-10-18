@@ -104,11 +104,6 @@ internal sealed class RegenerationTreatmentWorker(MoreInjuryComp parent) : Injur
         HediffDef[] whitelist = s_neuroWhitelist ??=
         [
             KnownHediffDefOf.SpinalCordParalysis,
-            KnownHediffDefOf.BrainDamage_MotorDysfunction,
-            KnownHediffDefOf.BrainDamage_LanguageAphasia,
-            KnownHediffDefOf.BrainDamage_VisualAgnosia,
-            KnownHediffDefOf.BrainDamage_FrontalLobe,
-            KnownHediffDefOf.BrainDamage_Confusion,
         ];
         return Array.IndexOf(whitelist, def) >= 0;
     }

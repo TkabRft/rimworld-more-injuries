@@ -1,4 +1,6 @@
 ﻿using MoreInjuries.Defs.WellKnown;
+using MoreInjuries.HealthConditions.BrainDamage;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -54,7 +56,7 @@ public sealed class HeadInjuryWorker(MoreInjuryComp parent) : InjuryWorker(paren
                 KnownHediffDefOf.Concussion,
                 trauma,
                 settings.ConcussionThreshold,
-                settings.ConcussionChance);
+                settings.ConcussionChance, dinfo.Def, hitPart.def.tags?.Contains(BodyPartTagDefOf.ConsciousnessSource) == true);
         }
         if (settings.EnableHemorrhagicStroke)
         {
@@ -64,7 +66,7 @@ public sealed class HeadInjuryWorker(MoreInjuryComp parent) : InjuryWorker(paren
                 KnownHediffDefOf.HemorrhagicStroke,
                 trauma,
                 settings.HemorrhagicStrokeThreshold,
-                settings.HemorrhagicStrokeChance);
+                settings.HemorrhagicStrokeChance, dinfo.Def, hitPart.def.tags?.Contains(BodyPartTagDefOf.ConsciousnessSource) == true);
         }
     }
 
@@ -74,7 +76,7 @@ public sealed class HeadInjuryWorker(MoreInjuryComp parent) : InjuryWorker(paren
         HediffDef hediffDef,
         float trauma,
         float threshold,
-        float chance)
+        float chance, DamageDef damage, bool directBrainHit)
     {
         float added = Mathf.Clamp01(trauma / threshold) * chance;
         if (added < MINIMUM_SEVERITY)
@@ -87,5 +89,6 @@ public sealed class HeadInjuryWorker(MoreInjuryComp parent) : InjuryWorker(paren
             patient.health.AddHediff(hediff, brain);
         }
         hediff.Severity = Mathf.Min(1f, hediff.Severity + added);
+        hediff.TryGetComp<HediffComp_NeurologicalSource>()?.Record(damage, directBrainHit);
     }
 }

@@ -137,6 +137,7 @@
       </li>
     </modExtensions>
     <comps>
+      <li Class="MoreInjuries.HealthConditions.BrainDamage.HediffCompProperties_NeurologicalSource" />
       <li Class="MoreInjuries.HealthConditions.BrainDamage.HediffCompProperties_CerebralScale" />
       <li Class="HediffCompProperties_TendDuration">
         <labelTendedWell>tended</labelTendedWell>
@@ -152,17 +153,12 @@
       <li Class="MoreInjuries.HealthConditions.Secondary.HediffCompProperties_CausedBy"></li>
       <li Class="MoreInjuries.HealthConditions.Secondary.HediffCompProperties_SecondaryCondition">
         <handlers>
-          <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.HediffCompHandler_SecondaryCondition_Tick">
+          <li Class="MoreInjuries.HealthConditions.BrainDamage.HediffCompHandler_NeurologicalOutcome_Tick">
             <tickInterval>2500</tickInterval>
             <chanceModifiers>
               <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Genes_Disallow" MayRequire="Ludeon.RimWorld.Biotech">
                 <geneDefs>
                   <li>Deathless</li>
-                </geneDefs>
-              </li>
-              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Genes_Disallow" MayRequire="Ludeon.RimWorld.Odyssey">
-                <geneDefs>
-                  <li>VacuumResistance_Total</li>
                 </geneDefs>
               </li>
               <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Settings_FeatureFlag">
@@ -187,65 +183,16 @@
                 </mttfHoursBySeverity>
               </li>
             </chanceModifiers>
-            <hediffMakerProps Class="MoreInjuries.HealthConditions.Secondary.Handlers.HediffMakers.HediffMakerProperties_RandomFromList">
-              <hediffMakerDefs>
-                <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.HediffMakers.WeightedHediffMakerDef">
-                  <hediffDef>BrainDamage_MotorDysfunction</hediffDef>
-                  <weight>1</weight>
-                  <minSeverity>0.01</minSeverity>
-                  <maxSeverity>0.25</maxSeverity>
-                  <allowMultiple>true</allowMultiple>
-                  <allowDuplicate>false</allowDuplicate>
-                </li>
-                <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.HediffMakers.WeightedHediffMakerDef">
-                  <hediffDef>BrainDamage_LanguageAphasia</hediffDef>
-                  <weight>1</weight>
-                  <minSeverity>0.01</minSeverity>
-                  <maxSeverity>0.25</maxSeverity>
-                  <allowMultiple>true</allowMultiple>
-                  <allowDuplicate>false</allowDuplicate>
-                </li>
-                <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.HediffMakers.WeightedHediffMakerDef">
-                  <hediffDef>BrainDamage_VisualAgnosia</hediffDef>
-                  <weight>1</weight>
-                  <minSeverity>0.01</minSeverity>
-                  <maxSeverity>0.25</maxSeverity>
-                  <allowMultiple>true</allowMultiple>
-                  <allowDuplicate>false</allowDuplicate>
-                </li>
-                <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.HediffMakers.WeightedHediffMakerDef">
-                  <hediffDef>BrainDamage_FrontalLobe</hediffDef>
-                  <weight>1</weight>
-                  <minSeverity>0.01</minSeverity>
-                  <maxSeverity>0.25</maxSeverity>
-                  <allowMultiple>true</allowMultiple>
-                  <allowDuplicate>false</allowDuplicate>
-                </li>
-                <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.HediffMakers.WeightedHediffMakerDef">
-                  <hediffDef>BrainDamage_Confusion</hediffDef>
-                  <weight>1</weight>
-                  <minSeverity>0.01</minSeverity>
-                  <maxSeverity>0.25</maxSeverity>
-                  <allowMultiple>true</allowMultiple>
-                  <allowDuplicate>false</allowDuplicate>
-                </li>
-              </hediffMakerDefs>
-            </hediffMakerProps>
-            <targetEvaluator Class="MoreInjuries.HealthConditions.Secondary.Handlers.TargetEvaluators.BodyPartHediffTargetEvaluator_Single">
-              <target>Brain</target>
-            </targetEvaluator>
+            <hediffMakerProps Class="MoreInjuries.HealthConditions.BrainDamage.HediffMakerProperties_NeurologicalProfile" />
+            <targetEvaluator Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalTargetEvaluator" />
           </li>
           <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.HediffCompHandler_SecondaryCondition_Tick">
             <tickInterval>2000</tickInterval>
             <chanceModifiers>
+              <li Class="MoreInjuries.HealthConditions.BrainDamage.HediffModifier_AllowPersonalityOutcome" />
               <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Genes_Disallow" MayRequire="Ludeon.RimWorld.Biotech">
                 <geneDefs>
                   <li>Deathless</li>
-                </geneDefs>
-              </li>
-              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Genes_Disallow" MayRequire="Ludeon.RimWorld.Odyssey">
-                <geneDefs>
-                  <li>VacuumResistance_Total</li>
                 </geneDefs>
               </li>
               <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Settings_FeatureFlag">
@@ -285,9 +232,7 @@
                 <allowDuplicate>false</allowDuplicate>
               </hediffMakerDef>
             </hediffMakerProps>
-            <targetEvaluator Class="MoreInjuries.HealthConditions.Secondary.Handlers.TargetEvaluators.BodyPartHediffTargetEvaluator_Single">
-              <target>Brain</target>
-            </targetEvaluator>
+            <targetEvaluator Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalTargetEvaluator" />
           </li>
         </handlers>
       </li>

@@ -291,5 +291,6 @@
         </capMods>
       </li>
     </stages>
+      <modExtensions><li Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalSourceProperties"><profile>MI_Neuro_Coma</profile></li></modExtensions>
   </HediffDef>
 </Defs>

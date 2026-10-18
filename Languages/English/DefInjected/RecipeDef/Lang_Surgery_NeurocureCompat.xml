@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- EN: heal diffuse brain damage -->
+  <MI_TreatDiffuseBrainDamage_Neurocure.label>heal diffuse brain damage</MI_TreatDiffuseBrainDamage_Neurocure.label>
+  <!-- EN: Install a neuro-cure framework to treat diffuse brain damage. -->
+  <MI_TreatDiffuseBrainDamage_Neurocure.description>Install a neuro-cure framework to treat diffuse brain damage.</MI_TreatDiffuseBrainDamage_Neurocure.description>
+  <!-- EN: Treating diffuse brain damage. -->
+  <MI_TreatDiffuseBrainDamage_Neurocure.jobString>Treating diffuse brain damage.</MI_TreatDiffuseBrainDamage_Neurocure.jobString>
+  <!-- EN: {0} has successfully treated {1}'s diffuse brain damage. -->
+  <MI_TreatDiffuseBrainDamage_Neurocure.successfullyRemovedHediffMessage>{0} has successfully treated {1}'s diffuse brain damage.</MI_TreatDiffuseBrainDamage_Neurocure.successfullyRemovedHediffMessage>
+</LanguageData>

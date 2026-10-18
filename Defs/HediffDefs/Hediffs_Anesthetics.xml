@@ -109,6 +109,7 @@
         </capMods>
       </li>
     </stages>
+      <modExtensions><li Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalSourceProperties"><profile>MI_Neuro_Coma</profile></li></modExtensions>
   </HediffDef>
 
   <HediffDef Class="MoreInjuries.HealthConditions.Drugs.MedicalDrugHediffDef" ParentName="DiseaseBase">
@@ -243,6 +244,7 @@
         </capMods>
       </li>
     </stages>
+      <modExtensions><li Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalSourceProperties"><profile>MI_Neuro_Coma</profile></li></modExtensions>
   </HediffDef>
 
   <ChemicalDef>

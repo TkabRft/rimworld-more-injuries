@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- EN: diffuse brain damage -->
+  <MI_DiffuseBrainDamage.label>diffuse brain damage</MI_DiffuseBrainDamage.label>
+  <!-- EN: Widespread lasting neurological damage reduces the efficiency of the affected brain. It does not ordinarily heal. Advanced neurological treatment or appropriate regeneration may restore function. Severe damage can leave the patient in a vegetative state. -->
+  <MI_DiffuseBrainDamage.description>Widespread lasting neurological damage reduces the efficiency of the affected brain. It does not ordinarily heal. Advanced neurological treatment or appropriate regeneration may restore function. Severe damage can leave the patient in a vegetative state.</MI_DiffuseBrainDamage.description>
+  <!-- EN: minor -->
+  <MI_DiffuseBrainDamage.stages.minor.label>minor</MI_DiffuseBrainDamage.stages.minor.label>
+  <!-- EN: major -->
+  <MI_DiffuseBrainDamage.stages.major.label>major</MI_DiffuseBrainDamage.stages.major.label>
+  <!-- EN: extreme -->
+  <MI_DiffuseBrainDamage.stages.extreme.label>extreme</MI_DiffuseBrainDamage.stages.extreme.label>
+  <!-- EN: vegetative state -->
+  <MI_DiffuseBrainDamage.stages.vegetative_state.label>vegetative state</MI_DiffuseBrainDamage.stages.vegetative_state.label>
+  <!-- EN: artificial coma -->
+  <!-- EN: A medically induced coma reduces new hypoxic brain injury by half, but does not restore circulation, breathing or blood volume. Consciousness is limited to 10%. Wake-up can reverse the induced state, subject to the patient's drug restrictions. Prolonged coma becomes dangerous after about seven days and can cause lasting neurological injury; it becomes fatal after about ten days. Repeating induction does not reset this risk. Vanilla vacuum exposure and decompression remain dangerous. -->
+  <!-- EN: dangerous -->
+  <!-- EN: life threatening -->
+</LanguageData>

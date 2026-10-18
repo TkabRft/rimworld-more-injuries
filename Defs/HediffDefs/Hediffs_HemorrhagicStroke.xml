@@ -10,6 +10,7 @@
     <alwaysShowSeverity>true</alwaysShowSeverity>
     <defaultLabelColor>(255, 158, 158)</defaultLabelColor>
     <comps>
+      <li Class="MoreInjuries.HealthConditions.BrainDamage.HediffCompProperties_NeurologicalSource" />
       <li Class="HediffCompProperties_TendDuration">
         <baseTendDurationHours>4</baseTendDurationHours>
         <severityPerDayTended>-2.5</severityPerDayTended>
@@ -54,9 +55,7 @@
                 <allowDuplicate>false</allowDuplicate>
               </hediffMakerDef>
             </hediffMakerProps>
-            <targetEvaluator Class="MoreInjuries.HealthConditions.Secondary.Handlers.TargetEvaluators.BodyPartHediffTargetEvaluator_Single">
-              <target>Brain</target>
-            </targetEvaluator>
+            <targetEvaluator Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalTargetEvaluator" />
           </li>
         </handlers>
       </li>

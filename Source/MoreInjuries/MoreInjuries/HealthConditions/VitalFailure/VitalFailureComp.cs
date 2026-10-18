@@ -4,6 +4,7 @@ using MoreInjuries.HealthConditions.BrainDamage;
 using MoreInjuries.HealthConditions.HypovolemicShock;
 using MoreInjuries.HealthConditions.Secondary;
 using RimWorld;
+using System.Collections.Generic;
 using Verse;
 
 namespace MoreInjuries.HealthConditions.VitalFailure;
@@ -22,6 +23,9 @@ public sealed partial class VitalFailureComp : ThingComp
     private bool _deathresting;
     private float _underlyingPumping;
     private float _deprivation;
+    private readonly List<Hediff> _neurologicalConditions = new(6);
+    private readonly HashSet<BodyPartRecord> _injuredParts = [];
+    private float _regeneration;
     private int _settingsStamp = -1;
 
     private Pawn Patient => (Pawn)parent;
@@ -110,8 +114,12 @@ public sealed partial class VitalFailureComp : ThingComp
             _dirty = true;
         }
         Refresh();
-        if (!EnabledFor(pawn) || !_active || _lastProgressTick == now) { return; }
+        bool recovery = CanUpdate(pawn) && MoreInjuriesMod.Settings.AnomalyRegenerationTreatsStructuralDamage
+            && _regeneration > 0f && _neurologicalConditions.Count > 0;
+        if ((!EnabledFor(pawn) || !_active) && !recovery || _lastProgressTick == now) { return; }
         _lastProgressTick = now;
+        if (recovery) { NeurologicalOutcomes.Regenerate(pawn, _neurologicalConditions, _injuredParts, _regeneration); }
+        if (!EnabledFor(pawn)) { return; }
         _evaluating = true;
         try
         {
@@ -146,6 +154,7 @@ public sealed partial class VitalFailureComp : ThingComp
                 }
                 if (_brainInjury is not null)
                 {
+                    _brainInjury.TryGetComp<HediffComp_NeurologicalSource>()?.SetProfile(_arrest?.TryGetComp<HediffComp_NeurologicalSource>()?.Profile ?? NeurologicalDefOf.MI_NeurologicalConfig.HypoxiaProfile);
                     Advance(_brainInjury, VitalFailureDefOf.MI_VitalFailureConfig.CerebralSeverityPerDay * _deprivation
                         * CerebralInjury.Scale(pawn, _brainInjury.Part),
                         factor, dayFraction);
@@ -189,12 +198,22 @@ public sealed partial class VitalFailureComp : ThingComp
         Hediff? shock = null;
         float bloodLoss = 0f, dilution = 0f, adrenaline = 0f, hypothermia = 0f;
         _deathresting = false;
+        _neurologicalConditions.Clear();
+        _injuredParts.Clear();
+        _regeneration = 0f;
         for (int i = 0; i < _failures.Length; i++)
         {
             _failures[i] = null;
         }
         foreach (Hediff hediff in set.hediffs)
         {
+            if (ModsConfig.AnomalyActive && MoreInjuriesMod.Settings.AnomalyRegenerationTreatsStructuralDamage)
+            {
+                _regeneration += hediff.CurStage?.regeneration ?? 0f;
+                if (hediff.def.GetModExtension<NeurologicalConditionProperties>()?.Regenerative == true)
+                { _neurologicalConditions.Add(hediff); }
+                if (hediff is Hediff_Injury && hediff.Part is { } injured) { _injuredParts.Add(injured); }
+            }
             if (hediff.def == KnownHediffDefOf.CardiacArrest)
             {
                 _arrest = hediff;
@@ -253,7 +272,7 @@ public sealed partial class VitalFailureComp : ThingComp
         if (!EnabledFor(pawn))
         {
             _deprivation = 0f;
-            _active = false;
+            _active = _regeneration > 0f && _neurologicalConditions.Count > 0;
             for (int i = 0; i < _failures.Length; i++)
             {
                 Remove(ref _failures[i]);
@@ -306,7 +325,7 @@ public sealed partial class VitalFailureComp : ThingComp
         _deprivation = _oxygenProtected || _deathresting ? 0f
             : VitalFailureModel.Deprivation(shockSource, breathing, _arrest is null ? _underlyingPumping : 0f,
                 config.DilutionDeprivationCurve.Evaluate(dilution)) * config.HypothermiaProtectionCurve.Evaluate(hypothermia);
-        _active = _deprivation > 0f || _arrest is not null;
+        _active = _deprivation > 0f || _arrest is not null || _regeneration > 0f && _neurologicalConditions.Count > 0;
         for (int i = 0; i < _failures.Length; i++)
         {
             _active |= _failures[i] is not null;

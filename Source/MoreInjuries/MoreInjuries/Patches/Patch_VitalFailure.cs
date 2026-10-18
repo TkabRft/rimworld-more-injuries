@@ -120,6 +120,7 @@ internal static class Patch_VitalFailure_MutantTurn
 {
     internal static void Postfix(Pawn ___pawn)
     {
+        NeurologicalOutcomes.Transform(___pawn);
         VitalFailureComp.For(___pawn)?.Resume();
     }
 }

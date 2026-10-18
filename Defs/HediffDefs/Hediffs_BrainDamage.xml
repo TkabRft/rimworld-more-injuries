@@ -18,6 +18,9 @@
     <defName>BrainDamage_MotorDysfunction</defName>
     <label>motor dysfunction</label>
     <description>Neurological damage to the motor cortex has resulted in permanent impairment of the motor system. This can manifest as weakness, tremors, or difficulty coordinating movements. The severity of the dysfunction can vary based on the extent of the damage.</description>
+    <modExtensions>
+      <li Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalConditionProperties"><animalEligible>true</animalEligible></li>
+    </modExtensions>
     <stages>
       <li>
         <label>minor</label>
@@ -91,6 +94,7 @@
     <defName>BrainDamage_LanguageAphasia</defName>
     <label>aphasia</label>
     <description>Permanent damage to nerve cells in the language centers of the brain has resulted in pronounced difficulty with communication. This can manifest as word-finding difficulties, fragmented speech, or even complete muteness. The severity of the aphasia can vary based on the extent of the damage.</description>
+    <modExtensions><li Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalConditionProperties" /></modExtensions>
     <stages>
       <li>
         <label>word-finding difficulty</label>
@@ -160,6 +164,7 @@
     <defName>BrainDamage_VisualAgnosia</defName>
     <label>agnosia</label>
     <description>Damage to the occipital or temporal lobes has impaired the ability to recognize objects or faces, despite normal vision. Affected patients may have trouble identifying items or people, leading to confusion and slower task performance.</description>
+    <modExtensions><li Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalConditionProperties" /></modExtensions>
     <stages>
       <li>
         <label>minor</label>
@@ -211,6 +216,7 @@
     <defName>BrainDamage_FrontalLobe</defName>
     <label>executive dysfunction</label>
     <description>Damage to the frontal lobes has impaired executive functions, including decision-making, planning, and impulse control. Affected individuals may act erratically or inappropriately, and struggle with organization, prioritization, and regulating emotions, leading to difficulties in daily life and social interactions.</description>
+    <modExtensions><li Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalConditionProperties" /></modExtensions>
     <stages>
       <li>
         <label>minor</label>
@@ -296,6 +302,7 @@
         <singleWanderDurationTicks>5000</singleWanderDurationTicks>
       </li>
     </comps>
+    <modExtensions><li Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalConditionProperties" /></modExtensions>
     <stages>
       <li>
         <label>minor</label>

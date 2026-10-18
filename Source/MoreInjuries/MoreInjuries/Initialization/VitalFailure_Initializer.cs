@@ -26,6 +26,14 @@ internal static class VitalFailure_Initializer
                     present |= props.compClass == typeof(VitalFailureComp);
                 }
             }
+            if (VitalAnatomy.For(race.body).Brains.Length > 0)
+            {
+                def.recipes ??= new List<RecipeDef>();
+                foreach (RecipeDef recipe in new[] { DefDatabase<RecipeDef>.GetNamed("TreatBrainDamage") })
+                {
+                    if (!def.recipes.Contains(recipe)) { def.recipes.Add(recipe); }
+                }
+            }
             if (!present)
             {
                 def.comps ??= new List<CompProperties>();

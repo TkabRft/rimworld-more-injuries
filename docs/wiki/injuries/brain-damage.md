@@ -8,7 +8,7 @@ In this context, "brain damage" refers to a range of temporary or permanent neur
 
 Brain damage may not always be immediately apparent, as some symptoms may take time to develop as the patient recovers from the initial injury. In some cases, brain damage may be reversible with experimental treatments, such as [mechanite therapy](/docs/wiki/injuries/mechanite-therapy.md#mechanite-therapy) or [cellular regenerative neurosurgery](/docs/wiki/surgeries.md#cellular-regenerative-neurosurgery), which can help repair damaged brain tissue and restore normal function. However, these futuristic treatments require advanced research and technology, and may be expensive and time-consuming to perform.
 
-Pawns with regeneration slowly clear agnosia, aphasia, executive dysfunction, hippocampal damage, and motor dysfunction after the brain injury, including any scar, is gone. Ordinary ghoul regeneration takes about four days from full severity. A personality shift is not cleared. This can be turned off in the mod settings when Anomaly is installed.
+Pawns with regeneration slowly clear agnosia, aphasia, executive dysfunction, hippocampal damage, motor dysfunction and diffuse damage after the brain injury, including any scar, is gone. This also supports eligible nonhuman patients. Ordinary ghoul regeneration takes about four days from full severity. A personality shift is not cleared. This can be turned off in the mod settings when Anomaly is installed.
 
 ```mermaid
 ---
@@ -33,6 +33,7 @@ Brain damage may manifest in one of the following ways:
 
 <!-- @generate_toc {"source": "$self", "indent": 2} -->
 - [Brain Damage](#brain-damage)
+  - [Diffuse Brain Damage](#diffuse-brain-damage)
   - [Agnosia](#agnosia)
   - [Aphasia](#aphasia)
   - [Executive Dysfunction](#executive-dysfunction)
@@ -40,6 +41,14 @@ Brain damage may manifest in one of the following ways:
   - [Motor Dysfunction](#motor-dysfunction)
   - [Personality Shift](#personality-shift)
 <!-- @end_generated_block -->
+
+## Diffuse Brain Damage
+
+Widespread lasting damage reduces the affected brain's efficiency by 5, 15, 30, 50 or 75 percentage points as severity crosses 0%, 20%, 40%, 60% and 80%. At 100% it retains the 75-point impairment and limits consciousness to 10%. This lasting disability is separate from the acute oxygen emergency.
+
+Advanced neurological treatment, including [cellular regenerative neurosurgery](/docs/wiki/surgeries.md#cellular-regenerative-neurosurgery) and [mechanite therapy](/docs/wiki/injuries/mechanite-therapy.md#mechanite-therapy), can address diffuse damage. Eligible animals can receive diffuse or motor outcomes; human-specific language, memory and personality effects are not assigned to them.
+
+The injury's cause changes the likelihood of each disability: blunt trauma and systemic oxygen deprivation favor diffuse damage, penetrating trauma favors motor and language impairment, and stroke favors motor and language impairment. A damaging brain hit has a chance of one ordinary disability, increasing with the fraction of the brain damaged. Severe concussion can independently produce an outcome when it first crosses 70%, but the same direct brain hit does not receive both chances. Personality shifts remain separately controlled by settings.
 
 ## Agnosia
 
