@@ -22,6 +22,7 @@
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureModel.cs" Link="RuntimeContracts\Production\VitalFailureModel.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalAnatomy.cs" Link="RuntimeContracts\Production\VitalAnatomy.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureComp.cs" Link="RuntimeContracts\Production\VitalFailureComp.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureComp.Neurology.cs" Link="RuntimeContracts\Production\VitalFailureComp.Neurology.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\HediffComp_VitalArrest.cs" Link="RuntimeContracts\Production\HediffComp_VitalArrest.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\CardiacArrest\JobDriver_PerformCpr.cs" Link="RuntimeContracts\Production\JobDriver_PerformCpr.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\CardiacArrest\JobDriver_UseDefibrillator.cs" Link="RuntimeContracts\Production\JobDriver_UseDefibrillator.cs" />
@@ -33,6 +34,8 @@
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalPhysiology.cs" Link="RuntimeContracts\Production\VitalPhysiology.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\BrainDamage\CerebralInjury.cs" Link="RuntimeContracts\Production\CerebralInjury.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\BrainDamage\NeurologicalProfileDef.cs" Link="RuntimeContracts\Production\NeurologicalProfileDef.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\BrainDamage\NeurologicalEpisode.cs" Link="RuntimeContracts\Production\NeurologicalEpisode.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\BrainDamage\NeurologicalMilestone.cs" Link="RuntimeContracts\Production\NeurologicalMilestone.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\BrainDamage\NeurologicalOutcomes.cs" Link="RuntimeContracts\Production\NeurologicalOutcomes.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\BrainDamage\ArtificialComa.cs" Link="RuntimeContracts\Production\ArtificialComa.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\Secondary\Handlers\HediffMakers\HediffMakerDef.cs" Link="RuntimeContracts\Production\HediffMakerDef.cs" />

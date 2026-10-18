@@ -76,7 +76,7 @@ namespace Verse
 
     public partial class Thing;
 
-    public static class GenDate
+    public static partial class GenDate
     {
         public const int TicksPerHour = 2500;
         public const int TicksPerDay = 60000;
@@ -155,6 +155,8 @@ namespace MoreInjuries
         public bool EnableNeuralDamage = true;
         public bool AnomalyRegenerationTreatsStructuralDamage = true;
         public bool EnableDelayedVitalFailure = true;
+        public bool EnablePhysiologyDeathEstimate = true;
+        public bool PreventDeathByBloodLoss;
         public float DefibrillatorMinimumSuccessRate = .5f;
         public bool AnomalyEnableConditionsForShamblers = true;
         public bool EnableAdvancedTraumaSimulation = true;

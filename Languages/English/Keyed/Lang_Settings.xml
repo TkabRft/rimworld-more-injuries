@@ -322,8 +322,8 @@
   <MI_Settings_Features_Misc_BloodHarvestMinSkillTooltip>The minimum medical skill required to harvest blood from a downed pawn for a blood transfusion.</MI_Settings_Features_Misc_BloodHarvestMinSkillTooltip>
   <!-- EN: Delayed vital failure -->
   <MI_Settings_VitalFailure_EnableLabel>Delayed vital failure</MI_Settings_VitalFailure_EnableLabel>
-  <!-- EN: Replace instant vital-capacity death with organ failure and accumulating cerebral hypoxia for supported fleshy pawns. Requires a separate loadout without Death Rattle. Switching this off restores ordinary capacity death rules. -->
-  <MI_Settings_VitalFailure_EnableTooltip>Replace instant vital-capacity death with organ failure and accumulating cerebral hypoxia for supported fleshy pawns. Requires a separate loadout without Death Rattle. Switching this off restores ordinary capacity death rules.</MI_Settings_VitalFailure_EnableTooltip>
+  <!-- EN: Replace instant vital-capacity death with organ failure and accumulating cerebral hypoxia for supported fleshy pawns. Complete unprotected oxygen deprivation can cause fatal brain injury in approximately 1.5 game hours. Switching this off restores ordinary capacity death rules. This setting must be enabled for the Death Rattle save transition. -->
+  <MI_Settings_VitalFailure_EnableTooltip>Replace instant vital-capacity death with organ failure and accumulating cerebral hypoxia for supported fleshy pawns. Complete unprotected oxygen deprivation can cause fatal brain injury in approximately 1.5 game hours. Switching this off restores ordinary capacity death rules. This setting must be enabled for the Death Rattle save transition.</MI_Settings_VitalFailure_EnableTooltip>
   <!-- EN: More Injuries takes priority over Death Rattle. Follow the in-game migration notice before removing Death Rattle. -->
   <!-- OPTS: {"allow_unused": true} -->
   <MI_VitalFailure_DeathRattleConflict>More Injuries takes priority over Death Rattle. Follow the in-game migration notice before removing Death Rattle.</MI_VitalFailure_DeathRattleConflict>

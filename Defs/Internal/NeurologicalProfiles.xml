@@ -381,6 +381,15 @@
     <concussionThreshold>0.7</concussionThreshold>
     <concussionChance>0.05</concussionChance>
     <comaHypoxiaMultiplier>0.5</comaHypoxiaMultiplier>
+    <!-- Clinical injury is physical injury / affected-part maximum health * 10. -->
+    <injuryMilestones>
+      <li><injury>0.5</injury><lastingSeverity>0.05</lastingSeverity></li>
+      <li><injury>1</injury><lastingSeverity>0.10</lastingSeverity></li>
+      <li><injury>2</injury><lastingSeverity>0.25</lastingSeverity></li>
+      <li><injury>3</injury><lastingSeverity>0.40</lastingSeverity></li>
+      <li><injury>4</injury><lastingSeverity>0.60</lastingSeverity></li>
+      <li><injury>6</injury><lastingSeverity>0.80</lastingSeverity></li>
+    </injuryMilestones>
     <damageProfiles>
       <li>
         <damageDefName>Blunt</damageDefName>

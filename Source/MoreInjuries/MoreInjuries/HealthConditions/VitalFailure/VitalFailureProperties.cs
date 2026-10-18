@@ -16,7 +16,7 @@ public sealed partial class VitalFailureConfigDef : Def
     [XmlBinding("hypothermiaProtectionCurve")]
     public partial SimpleCurve HypothermiaProtectionCurve { get; }
 
-    [XmlBinding<float>("cerebralSeverityPerDay", defaultValue: 64f)]
+    [XmlBinding<float>("cerebralSeverityPerDay", defaultValue: 128f)]
     public partial float CerebralSeverityPerDay { get; }
 
     [XmlBinding<float>("terminalCerebralSeverity", defaultValue: 8f)]

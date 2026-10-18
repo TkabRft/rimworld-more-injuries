@@ -2,8 +2,8 @@
 <LanguageData>
   <!-- EN: respiratory failure -->
   <MI_RespiratoryFailure.label>respiratory failure</MI_RespiratoryFailure.label>
-  <!-- EN: Breathing has stopped. Restore the airway or functioning lungs immediately. Without restored oxygen delivery, cerebral hypoxia accumulates and this failure becomes fatal in approximately three game hours. -->
-  <MI_RespiratoryFailure.description>Breathing has stopped. Restore the airway or functioning lungs immediately. Without restored oxygen delivery, cerebral hypoxia accumulates and this failure becomes fatal in approximately three game hours.</MI_RespiratoryFailure.description>
+  <!-- EN: Breathing has stopped. Restore the airway or functioning lungs immediately. The respiratory failure timer reaches fatal severity in approximately three game hours. Without restored oxygen delivery, unprotected cerebral hypoxia can become fatal in about 1.5 game hours and often limits the rescue window first. -->
+  <MI_RespiratoryFailure.description>Breathing has stopped. Restore the airway or functioning lungs immediately. The respiratory failure timer reaches fatal severity in approximately three game hours. Without restored oxygen delivery, unprotected cerebral hypoxia can become fatal in about 1.5 game hours and often limits the rescue window first.</MI_RespiratoryFailure.description>
   <!-- EN: severe -->
   <MI_RespiratoryFailure.stages.1.label>severe</MI_RespiratoryFailure.stages.1.label>
   <!-- EN: near death -->

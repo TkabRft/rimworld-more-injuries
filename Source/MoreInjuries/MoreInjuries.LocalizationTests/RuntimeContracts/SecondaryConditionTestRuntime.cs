@@ -48,7 +48,8 @@ namespace Verse
         public static bool Chance(float chance) => ChanceHandler?.Invoke(chance) ?? chance > 0.5f;
         public static bool MTBEventOccurs(float mtb, float units, float interval) => Chance(1f - MathF.Exp(-interval / (mtb * units)));
         public static float RangeFraction = 0.5f;
-        public static float Range(float minimum, float maximum) => minimum + (maximum - minimum) * RangeFraction;
+        public static int RangeCalls;
+        public static float Range(float minimum, float maximum) { RangeCalls++; return minimum + (maximum - minimum) * RangeFraction; }
     }
 }
 

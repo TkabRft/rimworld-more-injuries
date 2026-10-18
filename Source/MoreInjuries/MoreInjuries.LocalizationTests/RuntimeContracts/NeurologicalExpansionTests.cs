@@ -28,7 +28,7 @@ public sealed class NeurologicalExpansionTests
         {
             NeurologicalConditionProperties properties = new();
             Set(properties, "animalEligible", name is "MI_DiffuseBrainDamage" or "BrainDamage_MotorDysfunction");
-            outcomes[name] = new() { defName = name, Extension = properties };
+            outcomes[name] = new() { defName = name, Extension = properties, maxSeverity = 1 };
         }
         NeurologicalDefOf.MI_DiffuseBrainDamage = outcomes["MI_DiffuseBrainDamage"];
         NeurologicalDefOf.MI_ArtificialComa = new() { defName = "MI_ArtificialComa", lethalSeverity = 1 };
@@ -53,6 +53,14 @@ public sealed class NeurologicalExpansionTests
         { Set(config, field, profiles[node.Element(field)!.Value]); }
         foreach (string field in new[] { "directBrainChanceFactor", "concussionThreshold", "concussionChance", "comaHypoxiaMultiplier" })
         { Set(config, field, float.Parse(node.Element(field)!.Value, CultureInfo.InvariantCulture)); }
+        var milestones = (List<NeurologicalMilestone>)typeof(NeurologicalConfigDef).GetField("injuryMilestones", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(config)!;
+        foreach (XElement point in node.Element("injuryMilestones")!.Elements())
+        {
+            NeurologicalMilestone milestone = new();
+            Set(milestone, "injury", float.Parse(point.Element("injury")!.Value, CultureInfo.InvariantCulture));
+            Set(milestone, "lastingSeverity", float.Parse(point.Element("lastingSeverity")!.Value, CultureInfo.InvariantCulture));
+            milestones.Add(milestone);
+        }
         var mappings = (List<NeurologicalDamageMapping>)typeof(NeurologicalConfigDef).GetField("damageProfiles", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(config)!;
         foreach (XElement mapping in node.Element("damageProfiles")!.Elements())
         {
@@ -81,9 +89,9 @@ public sealed class NeurologicalExpansionTests
             Pawn pawn = VitalFailureTests.Patient(); pawn.Tracked = false; pawn.RaceProps.Humanlike = false;
             pawn.RaceProps.body.AllParts[0].def.MaxHealth = health;
             pawn.health.hediffSet.Capacities[PawnCapacityDefOf.Breathing] = 0;
-            for (int tick = 0; tick <= 7500; tick++) { VitalFailureTests.Tick(pawn, tick); }
+            for (int tick = 0; tick <= 3750; tick++) { VitalFailureTests.Tick(pawn, tick); }
             Hediff brain = pawn.health.hediffSet.GetFirstHediffOfDef(KnownHediffDefOf.BrainDamage_Hypoxia)!;
-            Assert.AreEqual(8f + 64f * 250 / 60000, CerebralInjury.ClinicalSeverity(brain), .015f);
+            Assert.AreEqual(8f + 128f * 250 / 60000, CerebralInjury.ClinicalSeverity(brain), .015f);
             Assert.IsTrue(brain.CauseDeathNow());
             Assert.IsFalse(MoreInjuries.HealthConditions.HeavyBleeding.TraumaEligibility.Supports(pawn));
         }

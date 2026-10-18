@@ -40,7 +40,13 @@ public sealed partial class VitalFailureComp : ThingComp
 
     internal static VitalFailureComp? For(Pawn pawn) => pawn.TryGetComp<VitalFailureComp>();
 
-    internal void Invalidate() => _dirty = true;
+    internal void Invalidate()
+    {
+        _dirty = true;
+        InvalidatePrognosis();
+    }
+
+    partial void InvalidatePrognosis();
 
     internal void Resume()
     {
@@ -90,6 +96,7 @@ public sealed partial class VitalFailureComp : ThingComp
     {
         base.PostExposeData();
         Scribe_Values.Look(ref _lastProgressTick, "lastVitalProgressTick", -1);
+        ExposeNeurologicalEpisodes();
         _dirty = true;
     }
 
@@ -107,7 +114,8 @@ public sealed partial class VitalFailureComp : ThingComp
         }
         int stamp = (MoreInjuriesMod.Settings.EnableDelayedVitalFailure ? 1 : 0)
             | (MoreInjuriesMod.Settings.AnomalyEnableConditionsForShamblers ? 2 : 0)
-            | (MoreInjuriesMod.Settings.AnomalyRegenerationTreatsStructuralDamage ? 4 : 0);
+            | (MoreInjuriesMod.Settings.AnomalyRegenerationTreatsStructuralDamage ? 4 : 0)
+            | (MoreInjuriesMod.Settings.EnableNeuralDamage ? 8 : 0);
         if (stamp != _settingsStamp) { _settingsStamp = stamp; _dirty = true; }
         if (_active)
         {
@@ -116,13 +124,14 @@ public sealed partial class VitalFailureComp : ThingComp
         Refresh();
         bool recovery = CanUpdate(pawn) && MoreInjuriesMod.Settings.AnomalyRegenerationTreatsStructuralDamage
             && _regeneration > 0f && _neurologicalConditions.Count > 0;
-        if ((!EnabledFor(pawn) || !_active) && !recovery || _lastProgressTick == now) { return; }
+        if ((!EnabledFor(pawn) || !_active) && !recovery && !HasNeurologicalEpisodes || _lastProgressTick == now) { return; }
         _lastProgressTick = now;
         if (recovery) { NeurologicalOutcomes.Regenerate(pawn, _neurologicalConditions, _injuredParts, _regeneration); }
-        if (!EnabledFor(pawn)) { return; }
         _evaluating = true;
         try
         {
+            ApplyNeurologicalMilestones(award: true);
+            if (!EnabledFor(pawn)) { return; }
             float factor = Rand.Range(0.8f, 1.2f);
             float dayFraction = (float)VitalFailureModel.INTERVAL / GenDate.TicksPerDay;
             if (_arrest is not null && !_oxygenProtected && !_deathresting)
@@ -151,20 +160,28 @@ public sealed partial class VitalFailureComp : ThingComp
                 {
                     _brainInjury = pawn.health.AddHediff(KnownHediffDefOf.BrainDamage_Hypoxia, brain);
                     _brainInjury.Severity = VitalFailureModel.INITIAL_SEVERITY * CerebralInjury.Scale(pawn, brain);
+                    GatherNeurologicalInjury(_brainInjury);
                 }
                 if (_brainInjury is not null)
                 {
                     _brainInjury.TryGetComp<HediffComp_NeurologicalSource>()?.SetProfile(_arrest?.TryGetComp<HediffComp_NeurologicalSource>()?.Profile ?? NeurologicalDefOf.MI_NeurologicalConfig.HypoxiaProfile);
+                    float previous = CerebralInjury.ClinicalSeverity(_brainInjury);
                     Advance(_brainInjury, VitalFailureDefOf.MI_VitalFailureConfig.CerebralSeverityPerDay * _deprivation
                         * CerebralInjury.Scale(pawn, _brainInjury.Part) * NeurologicalOutcomes.HypoxiaMultiplier(pawn),
                         factor, dayFraction);
+                    if (_brainInjury.Part is { } part)
+                    {
+                        NeurologicalEpisode episode = Episode(part, hypoxic: true);
+                        if (episode.Outcome is null) { episode.Profile = NeurologicalOutcomes.SourceProfile(_brainInjury); }
+                        episode.ClinicalInjury += CerebralInjury.ClinicalSeverity(_brainInjury) - previous;
+                    }
                 }
             }
         }
         finally
         {
-            _evaluating = false;
-            _dirty = true;
+            try { ApplyNeurologicalMilestones(award: true); }
+            finally { _evaluating = false; _dirty = true; }
         }
     }
 
@@ -201,6 +218,7 @@ public sealed partial class VitalFailureComp : ThingComp
         _neurologicalConditions.Clear();
         _injuredParts.Clear();
         _regeneration = 0f;
+        BeginNeurologicalScan();
         for (int i = 0; i < _failures.Length; i++)
         {
             _failures[i] = null;
@@ -262,6 +280,7 @@ public sealed partial class VitalFailureComp : ThingComp
                     }
                 }
             }
+            GatherNeurologicalInjury(hediff);
         }
         if (pawn.Dead || pawn.Suspended)
         {
@@ -272,7 +291,7 @@ public sealed partial class VitalFailureComp : ThingComp
         if (!EnabledFor(pawn))
         {
             _deprivation = 0f;
-            _active = _regeneration > 0f && _neurologicalConditions.Count > 0;
+            _active = HasNeurologicalEpisodes || _regeneration > 0f && _neurologicalConditions.Count > 0;
             for (int i = 0; i < _failures.Length; i++)
             {
                 Remove(ref _failures[i]);
@@ -325,7 +344,7 @@ public sealed partial class VitalFailureComp : ThingComp
         _deprivation = _oxygenProtected || _deathresting ? 0f
             : VitalFailureModel.Deprivation(shockSource, breathing, _arrest is null ? _underlyingPumping : 0f,
                 config.DilutionDeprivationCurve.Evaluate(dilution)) * config.HypothermiaProtectionCurve.Evaluate(hypothermia);
-        _active = _deprivation > 0f || _arrest is not null || _regeneration > 0f && _neurologicalConditions.Count > 0;
+        _active = HasNeurologicalEpisodes || _deprivation > 0f || _arrest is not null || _regeneration > 0f && _neurologicalConditions.Count > 0;
         for (int i = 0; i < _failures.Length; i++)
         {
             _active |= _failures[i] is not null;

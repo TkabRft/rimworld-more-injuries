@@ -29,12 +29,16 @@ public sealed class VitalFailureTests
         VitalFailureDefOf.MI_MetabolicFailure = Definition("MI_MetabolicFailure");
         VitalFailureDefOf.MI_Coma = Definition("MI_Coma");
         MoreInjuriesMod.Settings.EnableDelayedVitalFailure = true;
+        MoreInjuriesMod.Settings.EnableNeuralDamage = true;
+        MoreInjuriesMod.Settings.PreventDeathByBloodLoss = false;
+        MoreInjuriesMod.Settings.EnablePhysiologyDeathEstimate = true;
         MoreInjuriesMod.Settings.EnableHypovolemicShock = true;
         MoreInjuriesMod.Settings.AnomalyEnableConditionsForShamblers = true;
         ModsConfig.BiotechActive = false;
         ModsConfig.AnomalyActive = false;
         Rand.RangeFraction = 0.5f;
         DefDatabase<PawnCapacityDef>.AllDefsListForReading.Clear();
+        NeurologicalExpansionTests.Profiles();
     }
 
     internal static Pawn Patient(int offset = 0)
@@ -67,7 +71,7 @@ public sealed class VitalFailureTests
     }
 
     [TestMethod]
-    public void CompleteFailureHasThreeHourWindowAcrossSeedsAndOffsets()
+    public void CompleteFailureHasNinetyMinuteCerebralWindowAcrossSeedsAndOffsets()
     {
         foreach (PawnCapacityDef route in new[] { PawnCapacityDefOf.BloodPumping, PawnCapacityDefOf.Breathing })
         {
@@ -88,9 +92,9 @@ public sealed class VitalFailureTests
                     }
                 }
                 Assert.IsTrue(dead);
-                Assert.IsTrue(times[^1] >= 2.4 && times[^1] <= 3.85, times[^1].ToString());
+                Assert.IsTrue(times[^1] >= 1.15 && times[^1] <= 1.95, times[^1].ToString());
             }
-            Assert.AreEqual(3f, times.Average(), 0.15);
+            Assert.AreEqual(1.5f, times.Average(), 0.15);
         }
     }
 
@@ -381,7 +385,7 @@ public sealed class VitalFailureTests
     }
 
     [TestMethod]
-    public void NaturalBloodRecoveryDoesNotRescueUntreatedFullShockButBloodCan()
+    public void NaturalBloodRecoveryDoesNotRescueFullShockButEarlyBloodCan()
     {
         foreach (bool transfuse in new[] { false, true })
         {
@@ -394,7 +398,7 @@ public sealed class VitalFailureTests
             for (int t = 0; t <= 30000; t++)
             {
                 if (t % 60 == 0) { blood.Severity = Math.Max(0f, blood.Severity - .00033333333f); }
-                if (t == 5000 && transfuse) { blood.Severity = Math.Max(0, blood.Severity - .35f); }
+                if (t == 2500 && transfuse) { blood.Severity = Math.Max(0, blood.Severity - .35f); }
                 tend.tendTicksLeft = Math.Max(0, 10000 - t);
                 if (t % 150 == 0)
                 {
@@ -466,7 +470,7 @@ public sealed class VitalFailureTests
         {
             Assert.AreEqual(item.Item2, item.Item1.GetModExtension<VitalFailureProperties>()!.SeverityPerDay);
         }
-        Assert.AreEqual(64f, VitalFailureDefOf.MI_VitalFailureConfig.CerebralSeverityPerDay);
+        Assert.AreEqual(128f, VitalFailureDefOf.MI_VitalFailureConfig.CerebralSeverityPerDay);
         Assert.AreEqual(8f, VitalFailureDefOf.MI_VitalFailureConfig.TerminalCerebralSeverity);
     }
 }

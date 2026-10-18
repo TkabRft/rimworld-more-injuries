@@ -18,7 +18,7 @@
   <HediffDef ParentName="MI_VitalFailureBase">
     <defName>MI_RespiratoryFailure</defName>
     <label>respiratory failure</label>
-    <description>Breathing has stopped. Restore the airway or functioning lungs immediately. Without restored oxygen delivery, cerebral hypoxia accumulates and this failure becomes fatal in approximately three game hours.</description>
+    <description>Breathing has stopped. Restore the airway or functioning lungs immediately. The respiratory failure timer reaches fatal severity in approximately three game hours. Without restored oxygen delivery, unprotected cerebral hypoxia can become fatal in about 1.5 game hours and often limits the rescue window first.</description>
     <modExtensions><li Class="MoreInjuries.HealthConditions.VitalFailure.VitalFailureProperties"><severityPerDay>8</severityPerDay></li></modExtensions>
   </HediffDef>
   <HediffDef ParentName="MI_VitalFailureBase">

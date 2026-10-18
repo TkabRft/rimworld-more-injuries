@@ -47,13 +47,21 @@ internal static class NeurologicalOutcomes
         if (pawn.Dead || pawn.Suspended || !MoreInjuriesMod.Settings.EnableNeuralDamage) { return; }
         WeightedHediffMakerDef? outcome = Choose(pawn, profile);
         if (outcome is null) { return; }
-        Hediff? existing = pawn.health.hediffSet.hediffs.Find(h => h.def == outcome.HediffDef && h.Part == brain);
-        float added = severity ?? outcome.GetInitialSeverity();
-        if (existing is not null) { existing.Severity = Mathf.Min(1f, existing.Severity + added); }
+        Add(pawn, brain, outcome.HediffDef, severity ?? outcome.GetInitialSeverity());
+    }
+
+    internal static void Add(Pawn pawn, BodyPartRecord? brain, HediffDef outcome, float added)
+    {
+        Hediff? existing = null;
+        foreach (Hediff condition in pawn.health.hediffSet.hediffs)
+        {
+            if (condition.def == outcome && condition.Part == brain) { existing = condition; break; }
+        }
+        if (existing is not null) { existing.Severity = Mathf.Min(outcome.maxSeverity, existing.Severity + added); }
         else
         {
-            Hediff condition = HediffMaker.MakeHediff(outcome.HediffDef, pawn, brain);
-            condition.Severity = added;
+            Hediff condition = HediffMaker.MakeHediff(outcome, pawn, brain);
+            condition.Severity = Mathf.Min(outcome.maxSeverity, added);
             pawn.health.AddHediff(condition);
         }
     }
@@ -63,10 +71,9 @@ internal static class NeurologicalOutcomes
         part ??= injury.Part;
         if (damage is not { } info || injury is not Hediff_Injury || injury.def == KnownHediffDefOf.BrainDamage_Hypoxia
             || part?.def.tags?.Contains(BodyPartTagDefOf.ConsciousnessSource) != true || !VitalPhysiology.Supports(pawn)
-            || pawn.Dead || pawn.Suspended || !MoreInjuriesMod.Settings.EnableNeuralDamage) { return; }
-        float chance = NeurologicalDefOf.MI_NeurologicalConfig.DirectBrainChanceFactor
-            * Mathf.Clamp01(Mathf.Min(injury.Severity, info.Amount) / part.def.GetMaxHealth(pawn));
-        if (Rand.Chance(chance)) { Apply(pawn, part, NeurologicalDefOf.MI_NeurologicalConfig.ForDamage(info.Def)); }
+            || pawn.Dead || pawn.Suspended) { return; }
+        // The legacy probability field remains readable for extensions. Milestones replace its roll.
+        VitalFailureComp.For(pawn)?.RecordBrainTrauma(part, info.Def);
     }
 
     internal static float HypoxiaMultiplier(Pawn pawn) => pawn.health.hediffSet.HasHediff(NeurologicalDefOf.MI_ArtificialComa)

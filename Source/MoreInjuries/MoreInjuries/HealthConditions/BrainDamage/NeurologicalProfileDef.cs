@@ -60,6 +60,7 @@ public sealed class NeurologicalConfigDef : Def
     private readonly float concussionThreshold = 0.7f;
     private readonly float concussionChance = 0.05f;
     private readonly float comaHypoxiaMultiplier = 0.5f;
+    private readonly List<NeurologicalMilestone> injuryMilestones = [];
     private Dictionary<string, NeurologicalProfileDef> _damageProfiles = [];
     internal NeurologicalProfileDef DefaultProfile => defaultProfile;
     internal NeurologicalProfileDef HypoxiaProfile => hypoxiaProfile;
@@ -69,6 +70,7 @@ public sealed class NeurologicalConfigDef : Def
     internal float ConcussionThreshold => concussionThreshold;
     internal float ConcussionChance => concussionChance;
     internal float ComaHypoxiaMultiplier => comaHypoxiaMultiplier;
+    internal IReadOnlyList<NeurologicalMilestone> InjuryMilestones => injuryMilestones;
 
     internal NeurologicalProfileDef ForDamage(DamageDef? damage) => damage is not null
         && _damageProfiles.TryGetValue(damage.defName, out NeurologicalProfileDef profile) ? profile : defaultProfile;
@@ -79,6 +81,19 @@ public sealed class NeurologicalConfigDef : Def
         foreach (NeurologicalDamageMapping mapping in damageProfiles)
         {
             _damageProfiles[mapping.DamageDefName] = mapping.Profile;
+        }
+    }
+
+    public override IEnumerable<string> ConfigErrors()
+    {
+        foreach (string error in base.ConfigErrors()) { yield return error; }
+        float previousInjury = 0f, previousAward = 0f;
+        foreach (NeurologicalMilestone milestone in injuryMilestones)
+        {
+            if (milestone.Injury <= previousInjury || milestone.LastingSeverity <= previousAward || milestone.LastingSeverity > 1f)
+            { yield return "Neurological milestones must have increasing positive injury and lasting severity, capped at 1."; }
+            previousInjury = milestone.Injury;
+            previousAward = milestone.LastingSeverity;
         }
     }
 }

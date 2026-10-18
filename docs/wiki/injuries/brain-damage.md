@@ -40,6 +40,7 @@ Brain damage may manifest in one of the following ways:
   - [Hippocampal Damage](#hippocampal-damage)
   - [Motor Dysfunction](#motor-dysfunction)
   - [Personality Shift](#personality-shift)
+  - [Lasting Injury Milestones](#lasting-injury-milestones)
 <!-- @end_generated_block -->
 
 ## Diffuse Brain Damage
@@ -48,7 +49,7 @@ Widespread lasting damage reduces the affected brain's efficiency by 5, 15, 30, 
 
 Advanced neurological treatment, including [cellular regenerative neurosurgery](/docs/wiki/surgeries.md#cellular-regenerative-neurosurgery) and [mechanite therapy](/docs/wiki/injuries/mechanite-therapy.md#mechanite-therapy), can address diffuse damage. Eligible animals can receive diffuse or motor outcomes; human-specific language, memory and personality effects are not assigned to them.
 
-The injury's cause changes the likelihood of each disability: blunt trauma and systemic oxygen deprivation favor diffuse damage, penetrating trauma favors motor and language impairment, and stroke favors motor and language impairment. A damaging brain hit has a chance of one ordinary disability, increasing with the fraction of the brain damaged. Severe concussion can independently produce an outcome when it first crosses 70%, but the same direct brain hit does not receive both chances. Personality shifts remain separately controlled by settings.
+The injury's cause changes the likelihood of each disability: blunt trauma and systemic oxygen deprivation favor diffuse damage, penetrating trauma favors motor and language impairment, and stroke favors motor and language impairment. Direct brain wounds and cerebral hypoxia now guarantee increasing lasting harm when neurological damage is enabled. Each episode selects one disability using the injury's cause; later milestones deepen it. Random cerebral complications can still add other disabilities. Severe concussion can independently produce an outcome when it first crosses 70%, but a direct brain hit does not also receive that concussion outcome roll. Personality shifts remain separately controlled by settings.
 
 ## Agnosia
 
@@ -134,6 +135,25 @@ Motor dysfunction refers to a range of movement disorders that can occur as a re
 > This feature can be disabled in the mod settings if you prefer not to have personality shifts as a result of brain damage.
 
 Acute [cerebral hypoxia](/docs/wiki/injuries/hypoxia.md#cerebral-hypoxia) and the lasting disabilities listed here are separate conditions. With delayed vital failure enabled, untreated oxygen deprivation can steadily worsen cerebral injury and become fatal even when lasting neurological damage is disabled. Restoring oxygen delivery permits the acute injury to heal, while lasting disabilities can still require their own treatment.
+
+## Lasting Injury Milestones
+
+With neurological damage enabled, a brain injury episode begins contributing lasting harm at **5% of that brain's maximum health**. Wounds on the same brain combine; oxygen injury and direct traumatic wounds have separate episodes. Each chooses one suitable disability, so even an early-rescued patient can retain a noticeable impairment.
+
+| Brain injury reached | Lasting severity contributed by that episode |
+|---|---:|
+| 5% | 5% |
+| 10% | 10% |
+| 20% | 25% |
+| 30% | 40% |
+| 40% | 60% |
+| 60% | 80% |
+
+These percentages describe the disability's severity, not a universal capacity penalty. For example, diffuse damage contributes a 5-point brain-efficiency penalty at the first milestone and a 75-point penalty at 80% lasting severity. The named disabilities retain their own stages and effects.
+
+Tending and partial healing do not restart an episode. New harm comes only from crossing a higher milestone. Advanced treatment or regeneration between milestones is retained; already earned damage is not reapplied. Once the corresponding injuries are gone, a later injury can begin another episode. Random complications and separately enabled personality shifts remain possible.
+
+On upgrading an existing save, current injuries do not gain retroactive disabilities. Existing disabilities remain, and future worsening can earn new increments. Turning neurological damage off and back on does not apply a backlog. Oxygen immunity and deathrest suppress hypoxia-derived milestone awards; they do not make direct traumatic brain wounds harmless.
 
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---

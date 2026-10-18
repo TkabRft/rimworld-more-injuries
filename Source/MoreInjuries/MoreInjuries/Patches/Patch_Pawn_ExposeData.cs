@@ -12,6 +12,7 @@ public static class Patch_Pawn_ExposeData
     {
         if (Scribe.mode == LoadSaveMode.PostLoadInit)
         {
+            __instance.TryGetComp<MoreInjuries.HealthConditions.VitalFailure.VitalFailureComp>()?.InitializeLegacyMilestones();
             MoreInjuries.Versioning.GameComponent_DeathRattleTransition.Register(__instance);
         }
         if (Scribe.mode is LoadSaveMode.PostLoadInit

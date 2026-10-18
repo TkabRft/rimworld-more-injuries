@@ -45,7 +45,7 @@ public static class Scribe_Deep
         if (Scribe.mode == LoadSaveMode.Saving) { Scribe.Data[key] = value is null ? null : Scribe.Save(value.ExposeData); }
         else if (Scribe.mode == LoadSaveMode.LoadingVars)
         {
-            if (Scribe.Data[key] is not Dictionary<string, object?> stored) { value = null; return; }
+            if (!Scribe.Data.TryGetValue(key, out object? data) || data is not Dictionary<string, object?> stored) { value = null; return; }
             value = (T)Activator.CreateInstance(typeof(T), nonPublic: true)!;
             Scribe.Load(stored, value.ExposeData);
         }
@@ -63,7 +63,7 @@ public static class Scribe_Collections
         }
         else if (Scribe.mode == LoadSaveMode.LoadingVars)
         {
-            if (Scribe.Data[key] is not List<object> stored) { value = null; return; }
+            if (!Scribe.Data.TryGetValue(key, out object? data) || data is not List<object> stored) { value = null; return; }
             value = [];
             foreach (object item in stored)
             {

@@ -6,10 +6,17 @@ using MoreInjuries.HealthConditions.VitalFailure;
 
 namespace HarmonyLib
 {
-    public static class AccessTools { public static FieldInfo Field(Type type, string name) => type.GetField(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)!; }
+    public static class AccessTools
+    {
+        public static FieldInfo Field(Type type, string name) => type.GetField(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)!;
+        public delegate ref F FieldRef<T, F>(T instance);
+        public static FieldRef<T, F> FieldRefAccess<T, F>(string name) => (FieldRef<T, F>)(object)(FieldRef<Verse.HediffComp_TendDuration, int>)TendTicks;
+        private static ref int TendTicks(Verse.HediffComp_TendDuration tend) => ref tend.tendTicksLeft;
+    }
 }
 namespace Verse
 {
+    public static class Scribe_BodyParts { public static void Look(ref BodyPartRecord value, string key) => Scribe.Value(ref value, key, null!); }
     public class DamageDef : Def;
     public class RecipeDef : Def { public ThingFilter fixedIngredientFilter = new(); }
     public sealed class ThingFilter
@@ -30,7 +37,9 @@ namespace Verse
         public string LabelShort => Name;
         public RimWorld.BillStack? BillStack;
         public Verse.AI.Job? CurJob;
+        public int HashOffsetTicks() => Tick + HashOffset;
     }
+    public sealed partial class HediffSet { public float BleedRateTotal; }
     public sealed class PlayerSettings { public RimWorld.MedicalCareCategory medCare = RimWorld.MedicalCareCategory.Best; }
     public sealed partial class JobTracker { public int Ended; public void EndCurrentJob(Verse.AI.JobCondition condition) => Ended++; }
     public partial class Hediff
