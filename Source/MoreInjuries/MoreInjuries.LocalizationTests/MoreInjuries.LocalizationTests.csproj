@@ -23,11 +23,14 @@
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalAnatomy.cs" Link="RuntimeContracts\Production\VitalAnatomy.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureComp.cs" Link="RuntimeContracts\Production\VitalFailureComp.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureComp.Neurology.cs" Link="RuntimeContracts\Production\VitalFailureComp.Neurology.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureComp.Prognosis.cs" Link="RuntimeContracts\Production\VitalFailureComp.Prognosis.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\PhysiologyPrognosis.cs" Link="RuntimeContracts\Production\PhysiologyPrognosis.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\HediffComp_VitalArrest.cs" Link="RuntimeContracts\Production\HediffComp_VitalArrest.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\CardiacArrest\JobDriver_PerformCpr.cs" Link="RuntimeContracts\Production\JobDriver_PerformCpr.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\CardiacArrest\JobDriver_UseDefibrillator.cs" Link="RuntimeContracts\Production\JobDriver_UseDefibrillator.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\CardiacArrest\HediffComp_CardiacArrest.cs" Link="RuntimeContracts\Production\HediffComp_CardiacArrest.cs" />
         <Compile Include="..\MoreInjuries\Patches\Patch_VitalFailure.cs" Link="RuntimeContracts\Production\Patch_VitalFailure.cs" />
+        <Compile Include="..\MoreInjuries\Patches\Patch_PhysiologyDeathEstimate.cs" Link="RuntimeContracts\Production\Patch_PhysiologyDeathEstimate.cs" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- EN: Use physiology-aware death estimate -->
+  <MI_Prognosis_SettingLabel>Use physiology-aware death estimate</MI_Prognosis_SettingLabel>
+  <!-- EN: Replace the vanilla health-tab blood-loss countdown with an approximate estimate using current bleeding and More Injuries physiology. Disabling this restores the vanilla display and does not change health or treatment priorities. -->
+  <MI_Prognosis_SettingTooltip>Replace the vanilla health-tab blood-loss countdown with an approximate estimate using current bleeding and More Injuries physiology. Disabling this restores the vanilla display and does not change health or treatment priorities.</MI_Prognosis_SettingTooltip>
+  <!-- EN: Bleeding: {0}/d; {1} -->
+  <MI_Prognosis_Footer>Bleeding: {0}/d; {1}</MI_Prognosis_Footer>
+  <!-- EN: Estimated death: ~{0} -->
+  <MI_Prognosis_Time>Estimated death: ~{0}</MI_Prognosis_Time>
+  <!-- EN: No modeled death within 24h -->
+  <MI_Prognosis_NoPrediction>No modeled death within 24h</MI_Prognosis_NoPrediction>
+  <!-- EN: Native death protection active -->
+  <MI_Prognosis_Protected>Native death protection active</MI_Prognosis_Protected>
+  <!-- EN: No current modeled fatal cause -->
+  <MI_Prognosis_NoCause>No current modeled fatal cause</MI_Prognosis_NoCause>
+  <!-- EN: {0}\nPredicted cause: {1}\n\nApproximate game time using current bleeding, natural blood recovery, shock, active tending and its expiry, adrenaline decay, oxygen delivery, brain injury and active failure timers. Future cerebral progression is projected for up to 24 game hours; longer existing failure timers are calculated separately. Current cold, breathing, pumping and dilution are held constant. No future treatments, organ restoration or random complications are assumed. Other diseases, new injuries and native scripted deaths can kill sooner. The forecast never changes the patient's health or doctor priorities. -->
+  <MI_Prognosis_Tooltip>{0}\nPredicted cause: {1}\n\nApproximate game time using current bleeding, natural blood recovery, shock, active tending and its expiry, adrenaline decay, oxygen delivery, brain injury and active failure timers. Future cerebral progression is projected for up to 24 game hours; longer existing failure timers are calculated separately. Current cold, breathing, pumping and dilution are held constant. No future treatments, organ restoration or random complications are assumed. Other diseases, new injuries and native scripted deaths can kill sooner. The forecast never changes the patient's health or doctor priorities.</MI_Prognosis_Tooltip>
+</LanguageData>

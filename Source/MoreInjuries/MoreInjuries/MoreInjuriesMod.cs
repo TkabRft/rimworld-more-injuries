@@ -148,6 +148,8 @@ public class MoreInjuriesMod : Mod
         list.GapLine();
         list.CheckboxLabeled("MI_Settings_VitalFailure_EnableLabel".Translate(), ref Settings.EnableDelayedVitalFailure,
             "MI_Settings_VitalFailure_EnableTooltip".Translate());
+        list.CheckboxLabeled("MI_Prognosis_SettingLabel".Translate(), ref Settings.EnablePhysiologyDeathEstimate,
+            "MI_Prognosis_SettingTooltip".Translate());
         // hypovolemic shock and cardiac arrest
         list.GapLine();
         Text.Font = GameFont.Medium;

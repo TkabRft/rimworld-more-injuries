@@ -147,6 +147,9 @@ public partial class MoreInjuriesSettings : ModSettings
     [SettingsEntry<bool>(DefaultValue = true)]
     internal partial ref bool EnableDelayedVitalFailure { get; }
 
+    [SettingsEntry<bool>(DefaultValue = true)]
+    internal partial ref bool EnablePhysiologyDeathEstimate { get; }
+
     // hypovolemic shock, cardiac arrest, and the trauma triad of death
     [SettingsEntry<bool>(DefaultValue = true)]
     internal partial ref bool EnableHypovolemicShock { get; }

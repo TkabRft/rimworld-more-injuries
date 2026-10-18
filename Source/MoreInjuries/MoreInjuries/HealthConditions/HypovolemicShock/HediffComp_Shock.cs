@@ -51,6 +51,7 @@ public class HediffComp_Shock : HediffComp
     public override void CompTended(float quality, float maxQuality, int batchPosition = 0)
     {
         base.CompTended(quality, maxQuality, batchPosition);
+        MoreInjuries.HealthConditions.VitalFailure.VitalFailureComp.For(parent.pawn)?.Invalidate();
 
         // ensure that blood IVs can be used to stabilize the patient
         float requiredQuality = Properties.BleedSeverityCurve.Evaluate(parent.Severity);
