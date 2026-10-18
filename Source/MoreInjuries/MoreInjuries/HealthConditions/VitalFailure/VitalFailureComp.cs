@@ -156,7 +156,7 @@ public sealed partial class VitalFailureComp : ThingComp
                 {
                     _brainInjury.TryGetComp<HediffComp_NeurologicalSource>()?.SetProfile(_arrest?.TryGetComp<HediffComp_NeurologicalSource>()?.Profile ?? NeurologicalDefOf.MI_NeurologicalConfig.HypoxiaProfile);
                     Advance(_brainInjury, VitalFailureDefOf.MI_VitalFailureConfig.CerebralSeverityPerDay * _deprivation
-                        * CerebralInjury.Scale(pawn, _brainInjury.Part),
+                        * CerebralInjury.Scale(pawn, _brainInjury.Part) * NeurologicalOutcomes.HypoxiaMultiplier(pawn),
                         factor, dayFraction);
                 }
             }

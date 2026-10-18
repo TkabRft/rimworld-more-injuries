@@ -17,4 +17,22 @@
       <li><label>vegetative state</label><minSeverity>1</minSeverity><partEfficiencyOffset>-0.75</partEfficiencyOffset><painFactor>0</painFactor><capMods><li><capacity>Consciousness</capacity><setMax>0.1</setMax></li></capMods></li>
     </stages>
   </HediffDef>
+  <HediffDef>
+    <defName>MI_ArtificialComa</defName>
+    <label>artificial coma</label>
+    <description>A medically induced coma reduces new hypoxic brain injury by half, but does not restore circulation, breathing or blood volume. Consciousness is limited to 10%. Wake-up can reverse the induced state, subject to the patient's drug restrictions. Prolonged coma becomes dangerous after about seven days and can cause lasting neurological injury; it becomes fatal after about ten days. Repeating induction does not reset this risk. Vanilla vacuum exposure and decompression remain dangerous.</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <initialSeverity>0.001</initialSeverity><maxSeverity>1</maxSeverity><lethalSeverity>1</lethalSeverity>
+    <everCurableByItem>false</everCurableByItem><duplicationAllowed>false</duplicationAllowed>
+    <defaultLabelColor>(1, 0.35, 0.35)</defaultLabelColor>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay"><severityPerDay>0.1</severityPerDay></li>
+      <li Class="MoreInjuries.HealthConditions.BrainDamage.HediffCompProperties_ArtificialComa" />
+    </comps>
+    <stages>
+      <li><capMods><li><capacity>Consciousness</capacity><setMax>0.1</setMax></li></capMods></li>
+      <li><label>dangerous</label><minSeverity>0.7</minSeverity><lifeThreatening>true</lifeThreatening><capMods><li><capacity>Consciousness</capacity><setMax>0.1</setMax></li></capMods></li>
+      <li><label>life threatening</label><minSeverity>0.8</minSeverity><lifeThreatening>true</lifeThreatening><capMods><li><capacity>Consciousness</capacity><setMax>0.1</setMax></li></capMods></li>
+    </stages>
+  </HediffDef>
 </Defs>

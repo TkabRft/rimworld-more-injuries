@@ -69,6 +69,9 @@ internal static class NeurologicalOutcomes
         if (Rand.Chance(chance)) { Apply(pawn, part, NeurologicalDefOf.MI_NeurologicalConfig.ForDamage(info.Def)); }
     }
 
+    internal static float HypoxiaMultiplier(Pawn pawn) => pawn.health.hediffSet.HasHediff(NeurologicalDefOf.MI_ArtificialComa)
+        ? NeurologicalDefOf.MI_NeurologicalConfig.ComaHypoxiaMultiplier : 1f;
+
     internal static void Transform(Pawn pawn)
     {
         if (!pawn.IsMutant) { return; }

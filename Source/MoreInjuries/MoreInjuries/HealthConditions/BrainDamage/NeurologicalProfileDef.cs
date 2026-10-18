@@ -87,7 +87,11 @@ public sealed class NeurologicalConfigDef : Def
 public static class NeurologicalDefOf
 {
     public static NeurologicalConfigDef MI_NeurologicalConfig = null!;
+    public static HediffDef WakeUpHigh = null!;
     public static HediffDef MI_DiffuseBrainDamage = null!;
+    public static HediffDef MI_ArtificialComa = null!;
+    public static RecipeDef MI_InduceArtificialComa = null!;
+    public static RecipeDef MI_AwakenArtificialComa = null!;
     [MayRequire("vat.epoeforked")]
     public static RecipeDef MI_TreatDiffuseBrainDamage_Neurocure = null!;
     static NeurologicalDefOf() => DefOfHelper.EnsureInitializedInCtor(typeof(NeurologicalDefOf));

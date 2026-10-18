@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- EN: induce artificial coma -->
+  <MI_InduceArtificialComa.label>induce artificial coma</MI_InduceArtificialComa.label>
+  <!-- EN: Induce a coma to halve new hypoxic brain injury while the underlying emergency is treated. Requires five industrial or glitterworld medicine. Herbal medicine is unsuitable. Wake-up reverses the induced state. Long coma carries its own neurological and fatal risks. -->
+  <MI_InduceArtificialComa.description>Induce a coma to halve new hypoxic brain injury while the underlying emergency is treated. Requires five industrial or glitterworld medicine. Herbal medicine is unsuitable. Wake-up reverses the induced state. Long coma carries its own neurological and fatal risks.</MI_InduceArtificialComa.description>
+  <!-- EN: Inducing artificial coma. -->
+  <MI_InduceArtificialComa.jobString>Inducing artificial coma.</MI_InduceArtificialComa.jobString>
+  <!-- EN: reverse artificial coma with wake-up -->
+  <MI_AwakenArtificialComa.label>reverse artificial coma with wake-up</MI_AwakenArtificialComa.label>
+  <!-- EN: Administer one normal dose of wake-up to reverse an artificial coma. Its ordinary drug effects and risks still apply. This does not cure natural coma, brain damage or the underlying emergency. -->
+  <MI_AwakenArtificialComa.description>Administer one normal dose of wake-up to reverse an artificial coma. Its ordinary drug effects and risks still apply. This does not cure natural coma, brain damage or the underlying emergency.</MI_AwakenArtificialComa.description>
+  <!-- EN: Administering wake-up. -->
+  <MI_AwakenArtificialComa.jobString>Administering wake-up.</MI_AwakenArtificialComa.jobString>
+</LanguageData>

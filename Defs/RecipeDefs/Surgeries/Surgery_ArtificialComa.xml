@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <RecipeDef ParentName="SurgeryFlesh">
+    <defName>MI_InduceArtificialComa</defName>
+    <label>induce artificial coma</label>
+    <description>Induce a coma to halve new hypoxic brain injury while the underlying emergency is treated. Requires five industrial or glitterworld medicine. Herbal medicine is unsuitable. Wake-up reverses the induced state. Long coma carries its own neurological and fatal risks.</description>
+    <workerClass>MoreInjuries.HealthConditions.BrainDamage.Recipe_InduceArtificialComa</workerClass>
+    <jobString>Inducing artificial coma.</jobString><workAmount>400</workAmount>
+    <anesthetize>false</anesthetize><isViolation>true</isViolation><targetsBodyPart>true</targetsBodyPart>
+    <surgerySuccessChanceFactor>2</surgerySuccessChanceFactor>
+    <ingredients><li><filter><thingDefs><li>MedicineIndustrial</li><li>MedicineUltratech</li></thingDefs></filter><count>5</count></li></ingredients>
+    <fixedIngredientFilter><thingDefs><li>MedicineIndustrial</li><li>MedicineUltratech</li></thingDefs></fixedIngredientFilter>
+  </RecipeDef>
+  <RecipeDef ParentName="SurgeryFlesh">
+    <defName>MI_AwakenArtificialComa</defName>
+    <label>reverse artificial coma with wake-up</label>
+    <description>Administer one normal dose of wake-up to reverse an artificial coma. Its ordinary drug effects and risks still apply. This does not cure natural coma, brain damage or the underlying emergency.</description>
+    <workerClass>MoreInjuries.HealthConditions.BrainDamage.Recipe_AwakenArtificialComa</workerClass>
+    <jobString>Administering wake-up.</jobString><workAmount>400</workAmount>
+    <anesthetize>false</anesthetize><isViolation>true</isViolation><targetsBodyPart>false</targetsBodyPart>
+    <ingredients><li><filter><thingDefs><li>WakeUp</li></thingDefs></filter><count>1</count></li></ingredients>
+    <fixedIngredientFilter><thingDefs><li>WakeUp</li></thingDefs></fixedIngredientFilter>
+  </RecipeDef>
+</Defs>

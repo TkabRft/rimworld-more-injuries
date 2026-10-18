@@ -29,7 +29,8 @@ internal static class VitalFailure_Initializer
             if (VitalAnatomy.For(race.body).Brains.Length > 0)
             {
                 def.recipes ??= new List<RecipeDef>();
-                foreach (RecipeDef recipe in new[] { DefDatabase<RecipeDef>.GetNamed("TreatBrainDamage") })
+                foreach (RecipeDef recipe in new[] { NeurologicalDefOf.MI_InduceArtificialComa, NeurologicalDefOf.MI_AwakenArtificialComa,
+                    DefDatabase<RecipeDef>.GetNamed("TreatBrainDamage") })
                 {
                     if (!def.recipes.Contains(recipe)) { def.recipes.Add(recipe); }
                 }

@@ -13,7 +13,11 @@
   <!-- EN: vegetative state -->
   <MI_DiffuseBrainDamage.stages.vegetative_state.label>vegetative state</MI_DiffuseBrainDamage.stages.vegetative_state.label>
   <!-- EN: artificial coma -->
+  <MI_ArtificialComa.label>artificial coma</MI_ArtificialComa.label>
   <!-- EN: A medically induced coma reduces new hypoxic brain injury by half, but does not restore circulation, breathing or blood volume. Consciousness is limited to 10%. Wake-up can reverse the induced state, subject to the patient's drug restrictions. Prolonged coma becomes dangerous after about seven days and can cause lasting neurological injury; it becomes fatal after about ten days. Repeating induction does not reset this risk. Vanilla vacuum exposure and decompression remain dangerous. -->
+  <MI_ArtificialComa.description>A medically induced coma reduces new hypoxic brain injury by half, but does not restore circulation, breathing or blood volume. Consciousness is limited to 10%. Wake-up can reverse the induced state, subject to the patient's drug restrictions. Prolonged coma becomes dangerous after about seven days and can cause lasting neurological injury; it becomes fatal after about ten days. Repeating induction does not reset this risk. Vanilla vacuum exposure and decompression remain dangerous.</MI_ArtificialComa.description>
   <!-- EN: dangerous -->
+  <MI_ArtificialComa.stages.dangerous.label>dangerous</MI_ArtificialComa.stages.dangerous.label>
   <!-- EN: life threatening -->
+  <MI_ArtificialComa.stages.life_threatening.label>life threatening</MI_ArtificialComa.stages.life_threatening.label>
 </LanguageData>

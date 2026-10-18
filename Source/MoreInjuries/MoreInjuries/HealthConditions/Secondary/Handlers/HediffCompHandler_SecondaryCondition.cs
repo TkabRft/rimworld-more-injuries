@@ -101,7 +101,7 @@ public abstract partial class HediffCompHandler_SecondaryCondition : HediffCompH
         if (maker.HediffDef == KnownHediffDefOf.BrainDamage_Hypoxia)
         {
             BodyPartRecord? brain = targetPart ?? comp.Pawn.health.hediffSet.GetBrain();
-            severity *= CerebralInjury.Scale(comp.Pawn, brain);
+            severity *= CerebralInjury.Scale(comp.Pawn, brain) * NeurologicalOutcomes.HypoxiaMultiplier(comp.Pawn);
         }
         return severity;
     }

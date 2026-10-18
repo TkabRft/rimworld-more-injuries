@@ -34,6 +34,7 @@
         <Compile Include="..\MoreInjuries\HealthConditions\BrainDamage\CerebralInjury.cs" Link="RuntimeContracts\Production\CerebralInjury.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\BrainDamage\NeurologicalProfileDef.cs" Link="RuntimeContracts\Production\NeurologicalProfileDef.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\BrainDamage\NeurologicalOutcomes.cs" Link="RuntimeContracts\Production\NeurologicalOutcomes.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\BrainDamage\ArtificialComa.cs" Link="RuntimeContracts\Production\ArtificialComa.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\Secondary\Handlers\HediffMakers\HediffMakerDef.cs" Link="RuntimeContracts\Production\HediffMakerDef.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\Secondary\Handlers\HediffMakers\WeightedHediffMakerDef.cs" Link="RuntimeContracts\Production\WeightedHediffMakerDef.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\Secondary\Handlers\HediffMakers\HediffMakerProperties.cs" Link="RuntimeContracts\Production\HediffMakerProperties.cs" />
