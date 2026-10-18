@@ -22,8 +22,8 @@ Package `Th3Fr3d.ExtendedInjuries`. Namespace `MoreInjuries`. Supported versions
 | Cascading conditions | `docs/wiki/pathophysiological-system.md`, `docs/wiki/concepts.md` | `HealthConditions/Secondary/` |
 | Devices, drugs, CPR, transfusions | `docs/wiki/medical-devices.md` | `Defs/ThingDefs/Medicine/`, `AI/`, `HealthConditions/Drugs/`, `HealthConditions/HeavyBleeding/` |
 | Blood-loss scheduling, drug information cards, chemical gene icons, optional hydration | `docs/medical-runtime.md` | `HealthConditions/Secondary/`, `HealthConditions/Drugs/`, `Initialization/`, `Integrations/DubsBadHygiene/` |
-| Delayed vital failure, systemic cerebral hypoxia, resuscitation death rules | `docs/vital-failure.md` | `HealthConditions/VitalFailure/`, `Patches/Patch_VitalFailure.cs` |
-| Neurological profiles, diffuse damage, artificial coma | `docs/neurological-runtime.md` | `HealthConditions/BrainDamage/`, `Defs/Internal/NeurologicalProfiles.xml` |
+| Delayed vital failure, systemic cerebral hypoxia, resuscitation death rules, health-tab prognosis | `docs/vital-failure.md` | `HealthConditions/VitalFailure/`, `Patches/Patch_VitalFailure.cs`, `Patches/Patch_PhysiologyDeathEstimate.cs` |
+| Neurological profiles, injury milestones, diffuse damage, artificial coma | `docs/neurological-runtime.md` | `HealthConditions/BrainDamage/`, `Defs/Internal/NeurologicalProfiles.xml` |
 | Death Rattle priority and save transition | `docs/death-rattle-transition.md` | `Integrations/DeathRattle/`, `Versioning/GameComponent_DeathRattleTransition.cs` |
 | Future medical expansion | `docs/medical-expansion-todo.md` | `docs/vital-failure.md` |
 | Body parts | `docs/wiki/body-parts.md` | `Defs/BodyPartDefs/`, `Patches/Patch_BodyParts.xml` |

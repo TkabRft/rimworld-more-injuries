@@ -24,6 +24,7 @@ The following sections provide an overview of the new injuries and medical condi
     - [Hippocampal Damage](/docs/wiki/injuries/brain-damage.md#hippocampal-damage)
     - [Motor Dysfunction](/docs/wiki/injuries/brain-damage.md#motor-dysfunction)
     - [Personality Shift](/docs/wiki/injuries/brain-damage.md#personality-shift)
+    - [Lasting Injury Milestones](/docs/wiki/injuries/brain-damage.md#lasting-injury-milestones)
   - [Cardiac Arrest](/docs/wiki/injuries/cardiac-arrest.md#cardiac-arrest)
   - [Chemical Damage](/docs/wiki/injuries/chemical-damage.md#chemical-damage)
   - [Chemical Peritonitis](/docs/wiki/injuries/chemical-peritonitis.md#chemical-peritonitis)

@@ -24,6 +24,7 @@ In order to effectively treat the new injuries and medical conditions introduced
   - [Thoracoscope](#thoracoscope)
   - [Tourniquet](#tourniquet)
   - [Artificial Coma](#artificial-coma)
+  - [Death Estimate](#death-estimate)
 <!-- @end_generated_block -->
 
 ## Airway Suction Device
@@ -517,6 +518,16 @@ Transfusions improve the perfusion-related source of [cerebral hypoxia](/docs/wi
 [Artificial coma](/docs/wiki/injuries/artificial-coma.md#artificial-coma) is a scheduled [operation](/docs/wiki/surgeries.md#artificial-coma), using five industrial or glitterworld medicine. It halves new acute hypoxic brain injury and limits consciousness to 10%. It does not replace CPR, airway treatment, fluids or organ replacement. One normal Wake-up dose reverses the induced state, with ordinary drug effects and restrictions.
 
 Supported owned fleshy nonhuman patients can receive manual CPR, defibrillation and airway rescue without the full human trauma system. Automatic treatment and manual orders still respect medical-care settings, native patient restrictions, ownership, forbidden status and access. Supporting an entity's physiology does not authorize treatment of every hostile or contained entity.
+
+## Death Estimate
+
+**Use physiology-aware death estimate** is enabled by default in mod settings. The health-tab footer keeps the bleeding rate and shows an approximate death estimate from current blood loss, shock, oxygen delivery, cerebral injury and active organ failures. It remains useful after bleeding stops or blood loss reaches 100%.
+
+Hover over it for the predicted cause and assumptions. It accounts for natural blood recovery, current tending and expiry, adrenaline decay and artificial coma. Current cold, breathing, pumping and dilution are held constant. It predicts no future treatments or random complications. Other diseases, new injuries and native scripted deaths may kill sooner. A lack of a modeled fatal trend is not a guarantee of safety.
+
+Turning the setting off restores the vanilla blood-loss-only countdown, including its zero-time display at full blood loss. The setting affects presentation only; doctor priorities and actual health progression stay the same. A health-tab replacement that skips vanilla drawing retains its own display.
+
+The cerebral rescue window at complete unprotected oxygen deprivation is now about 1.5 game hours. Act promptly: first aid or transfusion after the terminal stage cannot undo death, and restoring circulation does not erase [lasting brain injury](/docs/wiki/injuries/brain-damage.md#lasting-injury-milestones).
 
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---

@@ -9,7 +9,7 @@ Cardiac arrest is a sudden loss of blood flow resulting from the failure of the 
 > **In-Game Description**
 > _"**Cardiac arrest** &mdash; Cardiac arrest is a sudden loss of blood flow resulting from the failure of the heart to effectively pump blood. The lack of blood flow causes the body to stop working properly, resulting in loss of consciousness and death if not treated immediately. Causes for cardiac arrest include conditions that starve the heart of oxygen, such as extreme blood loss.<br>
 > A skilled doctor must perform CPR to restore blood flow and hopefully restart the heart. In early stages of cardiac arrest, during ventricular fibrillation, a defibrillator can also be used to shock the heart back into a normal rhythm, which may be faster and more effective than CPR.<br>
-> With delayed vital failure enabled, circulation stops during arrest. Untreated arrest becomes fatal in approximately three game hours and causes accumulating cerebral hypoxia. CPR or an early defibrillator attempt can restart a functioning pump; a missing or nonfunctional heart requires a functioning replacement. Restarting circulation does not erase existing brain injury."_
+> With delayed vital failure enabled, circulation stops during arrest. The arrest timer reaches fatal failure in approximately three game hours, but unprotected cerebral hypoxia can become fatal in about 1.5 game hours and often limits the rescue window first. CPR or an early defibrillator attempt can restart a functioning pump; a missing or nonfunctional heart requires a functioning replacement. Restarting circulation does not erase existing brain injury."_
 
 ```mermaid
 ---
@@ -50,9 +50,11 @@ style cardiac_arrest stroke-width: 4px
 > **Odyssey DLC**: Vacuum resistance, including the Breathless gene's environmental protection, does not restore a failed pump or remove cardiac arrest. Native vacuum and decompression rules remain in effect.<br>
 > A functioning prosthetic or bionic heart protects against spontaneous shock-induced arrhythmia; a destroyed or nonfunctional replacement can still cause circulatory failure. Ventricular fibrillation caps consciousness at 0.1 rather than 0.01. Clinical death still caps it at 0.01.
 
-With delayed vital failure enabled, arrest means absent effective pumping and ordinarily gives about three game hours for rescue. Its severity and cerebral hypoxia both worsen; successful resuscitation stops the arrest without erasing brain injury. A terminal vanilla heart attack enters this treatable arrest pathway.
+With delayed vital failure enabled, arrest means absent effective pumping and has an approximately three-hour failure timer, although cerebral injury can become fatal sooner. Its severity and cerebral hypoxia both worsen; successful resuscitation stops the arrest without erasing brain injury. A terminal vanilla heart attack enters this treatable arrest pathway.
 
 CPR and a permitted early defibrillator attempt can restart a functioning heart. They cannot replace a missing or nonfunctional heart. Mechanical failure resolves when an effective pump is restored. Artificial hearts retain protection from spontaneous shock-induced arrest, but a nonfunctional artificial pump can still fail.
+
+The failure itself still progresses toward death over about three game hours, but complete unprotected [cerebral hypoxia](/docs/wiki/injuries/hypoxia.md#cerebral-hypoxia) can become terminal in about 1.5 game hours. Brain injury can therefore limit the rescue window first. Existing native death protections remain authoritative.
 
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---

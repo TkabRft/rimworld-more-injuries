@@ -18,6 +18,8 @@ Severity grows by ten percentage points per game day. Risky stages begin at 70%,
 
 Existing induced comas can be converted during the [Death Rattle transition](/docs/wiki/save-compatibility.md#death-rattle-transition), preserving their severity. If native drug restrictions prevent reversal, the transition reports the exceptional state rather than silently removing it.
 
+With no other protection, coma extends the new complete-deprivation cerebral window from about 1.5 to about three game hours. Existing cardiac or respiratory failure can still reach its own fatal threshold during that time. Coma delays reaching [lasting injury milestones](/docs/wiki/injuries/brain-damage.md#lasting-injury-milestones) by slowing new acute injury; it does not discount consequences of injury already sustained.
+
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---
 _[back to the top](#artificial-coma)_

@@ -109,7 +109,7 @@ HAR's installed 1.6 `CompatibilityInfo` defaults `isFlesh` to true. The XML inte
 
 ## Validation
 
-The Release build passes. `MoreInjuries.LocalizationTests` contains source-linked headless scheduler, quality-scaled shock progression, persistent-shock acidosis, native treatment expiry/re-tending, resuscitation, feature-toggle, deathrest, immunity, eligibility, reliable-onset, direct-death policy, nested save/load, transfusion rounding/overflow, dynamic outcome unit conversion, production cache invalidation, and warmed zero-allocation tests, plus HAR XML fixtures, reference-assembly field checks, Release XML-type coverage for defs and patches, texture-format checks, and localization checks. All 98 focused tests pass, including the eight administration cases, six inherited-component/information-card cases, and the [vital failure coverage](vital-failure.md). The test runtime supplies minimal Verse/Unity stand-ins; it is not a substitute for game acceptance.
+The Release build passes. `MoreInjuries.LocalizationTests` contains source-linked headless scheduler, quality-scaled shock progression, persistent-shock acidosis, native treatment expiry/re-tending, resuscitation, feature-toggle, deathrest, immunity, eligibility, reliable-onset, direct-death policy, nested save/load, transfusion rounding/overflow, dynamic outcome unit conversion, production cache invalidation, and warmed zero-allocation tests, plus HAR XML fixtures, reference-assembly field checks, Release XML-type coverage for defs and patches, texture-format checks, and localization checks. All 115 focused tests pass, including the eight administration cases, six inherited-component/information-card cases, and the [vital failure coverage](vital-failure.md). The test runtime supplies minimal Verse/Unity stand-ins; it is not a substitute for game acceptance.
 
 Drug stage, concrete dose/recovery comp, severity-cap, and chemical-need XML values were compared against `077997d` and are unchanged; the redundant base drug component is now removed. All six replacement PNGs have alpha channels, transparent corners, and visible foregrounds. The current 1.6 package was refreshed and checked for XML validity, copied-file hashes, required paths, and source/build artifact exclusion. The legacy 1.5 binary is not part of this current-version test snapshot.
 
@@ -121,7 +121,7 @@ The localization loader now accepts multiline English comments and repeated, ide
 
 ## Game acceptance checklist
 
-- On an unprotected pawn, compare morphine and ketamine direct use with doctor injections and self-injection. Confirm one item is consumed, morphine usually causes addiction immediately, tolerance builds, and a later injection refills the chemical need and ends withdrawal. Clearing the high and overdose alone must not prevent addiction. Check dependency, resistance, and immunity genes separately.
+- On an unprotected pawn, compare morphine and ketamine direct use with doctor injections and self-injection. Confirm one item is consumed, morphine uses its current 5% base addiction chance, tolerance builds, and a later injection refills the chemical need and ends withdrawal. Clearing the high and overdose alone must not prevent addiction. Check dependency, resistance, and immunity genes separately.
 - Compare epinephrine high after direct use and injection. Check chloroform direct-use baseline and doctor-skill dosing, sedation social consequences, and single-bag blood/saline consumption.
 
 - Restart with the refreshed package and Bad Hygiene active: no unknown `causesNeed`, missing hydration class, missing blood-template, or missing saline-def errors.
@@ -135,3 +135,11 @@ The localization loader now accepts multiline English comments and repeated, ide
 - Save and reload an existing affected pawn. Existing shock, active treatment quality, and acidosis history adopt the new balance at the next eligible updates. No new saved fields or migration are required; poor prior tends can now provide less protection and sustained shock can worsen existing saves.
 
 Cerebral injury now uses anatomy-scaled physical severity with clinical-unit curves and linked acidosis input. Existing acidosis history stays in clinical units, preserving the audited balance scenarios. See [neurological runtime](neurological-runtime.md) for scaling and coma; shock/acidosis rates and transfusion doses are unchanged.
+
+## Medical drug risk rebalance and death estimate
+
+Status: `implemented`. code-synced: 2026-10-18.
+
+After in-game confirmation that native addiction handling works, the configured base addiction chances are now morphine 0.05 and ketamine 0.02 per dose (previously 0.99 and 0.05). Five independent rolls at those base chances give 22.6% and 9.6% probability of at least one success. Actual native tolerance/gene modifiers can change risk. Existing tolerance gain/recovery, high doses, chemical need satisfaction, withdrawal, overdose and existing-addiction severity offsets are unchanged. Epinephrine and chloroform gain no addiction chemical. Definition/inheritance tests verify exactly one configured drug comp and the selected chances; native ingestion remains the sole addiction pipeline.
+
+The [vital-failure owner](vital-failure.md#faster-cerebral-progression-and-prognosis) owns the faster acute brain progression and optional health-tab forecast. Shock/acidosis balance scenarios above remain valid independently of cerebral lethality; those tests measure acidosis progression rather than guarantee pawn survival. The final suite contains 115 passing tests, including the existing hemorrhage/localization checks. No dependency pins, package identity, existing save keys or identifiers changed.
