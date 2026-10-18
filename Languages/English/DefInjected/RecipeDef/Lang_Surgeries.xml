@@ -2,8 +2,8 @@
 <LanguageData>
   <!-- EN: Repair fracture: osteosynthetic surgery -->
   <RepairFracture.label>Repair fracture: osteosynthetic surgery</RepairFracture.label>
-  <!-- EN: Surgically repair a bone fracture. The bone will be set in place, realigned, and reinforced with metal plates and screws to prevent micromovements and promote proper healing, allowing the patient to regain full use of the affected limb much faster than with other methods.\n\nAlthough being more invasive than other methods, surgery allows for a more precise and stable repair of the fracture, ensuring a faster and more complete recovery. -->
-  <RepairFracture.description>Surgically repair a bone fracture. The bone will be set in place, realigned, and reinforced with metal plates and screws to prevent micromovements and promote proper healing, allowing the patient to regain full use of the affected limb much faster than with other methods.\n\nAlthough being more invasive than other methods, surgery allows for a more precise and stable repair of the fracture, ensuring a faster and more complete recovery.</RepairFracture.description>
+  <!-- EN: Surgically repairs a fracture for faster recovery than splinting. -->
+  <RepairFracture.description>Surgically repairs a fracture for faster recovery than splinting.</RepairFracture.description>
   <!-- EN: Repairing a fracture. -->
   <RepairFracture.jobString>Repairing a fracture.</RepairFracture.jobString>
   <!-- EN: {0} has successfully repaired {1}'s bone fracture. -->
@@ -11,8 +11,8 @@
   
   <!-- EN: Splint a fracture -->
   <SplintFracture.label>Splint a fracture</SplintFracture.label>
-  <!-- EN: Apply a splint to immobilize a bone fracture and promote healing over time. The splint will stabilize the bone, prevent further damage, and allow the patient to move around without risking further injury. The stabilized bone will heal naturally over time.\n\nA simple and non-invasive procedure that can be performed by anyone with basic medical knowledge. -->
-  <SplintFracture.description>Apply a splint to immobilize a bone fracture and promote healing over time. The splint will stabilize the bone, prevent further damage, and allow the patient to move around without risking further injury. The stabilized bone will heal naturally over time.\n\nA simple and non-invasive procedure that can be performed by anyone with basic medical knowledge.</SplintFracture.description>
+  <!-- EN: Applies a splint so a fracture can heal gradually. -->
+  <SplintFracture.description>Applies a splint so a fracture can heal gradually.</SplintFracture.description>
   <!-- EN: Splinting a fracture. -->
   <SplintFracture.jobString>Splinting a fracture.</SplintFracture.jobString>
   <!-- EN: {0} has splinted {1}'s bone fracture. It will take some time to heal. -->
@@ -20,8 +20,8 @@
 
   <!-- EN: Restore hearing: cellular regenerative surgery -->
   <RestoreHearing.label>Restore hearing: cellular regenerative surgery</RestoreHearing.label>
-  <!-- EN: Cellular regenerative otologic surgery (CROS) is an experimental glitterworld surgery that uses mechanites to repair damaged hair cells in the inner ear, restoring hearing to a person with permanent hearing loss. The procedure is expensive and not widely available, but has shown promising results in restoring hearing, even in very severe cases. -->
-  <RestoreHearing.description>Cellular regenerative otologic surgery (CROS) is an experimental glitterworld surgery that uses mechanites to repair damaged hair cells in the inner ear, restoring hearing to a person with permanent hearing loss. The procedure is expensive and not widely available, but has shown promising results in restoring hearing, even in very severe cases.</RestoreHearing.description>
+  <!-- EN: Uses advanced regenerative surgery to restore permanently damaged hearing. -->
+  <RestoreHearing.description>Uses advanced regenerative surgery to restore permanently damaged hearing.</RestoreHearing.description>
   <!-- EN: Performing hearing restoration surgery on {0}. -->
   <RestoreHearing.jobString>Performing hearing restoration surgery on {0}.</RestoreHearing.jobString>
   <!-- EN: {0} has successfully restored {1}'s hearing. -->
@@ -29,8 +29,8 @@
 
   <!-- EN: Cure stroke: stereotactic surgery -->
   <RemoveHemorrhagicStroke_Ultratech.label>Cure stroke: stereotactic surgery</RemoveHemorrhagicStroke_Ultratech.label>
-  <!-- EN: Perform stereotactic surgery to cure a hemorrhagic stroke.\nStereotactic surgery is a minimally invasive form of surgical intervention that makes use of a three-dimensional coordinate system to locate small targets inside the body, allowing for precise localization of the ruptured blood vessel while minimizing damage to surrounding tissues.\n\nA very complex and delicate procedure that requires a high level of skill and precision but yields a very high success rate. -->
-  <RemoveHemorrhagicStroke_Ultratech.description>Perform stereotactic surgery to cure a hemorrhagic stroke.\nStereotactic surgery is a minimally invasive form of surgical intervention that makes use of a three-dimensional coordinate system to locate small targets inside the body, allowing for precise localization of the ruptured blood vessel while minimizing damage to surrounding tissues.\n\nA very complex and delicate procedure that requires a high level of skill and precision but yields a very high success rate.</RemoveHemorrhagicStroke_Ultratech.description>
+  <!-- EN: Cures a hemorrhagic stroke using advanced brain surgery. High success rate; requires a highly skilled surgeon. -->
+  <RemoveHemorrhagicStroke_Ultratech.description>Cures a hemorrhagic stroke using advanced brain surgery. High success rate; requires a highly skilled surgeon.</RemoveHemorrhagicStroke_Ultratech.description>
   <!-- EN: Performing stereotactic surgery. -->
   <RemoveHemorrhagicStroke_Ultratech.jobString>Performing stereotactic surgery.</RemoveHemorrhagicStroke_Ultratech.jobString>
   <!-- EN: {0} has successfully cured {1}'s stroke. -->
@@ -38,8 +38,8 @@
 
   <!-- EN: Cure stroke: decompressive craniectomy -->
   <RemoveHemorrhagicStroke_Industrial.label>Cure stroke: decompressive craniectomy</RemoveHemorrhagicStroke_Industrial.label>
-  <!-- EN: Perform a decompressive craniectomy to cure a hemorrhagic stroke.\nDecompressive craniectomy is a neurosurgical procedure in which part of the skull is removed to allow a swelling or herniating brain room to expand without being squeezed. It is performed on victims of traumatic brain injury, stroke, Chiari malformation, and other conditions associated with raised intracranial pressure. Use of this surgery is controversial and associated with a higher risk of complications, but it can be life-saving in cases of severe brain swelling.\n\nA challenging surgery that requires familiarity with neurosurgical techniques and a steady hand. Yields a moderate success rate. -->
-  <RemoveHemorrhagicStroke_Industrial.description>Perform a decompressive craniectomy to cure a hemorrhagic stroke.\nDecompressive craniectomy is a neurosurgical procedure in which part of the skull is removed to allow a swelling or herniating brain room to expand without being squeezed. It is performed on victims of traumatic brain injury, stroke, Chiari malformation, and other conditions associated with raised intracranial pressure. Use of this surgery is controversial and associated with a higher risk of complications, but it can be life-saving in cases of severe brain swelling.\n\nA challenging surgery that requires familiarity with neurosurgical techniques and a steady hand. Yields a moderate success rate.</RemoveHemorrhagicStroke_Industrial.description>
+  <!-- EN: Cures a hemorrhagic stroke through open brain surgery. Moderate success rate; requires a skilled surgeon. -->
+  <RemoveHemorrhagicStroke_Industrial.description>Cures a hemorrhagic stroke through open brain surgery. Moderate success rate; requires a skilled surgeon.</RemoveHemorrhagicStroke_Industrial.description>
   <!-- EN: Performing a decompressive craniectomy. -->
   <RemoveHemorrhagicStroke_Industrial.jobString>Performing a decompressive craniectomy.</RemoveHemorrhagicStroke_Industrial.jobString>
   <!-- EN: {0} has successfully cured {1}'s stroke. -->
@@ -47,8 +47,8 @@
 
   <!-- EN: Cure stroke: trepanation -->
   <RemoveHemorrhagicStroke_Tribal.label>Cure stroke: trepanation</RemoveHemorrhagicStroke_Tribal.label>
-  <!-- EN: Perform a trepanation to cure a hemorrhagic stroke.\nTrepanation is a surgical intervention in which a hole is drilled or scraped into the human skull to treat health problems related to intracranial diseases or release pressured blood buildup from an injury. It is one of the oldest surgical procedures known to humanity, with evidence of its practice dating back to the Neolithic era. While it is a simple and straightforward procedure, it carries a high risk of infection and complications.\n\nA basic surgery that can be performed by anyone with rudimentary medical knowledge. Yields a low success rate. -->
-  <RemoveHemorrhagicStroke_Tribal.description>Perform a trepanation to cure a hemorrhagic stroke.\nTrepanation is a surgical intervention in which a hole is drilled or scraped into the human skull to treat health problems related to intracranial diseases or release pressured blood buildup from an injury. It is one of the oldest surgical procedures known to humanity, with evidence of its practice dating back to the Neolithic era. While it is a simple and straightforward procedure, it carries a high risk of infection and complications.\n\nA basic surgery that can be performed by anyone with rudimentary medical knowledge. Yields a low success rate.</RemoveHemorrhagicStroke_Tribal.description>
+  <!-- EN: Attempts to cure a hemorrhagic stroke through trepanation. Low success rate and high complication risk. -->
+  <RemoveHemorrhagicStroke_Tribal.description>Attempts to cure a hemorrhagic stroke through trepanation. Low success rate and high complication risk.</RemoveHemorrhagicStroke_Tribal.description>
   <!-- EN: Performing a trepanation. -->
   <RemoveHemorrhagicStroke_Tribal.jobString>Performing a trepanation.</RemoveHemorrhagicStroke_Tribal.jobString>
   <!-- EN: {0} has successfully cured {1}'s stroke. The patient is lucky to be alive. -->
@@ -84,8 +84,8 @@
 
   <!-- EN: repair collapsed lung: thoracotomy -->
   <RepairCollapsedLung_Industrial.label>repair collapsed lung: thoracotomy</RepairCollapsedLung_Industrial.label>
-  <!-- EN: Perform a thoracotomy to repair a collapsed lung.\nThoracotomy is a surgical procedure that involves making an incision in the chest wall to gain access to the lungs and the surrounding structures. The source of the air leak causing the lung collapse is identified and repaired, and pleural space is drained to allow the lung to re-expand and to relieve the pressure on the heart and other organs. Finally, the chest wall is closed and the incision is sutured.\n\nA complex and invasive surgery that requires a skilled surgeon and yields a moderate success rate. -->
-  <RepairCollapsedLung_Industrial.description>Perform a thoracotomy to repair a collapsed lung.\nThoracotomy is a surgical procedure that involves making an incision in the chest wall to gain access to the lungs and the surrounding structures. The source of the air leak causing the lung collapse is identified and repaired, and pleural space is drained to allow the lung to re-expand and to relieve the pressure on the heart and other organs. Finally, the chest wall is closed and the incision is sutured.\n\nA complex and invasive surgery that requires a skilled surgeon and yields a moderate success rate.</RepairCollapsedLung_Industrial.description>
+  <!-- EN: Repairs a collapsed lung through open chest surgery. Moderate success rate; requires a skilled surgeon. -->
+  <RepairCollapsedLung_Industrial.description>Repairs a collapsed lung through open chest surgery. Moderate success rate; requires a skilled surgeon.</RepairCollapsedLung_Industrial.description>
   <!-- EN: Performing a thoracotomy. -->
   <RepairCollapsedLung_Industrial.jobString>Performing a thoracotomy.</RepairCollapsedLung_Industrial.jobString>
   <!-- EN: {0} has successfully repaired {1}'s collapsed lung. -->
@@ -93,8 +93,8 @@
 
   <!-- EN: repair collapsed lung: video-assisted thoracoscopic surgery -->
   <RepairCollapsedLung_Ultratech.label>repair collapsed lung: video-assisted thoracoscopic surgery</RepairCollapsedLung_Ultratech.label>
-  <!-- EN: Perform a video-assisted thoracoscopic surgery to repair a collapsed lung.\nVideo-assisted thoracoscopic surgery (VATS) is a minimally invasive surgical procedure that involves making small incisions in the chest wall and using a camera and specialized instruments to repair the collapsed lung. Since the surgery is performed through small incisions, it is associated with less pain, shorter recovery time, and reduced risk of complications compared to traditional open surgery.\n\nWhile VATS is less invasive and offers a higher success rate than thoracotomy, it requires highly specialized equipment, additional training, and takes longer to perform, given the complexity of the procedure. -->
-  <RepairCollapsedLung_Ultratech.description>Perform a video-assisted thoracoscopic surgery to repair a collapsed lung.\nVideo-assisted thoracoscopic surgery (VATS) is a minimally invasive surgical procedure that involves making small incisions in the chest wall and using a camera and specialized instruments to repair the collapsed lung. Since the surgery is performed through small incisions, it is associated with less pain, shorter recovery time, and reduced risk of complications compared to traditional open surgery.\n\nWhile VATS is less invasive and offers a higher success rate than thoracotomy, it requires highly specialized equipment, additional training, and takes longer to perform, given the complexity of the procedure.</RepairCollapsedLung_Ultratech.description>
+  <!-- EN: Repairs a collapsed lung with a thoracoscope. Higher success rate than open chest surgery, but requires specialized equipment and takes longer. -->
+  <RepairCollapsedLung_Ultratech.description>Repairs a collapsed lung with a thoracoscope. Higher success rate than open chest surgery, but requires specialized equipment and takes longer.</RepairCollapsedLung_Ultratech.description>
   <!-- EN: Performing a video-assisted thoracoscopic surgery. -->
   <RepairCollapsedLung_Ultratech.jobString>Performing a video-assisted thoracoscopic surgery.</RepairCollapsedLung_Ultratech.jobString>
   <!-- EN: {0} has successfully repaired {1}'s collapsed lung. -->
@@ -102,8 +102,8 @@
 
   <!-- EN: Restore mobility: cellular regenerative surgery -->
   <TreatParalysis.label>Restore mobility: cellular regenerative surgery</TreatParalysis.label>
-  <!-- EN: Cellular regenerative neurosurgery (CRNS) is an experimental glitterworld surgery that uses mechanites to repair damaged nerve cells in the spinal cord, restoring mobility to a person with permanent paralysis. The procedure is expensive and not widely available, but has shown promising results in restoring mobility, even in very severe cases. -->
-  <TreatParalysis.description>Cellular regenerative neurosurgery (CRNS) is an experimental glitterworld surgery that uses mechanites to repair damaged nerve cells in the spinal cord, restoring mobility to a person with permanent paralysis. The procedure is expensive and not widely available, but has shown promising results in restoring mobility, even in very severe cases.</TreatParalysis.description>
+  <!-- EN: Uses advanced regenerative surgery to treat spinal paralysis. -->
+  <TreatParalysis.description>Uses advanced regenerative surgery to treat spinal paralysis.</TreatParalysis.description>
   <!-- EN: Performing cellular regenerative neurosurgery on {0}. -->
   <TreatParalysis.jobString>Performing cellular regenerative neurosurgery on {0}.</TreatParalysis.jobString>
   <!-- EN: {0} has successfully restored {1}'s mobility. -->
@@ -118,8 +118,8 @@
 
   <!-- EN: Treat brain damage: mechanite therapy -->
   <TreatBrainDamage.label>Treat brain damage: mechanite therapy</TreatBrainDamage.label>
-  <!-- EN: Mechanite therapy is a glitterworld treatment that uses mechanites to slowly repair neurological damage in the brain on a cellular level. The procedure is expensive and may take several days to complete, but has shown promising results in restoring cognitive function and memory in patients with severe brain damage. Due to the experimental nature of this treatment, it is not widely available and may require multiple sessions to achieve the desired results. -->
-  <TreatBrainDamage.description>Mechanite therapy is a glitterworld treatment that uses mechanites to slowly repair neurological damage in the brain on a cellular level. The procedure is expensive and may take several days to complete, but has shown promising results in restoring cognitive function and memory in patients with severe brain damage. Due to the experimental nature of this treatment, it is not widely available and may require multiple sessions to achieve the desired results.</TreatBrainDamage.description>
+  <!-- EN: Starts mechanite therapy to repair neurological damage gradually. Recovery takes several days and may require further treatment. -->
+  <TreatBrainDamage.description>Starts mechanite therapy to repair neurological damage gradually. Recovery takes several days and may require further treatment.</TreatBrainDamage.description>
   <!-- EN: Injecting mechanites into {0}'s brain to repair damage. -->
   <TreatBrainDamage.jobString>Injecting mechanites into {0}'s brain to repair damage.</TreatBrainDamage.jobString>
 </LanguageData>

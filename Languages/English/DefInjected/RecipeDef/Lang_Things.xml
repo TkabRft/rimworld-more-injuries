@@ -50,14 +50,14 @@
 
   <!-- EN: make saline bag -->
   <Make_SalineBag.label>make saline bag</Make_SalineBag.label>
-  <!-- EN: Make a saline bag by grinding down stone blocks and extracting the natrium chloride required for the saline solution. -->
-  <Make_SalineBag.description>Make a saline bag by grinding down stone blocks and extracting the natrium chloride required for the saline solution.</Make_SalineBag.description>
+  <!-- EN: Makes one saline bag from stone-derived salt. -->
+  <Make_SalineBag.description>Makes one saline bag from stone-derived salt.</Make_SalineBag.description>
   <!-- EN: Making a saline bag. -->
   <Make_SalineBag.jobString>Making a saline bag.</Make_SalineBag.jobString>
   <!-- EN: make saline bags x5 -->
   <Make_SalineBagFive.label>make saline bags x5</Make_SalineBagFive.label>
-  <!-- EN: Make 5 saline bags by grinding down stone blocks and extracting the natrium chloride required for the saline solution. -->
-  <Make_SalineBagFive.description>Make 5 saline bags by grinding down stone blocks and extracting the natrium chloride required for the saline solution.</Make_SalineBagFive.description>
+  <!-- EN: Makes five saline bags from stone-derived salt. -->
+  <Make_SalineBagFive.description>Makes five saline bags from stone-derived salt.</Make_SalineBagFive.description>
   <!-- EN: Making 5 saline bags. -->
   <Make_SalineBagFive.jobString>Making 5 saline bags.</Make_SalineBagFive.jobString>
 </LanguageData>

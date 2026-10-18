@@ -2,26 +2,26 @@
 <LanguageData>
   <!-- EN: morphine withdrawal -->
   <MI_MorphineWithdrawal.stages.morphine_withdrawal.label>morphine withdrawal</MI_MorphineWithdrawal.stages.morphine_withdrawal.label>
-  <!-- EN: I really need to go get some relief... -->
-  <MI_MorphineWithdrawal.stages.morphine_withdrawal.description>I really need to go get some relief...</MI_MorphineWithdrawal.stages.morphine_withdrawal.description>
+  <!-- EN: Morphine withdrawal causes distress. -->
+  <MI_MorphineWithdrawal.stages.morphine_withdrawal.description>Morphine withdrawal causes distress.</MI_MorphineWithdrawal.stages.morphine_withdrawal.description>
   <!-- EN: slight buzz -->
   <KetamineHigh.stages.slight_buzz.label>slight buzz</KetamineHigh.stages.slight_buzz.label>
-  <!-- EN: Ah... yeah... things aren't as sharp anymore. -->
-  <KetamineHigh.stages.slight_buzz.description>Ah... yeah... things aren't as sharp anymore.</KetamineHigh.stages.slight_buzz.description>
+  <!-- EN: Mild relief from ketamine. -->
+  <KetamineHigh.stages.slight_buzz.description>Mild relief from ketamine.</KetamineHigh.stages.slight_buzz.description>
   <!-- EN: warm pudding limbs -->
   <KetamineHigh.stages.warm_pudding_limbs.label>warm pudding limbs</KetamineHigh.stages.warm_pudding_limbs.label>
-  <!-- EN: Yeah... that's the stuff. My limbs feel like warm pudding. -->
-  <KetamineHigh.stages.warm_pudding_limbs.description>Yeah... that's the stuff. My limbs feel like warm pudding.</KetamineHigh.stages.warm_pudding_limbs.description>
+  <!-- EN: Relaxed and euphoric from ketamine. -->
+  <KetamineHigh.stages.warm_pudding_limbs.description>Relaxed and euphoric from ketamine.</KetamineHigh.stages.warm_pudding_limbs.description>
   <!-- EN: ketamine relaxation -->
   <KetamineHigh.stages.ketamine_relaxation.label>ketamine relaxation</KetamineHigh.stages.ketamine_relaxation.label>
-  <!-- EN: Wheeeeeeeeeeeeeeeeeeeeeeee. -->
-  <KetamineHigh.stages.ketamine_relaxation.description>Wheeeeeeeeeeeeeeeeeeeeeeee.</KetamineHigh.stages.ketamine_relaxation.description>
+  <!-- EN: Strong euphoria from ketamine. -->
+  <KetamineHigh.stages.ketamine_relaxation.description>Strong euphoria from ketamine.</KetamineHigh.stages.ketamine_relaxation.description>
   <!-- EN: terrible hallucinations -->
   <KetamineHigh.stages.terrible_hallucinations.label>terrible hallucinations</KetamineHigh.stages.terrible_hallucinations.label>
-  <!-- EN: The pain left, but something stranger came to visit. Whoa... my hands are filled with teeth. Why are they chewing? Huh? ... Oh, the floor just whispered my name and asked me to lie down forever. It's getting hard to breathe... the air is thick like soup, like I'm choking on alphabet letters. Why is gravity apologizing to me? I think I should go to sleep now... -->
-  <KetamineHigh.stages.terrible_hallucinations.description>The pain left, but something stranger came to visit. Whoa... my hands are filled with teeth. Why are they chewing? Huh? ... Oh, the floor just whispered my name and asked me to lie down forever. It's getting hard to breathe... the air is thick like soup, like I'm choking on alphabet letters. Why is gravity apologizing to me? I think I should go to sleep now...</KetamineHigh.stages.terrible_hallucinations.description>
+  <!-- EN: Disturbing hallucinations from excessive ketamine. -->
+  <KetamineHigh.stages.terrible_hallucinations.description>Disturbing hallucinations from excessive ketamine.</KetamineHigh.stages.terrible_hallucinations.description>
   <!-- EN: ketamine withdrawal -->
   <MI_KetamineWithdrawal.stages.ketamine_withdrawal.label>ketamine withdrawal</MI_KetamineWithdrawal.stages.ketamine_withdrawal.label>
-  <!-- EN: I really need to go get some relief... -->
-  <MI_KetamineWithdrawal.stages.ketamine_withdrawal.description>I really need to go get some relief...</MI_KetamineWithdrawal.stages.ketamine_withdrawal.description>
+  <!-- EN: Ketamine withdrawal causes distress. -->
+  <MI_KetamineWithdrawal.stages.ketamine_withdrawal.description>Ketamine withdrawal causes distress.</MI_KetamineWithdrawal.stages.ketamine_withdrawal.description>
 </LanguageData>

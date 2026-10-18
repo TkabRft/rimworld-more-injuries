@@ -3,7 +3,7 @@
   <HediffDef ParentName="DiseaseBase">
     <defName>HearingLossTemporary</defName>
     <label>temporary hearing loss</label>
-    <description>Temporary deafness caused by prolonged exposure to loud noises, such as gunfire, explosions, or machinery. The hair cells in the inner ear are damaged, leading to hearing loss. The damage can become permanent if the exposure is severe or prolonged.</description>
+    <description>Temporary hearing loss from loud noise. Severe or repeated exposure can cause permanent deafness.</description>
     <hediffClass>HediffWithComps</hediffClass>
     <defaultLabelColor>(255, 169, 56)</defaultLabelColor>
     <comps>

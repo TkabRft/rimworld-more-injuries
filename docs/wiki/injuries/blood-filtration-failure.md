@@ -5,7 +5,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 <!-- @end_generated_block -->
 
 > **In-Game Description**
-> _"**Blood filtration failure** &mdash; Blood filtration has stopped without an identified complete liver or kidney failure. Restore the underlying filtration capacity. Untreated failure becomes fatal over approximately one game day."_
+> _"**Blood filtration failure** &mdash; Blood filtration has stopped. Restore filtration capacity; untreated failure becomes fatal in about one game day."_
 
 This condition is part of delayed vital failure, enabled by default for appropriate fleshy pawns, including animals and supported alien races and entities. Anatomy and native protections determine which failures apply. Creatures that do not require air do not develop respiratory failure from absent lungs. Progression varies modestly between updates. Animal shock, acidosis and broader trauma support remain outside this module.
 

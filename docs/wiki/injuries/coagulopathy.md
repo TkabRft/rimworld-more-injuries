@@ -8,8 +8,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 Coagulopathy is a dangerous condition that directly contributes to the [lethal triad of trauma](/docs/wiki/concepts.md#lethal-triad-of-trauma). It is characterized by a reduced ability of blood to clot, leading to an increased risk of bleeding and hemorrhage.
 
 > **In-Game Description**  
-> _"**Coagulopathy** &mdash; Trauma-induced coagulopathy (TIC) is a life-threatening condition in which the blood's ability to clot is impaired, often developing after severe trauma, blood loss, or shock. Without intervention, it can progress into disseminated intravascular coagulation (DIC), where widespread clotting depletes clotting factors and causes bruising and uncontrolled internal bleeding, leading to multiple organ failure and, ultimately, death. Treatment requires aggressive management of the underlying causes, such as hypothermia, acidosis, certain toxins, or dilution of clotting factors, and rapid replacement of blood components to restore coagulation function.  
-> Treatment is focused on addressing the underlying causes and may include measures such as warming the patient, correcting acidosis by restoring adequate oxygenation and blood flow, restoring blood volume through transfusions, and triaging patients based on the severity of their condition."_
+> _"**Coagulopathy** &mdash; Impaired clotting increases bleeding and can cause spontaneous hemorrhages. Treat its causes, including cold, acidosis and hemodilution; use blood rather than excess saline to restore blood volume."_
 
 ```mermaid
 ---

@@ -5,7 +5,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 <!-- @end_generated_block -->
 
 > **In-Game Description**
-> _"**Morphine high** &mdash; Morphine is a powerful opioid analgesic used for rapid pain relief in battlefield trauma and emergency care. It works by suppressing the central nervous system, blocking pain signals, inducing sedation, and providing a sense of euphoria. However, it can cause dangerous respiratory depression, lower blood pressure, and worsen shock, making it especially hazardous during uncontrolled bleeding or resuscitation efforts, and potentially fatal in overdose."_
+> _"**Morphine high** &mdash; Reduces pain but suppresses breathing and circulation. Dangerous during severe blood loss or resuscitation; excessive doses can be fatal."_
 
 Morphine causes [vasodilation](/docs/wiki/injuries/vasodilation.md#vasodilation), a widening of blood vessels, which decreases vascular resistance and increases blood flow. As such, hemorrhagic resistance is reduced, leading to increased bleeding and a reduced tolerance to [hypovolemia](/docs/wiki/injuries/hypovolemic-shock.md#hypovolemic-shock).
 

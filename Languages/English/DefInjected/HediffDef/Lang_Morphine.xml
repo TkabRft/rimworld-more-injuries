@@ -4,8 +4,8 @@
   <MorphineBuildup.label>morphine high</MorphineBuildup.label>
   <!-- EN: being high on morphine -->
   <MorphineBuildup.labelNoun>being high on morphine</MorphineBuildup.labelNoun>
-  <!-- EN: Morphine is a powerful opioid analgesic used for rapid pain relief in battlefield trauma and emergency care. It works by suppressing the central nervous system, blocking pain signals, inducing sedation, and providing a sense of euphoria. However, it can cause dangerous respiratory depression, lower blood pressure, and worsen shock, making it especially hazardous during uncontrolled bleeding or resuscitation efforts, and potentially fatal in overdose. -->
-  <MorphineBuildup.description>Morphine is a powerful opioid analgesic used for rapid pain relief in battlefield trauma and emergency care. It works by suppressing the central nervous system, blocking pain signals, inducing sedation, and providing a sense of euphoria. However, it can cause dangerous respiratory depression, lower blood pressure, and worsen shock, making it especially hazardous during uncontrolled bleeding or resuscitation efforts, and potentially fatal in overdose.</MorphineBuildup.description>
+  <!-- EN: Reduces pain but suppresses breathing and circulation. Dangerous during severe blood loss or resuscitation; excessive doses can be fatal. -->
+  <MorphineBuildup.description>Reduces pain but suppresses breathing and circulation. Dangerous during severe blood loss or resuscitation; excessive doses can be fatal.</MorphineBuildup.description>
   <!-- EN: trace exposure -->
   <MorphineBuildup.stages.trace_exposure.label>trace exposure</MorphineBuildup.stages.trace_exposure.label>
   <!-- EN: therapeutic dose -->

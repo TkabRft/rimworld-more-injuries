@@ -5,7 +5,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 <!-- @end_generated_block -->
 
 > **In-Game Description**
-> _"**Servos disabled** &mdash; A bionic bodypart was disabled by an EMP blast. It will take around one day to reboot itself."_
+> _"**Servos disabled** &mdash; This bionic part is disabled by EMP. It reboots in about one day."_
 
 **Causes**: Exposure to sources of strong electromagnetic interference, such as EMP grenades or psychic abilities.
 

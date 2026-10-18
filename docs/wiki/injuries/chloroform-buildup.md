@@ -7,8 +7,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 Chloroform buildup is a condition that occurs when a pawn is exposed to [chloroform](/docs/wiki/medical-devices.md#chloroform-soaked-cloth). Chloroform is metabolized by the liver and kidneys, and excessive exposure can lead to a severe buildup of chloroform in the body. This can cause [chemical damage](/docs/wiki/injuries/chemical-damage.md#chemical-damage) to the liver and kidneys, leading to organ failure if severe enough.
 
 > **In-Game Description**
-> _"**Chloroform buildup** &mdash; Chloroform is a volatile anesthetic that induces unconsciousness and analgesia by depressing the central nervous system. It was historically used in surgical procedures and as a solvent in laboratories. Chloroform is rapidly absorbed through the lungs, skin, and gastrointestinal tract, leading to systemic distribution and metabolism primarily in the liver.  
-> While effective at low doses, chloroform can cause toxicity and overdose at higher concentrations, leading to symptoms such as renal and hepatic damage, respiratory depression, and cardiac arrest. Due to its potential for severe side effects and the difficulty of controlling dosage through inhalation, chloroform is rarely used in modern medicine."_
+> _"**Chloroform buildup** &mdash; Chloroform buildup causes sedation. Excessive doses can damage organs, suppress breathing and cause cardiac arrest. Allow the drug to clear before giving more."_
 
 ```mermaid
 ---

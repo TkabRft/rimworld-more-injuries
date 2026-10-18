@@ -5,7 +5,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 <!-- @end_generated_block -->
 
 > **In-Game Description**
-> _"**Mechanite therapy** &mdash; A glitterworld treatment that uses mechanites to slowly repair cellular damage in the body. The mechanites will gradually repair the damage over time, but the process can take several days."_
+> _"**Mechanite therapy** &mdash; Gradually repairs cellular damage over several days."_
 
 **Causes**: Surgical procedures involving mechanite therapy, like [treating brain damage](/docs/wiki/surgeries.md#mechanite-therapy).
 

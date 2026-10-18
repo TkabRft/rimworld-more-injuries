@@ -8,8 +8,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 <!-- @end_generated_block -->
 
 > **In-Game Description**  
-> _"**Concussion** &mdash; A concussion, also known as a mild traumatic brain injury (mTBI), is a head injury that temporarily affects brain functioning. Symptoms may include loss of consciousness; memory loss; headaches; difficulty with thinking, concentration, or balance; nausea; blurred vision; dizziness; sleep disturbances, and mood changes.  
-> Should resolve on its own within a few days, but can be worsened by repeated head injuries."_
+> _"**Concussion** &mdash; Head trauma temporarily reduces consciousness and coordination. Usually resolves within a few days; further head injuries can worsen it."_
 
 ```mermaid
 ---

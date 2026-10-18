@@ -3,7 +3,7 @@
   <HediffDef ParentName="BrainDamageBase">
     <defName>MI_DiffuseBrainDamage</defName>
     <label>diffuse brain damage</label>
-    <description>Widespread lasting neurological damage reduces the efficiency of the affected brain. It does not ordinarily heal. Advanced neurological treatment or appropriate regeneration may restore function. Severe damage can leave the patient in a vegetative state.</description>
+    <description>Lasting damage reduces brain efficiency and can cause a vegetative state. Does not ordinarily heal; advanced neurological treatment or suitable regeneration can restore function.</description>
     <chronic>true</chronic>
     <modExtensions>
       <li Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalConditionProperties"><animalEligible>true</animalEligible></li>
@@ -20,7 +20,7 @@
   <HediffDef>
     <defName>MI_ArtificialComa</defName>
     <label>artificial coma</label>
-    <description>A medically induced coma reduces new hypoxic brain injury by half, but does not restore circulation, breathing or blood volume. Consciousness is limited to 10%. Wake-up can reverse the induced state, subject to the patient's drug restrictions. Prolonged coma becomes dangerous after about seven days and can cause lasting neurological injury; it becomes fatal after about ten days. Repeating induction does not reset this risk. Vanilla vacuum exposure and decompression remain dangerous.</description>
+    <description>Halves new hypoxic brain injury; consciousness capped at 10%. Restore oxygen delivery separately. Wake-up reverses it when permitted. After about seven days, lasting injury becomes possible; about ten days is fatal. Re-induction does not reset this timer. Organ-failure timers and vacuum hazards remain active.</description>
     <hediffClass>HediffWithComps</hediffClass>
     <initialSeverity>0.001</initialSeverity><maxSeverity>1</maxSeverity><lethalSeverity>1</lethalSeverity>
     <everCurableByItem>false</everCurableByItem><duplicationAllowed>false</duplicationAllowed>

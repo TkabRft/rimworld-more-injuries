@@ -18,7 +18,7 @@
   <HediffDef ParentName="MI_VitalFailureBase">
     <defName>MI_RespiratoryFailure</defName>
     <label>respiratory failure</label>
-    <description>Breathing has stopped. Restore the airway or functioning lungs immediately. The respiratory failure timer reaches fatal severity in approximately three game hours. Without restored oxygen delivery, unprotected cerebral hypoxia can become fatal in about 1.5 game hours and often limits the rescue window first.</description>
+    <description>Breathing has stopped. Restore a clear airway and functioning lungs. Unprotected cerebral hypoxia can kill in about 1.5 game hours, before the roughly three-hour respiratory failure timer.</description>
     <modExtensions><li Class="MoreInjuries.HealthConditions.VitalFailure.VitalFailureProperties"><severityPerDay>8</severityPerDay></li></modExtensions>
   </HediffDef>
   <HediffDef ParentName="MI_VitalFailureBase">
@@ -36,19 +36,19 @@
   <HediffDef ParentName="MI_VitalFailureBase">
     <defName>MI_FiltrationFailure</defName>
     <label>blood filtration failure</label>
-    <description>Blood filtration has stopped without an identified complete liver or kidney failure. Restore the underlying filtration capacity. Untreated failure becomes fatal over approximately one game day.</description>
+    <description>Blood filtration has stopped. Restore filtration capacity; untreated failure becomes fatal in about one game day.</description>
     <modExtensions><li Class="MoreInjuries.HealthConditions.VitalFailure.VitalFailureProperties"><severityPerDay>1</severityPerDay></li></modExtensions>
   </HediffDef>
   <HediffDef ParentName="MI_VitalFailureBase">
     <defName>MI_MetabolicFailure</defName>
     <label>metabolic failure</label>
-    <description>Metabolism has stopped. Restore the affected organs or capacity. Untreated failure becomes fatal over approximately three game days.</description>
+    <description>Metabolism has stopped. Restore the affected organs or capacity; untreated failure becomes fatal in about three game days.</description>
     <modExtensions><li Class="MoreInjuries.HealthConditions.VitalFailure.VitalFailureProperties"><severityPerDay>0.34</severityPerDay></li></modExtensions>
   </HediffDef>
   <HediffDef ParentName="MI_VitalFailureBase">
     <defName>MI_Coma</defName>
     <label>coma</label>
-    <description>Consciousness has fallen to zero, although the brain is structurally present. Treat the cause. This condition resolves when consciousness returns; persistent untreated coma becomes fatal over approximately five game days. Coma alone does not imply oxygen deprivation.</description>
+    <description>Consciousness is zero. Treat the cause to restore consciousness; persistent coma becomes fatal in about five game days. Coma alone does not imply oxygen deprivation.</description>
     <modExtensions><li Class="MoreInjuries.HealthConditions.VitalFailure.VitalFailureProperties"><severityPerDay>0.2</severityPerDay></li></modExtensions>
   </HediffDef>
 </Defs>

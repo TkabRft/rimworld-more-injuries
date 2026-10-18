@@ -1,5 +1,13 @@
 # C# Coding Style Guidelines
 
+## In-game descriptions and tooltips
+
+Keep player-facing text compact and actionable: state the gameplay effect, what the player can do, and essential risks or restrictions. Aim for one to three short sentences, generally under 50 words. Retain useful thresholds, durations and live values; allow extra space when a critical restriction needs it. Omit medical background, flavor text, implementation detail and repeated explanations. Detailed explanations belong in the owning wiki page.
+
+Keep source XML and English localization synchronized, including translator comments. Preserve existing identifiers, translation keys and placeholders. Dynamic tooltips should summarize useful current state rather than repeat the description or explain the calculation. The death forecast shows only the projected cause and concise rescue advice, with the authored advice in the localized rescue-hint catalogue.
+
+The C# guidelines below apply to implementation changes.
+
 This document describes the preferred C# coding style in our projects. It is based on the [.NET Runtime Coding Style](https://github.com/dotnet/runtime/blob/main/docs/coding-guidelines/coding-style.md) with some targeted modifications to improve readability and maintainability of the codebases, as well as to reduce potential for bugs being overlooked in code review.
 
 The goal of this document is to provide a modern and consistent coding style across the codebase, reducing boilerplate where possible, while considering the readability and maintainability of the code, especially for code reviews where no IntelliSense or other tool-assisted context is available. The fundamental principle is that the code should be easy to read and understand at a glance, without having to search for the type of a variable or method return type. Similarly, it should be easy to distinguish between constants, fields, properties, statics, and other types of members.

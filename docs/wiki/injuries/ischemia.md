@@ -7,8 +7,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 Ischemia occurs when blood flow to a tissue is restricted, leading to a shortage of oxygen and nutrients needed for cellular metabolism. Over time, this can result in tissue damage and necrosis if not promptly addressed. The only cause of ischemia in More Injuries is the application of a tourniquet.
 
 > **In-Game Description**
-> _"**Tourniquet** &mdash; A tourniquet has been applied to a limb, stopping the bleeding but starving the limb of blood. If the tourniquet is not removed in time, ischemia (starvation of oxygen) and necrosis (cell death) will occur, which can lead to loss of the limb through gangrene or death from sepsis.  
-> The tourniquet should be removed as soon as the patient is in a safe location and can receive proper medical care."_
+> _"**Tourniquet** &mdash; Stops limb bleeding but cuts off its blood supply. Prolonged use risks gangrene and limb loss. Remove promptly once proper treatment is available."_
 
 **Causes**: Application of a tourniquet.
 

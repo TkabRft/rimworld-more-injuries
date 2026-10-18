@@ -17,7 +17,7 @@
   <HediffDef ParentName="BrainDamageBase">
     <defName>BrainDamage_MotorDysfunction</defName>
     <label>motor dysfunction</label>
-    <description>Neurological damage to the motor cortex has resulted in permanent impairment of the motor system. This can manifest as weakness, tremors, or difficulty coordinating movements. The severity of the dysfunction can vary based on the extent of the damage.</description>
+    <description>Lasting neurological damage impairs movement and coordination. Greater severity causes greater impairment.</description>
     <modExtensions>
       <li Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalConditionProperties"><animalEligible>true</animalEligible></li>
     </modExtensions>
@@ -93,7 +93,7 @@
   <HediffDef ParentName="BrainDamageBase">
     <defName>BrainDamage_LanguageAphasia</defName>
     <label>aphasia</label>
-    <description>Permanent damage to nerve cells in the language centers of the brain has resulted in pronounced difficulty with communication. This can manifest as word-finding difficulties, fragmented speech, or even complete muteness. The severity of the aphasia can vary based on the extent of the damage.</description>
+    <description>Lasting neurological damage impairs speech, potentially causing muteness.</description>
     <modExtensions><li Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalConditionProperties" /></modExtensions>
     <stages>
       <li>
@@ -163,7 +163,7 @@
   <HediffDef ParentName="BrainDamageBase">
     <defName>BrainDamage_VisualAgnosia</defName>
     <label>agnosia</label>
-    <description>Damage to the occipital or temporal lobes has impaired the ability to recognize objects or faces, despite normal vision. Affected patients may have trouble identifying items or people, leading to confusion and slower task performance.</description>
+    <description>Neurological damage impairs visual recognition and task performance.</description>
     <modExtensions><li Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalConditionProperties" /></modExtensions>
     <stages>
       <li>
@@ -215,7 +215,7 @@
   <HediffDef ParentName="BrainDamageBase">
     <defName>BrainDamage_FrontalLobe</defName>
     <label>executive dysfunction</label>
-    <description>Damage to the frontal lobes has impaired executive functions, including decision-making, planning, and impulse control. Affected individuals may act erratically or inappropriately, and struggle with organization, prioritization, and regulating emotions, leading to difficulties in daily life and social interactions.</description>
+    <description>Neurological damage impairs judgment, impulse control and social functioning.</description>
     <modExtensions><li Class="MoreInjuries.HealthConditions.BrainDamage.NeurologicalConditionProperties" /></modExtensions>
     <stages>
       <li>
@@ -280,7 +280,7 @@
         <ticks>10</ticks>
         <letterType>NegativeEvent</letterType>
         <letterLabel>Personality Shift</letterLabel>
-        <letterText>Due to severe brain damage, {0} has undergone a significant shift in personality. They may have become more skilled in certain areas, but also may have lost some of their previous skills. This change is permanent and may require some reorientation for their role in the colony.</letterText>
+        <letterText>Brain damage has permanently redistributed {0}'s skills and passions. Review their work priorities.</letterText>
       </li>
     </comps>
     <stages>
@@ -294,7 +294,7 @@
   <HediffDef ParentName="BrainDamageBase">
     <defName>BrainDamage_Confusion</defName>
     <label>hippocampal damage</label>
-    <description>Damage to the hippocampus has impaired memory formation and spatial navigation. Affected individuals may become confused about their surroundings, forget where they are, and have difficulty navigating or recalling past events.</description>
+    <description>Neurological damage causes confusion and impairs memory and navigation.</description>
     <comps>
       <li Class="HediffCompProperties_Disorientation">
         <wanderMtbHours>48</wanderMtbHours>

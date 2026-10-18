@@ -10,9 +10,7 @@ Gangrene is a type of tissue death caused by a lack of blood supply. Symptoms ma
 ## Dry Gangrene
 
 > **In-Game Description**
-> _"**Gangrene (dry)** &mdash; Dry gangrene is a form of coagulative necrosis that develops in ischemic tissue, where the blood supply is inadequate to keep tissue viable. The affected part is dry, shrunken, and dark reddish-black. The line of separation usually brings about complete separation, with eventual falling off of the gangrenous tissue if it is not removed surgically, a process called autoamputation.  
-> Over time, dry gangrene may develop into wet gangrene if an infection develops in the dead tissues.  
-> The affected body part is irreversibly damaged and should be amputated to prevent sepsis."_
+> _"**Gangrene (dry)** &mdash; This tissue is irreversibly damaged. Amputate the affected part; untreated dry gangrene can become infected wet gangrene."_
 
 ```mermaid
 ---
@@ -40,8 +38,7 @@ flowchart LR
 ## Wet Gangrene
 
 > **In-Game Description**
-> _"**Gangrene (wet)** &mdash; Wet, or infected, gangrene is characterized by thriving bacteria and has a poor prognosis (compared to dry gangrene) due to sepsis resulting from the free communication between infected fluid and circulatory fluid. The affected part is saturated with stagnant blood, which promotes the rapid growth of bacteria. The toxic products formed by bacteria are absorbed, causing systemic manifestation of sepsis and finally death.  
-> The affected body part should be amputated as soon as possible to save the patient's life._"
+> _"**Gangrene (wet)** &mdash; Infected dead tissue threatens the patient with fatal sepsis. Amputate the affected part urgently."_
 
 **Causes**: A lack of blood supply to a body part that caused the tissue to die and become infected with bacteria, often due to a [tourniquet](/docs/wiki/medical-devices.md#tourniquet) that has been applied for too long or due to [dry gangrene](#dry-gangrene) that has become infected.
 

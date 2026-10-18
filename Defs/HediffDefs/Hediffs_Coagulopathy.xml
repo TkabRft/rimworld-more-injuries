@@ -3,7 +3,7 @@
   <HediffDef ParentName="DiseaseBase">
     <defName>Coagulopathy</defName>
     <label>coagulopathy</label>
-    <description>Trauma-induced coagulopathy (TIC) is a life-threatening condition in which the blood's ability to clot is impaired, often developing after severe trauma, blood loss, or shock. Without intervention, it can progress into disseminated intravascular coagulation (DIC), where widespread clotting depletes clotting factors and causes uncontrolled internal bleeding, leading to multiple organ failure and, ultimately, death. Treatment requires aggressive management of the underlying causes, such as hypothermia, acidosis, certain toxins, or dilution of clotting factors, and rapid replacement of blood components to restore coagulation function.\n\nTreatment is focused on addressing the underlying causes and may include measures such as warming the patient, correcting acidosis by restoring adequate oxygenation and blood flow, restoring blood volume through transfusions, and triaging patients based on the severity of their condition.</description>
+    <description>Impaired clotting increases bleeding and can cause spontaneous hemorrhages. Treat its causes, including cold, acidosis and hemodilution; use blood rather than excess saline to restore blood volume.</description>
     <defaultLabelColor>(255, 158, 158)</defaultLabelColor>
     <alwaysShowSeverity>true</alwaysShowSeverity>
     <maxSeverity>1</maxSeverity>

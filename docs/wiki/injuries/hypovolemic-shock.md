@@ -7,9 +7,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 When a pawn loses a significant amount of blood, there may not be enough blood volume to circulate to the body's organs, leading to a life-threatening condition known as hypovolemic shock. Without immediate treatment, the insufficient blood flow can starve the organs of oxygen and nutrients, causing tissue damage, multiple organ failure, and ultimately death. At the same time, the reduced blood flow prevents body temperature from being adequately maintained, which can lead to [hypothermia](/docs/wiki/injuries/hypothermia.md#hypothermia) and further complications.
 
 > **In-Game Description**
-> _"**Hypovolemic shock** &mdash; A life-threatening state caused by insufficient blood flow to the body. Hypovolemic shock is a medical emergency; if left untreated, the insufficient blood flow can cause damage to organs, leading to hypoxia and multiple organ failure.<br>
-> Shock develops when blood loss exceeds 45%. Severity changes gradually with the remaining blood-volume deficit. Stopping the bleeding prevents further loss; restoring blood volume with transfusions or IV fluids allows recovery. The quality of shock tending determines how much it slows worsening, assists recovery, and reduces hypoxia risk. Sustained severe shock can also build acidosis before new organ injuries appear. Adrenaline buys time without lowering the underlying shock target. Existing injuries and complications still require treatment.<br>
-> With delayed vital failure enabled, sustained severe shock also steadily increases cerebral hypoxia. Good shock tending and adrenaline can slow this perfusion-related damage, but do not replace missing blood."_
+> _"**Hypovolemic shock** &mdash; Develops above 45% blood loss and can cause acidosis, organ damage and fatal cerebral hypoxia. Stop bleeding and restore blood volume. Good shock tending and adrenaline buy time but do not replace blood; existing complications need separate care."_
 
 ```mermaid
 ---

@@ -56,7 +56,7 @@ The injury's cause changes the likelihood of each disability: blunt trauma and s
 Agnosia is a neurological disorder characterized by an inability to process sensory information. Often there is a loss of ability to recognize objects, persons, sounds, shapes, or smells while the specific sense is neither defective nor is there any significant memory loss.
 
 > **In-Game Description**
-> _"**Agnosia** &mdash; Damage to the occipital or temporal lobes has impaired the ability to recognize objects or faces, despite normal vision. Affected patients may have trouble identifying items or people, leading to confusion and slower task performance."_
+> _"**Agnosia** &mdash; Neurological damage impairs visual recognition and task performance."_
 
 **Effects**: Reduced work speed, research speed, and social impact, depending on the severity of the condition. Negative mood effects may occur due to frustration or confusion caused by the inability to recognize familiar objects or people.
 
@@ -71,7 +71,7 @@ Agnosia is a neurological disorder characterized by an inability to process sens
 Aphasia, also known as dysphasia, is an impairment in a person's ability to comprehend or formulate language because of dysfunction in specific brain regions.
 
 > **In-Game Description**
-> _"**Aphasia** &mdash; Permanent damage to nerve cells in the language centers of the brain has resulted in pronounced difficulty with communication. This can manifest as word-finding difficulties, fragmented speech, or even complete muteness. The severity of the aphasia can vary based on the extent of the damage."_
+> _"**Aphasia** &mdash; Lasting neurological damage impairs speech, potentially causing muteness."_
 
 **Effects**: Reduced talking capacity, trade price penalty when trading. Negative mood effects may occur due to frustration or confusion caused by the inability to communicate effectively.
 
@@ -88,7 +88,7 @@ Aphasia, also known as dysphasia, is an impairment in a person's ability to comp
 In psychology and neuroscience, executive dysfunction, or executive function deficit, is a disruption to the efficacy of the executive functions, which is a group of cognitive processes that regulate, control, and manage other cognitive processes. Executive dysfunction can refer to both neurocognitive deficits and behavioural symptoms.
 
 > **In-Game Description**
-> _"**Executive dysfunction** &mdash; Damage to the frontal lobes has impaired executive functions, including decision-making, planning, and impulse control. Affected individuals may act erratically or inappropriately, and struggle with organization, prioritization, and regulating emotions, leading to difficulties in daily life and social interactions."_
+> _"**Executive dysfunction** &mdash; Neurological damage impairs judgment, impulse control and social functioning."_
 
 **Effects**: Periodic mental breaks, increased risk of social fights.
 
@@ -97,7 +97,7 @@ In psychology and neuroscience, executive dysfunction, or executive function def
 Hippocampal damage refers to damage to the hippocampus, a region of the brain that is critical for memory formation and spatial navigation. Damage to this area can result in significant memory impairments, including difficulty forming new memories and recalling past events.
 
 > **In-Game Description**
-> _"**Hippocampal damage** &mdash; Damage to the hippocampus has impaired memory formation and spatial navigation. Affected individuals may become confused about their surroundings, forget where they are, and have difficulty navigating or recalling past events."_
+> _"**Hippocampal damage** &mdash; Neurological damage causes confusion and impairs memory and navigation."_
 
 **Effects**: Periodic mental breaks of type "confused wandering," memory loss, reduced learning factor, reduced work speed, periodic mental breaks at higher stages. Negative mood effects may occur due to frustration or confusion caused by memory impairments.
 
@@ -113,7 +113,7 @@ Hippocampal damage refers to damage to the hippocampus, a region of the brain th
 Motor dysfunction refers to a range of movement disorders that can occur as a result of brain damage. These disorders can affect coordination, balance, and fine motor skills, leading to difficulties with tasks such as walking, writing, or using tools.
 
 > **In-Game Description**
-> _"**Motor dysfunction** &mdash; Neurological damage to the motor cortex has resulted in permanent impairment of the motor system. This can manifest as weakness, tremors, or difficulty coordinating movements. The severity of the dysfunction can vary based on the extent of the damage."_
+> _"**Motor dysfunction** &mdash; Lasting neurological damage impairs movement and coordination. Greater severity causes greater impairment."_
 
 **Effects**: Reduced moving speed, reduced manipulation capacity. Negative mood effects may occur due to frustration or confusion caused by motor impairments.
 

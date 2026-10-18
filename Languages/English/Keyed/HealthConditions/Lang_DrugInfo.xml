@@ -12,12 +12,12 @@
   <MI_DrugInfo_Recovery>Severity recovery rate</MI_DrugInfo_Recovery>
   <!-- EN: {0} per day -->
   <MI_DrugInfo_PerDay>{0} per day</MI_DrugInfo_PerDay>
-  <!-- EN: The configured decrease in severity while this condition is recovering. The time remaining depends on current severity and the condition's normal recovery rules. Addiction recovery requires abstinence. -->
-  <MI_DrugInfo_RecoveryExplanation>The configured decrease in severity while this condition is recovering. The time remaining depends on current severity and the condition's normal recovery rules. Addiction recovery requires abstinence.</MI_DrugInfo_RecoveryExplanation>
+  <!-- EN: Severity lost per day during recovery. Remaining time depends on current severity; addiction recovery requires abstinence. -->
+  <MI_DrugInfo_RecoveryExplanation>Severity lost per day during recovery. Remaining time depends on current severity; addiction recovery requires abstinence.</MI_DrugInfo_RecoveryExplanation>
   <!-- EN: Drug effect with tolerance -->
   <MI_DrugInfo_Tolerance>Drug effect with tolerance</MI_DrugInfo_Tolerance>
   <!-- EN: At {0} tolerance: {1} of the drug effect -->
   <MI_DrugInfo_ToleranceSample>At {0} tolerance: {1} of the drug effect</MI_DrugInfo_ToleranceSample>
-  <!-- EN: Tolerance changes the effect of {0}. These samples use the same effect calculation as the pawn's tolerance condition. -->
-  <MI_DrugInfo_ToleranceExplanation>Tolerance changes the effect of {0}. These samples use the same effect calculation as the pawn's tolerance condition.</MI_DrugInfo_ToleranceExplanation>
+  <!-- EN: Tolerance reduces the effect of {0} as shown below. -->
+  <MI_DrugInfo_ToleranceExplanation>Tolerance reduces the effect of {0} as shown below.</MI_DrugInfo_ToleranceExplanation>
 </LanguageData>

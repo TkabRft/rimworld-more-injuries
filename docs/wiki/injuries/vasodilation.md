@@ -5,8 +5,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 <!-- @end_generated_block -->
 
 > **In-Game Description**
-> _"**Vasodilation** &mdash; Vasodilation, also known as vasorelaxation, is the widening of blood vessels, which decreases vascular resistance and increases blood flow. Due to this increase in blood flow, hemorrhagic resistance is reduced, leading to increased bleeding.  
-> Vasodilation can be caused by various factors, including the use of certain opioid analgesics like morphine, which suppress the central nervous system and can lead to dangerous hypotension and shock."_
+> _"**Vasodilation** &mdash; Increases bleeding. Can be caused by drugs such as morphine."_
 
 ```mermaid
 ---

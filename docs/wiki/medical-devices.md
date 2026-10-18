@@ -33,7 +33,7 @@ In order to effectively treat the new injuries and medical conditions introduced
   <img align="right" src="/Textures/Thing/ASD.png" height="96" alt="Airway Suction Device" />
   
 > **In-Game Description**
-> _"**Airway suction device** &mdash; An airway suction device is a medical device used to clear the airway of blood, vomit, or other obstructions that may prevent a patient from breathing properly. It is commonly used in emergency situations, such as when a patient is choking from blood or other fluids, to prevent asphyxiation and death. The hand-operated device uses a vacuum to remove fluids from the airway, allowing the patient to breathe freely and restoring normal respiration."_
+> _"**Airway suction device** &mdash; Clears blood from a choking patient's airway. Success improves with the user's Medical skill."_
 
 </p>
 
@@ -59,7 +59,7 @@ In order to effectively treat the new injuries and medical conditions introduced
   <img align="right" src="/Textures/Thing/Bandage/bandage_a.png" height="64" alt="Bandage" />
 
 > **In-Game Description**
-> _"**Bandage** &mdash; Pieces of fabric prepared to slow the flow of blood from wounds. This type of elastic bandage is designed as a temporary measure to apply pressure to a wound to reduce the bleed rate and promote clotting. It is not a substitute for proper medical treatment, but can be used to stabilize a patient until they can be treated by a doctor. Moderately fast to apply, but may not be as effective as a hemostatic agent in stopping severe bleeding."_
+> _"**Bandage** &mdash; Temporarily reduces wound bleeding. Slower and less effective than a hemostatic agent; follow with proper treatment."_
 
 </p>
 
@@ -87,8 +87,7 @@ Blood bags are one of the two options for fluid resuscitation in patients suffer
   <img align="right" src="/Textures/Thing/BloodBag/blood_bag_a.png" height="64" alt="Blood Bag" />
 
 > **In-Game Description**
-> _"**Blood bag** &mdash; A 750ml bag of whole blood from a blood donation, ready for transfusion. It is used in the treatment of massive bleeding and allows quick restoration of blood volume to combat the effects of hypovolemic shock. Must be stored in a refrigerator or freezer.  
-> Blood can be drawn from a healthy colonist or prisoner and stored in a blood bag for later use."_
+> _"**Blood bag** &mdash; 750 ml transfusion that reduces blood loss by 35 percentage points and reduces hemodilution. Refrigerate or freeze for storage; collect more through blood donation."_
 
 </p>
 
@@ -127,7 +126,7 @@ Blood bags retain their 35-percentage-point blood-loss reduction. Their effect o
   <img align="right" src="/Textures/Thing/Chloroform/chloroform_a.png" height="64" alt="Chloroform" />
 
 > **In-Game Description**
-> _"**Chloroform-soaked cloth** &mdash; A piece of cloth soaked in chloroform, used to render a patient unconscious for medical procedures. It is effective in emergency situations where rapid sedation is required. However, due to a variety of factors, such as duration of exposure, concentration of chloroform, and individual patient factors, administering an appropriate dose can be difficult and risk of overdose is high. Due to its high potential for side effects, such as respiratory depression, hepatic and renal damage, and cardiac arrest, modern medicine has largely replaced chloroform with safer alternatives."_
+> _"**Chloroform-soaked cloth** &mdash; Sedates a patient. Difficult to dose safely; excessive use risks organ damage, respiratory failure and cardiac arrest."_
 
 </p>
 
@@ -186,8 +185,7 @@ Defibrillation is a treatment for life-threatening conditions that affect the rh
   <img align="right" src="/Textures/Thing/Defibrillator/defibrillator_a.png" height="64" alt="Defibrillator" />
 
 > **In-Game Description**
-> _"**Defibrillator** &mdash; A defibrillator is a reusable device that gives a high energy electric shock to the heart through the chest wall to restore normal heart rhythm in cases of ventricular fibrillation (irregular heartbeat) which may be caused by heart attacks or in early stages of cardiac arrest.  
-> Note that the defibrillator can only be used on patients suffering from heart attack or ventricular fibrillation. In case of full cardiac arrest (clinical death), only CPR can save the patient."_
+> _"**Defibrillator** &mdash; Attempts to restart the heart during a heart attack or early cardiac arrest. Later arrest requires CPR; a nonfunctional heart requires repair or replacement. Reusable, but may break after use."_
 
 </p>
 
@@ -218,7 +216,7 @@ Defibrillation is a treatment for life-threatening conditions that affect the rh
   <img align="right" src="/Textures/Thing/Epinephrine/injector_yellow_a.png" height="64" alt="Epinephrine" />
   
 > **In-Game Description**
-> _"**Epinephrine autoinjector** &mdash; An epinephrine autoinjector (or adrenaline autoinjector) is a medical device for injecting a measured dose or doses of epinephrine (adrenaline) by means of autoinjector technology."_
+> _"**Epinephrine autoinjector** &mdash; Injects adrenaline to temporarily boost movement, reduce pain and support shock treatment. Does not replace lost blood; excessive doses risk heart attack or stroke."_
   
 </p>
 
@@ -277,8 +275,7 @@ After each step (and while doing vanilla treatment), the doctor will re-evaluate
   <img align="right" src="/Textures/Thing/Hemostat/hemostat_a.png" height="64" alt="Hemostatic Agent" />
 
 > **In-Game Description**
-> _"**Hemostatic agent** &mdash; A special chemical compound designed to promote blood clotting and reduce the flow of blood from wounds. Hemostatic agents are used to control bleeding in emergency situations, such as when a patient is suffering from severe trauma or has been injured in combat. The compound is fast-acting and can be used to stabilize a patient until they can be treated by a doctor. However, it is not a substitute for proper medical treatment.  
-> Quick to apply and effective at stopping severe bleeding, hemostatic agents are an essential part of any first aid kit."_
+> _"**Hemostatic agent** &mdash; Quickly reduces severe wound bleeding. Temporary first aid; follow with proper treatment."_
 
 </p>
 
@@ -307,7 +304,7 @@ After each step (and while doing vanilla treatment), the doctor will re-evaluate
   <img align="right" src="/Textures/Thing/Ketamine/injector_blue_dark_a.png" height="64" alt="Ketamine" />
 
 > **In-Game Description**
-> _"**Ketamine autoinjector** &mdash; A pre-loaded autoinjector containing a strong dissociative anesthetic. Effective in emergency field care for patients in severe pain or to induce rapid sedation in patients resisting treatment."_
+> _"**Ketamine autoinjector** &mdash; Autoinjector for pain relief and rapid sedation. Repeated doses can cause dangerous drug buildup and overdose."_
 
 </p>
 
@@ -338,7 +335,7 @@ Doctor use and direct use apply the same drug effects, tolerance buildup, addict
   <img align="right" src="/Textures/Thing/Morphine/injector_red_a.png" height="64" alt="Morphine" />
 
 > **In-Game Description**
-> _"**Morphine autoinjector** &mdash; A morphine autoinjector is a spring-loaded syringe used to deliver a controlled dose of morphine, an opioid pain medication, directly into the bloodstream. Once injected, morphine rapidly suppresses pain but risks respiratory depression and impaired resuscitation if used during severe blood loss or cardiac arrest. Best reserved for controlled environments or after bleeding is stabilized. Should not be mixed with other CNS depressants like alcohol."_
+> _"**Morphine autoinjector** &mdash; Rapid pain relief. Suppresses breathing and circulation, making it dangerous during blood loss or resuscitation. Avoid combining with other depressants such as alcohol."_
 
 </p>
 
@@ -368,8 +365,7 @@ Saline IV bags are one of the two options for fluid resuscitation in patients su
   <img align="right" src="/Textures/Thing/SalineBag/saline_bag_a.png" height="64" alt="Saline IV Bag" />
 
 > **In-Game Description**
-> _"**Saline IV bag** &mdash; A 250ml bag of 0.9% sodium chloride solution, commonly known as normal saline. This sterile, isotonic fluid is used for intravenous resuscitation to quickly restore circulating volume during hypovolemic shock. While it helps stabilize blood pressure and prevent dehydration, it contains no red blood cells and cannot replace lost oxygen-carrying capacity or clotting factors.  
-> Excessive use may cause hemodilution and coagulopathy, so it should only be used in small amounts or in conjunction with whole blood or other blood products."_
+> _"**Saline IV bag** &mdash; 250 ml infusion that reduces blood loss by 15 percentage points but increases hemodilution. Excessive use risks coagulopathy and hypoxia. Automatic treatment obeys safety limits; forced single infusions bypass them."_
 
 </p>
 
@@ -407,7 +403,7 @@ Saline retains its 15-percentage-point blood-loss reduction per bag. From 80% bl
   <img align="right" src="/Textures/Thing/Splint/splint_a.png" height="64" alt="Splint" />
   
 > **In-Game Description** 
-> _"**Splint** &mdash; A splint is a rigid device used for immobilizing and protecting an injured bone or joint. It is used to prevent further damage to the bone and surrounding tissue and promote healing over time. Splints are commonly used to treat bone fractures, sprains, and dislocations."_
+> _"**Splint** &mdash; Stabilizes a fracture so it can heal gradually."_
   
 </p>
 
@@ -437,8 +433,7 @@ Saline retains its 15-percentage-point blood-loss reduction per bag. From 80% bl
   <img align="right" src="/Textures/Thing/Thoracoscope/thoracoscope_a.png" height="64" alt="Tourniquet" />
 
 > **In-Game Description**
-> _"**Thoracoscope** &mdash; A thoracoscope is a specialized medical instrument equipped with a camera and light source, designed for minimally invasive examination and procedures within the chest cavity. It is inserted through a small incision in the chest wall, allowing surgeons to visualize and operate on the lungs, pleura, or other thoracic structures.  
-> Thoracoscopes are commonly used in video-assisted thoracoscopic surgery (VATS), such as repairing collapsed lungs or removing diseased tissue."_
+> _"**Thoracoscope** &mdash; Surgical equipment required for advanced collapsed-lung repair."_
 
 </p>
 
@@ -461,8 +456,7 @@ Saline retains its 15-percentage-point blood-loss reduction per bag. From 80% bl
   <img align="right" src="/Textures/Thing/Tourniquet/tourniquet_a.png" height="64" alt="Tourniquet" />
 
 > **In-Game Description**
-> _"**Tourniquet** &mdash; A tourniquet is a constricting or compressing device used to control venous and arterial circulation to an extremity for a period of time. It is used to stop hemorrhaging (bleeding) and is most commonly used in emergency situations, such as battlefield injuries or accidents, to prevent hypovolemic shock and death.  
-> As a tourniquet restricts blood flow to the limb, it should be removed as soon as possible to prevent ischemia (starvation of oxygen) and necrosis (cell death) in the limb, which can lead to gangrene or death from sepsis."_
+> _"**Tourniquet** &mdash; Stops bleeding from a limb. Prolonged use risks gangrene and limb loss; remove once proper treatment is available."_
 
 </p>
 

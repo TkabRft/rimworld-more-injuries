@@ -9,22 +9,22 @@
     <stages>
       <li>
         <label>slight buzz</label>
-        <description>Ah... yeah... things aren't as sharp anymore.</description>
+        <description>Mild relief from ketamine.</description>
         <baseMoodEffect>3</baseMoodEffect>
       </li>
       <li>
         <label>warm pudding limbs</label>
-        <description>Yeah... that's the stuff. My limbs feel like warm pudding.</description>
+        <description>Relaxed and euphoric from ketamine.</description>
         <baseMoodEffect>5</baseMoodEffect>
       </li>
       <li>
         <label>ketamine relaxation</label>
-        <description>Wheeeeeeeeeeeeeeeeeeeeeeee.</description>
+        <description>Strong euphoria from ketamine.</description>
         <baseMoodEffect>5</baseMoodEffect>
       </li>
       <li>
         <label>terrible hallucinations</label>
-        <description>The pain left, but something stranger came to visit. Whoa... my hands are filled with teeth. Why are they chewing? Huh? ... Oh, the floor just whispered my name and asked me to lie down forever. It's getting hard to breathe... the air is thick like soup, like I'm choking on alphabet letters. Why is gravity apologizing to me? I think I should go to sleep now...</description>
+        <description>Disturbing hallucinations from excessive ketamine.</description>
         <baseMoodEffect>-15</baseMoodEffect>
       </li>
     </stages>
@@ -41,7 +41,7 @@
         </li>
         <li>
           <label>ketamine withdrawal</label>
-          <description>I really need to go get some relief...</description>
+          <description>Ketamine withdrawal causes distress.</description>
           <baseMoodEffect>-15</baseMoodEffect>
         </li>
       </stages>

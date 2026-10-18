@@ -5,7 +5,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 <!-- @end_generated_block -->
 
 > **In-Game Description**
-> _"**Metabolic failure** &mdash; Metabolism has stopped. Restore the affected organs or capacity. Untreated failure becomes fatal over approximately three game days."_
+> _"**Metabolic failure** &mdash; Metabolism has stopped. Restore the affected organs or capacity; untreated failure becomes fatal in about three game days."_
 
 This condition is part of delayed vital failure, enabled by default for appropriate fleshy pawns, including animals and supported alien races and entities. Anatomy and native protections determine which failures apply. Creatures that do not require air do not develop respiratory failure from absent lungs. Progression varies modestly between updates. Animal shock, acidosis and broader trauma support remain outside this module.
 

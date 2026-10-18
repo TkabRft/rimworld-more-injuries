@@ -5,8 +5,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 <!-- @end_generated_block -->
 
 > **In-Game Description**
-> _"**Hemorrhage** &mdash; Spontaneous hemorrhaging is a condition where bleeding occurs without any apparent external cause, often due to underlying medical issues such as coagulopathy or vascular abnormalities. It can manifest as bruising, nosebleeds, or internal bleeding and may require medical intervention to manage the underlying causes and prevent complications. In severe cases, it can lead to significant blood loss, multiple organ failure, and death if not treated promptly.  
-> While treating the underlying cause is essential, immediate management may include stabilizing the patient, controlling bleeding, and administering blood products for fluid resuscitation."_
+> _"**Hemorrhage** &mdash; Bleeding caused by an underlying condition, such as coagulopathy. Control the bleeding, replace lost blood and treat the cause to prevent further hemorrhages."_
 
 ```mermaid
 ---

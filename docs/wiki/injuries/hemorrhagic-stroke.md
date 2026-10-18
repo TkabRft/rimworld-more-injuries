@@ -9,8 +9,7 @@ In extreme cases of head trauma, a rupture of a blood vessel in the brain may oc
 _Basically a more severe and dangerous version of a [concussion](/docs/wiki/injuries/concussion.md#concussion)._
 
 > **In-Game Description**
-> _"**Hemorrhagic stroke** &mdash; A life-threatening condition caused by a rupture of a blood vessel in the brain. If left untreated, the patient will quickly lose consciousness as pressure builds up in the brain. As pressure accumulates, additional blood vessels may be compressed or ruptured, leading to cerebral hypoxia. Symptoms range from initial confusion and vomiting to coma, (permanent) brain damage, and death.  
-> Can be temporarily stabilized to slow progression until surgery can be performed to permanently repair the rupture."_
+> _"**Hemorrhagic stroke** &mdash; Brain bleeding worsens over time, causing unconsciousness, brain injury and death. Tending temporarily slows progression; surgery cures the stroke."_
 
 ```mermaid
 ---

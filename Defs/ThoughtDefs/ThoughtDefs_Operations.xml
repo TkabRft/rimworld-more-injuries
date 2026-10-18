@@ -9,7 +9,7 @@
     <stages>
       <li>
         <label>bloodlust blood harvested</label>
-        <description>Extracting their blood and seeing them grow weaker under my hands was such a thrill.</description>
+        <description>Enjoyed extracting blood from another pawn.</description>
         <baseMoodEffect>3</baseMoodEffect>
       </li>
     </stages>
@@ -24,7 +24,7 @@
     <stages>
       <li>
         <label>donated blood</label>
-        <description>My blood donation will save lives and help those in need. I made a difference today.</description>
+        <description>Pleased to have donated blood.</description>
         <baseMoodEffect>4</baseMoodEffect>
       </li>
     </stages>

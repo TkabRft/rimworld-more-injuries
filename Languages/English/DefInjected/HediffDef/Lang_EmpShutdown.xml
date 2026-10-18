@@ -2,8 +2,8 @@
 <LanguageData>
   <!-- EN: servos disabled -->
   <EmpShutdown.label>servos disabled</EmpShutdown.label>
-  <!-- EN: A bionic bodypart was disabled by an EMP blast. It will take around one day to reboot itself. -->
-  <EmpShutdown.description>A bionic bodypart was disabled by an EMP blast. It will take around one day to reboot itself.</EmpShutdown.description>
+  <!-- EN: This bionic part is disabled by EMP. It reboots in about one day. -->
+  <EmpShutdown.description>This bionic part is disabled by EMP. It reboots in about one day.</EmpShutdown.description>
   <!-- EN: nearly rebooted -->
   <EmpShutdown.stages.nearly_rebooted.label>nearly rebooted</EmpShutdown.stages.nearly_rebooted.label>
   <!-- EN: disabled -->

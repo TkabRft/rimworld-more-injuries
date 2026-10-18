@@ -7,9 +7,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 Adrenaline, also known as epinephrine, is a naturally occurring hormone that is released in response to stress or danger. It increases heart rate, blood pressure, and energy levels, preparing the body for a fight-or-flight response. In the game, an adrenaline rush can occur naturally in pawns as a result of combat and injury, or it can artificially be induced through the use of an [epinephrine injection](/docs/wiki/medical-devices.md#epinephrine-autoinjector).
 
 > **In-Game Description**
-> _"**Adrenaline rush** &mdash; A rush of adrenaline temporarily increases heart rate and blood pressure, providing a boost of energy and alertness. The body's fight-or-flight response is triggered, increasing strength and speed.<br>
-> However, if the rush is too intense, it can cause anxiety, panic, and overdose symptoms such as dizziness, double vision, and nausea. In extreme overdose cases, the body can go into shock, causing heart attack, stroke, or death.<br>
-> During hypovolemic shock, adrenaline temporarily slows worsening and assists recovery after blood volume improves. It does not lower the underlying shock target or replace missing blood. It can also slow shock-driven acidosis buildup while active."_
+> _"**Adrenaline rush** &mdash; Temporarily boosts movement and reduces pain. Slows shock and shock-driven acidosis while active, but does not replace lost blood. Excessive adrenaline can cause heart attack or stroke."_
 
 ```mermaid
 ---

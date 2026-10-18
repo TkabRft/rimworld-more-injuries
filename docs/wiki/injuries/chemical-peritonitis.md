@@ -7,7 +7,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 Also known as _"intestinal spillage,"_ chemical peritonitis is a life-threatening condition that occurs when gastric acid or other digestive fluids leak into the abdominal cavity, causing inflammation and tissue damage to surrounding organs ([small and large intestines](/docs/wiki/body-parts.md#small-and-large-intestines), stomach, kidneys, and liver). The condition carries a major risk of infection which can be life-threatening if left untreated.
 
 > **In-Game Description**
-> _"**Chemical peritonitis** &mdash; As a result of a perforating injury to intestines or stomach, gastric acid has inflicted tissue damage on surrounding organs, causing inflammation. Carries a major risk of infection."_
+> _"**Chemical peritonitis** &mdash; Leaking digestive fluids have damaged surrounding tissue. High infection risk."_
 
 ```mermaid
 ---

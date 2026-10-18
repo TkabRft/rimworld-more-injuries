@@ -3,7 +3,7 @@
   <HediffDef ParentName="InjuryBase">
     <defName>StomachAcidBurn</defName>
     <label>chemical peritonitis</label>
-    <description>As a result of a perforating injury to intestines or stomach, gastric acid has inflicted tissue damage on surrounding organs, causing inflammation. Carries a major risk of infection.</description>
+    <description>Leaking digestive fluids have damaged surrounding tissue. High infection risk.</description>
     <comps>
       <li Class="HediffCompProperties_TendDuration">
         <labelTendedWell>tended</labelTendedWell>

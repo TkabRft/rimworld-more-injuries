@@ -4,7 +4,7 @@
     <defName>KetamineBuildup</defName>
     <label>ketamine buildup</label>
     <labelNoun>a buildup of ketamine</labelNoun>
-    <description>Ketamine is a fast-acting dissociative anesthetic used for pain relief, sedation, and anesthesia. It works by disrupting communication between the thalamus and cerebral cortex, producing a trance-like, pain-free state without significantly suppressing cardiovascular function at recommended doses.\n\nOnce administered, ketamine is distributed systemically and slowly metabolized by the liver. Blood concentrations diminish over time, but repeated or excessive doses can lead to dangerous accumulation resulting in toxicity and overdose.\n\nSymptoms of ketamine toxicity range from amnesia, confusion, and hallucinations to brain damage, respiratory depression, and death in severe cases of overdose.</description>
+    <description>Ketamine buildup reduces pain and consciousness. Repeated doses can cause overdose, neurological injury and respiratory failure. Allow the drug to clear before giving more.</description>
     <defaultLabelColor>(56, 185, 255)</defaultLabelColor>
     <isBad>true</isBad>
     <maxSeverity>5</maxSeverity>
@@ -116,7 +116,7 @@
     <defName>ChloroformBuildup</defName>
     <label>chloroform buildup</label>
     <labelNoun>a buildup of chloroform</labelNoun>
-    <description>Chloroform is a volatile anesthetic that induces unconsciousness and analgesia by depressing the central nervous system. It was historically used in surgical procedures and as a solvent in laboratories. Chloroform is rapidly absorbed through the lungs, skin, and gastrointestinal tract, leading to systemic distribution and metabolism primarily in the liver.\n\nWhile effective at low doses, chloroform can cause toxicity and overdose at higher concentrations, leading to symptoms such as renal and hepatic damage, respiratory depression, and cardiac arrest. Due to its potential for severe side effects, chloroform is rarely used in modern medicine.</description>
+    <description>Chloroform buildup causes sedation. Excessive doses can damage organs, suppress breathing and cause cardiac arrest. Allow the drug to clear before giving more.</description>
     <defaultLabelColor>(56, 185, 255)</defaultLabelColor>
     <isBad>true</isBad>
     <maxSeverity>5</maxSeverity>
@@ -285,8 +285,7 @@
   <HediffDef Class="MoreInjuries.HealthConditions.Drugs.MedicalDrugHediffDef" ParentName="AddictionBase">
     <defName>MI_KetamineAddiction</defName>
     <label>ketamine addiction</label>
-    <description>A psychological dependence on ketamine. Chronic use has altered neurotransmitter systems involved in mood and cognition, creating a powerful craving for the dissociative state it provides.
-\nWithout ketamine, severe psychological withdrawal symptoms will manifest. However, prolonged abstinence will allow brain chemistry to gradually return to normal, resolving the addiction.</description>
+    <description>Requires regular ketamine to avoid withdrawal. Sustained abstinence eventually resolves the addiction.</description>
     <hediffClass>Hediff_Addiction</hediffClass>
     <chemicalNeed>Chemical_MI_Ketamine_Chemical</chemicalNeed>
     <comps>

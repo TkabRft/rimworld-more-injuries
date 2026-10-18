@@ -4,7 +4,7 @@
     <defName>MechaniteTherapy</defName>
     <label>mechanite therapy</label>
     <labelNoun>the mechanite therapy</labelNoun>
-    <description>A glitterworld treatment that uses mechanites to slowly repair cellular damage in the body. The mechanites will gradually repair the damage over time, but the process can take several days.</description>
+    <description>Gradually repairs cellular damage over several days.</description>
     <defaultLabelColor>(100, 136, 252)</defaultLabelColor>
     <isBad>false</isBad>
     <comps>

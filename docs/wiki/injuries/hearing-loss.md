@@ -10,7 +10,7 @@ Hearing loss is a partial or total inability to hear. It may be temporary or per
 ## Temporary Hearing Loss
 
 > **In-Game Description**
-> _"**Temporary hearing loss** &mdash; Temporary deafness caused by prolonged exposure to loud noises, such as gunfire, explosions, or machinery. The hair cells in the inner ear are damaged, leading to hearing loss. The damage can become permanent if the exposure is severe or prolonged."_
+> _"**Temporary hearing loss** &mdash; Temporary hearing loss from loud noise. Severe or repeated exposure can cause permanent deafness."_
 
 ```mermaid
 ---

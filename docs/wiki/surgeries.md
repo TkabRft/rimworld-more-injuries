@@ -26,7 +26,7 @@ Just like base game surgeries, these new surgeries will be available in the *ope
 $\rightarrow$ *see [paralysis](/docs/wiki/injuries/paralysis.md#paralysis)*
 
 > **In-Game Description**
-> _"**Restore mobility: cellular regenerative surgery** &mdash; Cellular regenerative neurosurgery (CRNS) is an experimental glitterworld surgery that uses mechanites to repair damaged nerve cells in the spinal cord, restoring mobility to a person with permanent paralysis. The procedure is expensive and not widely available, but has shown promising results in restoring mobility, even in very severe cases."_
+> _"**Restore mobility: cellular regenerative surgery** &mdash; Uses advanced regenerative surgery to treat spinal paralysis."_
 
 **Used for**: Treating [paralysis](/docs/wiki/injuries/paralysis.md#paralysis) with advanced medical techniques and glitterworld medicine.
 
@@ -42,7 +42,7 @@ $\rightarrow$ *see [paralysis](/docs/wiki/injuries/paralysis.md#paralysis)*
 $\rightarrow$ *see [permanent hearing loss](/docs/wiki/injuries/hearing-loss.md#permanent-hearing-loss)*
 
 > **In-Game Description**
-> _"**Repair hearing loss: cellular regenerative surgery** &mdash; Cellular Regenerative Otologic Surgery (CROS) is an experimental glitterworld surgery that uses mechanites to repair damaged hair cells in the inner ear, restoring hearing to a person with permanent hearing loss. The procedure is expensive and not widely available, but has shown promising results in restoring hearing, even in very severe cases."_
+> _"**Repair hearing loss: cellular regenerative surgery** &mdash; Uses advanced regenerative surgery to restore permanently damaged hearing."_
 
 **Used for**: Treating [permanent hearing loss](/docs/wiki/injuries/hearing-loss.md#permanent-hearing-loss) with advanced medical techniques and glitterworld medicine.
 
@@ -61,9 +61,7 @@ $\rightarrow$ *see [permanent hearing loss](/docs/wiki/injuries/hearing-loss.md#
 $\rightarrow$ *see [hemorrhagic stroke](/docs/wiki/injuries/hemorrhagic-stroke.md#hemorrhagic-stroke)*
 
 > **In-Game Description**
-> _"**Cure stroke: decompressive craniectomy** &mdash; Perform a decompressive craniectomy to cure a hemorrhagic stroke.  
-> Decompressive craniectomy is a neurosurgical procedure in which part of the skull is removed to allow a swelling or herniating brain room to expand without being squeezed. It is performed on victims of traumatic brain injury, stroke, and other conditions associated with raised intracranial pressure. Use of this surgery is controversial and associated with a higher risk of complications, but it can be life-saving in cases of severe brain swelling.  
-> A challenging surgery that requires familiarity with neurosurgical techniques and a steady hand. Yields a moderate success rate."_
+> _"**Cure stroke: decompressive craniectomy** &mdash; Cures a hemorrhagic stroke through open brain surgery. Moderate success rate; requires a skilled surgeon."_
 
 **Used for**: Treating [hemorrhagic stroke](/docs/wiki/injuries/hemorrhagic-stroke.md#hemorrhagic-stroke) with good medical knowledge and industrial equipment at a moderate success rate.
 
@@ -79,7 +77,7 @@ $\rightarrow$ *see [hemorrhagic stroke](/docs/wiki/injuries/hemorrhagic-stroke.m
 $\rightarrow$ *see [brain damage](/docs/wiki/injuries/brain-damage.md#brain-damage)*
 
 > **In-Game Description**
-> _"**Treat brain damage: mechanite therapy** &mdash; Mechanite therapy is a glitterworld treatment that uses mechanites to slowly repair neurological damage in the brain on a cellular level. The procedure is expensive and may take several days to complete, but has shown promising results in restoring cognitive function and memory in patients with severe brain damage. Due to the experimental nature of this treatment, it is not widely available and may require multiple sessions to achieve the desired results."_
+> _"**Treat brain damage: mechanite therapy** &mdash; Starts mechanite therapy to repair neurological damage gradually. Recovery takes several days and may require further treatment."_
 
 **Used for**: Treating [brain damage](/docs/wiki/injuries/brain-damage.md#brain-damage) with advanced glitterworld technology. Upon completion of the initial procedure, patients undergoing [mechanite therapy](/docs/wiki/injuries/mechanite-therapy.md#mechanite-therapy) may feel a bit disoriented and fatigued, but these effects will reside once the treatment is complete.
 
@@ -95,8 +93,7 @@ $\rightarrow$ *see [brain damage](/docs/wiki/injuries/brain-damage.md#brain-dama
 $\rightarrow$ *see [bone fracture](/docs/wiki/injuries/fractures.md#bone-fracture)*
 
 > **In-Game Description**
-> _"**Repair fracture: osteosynthetic surgery** &mdash; Surgically repair a bone fracture. The bone will be set in place, realigned, and reinforced with metal plates and screws to prevent micromovements and promote proper healing, allowing the patient to regain full use of the affected limb much faster than with other methods.  
-> Although being more invasive than other methods, surgery allows for a more precise and stable repair of the fracture, ensuring a faster and more complete recovery."_
+> _"**Repair fracture: osteosynthetic surgery** &mdash; Surgically repairs a fracture for faster recovery than splinting."_
 
 **Used for**: Treating [bone fractures](/docs/wiki/injuries/fractures.md#bone-fracture) with more expensive and invasive surgical techniques to speed up the healing process significantly.
 
@@ -112,9 +109,7 @@ $\rightarrow$ *see [bone fracture](/docs/wiki/injuries/fractures.md#bone-fractur
 $\rightarrow$ *see [hemorrhagic stroke](/docs/wiki/injuries/hemorrhagic-stroke.md#hemorrhagic-stroke)*
 
 > **In-Game Description**
-> _"**Cure stroke: stereotactic surgery** &mdash; Perform stereotactic surgery to cure a hemorrhagic stroke.  
-> Stereotactic surgery is a minimally invasive form of surgical intervention that makes use of a three-dimensional coordinate system to locate small targets inside the body, allowing for precise localization of the ruptured blood vessel while minimizing damage to surrounding tissues.  
-> A very complex and delicate procedure that requires a high level of skill and precision but yields a very high success rate."_
+> _"**Cure stroke: stereotactic surgery** &mdash; Cures a hemorrhagic stroke using advanced brain surgery. High success rate; requires a highly skilled surgeon."_
 
 **Used for**: Treating [hemorrhagic stroke](/docs/wiki/injuries/hemorrhagic-stroke.md#hemorrhagic-stroke) with excellent medical knowledge and advanced medical equipment at a high success rate.
 
@@ -130,9 +125,7 @@ $\rightarrow$ *see [hemorrhagic stroke](/docs/wiki/injuries/hemorrhagic-stroke.m
 $\rightarrow$ *see [lung collapse](/docs/wiki/injuries/lung-collapse.md#lung-collapse)*
 
 > **In-Game Description**
-> _"**Repair collapsed lung: thoracotomy** &mdash; Perform a thoracotomy to repair a collapsed lung.  
-> Thoracotomy is a surgical procedure that involves making an incision in the chest wall to gain access to the lungs and the surrounding structures. The source of the air leak causing the lung collapse is identified and repaired, and pleural space is drained to allow the lung to re-expand and to relieve the pressure on the heart and other organs. Finally, the chest wall is closed and the incision is sutured.  
-> A complex and invasive surgery that requires a skilled surgeon and yields a moderate success rate."_
+> _"**Repair collapsed lung: thoracotomy** &mdash; Repairs a collapsed lung through open chest surgery. Moderate success rate; requires a skilled surgeon."_
 
 **Used for**: Treating [lung collapse](/docs/wiki/injuries/lung-collapse.md#lung-collapse) with invasive surgical techniques to repair the damage and restore the lung to full function. Required at 45% severity and above. Optional below that. Moderate success rate and moderate risk of complications.
 
@@ -148,9 +141,7 @@ $\rightarrow$ *see [lung collapse](/docs/wiki/injuries/lung-collapse.md#lung-col
 $\rightarrow$ *see [hemorrhagic stroke](/docs/wiki/injuries/hemorrhagic-stroke.md#hemorrhagic-stroke)*
 
 > **In-Game Description**
-> _"**Cure stroke: trepanation** &mdash; Perform a trepanation to cure a hemorrhagic stroke.  
-> Trepanation is a surgical intervention in which a hole is drilled or scraped into the human skull to treat health problems related to intracranial diseases or release pressured blood buildup from an injury. It is one of the oldest surgical procedures known to humanity, with evidence of its practice dating back to the Neolithic era. While it is a simple and straightforward procedure, it carries a high risk of infection and complications.  
-> A basic surgery that can be performed by anyone with rudimentary medical knowledge. Yields a low success rate."_
+> _"**Cure stroke: trepanation** &mdash; Attempts to cure a hemorrhagic stroke through trepanation. Low success rate and high complication risk."_
 
 **Used for**: Treating [hemorrhagic stroke](/docs/wiki/injuries/hemorrhagic-stroke.md#hemorrhagic-stroke) with readily available equipment and basic medical knowledge at a mediocre success rate.
 
@@ -169,9 +160,7 @@ $\rightarrow$ *see [hemorrhagic stroke](/docs/wiki/injuries/hemorrhagic-stroke.m
 $\rightarrow$ *see [lung collapse](/docs/wiki/injuries/lung-collapse.md#lung-collapse)*
 
 > **In-Game Description**
-> _"**Repair collapsed lung: video-assisted thoracoscopic surgery** &mdash; Perform a video-assisted thoracoscopic surgery to repair a collapsed lung.  
-> Video-assisted thoracoscopic surgery (VATS) is a minimally invasive surgical procedure that involves making small incisions in the chest wall and using a camera and specialized instruments to repair the collapsed lung. Since the surgery is performed through small incisions, it is associated with less pain, shorter recovery time, and reduced risk of complications compared to traditional open surgery.  
-> While VATS is less invasive and offers a higher success rate than thoracotomy, it requires highly specialized equipment, additional training, and takes longer to perform, given the complexity of the procedure."_
+> _"**Repair collapsed lung: video-assisted thoracoscopic surgery** &mdash; Repairs a collapsed lung with a thoracoscope. Higher success rate than open chest surgery, but requires specialized equipment and takes longer."_
 
 **Used for**: Treating [lung collapse](/docs/wiki/injuries/lung-collapse.md#lung-collapse) with minimally invasive surgical techniques to repair the damage and restore the lung to full function. Required at 45% severity and above. Optional below that. High success rate and low risk of complications.
 

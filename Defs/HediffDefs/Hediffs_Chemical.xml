@@ -3,7 +3,7 @@
   <HediffDef ParentName="InjuryBase">
     <defName>OrganChemicalInjury</defName>
     <label>chemical damage</label>
-    <description>Tissue damage caused by toxic chemical exposure. This may result from direct contact with harmful substances or from the organ's own metabolic processing of certain drugs or toxins, producing reactive intermediates. Such damage often leads to cellular stress, necrosis, or scarring, and may cause irreversible harm to the affected organ, potentially leading to full organ failure if severe enough.</description>
+    <description>Chemical exposure has damaged this organ. Severe damage can cause organ failure.</description>
     <comps>
       <li Class="HediffCompProperties_GetsPermanent">
         <permanentLabel>chemical scarring</permanentLabel>

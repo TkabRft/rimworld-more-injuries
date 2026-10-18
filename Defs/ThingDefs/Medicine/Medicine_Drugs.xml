@@ -39,7 +39,7 @@
   <ThingDef ParentName="AutoInjectorBase">
     <defName>Epinephrine</defName>
     <label>epinephrine autoinjector</label>
-    <description>An epinephrine autoinjector (or adrenaline autoinjector) is a medical device for injecting a measured dose of epinephrine.</description>
+    <description>Injects adrenaline to temporarily boost movement, reduce pain and support shock treatment. Does not replace lost blood; excessive doses risk heart attack or stroke.</description>
     <graphicData>
       <texPath>Thing/Epinephrine</texPath>
     </graphicData>
@@ -91,7 +91,7 @@
   <ThingDef ParentName="AutoInjectorBase">
     <defName>Ketamine</defName>
     <label>ketamine autoinjector</label>
-    <description>A pre-loaded autoinjector containing a strong dissociative anesthetic. Effective in emergency field care for patients in severe pain or to induce rapid sedation in patients resisting treatment.</description>
+    <description>Autoinjector for pain relief and rapid sedation. Repeated doses can cause dangerous drug buildup and overdose.</description>
     <descriptionHyperlinks>
       <HediffDef>KetamineBuildup</HediffDef>
       <HediffDef>MI_KetamineAddiction</HediffDef>
@@ -182,7 +182,7 @@
   <ThingDef ParentName="MedicalDrugBase">
     <defName>Chloroform</defName>
     <label>chloroform-soaked cloth</label>
-    <description>A piece of cloth soaked in chloroform, used to render a patient unconscious for medical procedures. It is effective in emergency situations where rapid sedation is required. However, due to a variety of factors, such as duration of exposure, concentration of chloroform, and individual patient factors, administering an appropriate dose can be difficult and risk of overdose is high. Due to its high potential for side effects, such as respiratory depression, hepatic and renal damage, and cardiac arrest, modern medicine has largely replaced chloroform with safer alternatives.</description>
+    <description>Sedates a patient. Difficult to dose safely; excessive use risks organ damage, respiratory failure and cardiac arrest.</description>
     <graphicData>
       <texPath>Thing/Chloroform</texPath>
     </graphicData>
@@ -277,7 +277,7 @@
   <ThingDef ParentName="AutoInjectorBase">
     <defName>Morphine</defName>
     <label>morphine autoinjector</label>
-    <description>A morphine autoinjector is a spring-loaded syringe used to deliver a controlled dose of morphine, an opioid pain medication, directly into the bloodstream. Once injected, morphine rapidly suppresses pain but risks respiratory depression and impaired resuscitation if used during severe blood loss or cardiac arrest. Best reserved for controlled environments or after bleeding is stabilized. Should not be mixed with other CNS depressants like alcohol.</description>
+    <description>Rapid pain relief. Suppresses breathing and circulation, making it dangerous during blood loss or resuscitation. Avoid combining with other depressants such as alcohol.</description>
     <descriptionHyperlinks>
       <HediffDef>MorphineBuildup</HediffDef>
       <HediffDef>MI_MorphineAddiction</HediffDef>

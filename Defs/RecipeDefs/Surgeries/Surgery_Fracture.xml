@@ -3,7 +3,7 @@
   <RecipeDef ParentName="SurgeryFlesh">
     <defName>RepairFracture</defName>
     <label>Repair fracture: osteosynthetic surgery</label>
-    <description>Surgically repair a bone fracture. The bone will be set in place, realigned, and reinforced with metal plates and screws to prevent micromovements and promote proper healing, allowing the patient to regain full use of the affected limb much faster than with other methods.\n\nAlthough being more invasive than other methods, surgery allows for a more precise and stable repair of the fracture, ensuring a faster and more complete recovery.</description>
+    <description>Surgically repairs a fracture for faster recovery than splinting.</description>
     <workerClass>Recipe_RemoveHediff</workerClass>
     <jobString>Repairing a fracture.</jobString>
     <workAmount>2500</workAmount>
@@ -49,7 +49,7 @@
   <RecipeDef ParentName="SurgeryFlesh">
     <defName>SplintFracture</defName>
     <label>Splint a fracture</label>
-    <description>Apply a splint to immobilize a bone fracture and promote healing over time. The splint will stabilize the bone, prevent further damage, and allow the patient to move around without risking further injury. The stabilized bone will heal naturally over time.\n\nA simple and non-invasive procedure that can be performed by anyone with basic medical knowledge.</description>
+    <description>Applies a splint so a fracture can heal gradually.</description>
     <workerClass>MoreInjuries.HealthConditions.Fractures.Recipe_SplintFracture</workerClass>
     <jobString>Splinting a fracture.</jobString>
     <workAmount>500</workAmount>

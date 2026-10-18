@@ -4,8 +4,8 @@
   <Concussion.label>concussion</Concussion.label>
   <!-- EN: a concussion -->
   <Concussion.labelNoun>a concussion</Concussion.labelNoun>
-  <!-- EN: A concussion, also known as a mild traumatic brain injury (mTBI), is a head injury that temporarily affects brain functioning. Symptoms may include loss of consciousness; memory loss; headaches; difficulty with thinking, concentration, or balance; nausea; blurred vision; dizziness; sleep disturbances, and mood changes.\n\nShould resolve on its own within a few days, but can be worsened by repeated head injuries. -->
-  <Concussion.description>A concussion, also known as a mild traumatic brain injury (mTBI), is a head injury that temporarily affects brain functioning. Symptoms may include loss of consciousness; memory loss; headaches; difficulty with thinking, concentration, or balance; nausea; blurred vision; dizziness; sleep disturbances, and mood changes.\n\nShould resolve on its own within a few days, but can be worsened by repeated head injuries.</Concussion.description>
+  <!-- EN: Head trauma temporarily reduces consciousness and coordination. Usually resolves within a few days; further head injuries can worsen it. -->
+  <Concussion.description>Head trauma temporarily reduces consciousness and coordination. Usually resolves within a few days; further head injuries can worsen it.</Concussion.description>
   <!-- EN: headache -->
   <Concussion.stages.headache.label>headache</Concussion.stages.headache.label>
   <!-- EN: severe headache -->

@@ -30,7 +30,7 @@ More Injuries introduces several new research projects that can be undertaken to
 ## Basic Anatomy
 
 > **In-Game Description**
-> _"**Basic anatomy** &mdash; Delving into the fundamentals of human anatomy, this research uncovers ancient knowledge from the earliest recorded forms of medicine. By studying these time-honored practices, your scientists will equip your doctors with the skills to perform basic medical procedures, including wound treatment and disease management. This marks a vital first step toward restoring advanced medical practices in your colony."_
+> _"**Basic anatomy** &mdash; Unlocks bandages, splints and basic fracture and stroke treatments."_
 
 **Tech Level**: Neolithic  
 **Unlocks**: [Bandages](/docs/wiki/medical-devices.md#bandage), [splints](/docs/wiki/medical-devices.md#splint), [trepanation](/docs/wiki/surgeries.md#trepanation)  
@@ -45,8 +45,7 @@ More Injuries introduces several new research projects that can be undertaken to
 ## Cardiopulmonary Resuscitation (CPR)
 
 > **In-Game Description**
-> _"**Cardiopulmonary resuscitation (CPR)** &mdash; A foundational resuscitation technique discovered in the early 1960s, cardiopulmonary resuscitation (CPR) is the first line of defense against cardiac or respiratory arrest. By experimenting with different chest compression and rescue breathing procedures, your medical professionals will learn CPR to restore circulation and oxygenation in patients whose hearts have stopped. This research provides your colony with the knowledge needed to perform CPR in emergencies, significantly improving survival rates in the first few minutes of the golden hour to save the patient's life.  
->Upon completion of this research, a new right-click action will be available for drafted doctors to perform CPR on patients in need of resuscitation."_
+> _"**Cardiopulmonary resuscitation (CPR)** &mdash; Unlocks CPR to treat cardiac arrest and blood-obstructed airways. Draft a doctor and right-click the patient to order resuscitation."_
 
 **Tech Level**: Industrial  
 **Unlocks**: [CPR](/docs/wiki/medical-devices.md#cpr)  
@@ -61,7 +60,7 @@ More Injuries introduces several new research projects that can be undertaken to
 ## Basic First Aid
 
 > **In-Game Description**
-> _"**Basic first aid** &mdash; Building upon the knowledge of basic anatomy, this research delves into the fundamental principles of first aid. By studying approaches to reduce blood loss and stabilize patients in critical condition, your colony will be better equipped to handle medical emergencies."_
+> _"**Basic first aid** &mdash; Unlocks tourniquets, blood transfusions and blood collection."_
 
 **Tech Level**: Medieval  
 **Unlocks**: [Blood transfusions](/docs/wiki/medical-devices.md#blood-bag), [tourniquets](/docs/wiki/medical-devices.md#tourniquet)  
@@ -73,7 +72,7 @@ More Injuries introduces several new research projects that can be undertaken to
 ## Emergency Medicine
 
 > **In-Game Description**
-> _"**Emergency medicine** &mdash; Bringing together advances in first aid, pharmacology, and electrical technology, this research opens the door to modern emergency medicine. Your doctors will learn to rapidly assess and stabilize patients facing life-threatening conditions—trauma, airway obstruction, cardiac arrest, and more. Through intensive training and access to specialized equipment like defibrillators and suction devices, your colony's medical responders will be prepared to perform critical interventions that can make the difference between life and death in the first golden hour. These capabilities also lay the foundation for complex surgical procedures in the future."_
+> _"**Emergency medicine** &mdash; Unlocks emergency equipment, including defibrillators and airway suction devices."_
 
 **Tech Level**: Industrial  
 **Unlocks**: [defibrillators](/docs/wiki/medical-devices.md#defibrillator), [airway suction devices](/docs/wiki/medical-devices.md#airway-suction-device), [saline IV bags](/docs/wiki/medical-devices.md#saline-iv-bag), [decompressive craniectomy](/docs/wiki/surgeries.md#decompressive-craniectomy), [osteosynthetic surgery](/docs/wiki/surgeries.md#osteosynthetic-surgery), [thoracotomy](/docs/wiki/surgeries.md#thoracotomy)  
@@ -85,7 +84,7 @@ More Injuries introduces several new research projects that can be undertaken to
 ## Advanced First Aid
 
 > **In-Game Description**
-> _"**Advanced first aid** &mdash; Expanding on the principles of basic first aid and drug synthesis, your researchers will investigate the development of hemostatic agents. These advanced coagulants can be used to limit severe bleeding even more effectively than traditional bandages, reducing the risk of exsanguination in patients with severe injuries."_
+> _"**Advanced first aid** &mdash; Unlocks hemostatic agents for faster, more effective bleeding control than bandages."_
 
 **Tech Level**: Industrial  
 **Unlocks**: [Hemostatic agents](/docs/wiki/medical-devices.md#hemostatic-agent)  
@@ -97,8 +96,7 @@ More Injuries introduces several new research projects that can be undertaken to
 ## Morphine Synthesis
 
 > **In-Game Description**
-> _"**Morphine synthesis** &mdash; By studying the chemical extraction and synthesis of morphine, your researchers will gain the ability to produce this potent opioid analgesic for medical use. Morphine offers unparalleled pain relief in emergency situations, but it must be administered with caution - its depressive effects on respiration and circulation can complicate resuscitation efforts and worsen outcomes in cases of severe blood loss.  
-> This research unlocks the ability to craft morphine autoinjectors for quick administration on the battlefield or for pain management in the hospital."_
+> _"**Morphine synthesis** &mdash; Unlocks morphine autoinjectors for pain relief. Morphine can impair breathing and resuscitation, especially during severe blood loss."_
 
 **Tech Level**: Industrial  
 **Unlocks**: [Morphine autoinjectors](/docs/wiki/medical-devices.md#morphine-autoinjector)  
@@ -110,7 +108,7 @@ More Injuries introduces several new research projects that can be undertaken to
 ## Chloroform Synthesis
 
 > **In-Game Description**
-> _"**Chloroform synthesis** &mdash; By studying the synthesis of chloroform, your researchers will unlock the ability to produce this powerful anesthetic. Chloroform can be used to sedate patients for surgery or other medical procedures, allowing your doctors to perform complex interventions with greater ease and precision. However, it is important to use chloroform carefully due to its high potential for overdose and toxicity."_
+> _"**Chloroform synthesis** &mdash; Unlocks chloroform for sedation. Excessive dosing risks overdose and organ damage."_
 
 **Tech Level**: Industrial  
 **Unlocks**: [Chloroform-soaked cloth](/docs/wiki/medical-devices.md#chloroform-soaked-cloth)  
@@ -122,7 +120,7 @@ More Injuries introduces several new research projects that can be undertaken to
 ## Neurosurgery
 
 > **In-Game Description**
-> _"**Neurosurgery** &mdash; By specializing in the field of neurosurgery, your doctors will be able to perform complex procedures on the brain. This research unlocks the use of stereotactic surgery, a minimally invasive form of surgical intervention that makes use of a three-dimensional coordinate system to locate small targets inside the body, allowing for precise localization of hemorrhages and tumors while minimizing neurological damage."_
+> _"**Neurosurgery** &mdash; Unlocks advanced surgery to repair hemorrhagic strokes."_
 
 **Tech Level**: Industrial  
 **Unlocks**: [Stereotactic surgery](/docs/wiki/surgeries.md#stereotactic-surgery)  
@@ -134,7 +132,7 @@ More Injuries introduces several new research projects that can be undertaken to
 ## Advanced Thoracic Surgery
 
 > **In-Game Description**
-> _"**Advanced thoracic surgery** &mdash; Investigate the usage of video technology in thoracic surgery, allowing for minimally invasive procedures to be performed on the lungs and other thoracic structures. By equipping your doctors with thoracoscopes and training them in video-assisted thoracoscopic surgery (VATS), your colony will be able to perform complex lung surgeries with greater precision and reduced risk of complications."_
+> _"**Advanced thoracic surgery** &mdash; Unlocks thoracoscopes and advanced collapsed-lung repair."_
 
 **Tech Level**: Industrial  
 **Unlocks**: [Thoracoscopes](/docs/wiki/medical-devices.md#thoracoscope), [video-assisted thoracoscopic surgery](/docs/wiki/surgeries.md#video-assisted-thoracoscopic-surgery)  
@@ -146,8 +144,7 @@ More Injuries introduces several new research projects that can be undertaken to
 ## Epinephrine Synthesis
 
 > **In-Game Description**
-> _"**Epinephrine synthesis** &mdash; Research into the synthesis of epinephrine, a hormone and neurotransmitter that plays a vital role in the body's fight-or-flight response. By developing an autoinjector that can deliver a precise dose of epinephrine in emergency situations, you will be able to craft epinephrine autoinjectors that can be used to boost blood pressure and increase heart rate to temporarily reduce the adverse effects of hypovolemic shock and anemia.  
-> We suspect an additional potential use for this drug as a combat stimulant, but further research is required to confirm its efficacy."_
+> _"**Epinephrine synthesis** &mdash; Unlocks epinephrine autoinjectors. Adrenaline temporarily supports shock treatment and boosts movement, but does not replace lost blood."_
 
 **Tech Level**: Industrial  
 **Unlocks**: [Epinephrine autoinjectors](/docs/wiki/medical-devices.md#epinephrine-autoinjector)  
@@ -159,9 +156,7 @@ More Injuries introduces several new research projects that can be undertaken to
 ## Ketamine Synthesis
 
 > **In-Game Description**
-> _"**Ketamine synthesis** &mdash; Building upon the fundamentals of drug production, this research explores the synthesis of ketamine for medical use as a dissociative anesthetic with powerful analgesic and sedative properties. Since ancient times, it has been widely used for emergency surgery in field conditions in war zones, for example, during the Vietnam War. A 2011 clinical practice guideline supports the use of ketamine as a sedative in emergency medicine, including during physically painful procedures.  
-> By reverse-engineering the ancient pharmaceutical formulations from the early 2000s and developing precision dosing protocols, your colony will gain the knowledge required to synthesize ketamine safely. This unlocks the ability to craft ketamine for surgical use and to sedate uncooperative patients in the field, allowing your doctors to perform life-saving procedures on even the most unhinged "volunteers" to join your colony.  
-> While usually not addictive when used in therapeutic doses, abuse of ketamine can lead to dangerous buildup of the drug in the body, resulting in toxicity and overdose. Therefore, it is important to monitor patients closely for signs of ketamine buildup and to avoid excessive dosing."_
+> _"**Ketamine synthesis** &mdash; Unlocks ketamine for pain relief and sedation. Repeated doses can cause dangerous drug buildup and overdose."_
 
 **Tech Level**: Industrial  
 **Unlocks**: [Ketamine autoinjectors](/docs/wiki/medical-devices.md#ketamine-autoinjector)  
@@ -173,7 +168,7 @@ More Injuries introduces several new research projects that can be undertaken to
 ## Cellular Regenerative Medicine
 
 > **In-Game Description**
-> _"**Cellular regenerative medicine** &mdash; Unlock the secrets of cellular regeneration, a cutting-edge medical technology that allows for the repair and regrowth of damaged tissues at the cellular level. By using mechanites to stimulate the body's natural healing processes, your doctors will be able to cure injuries that were previously considered untreatable, such as hearing and nerve damage. The same technology is used on glitterworlds to treat paralysis and degenerative diseases, but its application is still experimental and its long-term effects are not yet fully understood."_
+> _"**Cellular regenerative medicine** &mdash; Unlocks regenerative treatments for hearing loss, spinal paralysis and neurological damage."_
 
 **Tech Level**: Spacer  
 **Unlocks**: [Cellular regenerative neurosurgery](/docs/wiki/surgeries.md#cellular-regenerative-neurosurgery), [cellular regenerative otologic surgery](/docs/wiki/surgeries.md#cellular-regenerative-otologic-surgery), [mechanite therapy](/docs/wiki/surgeries.md#mechanite-therapy)  

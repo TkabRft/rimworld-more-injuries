@@ -7,7 +7,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 Chemical damage is a collective term for various toxic effects caused by exposure to harmful substances, such as drugs, chemicals, or toxins.
 
 > **In-Game Description**
-> _"**Chemical damage** &mdash; Tissue damage caused by toxic chemical exposure. This may result from direct contact with harmful substances or from the organ's own metabolic processing of certain drugs or toxins, producing reactive intermediates. Such damage often leads to cellular stress, necrosis, or scarring, and may cause irreversible harm to the affected organ, potentially leading to full organ failure if severe enough."_
+> _"**Chemical damage** &mdash; Chemical exposure has damaged this organ. Severe damage can cause organ failure."_
 
 ```mermaid
 ---

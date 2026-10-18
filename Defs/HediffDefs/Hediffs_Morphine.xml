@@ -4,7 +4,7 @@
     <defName>MorphineBuildup</defName>
     <label>morphine high</label>
     <labelNoun>being high on morphine</labelNoun>
-    <description>Morphine is a powerful opioid analgesic used for rapid pain relief in battlefield trauma and emergency care. It works by suppressing the central nervous system, blocking pain signals, inducing sedation, and providing a sense of euphoria. However, it can cause dangerous respiratory depression, lower blood pressure, and worsen shock, making it especially hazardous during uncontrolled bleeding or resuscitation efforts, and potentially fatal in overdose.</description>
+    <description>Reduces pain but suppresses breathing and circulation. Dangerous during severe blood loss or resuscitation; excessive doses can be fatal.</description>
     <defaultLabelColor>(255, 0, 128)</defaultLabelColor>
     <isBad>true</isBad>
     <maxSeverity>1</maxSeverity>
@@ -221,8 +221,7 @@
   <HediffDef Class="MoreInjuries.HealthConditions.Drugs.MedicalDrugHediffDef" ParentName="AddictionBase">
     <defName>MI_MorphineAddiction</defName>
     <label>morphine addiction</label>
-    <description>A chemical addiction to morphine. Long-term use of morphine has caused neurological adaptations at the cellular level, so the brain can no longer function properly without the drug.
-\nWithout regular doses of morphine, withdrawal symptoms will begin. However, extended abstinence will force the brain to adapt back to its normal state, resolving the addiction.</description>
+    <description>Requires regular morphine to avoid withdrawal. Sustained abstinence eventually resolves the addiction.</description>
     <hediffClass>Hediff_Addiction</hediffClass>
     <chemicalNeed>Chemical_MI_Morphine_Chemical</chemicalNeed>
     <comps>

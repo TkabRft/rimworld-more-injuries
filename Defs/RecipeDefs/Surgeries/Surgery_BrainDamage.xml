@@ -3,7 +3,7 @@
   <RecipeDef ParentName="SurgeryFlesh">
     <defName>TreatBrainDamage</defName>
     <label>Treat brain damage: mechanite therapy</label>
-    <description>Mechanite therapy is a glitterworld treatment that uses mechanites to slowly repair neurological damage in the brain on a cellular level. The procedure is expensive and may take several days to complete, but has shown promising results in restoring cognitive function and memory in patients with severe brain damage. Due to the experimental nature of this treatment, it is not widely available and may require multiple sessions to achieve the desired results.</description>
+    <description>Starts mechanite therapy to repair neurological damage gradually. Recovery takes several days and may require further treatment.</description>
     <workerClass>MoreInjuries.HealthConditions.BrainDamage.Recipe_TreatRandomBrainDamage</workerClass>
     <jobString>Injecting mechanites into {0}'s brain to repair damage.</jobString>
     <workAmount>750</workAmount>

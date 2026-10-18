@@ -8,11 +8,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 Hemodilution is a condition that occurs when the concentration of red blood cells in the blood is reduced, such as through excessive usage of [saline IV infusions](/docs/wiki/medical-devices.md#saline-iv-bag) for fluid resuscitation, leading to a decrease in the blood's ability to carry oxygen.
 
 > **In-Game Description**
-> _"**Hemodilution** &mdash; Hemodilution is the dilution of the concentration of red blood cells and plasma constituents by partially substituting the blood with colloids or crystalloids. It often occurs as a result of excessive fluid resuscitation, particularly in trauma patients, when large volumes of saline or other intravenous fluids are administered to restore blood volume and pressure after significant blood loss.<br>
-> While the body can compensate for some degree of hemodilution, excessive dilution can lead to a significant reduction in the oxygen-carrying capacity of the blood and impair coagulation. In severe cases, it can result in hypoxia and dilutional coagulopathy, both of which can lead to increased risk of hemorrhage, organ failure, and death if not managed appropriately.<br>
-> Hemodilution is typically treated by carefully managing fluid resuscitation, using blood products to restore red blood cell and plasma levels, and monitoring the patient's hemodynamic status closely to prevent complications.<br>
-> A saline bag reduces blood-loss severity by 15 percentage points but adds dilution. A blood bag reduces blood-loss severity by 35 percentage points and reduces existing dilution. Automatic saline treatment stops before its dilution safety limit and may be refused when other causes of coagulopathy are present. A forced single infusion bypasses those safety checks.<br>
-> With delayed vital failure enabled, dilution above 45% can contribute to accumulating cerebral hypoxia. Blood products can address this oxygen-carrying deficit; further saline can worsen it."_
+> _"**Hemodilution** &mdash; Diluted blood increases bleeding and reduces oxygen delivery; above 45%, it can drive cerebral hypoxia. Transfuse blood to reduce dilution. Saline restores volume but worsens dilution; forced single infusions bypass automatic safety checks."_
 
 ```mermaid
 ---

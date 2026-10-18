@@ -11,7 +11,7 @@ Choking is a medical emergency that occurs when a foreign object becomes lodged 
 ## Choking on Blood
 
 > **In-Game Description**
-> _"**Choking on blood** &mdash; Blood from traumatic injuries being aspirated into the airways triggers coughing and causes suffocation. The bleeding must be stopped and the airways cleared to prevent death. If the patient is conscious, they may be able to cough up the blood on their own and clear the airway. Otherwise, the airways must be cleared using a specialized airway suction device or by compressing the chest using CPR to expel the blood and restore breathing."_
+> _"**Choking on blood** &mdash; Blood obstructs breathing. Stop the bleeding and clear the airway with CPR or a suction device. Conscious patients may cough it clear themselves."_
 
 ```mermaid
 ---
@@ -42,7 +42,7 @@ flowchart LR
 ## Choking on Tourniquet
 
 > **In-Game Description**  
-> _"**Choking on tourniquet** &mdash; A severe lack of intellect caused a potentially fatal mishap in form of a misapplied tourniquet."_
+> _"**Choking on tourniquet** &mdash; A misapplied tourniquet is causing suffocation. Remove it immediately."_
 
 **Causes**: Someone had the bright idea to apply a [tourniquet](/docs/wiki/medical-devices.md#tourniquet) to the neck :woozy_face: Only a severe lack of intellect and medical incompetence can cause this condition.
 

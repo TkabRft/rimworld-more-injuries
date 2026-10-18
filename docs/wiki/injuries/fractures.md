@@ -12,8 +12,7 @@ When a pawn takes damage to a bone or solid body part, there is a chance that a 
 ## Bone Fracture
 
 > **In-Game Description**  
-> _"**Bone fracture** &mdash; A partial or complete break of a bone caused by trauma, overuse, or disease. The bone may be cracked, splintered, or completely broken into two or more pieces. Until properly treated, the affected limb will be unable to bear weight or move properly, causing severe pain and loss of function.  
-> Must either be splinted to immobilize the bone and promote healing over time, or surgically repaired to realign and stabilize the bone, allowing for quick recovery."_
+> _"**Bone fracture** &mdash; A broken bone causes pain and impairs the affected part. Apply a splint for gradual healing or surgically repair it for faster recovery."_
 
 ```mermaid
 ---
@@ -40,8 +39,7 @@ flowchart LR
 ## Healing Bone Fracture
 
 > **In-Game Description**  
-> _"**Healing bone fracture** &mdash; A bone fracture that is in the process of healing. The bone is still weak and restricted in movement, but the limb is slowly regaining function as the bone knits back together.  
-> Over time, the bone will become stronger and the limb will regain full function."_
+> _"**Healing bone fracture** &mdash; This stabilized fracture heals gradually. Pain and impaired function persist until recovery."_
 
 **Causes**: A [bone fracture](#bone-fracture) that has been stabilized with a [splint](/docs/wiki/medical-devices.md#splint) and is in the process of healing. Regeneration can also set the break without a splint. That heal starts at full severity, worse than a skilled splint.
 

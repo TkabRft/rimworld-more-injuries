@@ -5,7 +5,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 <!-- @end_generated_block -->
 
 > **In-Game Description**
-> _"**Respiratory failure** &mdash; Breathing has stopped. Restore the airway or functioning lungs immediately. The respiratory failure timer reaches fatal severity in approximately three game hours. Without restored oxygen delivery, unprotected cerebral hypoxia can become fatal in about 1.5 game hours and often limits the rescue window first."_
+> _"**Respiratory failure** &mdash; Breathing has stopped. Restore a clear airway and functioning lungs. Unprotected cerebral hypoxia can kill in about 1.5 game hours, before the roughly three-hour respiratory failure timer."_
 
 This condition is part of delayed vital failure, enabled by default for appropriate fleshy pawns, including animals and supported alien races and entities. Anatomy and native protections determine which failures apply. Creatures that do not require air do not develop respiratory failure from absent lungs. Progression varies modestly between updates. Animal shock, acidosis and broader trauma support remain outside this module.
 
