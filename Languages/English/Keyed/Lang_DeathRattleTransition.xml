@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- EN: More Injuries: Death Rattle transition -->
+  <MI_DR_TransitionTitle>More Injuries: Death Rattle transition</MI_DR_TransitionTitle>
+  <!-- EN: More Injuries now provides delayed vital failure, neurological damage and artificial coma. Existing Death Rattle conditions and supported treatment bills have been migrated. More Injuries takes priority while both mods are active.\n\nSave under a NEW name, keeping your original save as a backup. After the save finishes without a transition error, quit, disable Death Rattle, restart and load the new save. More Injuries validates the saved copy before removing Death Rattle from its dependency metadata.\n\nThis notification is shown once per saved game. Do not remove More Injuries from the migrated save. -->
+  <MI_DR_TransitionReady>More Injuries now provides delayed vital failure, neurological damage and artificial coma. Existing Death Rattle conditions and supported treatment bills have been migrated. More Injuries takes priority while both mods are active.\n\nSave under a NEW name, keeping your original save as a backup. After the save finishes without a transition error, quit, disable Death Rattle, restart and load the new save. More Injuries validates the saved copy before removing Death Rattle from its dependency metadata.\n\nThis notification is shown once per saved game. Do not remove More Injuries from the migrated save.</MI_DR_TransitionReady>
+  <!-- EN: Death Rattle migration could not finish safely: {0}\n\nKeep Death Rattle enabled and retain your original save. Do not treat a new save as ready for removal until this issue is resolved. -->
+  <MI_DR_TransitionBlocked>Death Rattle migration could not finish safely: {0}\n\nKeep Death Rattle enabled and retain your original save. Do not treat a new save as ready for removal until this issue is resolved.</MI_DR_TransitionBlocked>
+  <!-- EN: The saved copy still needs attention before Death Rattle can be removed: {0}\n\nIts dependency metadata was retained. Keep Death Rattle enabled and keep your original backup. -->
+  <MI_DR_SaveBlocked>The saved copy still needs attention before Death Rattle can be removed: {0}\n\nIts dependency metadata was retained. Keep Death Rattle enabled and keep your original backup.</MI_DR_SaveBlocked>
+  <!-- EN: Enable More Injuries' delayed vital failure setting to migrate this save. -->
+  <MI_DR_Disabled>Enable More Injuries' delayed vital failure setting to migrate this save.</MI_DR_Disabled>
+  <!-- EN: Another active mod requires Death Rattle: {0}. -->
+  <MI_DR_DependentMod>Another active mod requires Death Rattle: {0}.</MI_DR_DependentMod>
+  <!-- EN: {0} has an induced coma but cannot receive the supported Wake-up reversal. -->
+  <MI_DR_ComaRestriction>{0} has an induced coma but cannot receive the supported Wake-up reversal.</MI_DR_ComaRestriction>
+  <!-- EN: {0} has an unsupported saved condition or component: {1}. -->
+  <MI_DR_UnsupportedState>{0} has an unsupported saved condition or component: {1}.</MI_DR_UnsupportedState>
+  <!-- EN: More Injuries could not safely neutralize this Death Rattle runtime. Check the game log and keep Death Rattle enabled. -->
+  <MI_DR_PriorityFailed>More Injuries could not safely neutralize this Death Rattle runtime. Check the game log and keep Death Rattle enabled.</MI_DR_PriorityFailed>
+</LanguageData>

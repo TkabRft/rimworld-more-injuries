@@ -10,6 +10,10 @@ public static class Patch_Pawn_ExposeData
 {
     internal static void Postfix(Pawn __instance)
     {
+        if (Scribe.mode == LoadSaveMode.PostLoadInit)
+        {
+            MoreInjuries.Versioning.GameComponent_DeathRattleTransition.Register(__instance);
+        }
         if (Scribe.mode is LoadSaveMode.PostLoadInit
             && __instance.TryGetComp(out MoreInjuryComp comp)
             && comp.MissingJobParameterCache)

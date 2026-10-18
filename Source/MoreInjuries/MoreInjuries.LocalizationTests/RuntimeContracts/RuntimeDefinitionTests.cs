@@ -20,7 +20,12 @@ public sealed class RuntimeDefinitionTests
         MetadataReader metadata = reader.GetMetadataReader();
         var expected = new Dictionary<string, string[]>
         {
-            ["Verse.Pawn_HealthTracker"] = ["CheckForStateChange", "ShouldBeDeadFromRequiredCapacity", "HealthTickInterval"],
+            ["Verse.Pawn_HealthTracker"] = ["CheckForStateChange", "ShouldBeDeadFromRequiredCapacity", "HealthTickInterval", "Notify_Resurrected", "AddHediff"],
+            ["RimWorld.Pawn_MutantTracker"] = ["Turn", "Revert"],
+            ["RimWorld.Pawn_GeneTracker"] = ["Notify_GenesChanged"],
+            ["Verse.ModContentPack"] = ["get_Patches"],
+            ["Verse.PatchOperation"] = ["Apply"],
+            ["Verse.ScribeSaver"] = ["InitSaving", "FinalizeSaving"],
             ["Verse.PawnCapacitiesHandler"] = ["Notify_CapacityLevelsDirty"],
             ["Verse.Hediff"] = ["CauseDeathNow"],
             ["Verse.Hediff_Injury"] = ["Heal"],

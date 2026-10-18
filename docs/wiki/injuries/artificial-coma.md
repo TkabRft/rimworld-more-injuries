@@ -16,6 +16,8 @@ One normal dose of Wake-up reverses the induced state, through an awakening oper
 
 Severity grows by ten percentage points per game day. Risky stages begin at 70%, and above 72% prolonged coma can produce lasting neurological complications. At 100% the condition is lethal unless native death protection prevents it. Re-induction does not reset severity or stack the protective effect. Protection against new oxygen injury does not cancel the coma's own complications.
 
+Existing induced comas can be converted during the [Death Rattle transition](/docs/wiki/save-compatibility.md#death-rattle-transition), preserving their severity. If native drug restrictions prevent reversal, the transition reports the exceptional state rather than silently removing it.
+
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---
 _[back to the top](#artificial-coma)_

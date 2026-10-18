@@ -33,10 +33,16 @@ These mods are known to be compatible with More Injuries, but they aren't direct
 ### Partial Support
 
 - Humanoid Alien Races: The integration adds injury tracking to fleshy races, including races that omit `isFlesh` inside a compatibility block. Explicit false values remain excluded. Mixed comp lists and already-present injury comps are handled without duplicate insertion. Custom alien anatomy and individual race mods still need game acceptance.
-- Anomaly (DLC): Bleeding fleshy entities, including fleshbeasts, participate in hypovolemic shock and its trauma complications, and respect the direct blood-loss death prevention setting. Ordinary animals, mechanical entities, and entities with a zero race bleed rate are not added by this integration. This covers trauma physiology; automatic medical-device work scanning remains limited to humanlike patients. Regeneration clears fractures without a splint, and fades spinal paralysis and permanent brain damage other than a personality shift after the injury on that body part is gone. Chronophagy, unnatural healing, healer mech serum, luciferium, and biosculpter cycles are unchanged.
+- Anomaly (DLC): Bleeding fleshy entities, including fleshbeasts, participate in hypovolemic shock and its trauma complications, and respect the direct blood-loss death prevention setting. Ordinary animals, mechanical entities, and entities with a zero race bleed rate are not added by this integration. This paragraph describes trauma eligibility. The separate vital-failure module now also covers appropriate fleshy animals, and emergency medical-device scanning includes eligible owned nonhuman patients. Regeneration clears fractures without a splint, and fades spinal paralysis and permanent brain damage other than a personality shift after the injury on that body part is gone. Chronophagy, unnatural healing, healer mech serum, luciferium, and biosculpter cycles are unchanged.
 
 ### Incompatible Mods
 
-If a mod is listed here, it is known to cause issues with More Injuries and is not recommended for use together.
+No additional incompatible mod is declared by this expansion. Death Rattle uses the transition workflow below.
 
-- Death Rattle Continued (`Troopersmith1.DeathRattle`): incompatible by design with the built-in delayed vital failure replacement. Use separate loadouts. This version does not migrate existing Death Rattle conditions or provide a safe removal pipeline. See [vital failure](docs/vital-failure.md) and [deferred transition work](docs/medical-expansion-todo.md).
+### Death Rattle transition
+
+- Death Rattle Continued (`Troopersmith1.DeathRattle`): MI takes priority during the supported 1.6 transition. Its XML operations and Harmony owner are neutralized while source defs remain available for loading. Follow the one-time in-game message: keep a backup, save a new copy, quit, disable Death Rattle and restart. Failed migration/save validation means keep Death Rattle enabled. Unknown saved extensions or dependent mods can block handoff. See [vital failure](docs/vital-failure.md), the [transition contract](docs/death-rattle-transition.md) and [expansion work](docs/medical-expansion-todo.md).
+- Odyssey: vanilla vacuum resistance/exposure remains authoritative. Breathless and protective equipment do not grant immunity to internal pumping failure. No parallel vacuum damage source is added.
+- Anomaly: mutant air-breathing, medical/drug restrictions, transformation cleanup, regeneration and shambler settings are respected. Native scripted deaths and death protection remain effective.
+
+The implementation and source-linked tests target pinned RimWorld 1.6 references. Live migration, custom races and DLC scenarios require the documented game acceptance checks.

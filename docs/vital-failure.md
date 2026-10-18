@@ -4,13 +4,13 @@ code-synced: 2026-10-18
 
 ## Current contract
 
-Status: `implemented` for the current RimWorld 1.6 build. `EnableDelayedVitalFailure` defaults to true. The module covers appropriate fleshy pawns, including animals, HAR races and Anomaly entities, all factions, respecting native physiology and the shambler setting. Mechanical pawns remain excluded. Animal trauma and shock/acidosis remain separate. See the [player hypoxia guide](wiki/injuries/hypoxia.md) and [future expansion work](medical-expansion-todo.md).
+Status: `implemented` for the current RimWorld 1.6 build. `EnableDelayedVitalFailure` defaults to true. The module covers appropriate fleshy pawns, including ordinary animals, HAR races and fleshy Anomaly entities, all factions, respecting the shambler setting. Mechanical pawns remain excluded. Animal trauma, shock/acidosis and direct blood-loss policy remain separate. See the [player hypoxia guide](wiki/injuries/hypoxia.md) and [future expansion work](medical-expansion-todo.md).
 
-This is an independent implementation using More Injuries conditions and treatments. Death Rattle's package is declared incompatible. Startup reports the unsupported combination; separate loadouts are required. No Death Rattle classes, identifiers, saved conditions, or settings are imported. Existing saves containing Death Rattle must not be treated as migrated saves.
+This is an independent implementation using More Injuries conditions and treatments. The optional [Death Rattle transition](death-rattle-transition.md) establishes MI priority while both mods are active, converts supported saved state and validates the saved copy before removal. Unknown layouts or references block a successful removal report. [Neurological runtime](neurological-runtime.md) owns clinical injury scaling, outcome profiles and artificial coma.
 
 ## Death policy and anatomy
 
-`VitalFailure_Initializer` adds a lightweight `VitalFailureComp` once to eligible pawn defs after XML processing. It does not inject the full injury-worker pipeline into Anomaly entities. Anatomy is cached by BodyDef using consciousness-source, pumping-source, liver, and kidney tags. All members of a present organ group must be nonfunctional before that group's failure is created. A group absent from the anatomy is not considered a missing organ. Added/replacement parts are evaluated through the native part-efficiency API.
+`VitalFailure_Initializer` adds a lightweight `VitalFailureComp` once to eligible pawn defs after XML processing. It does not inject the full injury-worker pipeline into animals or Anomaly entities. Anatomy is cached by BodyDef using consciousness-source, pumping-source, liver, and kidney tags. All members of a present organ group must be nonfunctional before that group's failure is created. A group absent from the anatomy is not considered a missing organ. Added/replacement parts are evaluated through the native part-efficiency API.
 
 The required-capacity guard suppresses only the supported first failed capacity and checks for other unsupported lethal capacities before returning. Structural destruction of all consciousness sources retains native death. Unrelated hediff lethality, lethal-damage thresholds, execution, forced blood harvesting, and the existing direct blood-loss policy remain unchanged.
 
@@ -29,7 +29,7 @@ The controller reads actual XML curves from `MI_VitalFailureConfig`:
 - Dilution deprivation: (0,0), (0.45,0), (0.75,0.25), (1,1).
 - Combine sources by maximum, then apply existing hypothermia protection: (0,1), (0.2,0.8), (0.6,0.45), (1,0.2).
 
-Add `64 * deprivation * randomFactor * (250 / 60000)` to the existing `BrainDamage_Hypoxia`, attached to a surviving consciousness source. Severity 8 is terminal while the module owns progression and oxygen protection/deathrest does not apply. No oxygen-debt counter, new brain condition, or history buffer is stored.
+Add `64 * deprivation * randomFactor * (250 / 60000) * anatomyScale * comaMultiplier` to the existing `BrainDamage_Hypoxia`, attached to a surviving consciousness source. Clinical severity 8 is terminal while the module owns progression and oxygen protection/deathrest does not apply. No oxygen-debt counter, new brain condition, or history buffer is stored.
 
 Systemic cerebral rolls from shock, arrest, and hemodilution are skipped only when this controller owns progression. Random organ-injury handlers and focal sources such as stroke remain. Lasting neurological outcomes retain existing identifiers, chance handlers, and settings. Disabling lasting neurological damage does not disable acute cerebral deterioration. Native healing of organ/cerebral hypoxia is blocked during systemic deprivation and resumes after the source stops; tending cannot erase an unresolved oxygen deficit.
 
@@ -41,7 +41,7 @@ The pumping worker reports zero while arrest is active. Underlying pumping is re
 
 Production CPR and defibrillator methods retain skill, drug modifiers, research, and medical-care restrictions. Successful restart of a functioning pump clears arrest and an initiating terminal heart attack together, without erasing brain injury. A defibrillator cannot treat a nonfunctional pump; CPR cannot permanently restore one. Restoring a mechanically failed pump removes its failure. Artificial hearts retain the old spontaneous-arrest protection, while controller-created circulatory failure can represent a nonfunctional artificial pump. Existing airway treatments and organ-replacement operations remain available; new ventilation/dialysis equipment is deferred.
 
-Deathless/Breathless oxygen immunity and active deathrest suppress new systemic oxygen injury and oxygen-failure conditions. Liver, renal, filtration, and metabolic disease are not made oxygen-immune. Native gene/deathrest handling still governs their eventual outcome; the module does not call Pawn.Kill.
+Deathless oxygen immunity and active deathrest suppress new systemic oxygen injury and oxygen-failure conditions. Liver, renal, filtration, and metabolic disease are not made oxygen-immune. Native gene/deathrest handling still governs their eventual outcome; the module does not call Pawn.Kill.
 
 ## Hooks, scheduling, and persistence
 
@@ -53,23 +53,25 @@ Existing condition severities provide progression state. The new `lastVitalProgr
 
 ## Validation
 
-Release compilation succeeds against the pinned 1.6.4633 reference and Harmony 2.3.6. All 70 focused behavior/localization tests pass, including the earlier shock/acidosis and drug tests. Production-linked tests cover the controller, anatomy, death/healing guards, native-arrest adapter, actual CPR/defibrillator methods, source ownership, actual XML curves/rates, seeded rescue windows and pawn offsets, natural blood recovery, transfusion rescue, mechanical replacement, paired organs, multiple brains, immunity/deathrest/eligibility, recursive checks, scheduling, save/reload, and zero-allocation numeric helpers. Metadata tests verify hook methods and injected pawn fields against the pinned reference.
+Release compilation succeeds against the pinned 1.6.4633 reference and Harmony 2.3.6. All 98 focused behavior/localization tests pass, including the earlier shock/acidosis and drug tests. Production-linked tests cover the controller, anatomy, death/healing guards, native-arrest adapter, actual CPR/defibrillator methods, source ownership, actual XML curves/rates, seeded rescue windows and pawn offsets, natural blood recovery, transfusion rescue, mechanical replacement, paired organs, multiple brains, immunity/deathrest/eligibility, recursive checks, scheduling, save/reload, and zero-allocation numeric helpers. Metadata tests verify hook methods and injected pawn fields against the pinned reference.
 
-The runtime test harness supplies minimal Verse/Unity boundaries; it does not execute the game's serializer, capacity implementation, jobs, or Harmony patch chain. XML parsing, localization coverage, release XML-type coverage, and package load-layout/hash validation pass. The current 1.6 local package contains 221 runtime files. No legacy 1.5 behavior is claimed as tested by this snapshot.
+The runtime test harness supplies minimal Verse/Unity boundaries; it does not execute the game's serializer, capacity implementation, jobs, or Harmony patch chain. XML parsing, localization coverage, release XML-type coverage, and package load-layout/hash validation pass. The current 1.6 local package contains 229 runtime files. No legacy 1.5 behavior is claimed as tested by this snapshot.
 
 ## Manual game acceptance
 
-- Start a separate test loadout without Death Rattle; confirm no XML/type/patch errors and inspect all new condition descriptions.
+- Confirm no XML/type/patch errors with MI alone, then exercise the backed-up two-mod migration and MI-only reload described in the transition guide.
 - Test absent pumping/breathing, terminal heart attack, and prolonged full shock. Confirm a usable rescue window, worsening cerebral hypoxia, and terminal deterioration without successful treatment.
 - Compare poor/good shock tends, expiry, adrenaline, cold, transfusions, and renewed bleeding. Restored volume should stop its ongoing source before visible shock disappears.
 - Run successful/failed CPR and early defibrillation; verify brain injury remains and a missing heart cannot be restarted. Restore an actual pump/lung or clear an airway.
-- Test single/both kidneys, liver/metabolic/filtration failure, custom HAR anatomy, multiple brains, fleshbeasts, small/large animals and excluded mechanical pawns. Preserve immediate structural brain death and forced-harvesting behavior.
+- Test single/both kidneys, liver/metabolic/filtration failure, custom HAR anatomy, multiple brains, fleshbeasts, small/large ordinary animals, and excluded mechanical pawns. Preserve immediate structural brain death and forced-harvesting behavior.
 - Test immunity, deathrest, shamblers, disabled module, save/reload, and caravan/world-pawn progression. Custom alien anatomy and third-party death patches require game acceptance.
 
-## Anatomy and DLC extension
+## DLC and recovery contracts
 
-code-synced: 2026-10-18
+Mutants with `breathesAir=false` do not acquire respiratory failure or a breathing deprivation source. Native bleeding suppression is preserved; `canBleed=false` does not grant circulatory immunity. Native `preventsDeath`, death refusal, scripted deaths, death-on-downed, execution and structural brain destruction remain effective. Repeated gene extraction (`XenogermReplicating >= 2`) retains its native lethal capacity route.
 
-Vital eligibility now covers fleshy animals independently of trauma eligibility. Native mutant breathing and medical-care flags apply. Resurrection and transformation invalidate scheduled state. Deliberately lethal repeated xenogerm extraction remains native. Vacuum-resistance genes no longer provide blanket internal oxygen immunity; native vacuum exposure is unchanged.
+Odyssey environmental protection remains entirely native: MI neither recomputes `VacuumResistance` nor adds a parallel vacuum source. The prior `VacuumResistance_Total` blanket internal-oxygen immunity is removed from the shared helper and XML modifiers. Equipment and breathless genes do not repair pumping or missing lungs. Native vacuum exposure/decompression remains lethal independently of coma's protection.
 
-Cerebral production and terminal thresholds scale by affected part maximum health / 10, with clinical-unit stages and chance curves. A saved cerebralAnatomyScale converts legacy clinical severity once and preserves clinical burden when anatomy changes. Native preventsDeath protection remains authoritative. Emergency care reaches eligible owned nonhuman patients without adding the human injury pipeline.
+`Pawn.Suspended` and death stop updates. Resurrection resumes from the current tick without replaying elapsed time. `Pawn_MutantTracker.Turn/Revert` and `Pawn_GeneTracker.Notify_GenesChanged` invalidate physiology; transformation additionally applies native chronic/permanent cleanup policy to registered neurological conditions. Healthy snapshots refresh after invalidation/settings changes; active failures and regeneration retain the 250-tick gate. Neurological regeneration is gathered in the same scan and remains available independently of the vital-failure setting.
+
+Emergency work scanning and manual CPR/defibrillator/airway menus include eligible owned nonhuman patients without the full injury component. Native medical and mutant restrictions apply. Species still need a compatible native or modded organ-replacement recipe; this module does not invent transplantation operations for every anatomy.

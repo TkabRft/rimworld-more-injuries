@@ -1,15 +1,16 @@
 # Medical expansion follow-up
 
-code-synced: 2026-10-18
+code-synced: 2026-10-18.
 
-The [vital failure module](vital-failure.md) implements the current emergency physiology scope. These items are deliberately deferred; they are not claims that the implemented module is missing.
+The [vital failure module](vital-failure.md), [neurological framework](neurological-runtime.md) and [Death Rattle transition](death-rattle-transition.md) own implemented behavior.
 
-| Work | Status | Required follow-up |
+| Work | Status | Current behavior or remaining work |
 |---|---|---|
-| Ordinary animals | `deferred` | Design eligibility, animal anatomy, treatment availability, balance, and performance before expanding the current humanlike/HAR/Anomaly scope. |
-| Death Rattle save migration | `deferred` | Inventory active source conditions, brain damage, coma, settings, references and recipes; map them without silently dropping severity or disability. No migration exists in this release. |
-| Safe Death Rattle removal pipeline | `deferred` | Provide a staged, validated transition with backups, an explicit readiness report, and post-removal checks. Do not advise removing Death Rattle from an existing affected save as though this were supported. |
-| Elective induced coma | `deferred` | Design deliberate induction, ongoing care, duration, reversal, and compatibility with the existing drug system. Pathological coma already exists. |
-| Ventilation and dialysis | `deferred` | Design equipment, research, jobs, consumables/power, support interruption, and balance. Current rescue uses existing medical tools and organ replacement. |
+| Fleshy animal vital failure | `implemented` | Anatomy-based organ failure and scaled cerebral injury; eligible emergency treatment access. |
+| Full animal injury/trauma framework | `deferred` | Species-appropriate injury workers, hemorrhagic shock/acidosis, transfusion balance, surgical coverage and population-scale game profiling. Ordinary animal hemorrhage retains its existing policy. |
+| Death Rattle save migration/removal | `implemented` | Standard conditions and supported bills migrate with MI priority, one-time instructions and completed-save validation. Unknown layouts/components/references can block handoff and need targeted adapters. |
+| Elective induced coma | `implemented` | Industrial/glitterworld medicine, half cerebral production, prolonged-coma risk and native Wake-up reversal. |
+| Mechanical physiology | `deferred` | Separate machine capacities, failures and repair treatment; no blood/oxygen assumptions. |
+| Ventilation and dialysis | `deferred` | Equipment, research, consumables, power, interruption and balance. |
 
-The present replacement requires separate mod loadouts. Combined operation with Death Rattle is intentionally unsupported; its package is listed as incompatible. New module condition identifiers must remain stable for future migration work.
+Expansion points are deliberately separate: vital eligibility and mutable physiology, cached body-tag anatomy, configurable neurological profiles/condition metadata, emergency patient selection and optional migration adapters. Add species capabilities through these boundaries rather than injecting the complete human injury pipeline into every pawn.

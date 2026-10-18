@@ -18,6 +18,7 @@ Just like base game surgeries, these new surgeries will be available in the *ope
   - [Thoracotomy](#thoracotomy)
   - [Trepanation](#trepanation)
   - [Video-Assisted Thoracoscopic Surgery](#video-assisted-thoracoscopic-surgery)
+  - [Artificial Coma](#artificial-coma)
 <!-- @end_generated_block -->
 
 ## Cellular Regenerative Neurosurgery
@@ -180,6 +181,12 @@ $\rightarrow$ *see [lung collapse](/docs/wiki/injuries/lung-collapse.md#lung-col
 **Surgery Success Chance Factor[^2]**: 135%  
 **Death on Failed Surgery Chance[^3]**: 1%  
 **Work Amount**: 4000
+
+## Artificial Coma
+
+Induce [artificial coma](/docs/wiki/injuries/artificial-coma.md#artificial-coma) to halve new acute hypoxic brain injury while treating its cause. The operation uses **five industrial or glitterworld medicine**, takes **400 work**, and follows native surgery and patient restrictions. Herbal medicine is excluded. Medical-care settings must permit the medicine used; they are not raised automatically.
+
+The patient must be eligible for Wake-up reversal. Repeating induction cannot reset coma severity or stack protection. Schedule reversal with one ordinary dose of Wake-up, or administer it through normal drug handling. Its normal risks remain, and natural [coma](/docs/wiki/injuries/coma.md#coma) is unaffected.
 
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---

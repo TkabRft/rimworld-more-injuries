@@ -41,9 +41,6 @@ internal static class VitalFailure_Initializer
                 def.comps.Add(new VitalFailureCompProperties());
             }
         }
-        if (ModsConfig.IsActive("Troopersmith1.DeathRattle"))
-        {
-            Log.Error("MI_VitalFailure_DeathRattleConflict".Translate());
-        }
+        LongEventHandler.ExecuteWhenFinished(MoreInjuries.Integrations.DeathRattle.DeathRattleBridge.Enforce);
     }
 }

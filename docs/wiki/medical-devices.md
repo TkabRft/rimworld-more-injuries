@@ -23,6 +23,7 @@ In order to effectively treat the new injuries and medical conditions introduced
   - [Splint](#splint)
   - [Thoracoscope](#thoracoscope)
   - [Tourniquet](#tourniquet)
+  - [Artificial Coma](#artificial-coma)
 <!-- @end_generated_block -->
 
 ## Airway Suction Device
@@ -509,7 +510,13 @@ Applying a tourniquet is part of the [First Aid](#first-aid) order for *drafted*
 
 The delayed vital failure module gives an emergency window for [cardiac arrest](/docs/wiki/injuries/cardiac-arrest.md#cardiac-arrest) and [respiratory failure](/docs/wiki/injuries/respiratory-failure.md#respiratory-failure). CPR and early defibrillation can restart a functioning pump, while airway treatment addresses choking. Neither procedure replaces a destroyed heart or lungs. Existing organ-replacement operations remain the treatment for complete organ loss.
 
-Transfusions improve the perfusion-related source of [cerebral hypoxia](/docs/wiki/injuries/hypoxia.md#cerebral-hypoxia); blood also treats dilution. Resuscitation does not erase brain injury already sustained. No ventilator, dialysis machine, or elective induced-coma operation is included in this version.
+Transfusions improve the perfusion-related source of [cerebral hypoxia](/docs/wiki/injuries/hypoxia.md#cerebral-hypoxia); blood also treats dilution. Resuscitation does not erase brain injury already sustained. The [artificial-coma operation](/docs/wiki/injuries/artificial-coma.md#artificial-coma) can reduce new acute hypoxic brain injury while the cause is treated. Ventilators and dialysis remain future work.
+
+## Artificial Coma
+
+[Artificial coma](/docs/wiki/injuries/artificial-coma.md#artificial-coma) is a scheduled [operation](/docs/wiki/surgeries.md#artificial-coma), using five industrial or glitterworld medicine. It halves new acute hypoxic brain injury and limits consciousness to 10%. It does not replace CPR, airway treatment, fluids or organ replacement. One normal Wake-up dose reverses the induced state, with ordinary drug effects and restrictions.
+
+Supported owned fleshy nonhuman patients can receive manual CPR, defibrillation and airway rescue without the full human trauma system. Automatic treatment and manual orders still respect medical-care settings, native patient restrictions, ownership, forbidden status and access. Supporting an entity's physiology does not authorize treatment of every hostile or contained entity.
 
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---

@@ -15,9 +15,6 @@
       <steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=2009463077</steamWorkshopUrl>
     </li>
   </modDependencies>
-  <incompatibleWith>
-    <li>Troopersmith1.DeathRattle</li>
-  </incompatibleWith>
   <loadAfter>
     <li>brrainz.harmony</li>
     <li>CETeam.CombatExtended</li>

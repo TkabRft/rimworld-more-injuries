@@ -17,7 +17,11 @@ internal static class Patch_VitalFailure_HealthTick
 [HarmonyPatch(typeof(Pawn_HealthTracker), nameof(Pawn_HealthTracker.CheckForStateChange))]
 internal static class Patch_VitalFailure_StateChange
 {
-    internal static void Prefix(Pawn ___pawn) => VitalFailureComp.For(___pawn)?.Refresh();
+    internal static void Prefix(Pawn ___pawn)
+    {
+        if (MoreInjuries.Integrations.DeathRattle.DeathRattleBridge.MigratingPawn != ___pawn)
+        { VitalFailureComp.For(___pawn)?.Refresh(); }
+    }
 }
 
 [HarmonyPatch(typeof(PawnCapacitiesHandler), nameof(PawnCapacitiesHandler.Notify_CapacityLevelsDirty))]

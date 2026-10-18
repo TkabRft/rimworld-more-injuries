@@ -30,7 +30,7 @@ public sealed partial class VitalFailureComp : ThingComp
 
     private Pawn Patient => (Pawn)parent;
     internal bool ReadingUnderlying { get; private set; }
-    internal bool CreatingCirculatoryFailure { get; private set; }
+    internal bool CreatingCirculatoryFailure { get; set; }
     internal float Deprivation => _deprivation;
 
     internal static bool EnabledFor(Pawn pawn) => MoreInjuriesMod.Settings.EnableDelayedVitalFailure && CanUpdate(pawn);

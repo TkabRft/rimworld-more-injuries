@@ -13,7 +13,9 @@ This condition is part of delayed vital failure, enabled by default for appropri
 
 Restoring the underlying function removes the failure. Existing [hypoxic injury](/docs/wiki/injuries/hypoxia.md#hypoxia) and [lasting brain damage](/docs/wiki/injuries/brain-damage.md#brain-damage) require their own recovery or treatment. Removing all structurally surviving consciousness sources remains immediately fatal.
 
-Use this module in a separate loadout without Death Rattle. This release does not migrate Death Rattle conditions or make removing that mod from an existing save safe.
+To move an existing Death Rattle save to More Injuries, follow the [save transition instructions](/docs/wiki/save-compatibility.md#death-rattle-transition). Keep Death Rattle enabled until the transition succeeds and a new copy has been saved.
+
+Natural coma is separate from [artificial coma](/docs/wiki/injuries/artificial-coma.md#artificial-coma). Wake-up reversal of an induced state does not cure natural coma or its underlying cause. An imposed 10% consciousness ceiling alone does not create zero-consciousness coma.
 
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---

@@ -81,6 +81,8 @@ With delayed vital failure enabled, severe systemic oxygen deprivation steadily 
 
 Stopping the source permits normal injury recovery, but does not erase existing cerebral injury or [lasting disabilities](/docs/wiki/injuries/brain-damage.md#brain-damage). The neurological-damage setting controls those lasting outcomes; it does not disable acute cerebral deterioration. [Respiratory failure](/docs/wiki/injuries/respiratory-failure.md#respiratory-failure) and [cardiac arrest](/docs/wiki/injuries/cardiac-arrest.md#cardiac-arrest) require correction of breathing or circulation. Zero consciousness alone can cause [coma](/docs/wiki/injuries/coma.md#coma), without necessarily implying oxygen deprivation.
 
+[Artificial coma](/docs/wiki/injuries/artificial-coma.md#artificial-coma) halves new acute hypoxic brain injury, including focal sources, while doctors treat the cause. It neither removes existing damage nor slows shock, acidosis or organ-failure timers. It does not protect against native vacuum exposure or decompression. Native regeneration does not supply oxygen: ordinary acute injury healing remains blocked until deprivation stops.
+
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---
 _[back to the top](#hypoxia)_

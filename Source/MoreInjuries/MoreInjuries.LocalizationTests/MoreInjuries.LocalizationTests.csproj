@@ -38,6 +38,8 @@
         <Compile Include="..\MoreInjuries\HealthConditions\Secondary\Handlers\HediffMakers\HediffMakerDef.cs" Link="RuntimeContracts\Production\HediffMakerDef.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\Secondary\Handlers\HediffMakers\WeightedHediffMakerDef.cs" Link="RuntimeContracts\Production\WeightedHediffMakerDef.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\Secondary\Handlers\HediffMakers\HediffMakerProperties.cs" Link="RuntimeContracts\Production\HediffMakerProperties.cs" />
+        <Compile Include="..\MoreInjuries\Integrations\DeathRattle\TransitionSaveValidator.cs" Link="RuntimeContracts\Production\TransitionSaveValidator.cs" />
+        <Compile Include="..\MoreInjuries\Versioning\GameComponent_DeathRattleTransition.cs" Link="RuntimeContracts\Production\GameComponent_DeathRattleTransition.cs" />
     </ItemGroup>
 
     <!-- Exercise the production scheduler headlessly, with the small Verse stand-ins under RuntimeContracts. -->

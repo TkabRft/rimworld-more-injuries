@@ -42,4 +42,4 @@ Two indexed passes over each small compiled profile avoid interface-enumerator a
 
 ## Validation
 
-The Release build against pinned 1.6.4633 succeeds. All the focused production-linked suite pass, covering actual XML profiles, scaling/reload/growth, source metadata, animal filtering, zero-weight exclusion, zero warmed helper allocations, coma production and medicine filters, regeneration, native protection/suspension, existing shock/acidosis balance, migration and localization. The harness executes production code with minimal native boundaries; live capacity, ingestion, surgery and Harmony-chain behavior remain game acceptance checks.
+The Release build against pinned 1.6.4633 succeeds. All 98 focused tests pass, covering actual XML profiles, scaling/reload/growth, source metadata, animal filtering, zero-weight exclusion, zero warmed helper allocations, coma production and medicine filters, regeneration, native protection/suspension, existing shock/acidosis balance, migration and localization. The harness executes production code with minimal native boundaries; live capacity, ingestion, surgery and Harmony-chain behavior remain game acceptance checks.

@@ -324,6 +324,7 @@
   <MI_Settings_VitalFailure_EnableLabel>Delayed vital failure</MI_Settings_VitalFailure_EnableLabel>
   <!-- EN: Replace instant vital-capacity death with organ failure and accumulating cerebral hypoxia for supported fleshy pawns. Requires a separate loadout without Death Rattle. Switching this off restores ordinary capacity death rules. -->
   <MI_Settings_VitalFailure_EnableTooltip>Replace instant vital-capacity death with organ failure and accumulating cerebral hypoxia for supported fleshy pawns. Requires a separate loadout without Death Rattle. Switching this off restores ordinary capacity death rules.</MI_Settings_VitalFailure_EnableTooltip>
-  <!-- EN: More Injuries delayed vital failure replaces Death Rattle. Use separate loadouts; existing Death Rattle saves cannot be migrated by this version. -->
-  <MI_VitalFailure_DeathRattleConflict>More Injuries delayed vital failure replaces Death Rattle. Use separate loadouts; existing Death Rattle saves cannot be migrated by this version.</MI_VitalFailure_DeathRattleConflict>
+  <!-- EN: More Injuries takes priority over Death Rattle. Follow the in-game migration notice before removing Death Rattle. -->
+  <!-- OPTS: {"allow_unused": true} -->
+  <MI_VitalFailure_DeathRattleConflict>More Injuries takes priority over Death Rattle. Follow the in-game migration notice before removing Death Rattle.</MI_VitalFailure_DeathRattleConflict>
 </LanguageData>
