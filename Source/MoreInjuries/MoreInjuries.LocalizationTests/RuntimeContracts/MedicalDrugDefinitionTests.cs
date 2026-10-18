@@ -7,8 +7,8 @@ namespace MoreInjuries.LocalizationTests.RuntimeContracts;
 public sealed class MedicalDrugDefinitionTests
 {
     [TestMethod]
-    [DataRow("Morphine", "MI_Morphine_Chemical", 0.99f)]
-    [DataRow("Ketamine", "MI_Ketamine_Chemical", 0.05f)]
+    [DataRow("Morphine", "MI_Morphine_Chemical", 0.05f)]
+    [DataRow("Ketamine", "MI_Ketamine_Chemical", 0.02f)]
     [DataRow("Epinephrine", "", 0f)]
     [DataRow("Chloroform", "", 0f)]
     public void InheritedDrugComponentsExposeTheConfiguredChemicalAndChance(string name, string chemical, float chance)

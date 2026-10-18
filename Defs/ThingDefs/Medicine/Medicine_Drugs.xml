@@ -169,7 +169,7 @@
     <comps>
       <li Class="CompProperties_Drug">
         <chemical>MI_Ketamine_Chemical</chemical>
-				<addictiveness>0.05</addictiveness>
+				<addictiveness>0.02</addictiveness>
 				<existingAddictionSeverityOffset>0.2</existingAddictionSeverityOffset>
 				<needLevelOffset>1</needLevelOffset>
 				<listOrder>20</listOrder>
@@ -336,7 +336,7 @@
     <comps>
       <li Class="CompProperties_Drug">
 				<chemical>MI_Morphine_Chemical</chemical>
-				<addictiveness>0.99</addictiveness>
+				<addictiveness>0.05</addictiveness>
 				<existingAddictionSeverityOffset>0.2</existingAddictionSeverityOffset>
 				<needLevelOffset>1</needLevelOffset>
         <isCombatEnhancingDrug>true</isCombatEnhancingDrug>

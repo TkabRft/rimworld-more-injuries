@@ -31,7 +31,7 @@ flowchart LR
 
 **Treatment**: Ketamine is automatically metabolized by the body over time. Supportive care in cases of overdose may include administering [epinephrine](/docs/wiki/medical-devices.md#epinephrine-autoinjector) to stimulate breathing and counteract respiratory depression.
 
-**Addiction**: At zero tolerance and without protective genes, each dose has a 5% chance to cause a ketamine addiction. Tolerance increases that chance. The addiction adds a ketamine need. That need drains over time; when it is empty, withdrawal begins (a mood penalty, harder learning, and a higher chance of a mental break). Another dose of ketamine, whether a doctor injects it or the pawn uses the autoinjector, refills the need and ends withdrawal. The addiction itself fades only with abstinence. With Biotech, dependency, resistance, and immunity genes for ketamine are already generated from the chemical. A dependency gene prevents a new addiction. Resistance halves tolerance buildup and overdose chance. Immunity blocks both.
+**Addiction**: At zero tolerance and without protective genes, each dose has a 2% base chance to cause a ketamine addiction. Tolerance increases that chance. The addiction adds a ketamine need. That need drains over time; when it is empty, withdrawal begins (a mood penalty, harder learning, and a higher chance of a mental break). Another dose of ketamine, whether a doctor injects it or the pawn uses the autoinjector, refills the need and ends withdrawal. The addiction itself fades only with abstinence. With Biotech, dependency, resistance, and immunity genes for ketamine are already generated from the chemical. A dependency gene prevents a new addiction. Resistance halves tolerance buildup and overdose chance. Immunity blocks both.
 
 > [!TIP]
 > Anesthetics offer a wide range of possibilities in RimWorld gameplay. From ensuring hostile pawns stay unconscious while rendering first aid before capturing them, safely "calming down" colonists on violent mental breaks, or even for self-sedation and "playing dead" as a last resort in combat when escape is not an option. Feel free to experiment with the new possibilites. Beware though that sedating someone without medical necessity is considered a hostile action.
@@ -39,6 +39,8 @@ flowchart LR
 **Dose consistency**: Doctor injections and direct use apply the same ketamine dose, addiction check, tolerance buildup, and overdose rules. Tolerance can weaken the high while increasing addiction risk; body size and chemical genes apply where configured. An injection also satisfies an existing addiction.
 
 **Inspecting effects**: Open the ketamine autoinjector information card or the linked ketamine buildup, tolerance, or addiction information card to see numerical effects. Buildup stages list their severity thresholds and modifiers; addiction cards distinguish withdrawal from the satisfied state. Tolerance cards show drug-effect samples and the configured recovery rate. With Biotech, ketamine gene icons show its autoinjector over a large heart for dependency, a half-shield for resistance, or a full shield for immunity.
+
+Five doses at the base 2% chance give about a 10% chance of at least one addiction roll succeeding. Tolerance and native gene modifiers can change the actual risk. Doctor administration and self-use have the same base chance; doses, tolerance buildup, withdrawal and overdose rules are unchanged.
 
 <!-- @generate_link_to_top {"template": "---\n_[back to the top]({1})_"} -->
 ---
