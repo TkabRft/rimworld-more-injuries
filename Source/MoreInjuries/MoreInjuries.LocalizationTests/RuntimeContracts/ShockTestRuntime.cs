@@ -74,7 +74,7 @@ namespace Verse
         public bool IsTended => tendTicksLeft > 0;
     }
 
-    public sealed partial class Thing;
+    public partial class Thing;
 
     public static class GenDate
     {
@@ -127,6 +127,8 @@ namespace MoreInjuries.Defs.WellKnown
         public static readonly Verse.HediffDef HeartAttack = new() { lethalSeverity = 1f };
         public static readonly Verse.HediffDef BrainDamage_Hypoxia = new();
         public static readonly Verse.HediffDef OrganHypoxia = new();
+        public static readonly Verse.HediffDef Concussion = new();
+        public static readonly Verse.HediffDef HemorrhagicStroke = new();
         public static readonly Verse.HediffDef ChokingOnBlood = new();
     }
 }
@@ -150,6 +152,8 @@ namespace MoreInjuries
     public sealed class TestSettings
     {
         public bool EnableHypovolemicShock = true;
+        public bool EnableNeuralDamage = true;
+        public bool AnomalyRegenerationTreatsStructuralDamage = true;
         public bool EnableDelayedVitalFailure = true;
         public float DefibrillatorMinimumSuccessRate = .5f;
         public bool AnomalyEnableConditionsForShamblers = true;
@@ -191,7 +195,7 @@ namespace MoreInjuries.HealthConditions.HypovolemicShock
 
 namespace Verse
 {
-    public static class Find
+    public static partial class Find
     {
         public static readonly TickManager TickManager = new();
     }

@@ -12,19 +12,18 @@ namespace HarmonyLib
 
 namespace Verse
 {
-    public class Def;
+    public class Def { public string defName = ""; public virtual void ResolveReferences() { } public virtual IEnumerable<string> ConfigErrors() => []; }
     public class DefModExtension;
-    [AttributeUsage(AttributeTargets.Class)] public sealed class DefOfAttribute : Attribute;
-    public static class DefOfHelper { public static void EnsureInitializedInCtor(Type type) { } }
     public class CompProperties { public Type compClass = null!; }
     public class ThingComp
     {
         public object parent = null!;
         public virtual void PostExposeData() { }
     }
-    public partial class HediffDef
+    public partial class HediffDef : Def
     {
         public float lethalSeverity = -1f;
+        public float maxSeverity = float.MaxValue;
         public T? GetModExtension<T>() where T : class => Extension as T;
     }
     public partial class Hediff
@@ -59,7 +58,7 @@ namespace Verse
     public sealed partial class RaceProperties { public BodyDef body = new(); }
     public sealed class BodyDef { public List<BodyPartRecord> AllParts = []; }
     public sealed class BodyPartTagDef;
-    public sealed class BodyPartDef { public List<BodyPartTagDef> tags = []; }
+    public sealed class BodyPartDef { public List<BodyPartTagDef> tags = []; public float MaxHealth = 10; public float GetMaxHealth(Pawn pawn) => MaxHealth; }
     public sealed class BodyPartRecord
     {
         public BodyPartDef def = new();
@@ -70,6 +69,8 @@ namespace Verse
     public sealed partial class HediffSet
     {
         public Pawn pawn = null!;
+        public bool HasPreventsDeath;
+        public void DirtyCache() { }
         public readonly Dictionary<PawnCapacityDef, float> Capacities = [];
         public int CapacityReads;
         public bool PartIsMissing(BodyPartRecord part) => part.Missing;
@@ -127,6 +128,7 @@ namespace Verse
     }
     public sealed class Pawn_HealthTracker
     {
+        public void Notify_Resurrected() { }
         public void CheckForStateChange() { }
         public PawnCapacityDef? ShouldBeDeadFromRequiredCapacity() => null;
         public void HealthTickInterval(int delta) { }
@@ -140,6 +142,7 @@ namespace Verse
     public static class DefDatabase<T>
     {
         public static readonly List<T> AllDefsListForReading = [];
+        public static T? GetNamedSilentFail(string name) => AllDefsListForReading.OfType<Def>().FirstOrDefault(d => d.defName == name) is T value ? value : default;
     }
 }
 

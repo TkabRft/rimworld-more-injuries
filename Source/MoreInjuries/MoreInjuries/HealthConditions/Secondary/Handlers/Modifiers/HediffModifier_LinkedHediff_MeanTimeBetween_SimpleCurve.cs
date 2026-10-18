@@ -15,7 +15,7 @@ public sealed partial class HediffModifier_LinkedHediff_MeanTimeBetween_SimpleCu
         {
             return Unchanged;
         }
-        float mttf = MttfDaysBySeverity.Evaluate(linkedHediff.Severity);
+        float mttf = MttfDaysBySeverity.Evaluate(MoreInjuries.HealthConditions.BrainDamage.CerebralInjury.ClinicalSeverity(linkedHediff));
         return GetChanceFromMttf(mttf, compHandler.TickInterval);
     }
 }

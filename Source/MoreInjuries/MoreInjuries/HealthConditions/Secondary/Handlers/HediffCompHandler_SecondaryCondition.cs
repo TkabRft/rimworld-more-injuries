@@ -1,4 +1,5 @@
 using MoreInjuries.Extensions;
+using MoreInjuries.HealthConditions.BrainDamage;
 using MoreInjuries.Defs.WellKnown;
 using MoreInjuries.HealthConditions.VitalFailure;
 using MoreInjuries.HealthConditions.Secondary.Handlers.HediffMakers;
@@ -64,7 +65,7 @@ public abstract partial class HediffCompHandler_SecondaryCondition : HediffCompH
         if (targetBodyPart is null && !comp.Pawn.health.hediffSet.TryGetHediff(hediffDef, out existingHediff)
             || targetBodyPart is not null && !comp.Pawn.health.hediffSet.TryGetFirstHediffMatchingPart(targetBodyPart, hediffDef, out existingHediff))
         {
-            float initialSeverity = hediffMakerDef.GetInitialSeverity();
+            float initialSeverity = GetSeverity(comp, hediffMakerDef, targetBodyPart);
             Hediff hediff = MakeHediff(comp, hediffDef, targetBodyPart, initialSeverity);
             PostApplyHediff(comp, hediff);
             return;
@@ -78,7 +79,7 @@ public abstract partial class HediffCompHandler_SecondaryCondition : HediffCompH
         if (hediffMakerDef.AllowDuplicate)
         {
             // if duplicates are allowed, we can create a new hediff even if it already exists
-            float initialSeverity = hediffMakerDef.GetInitialSeverity();
+            float initialSeverity = GetSeverity(comp, hediffMakerDef, targetBodyPart);
             Hediff hediff = MakeHediff(comp, hediffDef, targetBodyPart, initialSeverity);
             PostApplyHediff(comp, hediff);
         }
@@ -86,8 +87,15 @@ public abstract partial class HediffCompHandler_SecondaryCondition : HediffCompH
         {
             // otherwise, we update the existing hediff's severity
             UpdateHediffCause(existingHediff, comp);
-            existingHediff.Severity += hediffMakerDef.GetInitialSeverity();
+            existingHediff.Severity += GetSeverity(comp, hediffMakerDef, targetBodyPart);
         }
+    }
+
+    private static float GetSeverity(HediffComp_SecondaryCondition comp, HediffMakerDef maker, BodyPartRecord? targetPart)
+    {
+        float severity = maker.GetInitialSeverity();
+        return maker.HediffDef == KnownHediffDefOf.BrainDamage_Hypoxia
+            ? severity * CerebralInjury.Scale(comp.Pawn, targetPart) : severity;
     }
 
     protected virtual Hediff MakeHediff(HediffComp_SecondaryCondition sourceComp, HediffDef hediffDef, BodyPartRecord? targetBodyPart, float severity)

@@ -12,7 +12,7 @@ public partial class HediffModifier_MeanTimeBetween_SimpleCurve_Hours : HediffMo
 
     public override float GetModifier(Hediff hediff, IHediffComp_TickHandler compHandler)
     {
-        float mttfHours = MttfHoursBySeverity.Evaluate(hediff.Severity);
+        float mttfHours = MttfHoursBySeverity.Evaluate(MoreInjuries.HealthConditions.BrainDamage.CerebralInjury.ClinicalSeverity(hediff));
         return GetChanceFromMttf(mttfHours * GenDate.TicksPerHour, compHandler.TickInterval);
     }
 }

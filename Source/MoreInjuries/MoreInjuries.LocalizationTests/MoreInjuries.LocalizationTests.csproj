@@ -29,6 +29,11 @@
         <Compile Include="..\MoreInjuries\Patches\Patch_VitalFailure.cs" Link="RuntimeContracts\Production\Patch_VitalFailure.cs" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalPhysiology.cs" Link="RuntimeContracts\Production\VitalPhysiology.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\BrainDamage\CerebralInjury.cs" Link="RuntimeContracts\Production\CerebralInjury.cs" />
+    </ItemGroup>
+
     <!-- Exercise the production scheduler headlessly, with the small Verse stand-ins under RuntimeContracts. -->
     <ItemGroup>
         <Compile Include="..\MoreInjuries\AI\Jobs\JobDriver_OutcomeDoerBase.cs" Link="RuntimeContracts\Production\JobDriver_OutcomeDoerBase.cs" />

@@ -37,7 +37,7 @@ public sealed class VitalFailureTests
         DefDatabase<PawnCapacityDef>.AllDefsListForReading.Clear();
     }
 
-    private static Pawn Patient(int offset = 0)
+    internal static Pawn Patient(int offset = 0)
     {
         InitializeDefs();
         Pawn pawn = new() { Tracked = true, HashOffset = offset };
@@ -51,14 +51,14 @@ public sealed class VitalFailureTests
         return pawn;
     }
 
-    private static void Tick(Pawn pawn, int tick)
+    internal static void Tick(Pawn pawn, int tick)
     {
         pawn.Tick = tick;
         Find.TickManager.TicksGame = tick;
         pawn.Vital!.TickHealth(1);
     }
 
-    private static Hediff Add(Pawn pawn, HediffDef def, float severity)
+    internal static Hediff Add(Pawn pawn, HediffDef def, float severity)
     {
         Hediff hediff = pawn.health.AddHediff(def);
         hediff.Severity = severity;
@@ -238,8 +238,8 @@ public sealed class VitalFailureTests
             if (mode == 5) { pawn.IsShambler = true; MoreInjuriesMod.Settings.AnomalyEnableConditionsForShamblers = false; }
             if (mode == 6) { pawn.Tracked = false; pawn.RaceProps.IsAnomalyEntity = true; ModsConfig.AnomalyActive = true; }
             Tick(pawn, 0);
-            Assert.AreEqual(mode == 6, pawn.health.hediffSet.HasHediff(VitalFailureDefOf.MI_RespiratoryFailure));
-            Assert.AreEqual(mode == 6, pawn.health.hediffSet.HasHediff(KnownHediffDefOf.BrainDamage_Hypoxia));
+            Assert.AreEqual(mode is 0 or 6, pawn.health.hediffSet.HasHediff(VitalFailureDefOf.MI_RespiratoryFailure));
+            Assert.AreEqual(mode is 0 or 6, pawn.health.hediffSet.HasHediff(KnownHediffDefOf.BrainDamage_Hypoxia));
         }
     }
 

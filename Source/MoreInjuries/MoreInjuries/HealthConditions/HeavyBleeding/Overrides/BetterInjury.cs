@@ -54,6 +54,23 @@ public class BetterInjury : Hediff_Injury, IStatefulInjury, IInjuryStateOwner
 
     public bool GetIsClosedInternalWound(bool forceRefresh = false) => !HasRelatedBlockingExternalWound(forceRefresh);
 
+    public override int CurStageIndex
+    {
+        get
+        {
+            if (def != MoreInjuries.Defs.WellKnown.KnownHediffDefOf.BrainDamage_Hypoxia)
+            {
+                return base.CurStageIndex;
+            }
+            float severity = MoreInjuries.HealthConditions.BrainDamage.CerebralInjury.ClinicalSeverity(this);
+            for (int i = def.stages.Count - 1; i >= 0; i--)
+            {
+                if (severity >= def.stages[i].minSeverity) { return i; }
+            }
+            return 0;
+        }
+    }
+
     public override float BleedRate => base.BleedRate * _state.EffectiveBleedRateMultiplier;
 
     public override string Label => _state.Label;

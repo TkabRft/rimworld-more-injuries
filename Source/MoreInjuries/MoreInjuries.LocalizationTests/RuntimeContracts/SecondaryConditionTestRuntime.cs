@@ -23,7 +23,7 @@ namespace Verse
         public float Severity;
     }
 
-    public sealed partial class Pawn
+    public sealed partial class Pawn : Thing
     {
         public bool Dead;
         public int Tick;
@@ -31,7 +31,11 @@ namespace Verse
         public bool IsHashIntervalTick(int interval) => (Tick + HashOffset) % interval == 0;
     }
 
-    public readonly struct DamageInfo;
+    public readonly struct DamageInfo
+    {
+        public DamageDef Def { get; init; }
+        public float Amount { get; init; }
+    }
 
     public sealed class SimpleCurve(Func<float, float> evaluate)
     {
@@ -41,7 +45,8 @@ namespace Verse
     public static class Rand
     {
         public static Func<float, bool> ChanceHandler = null!;
-        public static bool Chance(float chance) => ChanceHandler(chance);
+        public static bool Chance(float chance) => ChanceHandler?.Invoke(chance) ?? chance > 0.5f;
+        public static bool MTBEventOccurs(float mtb, float units, float interval) => Chance(1f - MathF.Exp(-interval / (mtb * units)));
         public static float RangeFraction = 0.5f;
         public static float Range(float minimum, float maximum) => minimum + (maximum - minimum) * RangeFraction;
     }

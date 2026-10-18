@@ -125,7 +125,8 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
         this.FailOn(() =>
         {
             // we can't apply a device if the patient is set to no medical care
-            if (doctor.Faction.IsPlayerSafe() && patient.playerSettings?.medCare is MedicalCareCategory.NoCare
+            if (patient.IsMutant && !patient.mutant.Def.entitledToMedicalCare
+                || doctor.Faction.IsPlayerSafe() && patient.playerSettings?.medCare is MedicalCareCategory.NoCare
                 // we can't apply a device if the doctor wants to tend himself but is set to no self-tend
                 || doctor == patient && doctor.Faction.IsPlayerSafe() && doctor.playerSettings?.selfTend is false)
             {

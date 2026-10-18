@@ -46,9 +46,9 @@ style cardiac_arrest stroke-width: 4px
 **Treatment**: Cardiac arrest must be treated immediately with [CPR](/docs/wiki/medical-devices.md#cpr) (which needs to be researched first) to restore blood flow and hopefully restart the heart. In cases of `ventricular fibrillation`, a [defibrillator](/docs/wiki/medical-devices.md#defibrillator) can be used to shock the heart back into a normal rhythm, which may be faster and more effective than [CPR](/docs/wiki/medical-devices.md#cpr). In cases of `clinical death`, only [CPR](/docs/wiki/medical-devices.md#cpr) will be effective. [Epinephrine](/docs/wiki/medical-devices.md#epinephrine-autoinjector) may be administered to assist with defibrillation efforts and [CPR](/docs/wiki/medical-devices.md#cpr) in cases of cardiac arrest, but it is not required.
 
 > [!NOTE]
-> **Biotech DLC**: Sanguaphages are immune to cardiac arrest and will automatically recover from it once entering deathrest. The Deathless gene also removes cardiac arrest as soon as it is applied.  
-> **Odyssey DLC**: The Breathless gene removes cardiac arrest as soon as it is applied. It does not require Biotech.  
-> A prosthetic or bionic heart does the same. Ventricular fibrillation caps consciousness at 0.1 rather than 0.01. Clinical death still caps it at 0.01. A pawn with no genes is not protected by either gene.
+> **Biotech DLC**: Active Deathless protection and deathrest retain their protection against oxygen-related emergencies. Structural brain destruction and unrelated lethal damage remain dangerous.<br>
+> **Odyssey DLC**: Vacuum resistance, including the Breathless gene's environmental protection, does not restore a failed pump or remove cardiac arrest. Native vacuum and decompression rules remain in effect.<br>
+> A functioning prosthetic or bionic heart protects against spontaneous shock-induced arrhythmia; a destroyed or nonfunctional replacement can still cause circulatory failure. Ventricular fibrillation caps consciousness at 0.1 rather than 0.01. Clinical death still caps it at 0.01.
 
 With delayed vital failure enabled, arrest means absent effective pumping and ordinarily gives about three game hours for rescue. Its severity and cerebral hypoxia both worsen; successful resuscitation stops the arrest without erasing brain injury. A terminal vanilla heart attack enters this treatable arrest pathway.
 

@@ -1,3 +1,4 @@
+using MoreInjuries.Extensions;
 ﻿using MoreInjuries.Debug;
 using MoreInjuries.Defs.WellKnown;
 using MoreInjuries.HealthConditions.CardiacArrest;
@@ -16,10 +17,11 @@ internal sealed class ChokingWorker(MoreInjuryComp parent) : InjuryWorker(parent
 
     public override bool IsEnabled => MoreInjuriesMod.Settings.EnableChoking;
 
-    public void AddFloatMenuOptions(UIBuilder<FloatMenuOption> builder, Pawn selectedPawn)
+    public void AddFloatMenuOptions(UIBuilder<FloatMenuOption> builder, Pawn selectedPawn) => AddEmergencyOptions(Pawn, builder, selectedPawn);
+
+    internal static void AddEmergencyOptions(Pawn patient, UIBuilder<FloatMenuOption> builder, Pawn selectedPawn)
     {
-        Pawn patient = Pawn;
-        if (selectedPawn == patient || !selectedPawn.Drafted || PatientIsActivelyHostileTo(selectedPawn))
+        if (selectedPawn == patient || !selectedPawn.Drafted || patient.IsActivelyHostileTo(selectedPawn))
         {
             return;
         }

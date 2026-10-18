@@ -44,14 +44,6 @@
               </li>
             </geneModifiers>
           </li>
-          <li MayRequire="Ludeon.RimWorld.Odyssey" Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Genes_WhenPresent">
-            <geneModifiers>
-              <li>
-                <geneDef>VacuumResistance_Total</geneDef>
-                <modifier>0</modifier>
-              </li>
-            </geneModifiers>
-          </li>
         </modifiers>
       </li>
     </modExtensions>
@@ -101,7 +93,7 @@
   <HediffDef ParentName="InjuryBase">
     <defName>BrainDamage_Hypoxia</defName>
     <label>cerebral hypoxia</label>
-    <description>Prolonged lack of oxygen to the brain has caused neurological damage. Depending on the severity and duration of the hypoxia, damaged cells may be able to recover, or they may die off and cause permanent brain damage and disability. There's nothing else to do but wait and see.\n\nWith delayed vital failure enabled, sustained oxygen deprivation steadily adds cerebral injury, with some variation in its pace. Complete deprivation can become fatal in approximately three game hours; severity 8 is terminal. Treating the injury cannot replace oxygen delivery. After circulation and breathing recover, ordinary injury healing resumes, while lasting neurological disabilities may remain.</description>
+    <description>Prolonged lack of oxygen to the brain has caused neurological damage. Depending on the severity and duration of the hypoxia, damaged cells may be able to recover, or they may die off and cause permanent brain damage and disability. There's nothing else to do but wait and see.\n\nWith delayed vital failure enabled, sustained oxygen deprivation steadily adds cerebral injury, with some variation in its pace. Complete deprivation can become fatal in approximately three game hours; the final cerebral injury stage is terminal. Injury amounts scale with the affected brain, preserving comparable physiological rescue windows across body sizes. Treating the injury cannot replace oxygen delivery. After circulation and breathing recover, ordinary injury healing resumes, while lasting neurological disabilities may remain.</description>
     <defaultLabelColor>(100, 15, 15)</defaultLabelColor>
     <modExtensions>
       <li Class="MoreInjuries.HealthConditions.Secondary.Linked.LinkedSeverityProperties_ModExtension">
@@ -141,18 +133,11 @@
               </li>
             </geneModifiers>
           </li>
-          <li MayRequire="Ludeon.RimWorld.Odyssey" Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Genes_WhenPresent">
-            <geneModifiers>
-              <li>
-                <geneDef>VacuumResistance_Total</geneDef>
-                <modifier>0</modifier>
-              </li>
-            </geneModifiers>
-          </li>
         </modifiers>
       </li>
     </modExtensions>
     <comps>
+      <li Class="MoreInjuries.HealthConditions.BrainDamage.HediffCompProperties_CerebralScale" />
       <li Class="HediffCompProperties_TendDuration">
         <labelTendedWell>tended</labelTendedWell>
         <labelTendedWellInner>tended</labelTendedWellInner>

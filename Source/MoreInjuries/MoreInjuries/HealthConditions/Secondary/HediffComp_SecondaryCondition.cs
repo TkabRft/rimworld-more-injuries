@@ -11,7 +11,7 @@ public class HediffComp_SecondaryCondition : HediffComp
 
     protected bool ValidState => parent.pawn is { Dead: false };
 
-    protected virtual bool ShouldSkip() => SeverityCurve is { } severityCurve && !Rand.Chance(severityCurve.Evaluate(parent.Severity));
+    protected virtual bool ShouldSkip() => SeverityCurve is { } severityCurve && !Rand.Chance(severityCurve.Evaluate(MoreInjuries.HealthConditions.BrainDamage.CerebralInjury.ClinicalSeverity(parent)));
 
     public override void CompPostPostAdd(DamageInfo? dinfo)
     {

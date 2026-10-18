@@ -40,11 +40,6 @@ public static class PawnExtensions
             return true;
         }
 
-        if (ModsConfig.OdysseyActive && HasActiveGene(pawn, "VacuumResistance_Total"))
-        {
-            return true;
-        }
-
         return false;
     }
 

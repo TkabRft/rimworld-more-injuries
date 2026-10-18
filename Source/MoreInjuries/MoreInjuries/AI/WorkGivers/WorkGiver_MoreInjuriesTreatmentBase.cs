@@ -12,13 +12,23 @@ public abstract class WorkGiver_MoreInjuriesTreatmentBase : WorkGiver_Scanner
 
     protected abstract Job CreateJob(Pawn doctor, Pawn patient);
 
-    public override PathEndMode PathEndMode => PathEndMode.InteractionCell;
+    public override PathEndMode PathEndMode => PathEndMode.ClosestTouch;
 
     public override Danger MaxPathDanger(Pawn pawn) => Danger.Deadly;
 
     public override ThingRequest PotentialWorkThingRequest => ThingRequest.ForGroup(ThingRequestGroup.Pawn);
 
-    public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn) => pawn.Map.mapPawns.SpawnedHumanlikesWithAnyHediff;
+    public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
+    {
+        foreach (Pawn patient in pawn.Map.mapPawns.AllPawnsSpawned)
+        {
+            if (patient.health.hediffSet.hediffs.Count > 0 && (patient.RaceProps.Humanlike
+                || patient.Faction == pawn.Faction && MoreInjuries.HealthConditions.VitalFailure.VitalFailureComp.EnabledFor(patient)))
+            {
+                yield return patient;
+            }
+        }
+    }
 
     protected virtual bool IsValidPatient(Pawn doctor, Thing thing, out Pawn patient)
     {
@@ -29,6 +39,7 @@ public abstract class WorkGiver_MoreInjuriesTreatmentBase : WorkGiver_Scanner
         }
         patient = (Pawn)thing;
         return doctor != patient
+            && (patient.RaceProps.Humanlike || patient.Faction == doctor.Faction)
             && GoodLayingStatusForTend(patient, doctor)
             && !patient.IsForbidden(doctor)
             && (!patient.IsMutant || patient.mutant.Def.entitledToMedicalCare)
@@ -47,7 +58,7 @@ public abstract class WorkGiver_MoreInjuriesTreatmentBase : WorkGiver_Scanner
 
     protected virtual bool CanTreat(Pawn doctor, Pawn patient) => patient.health.hediffSet.hediffs.Any(CanTreat);
 
-    public static bool GoodLayingStatusForTend(Pawn patient, Pawn doctor) => patient != doctor && patient.InBed();
+    public static bool GoodLayingStatusForTend(Pawn patient, Pawn doctor) => patient != doctor && (patient.InBed() || !patient.RaceProps.Humanlike && patient.Downed && patient.Faction == doctor.Faction);
 
     public override Job JobOnThing(Pawn pawn, Thing thing, bool forced = false)
     {

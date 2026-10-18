@@ -147,11 +147,6 @@
                   <li>Deathless</li>
                 </geneDefs>
               </li>
-              <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Genes_Disallow" MayRequire="Ludeon.RimWorld.Odyssey">
-                <geneDefs>
-                  <li>VacuumResistance_Total</li>
-                </geneDefs>
-              </li>
               <li Class="MoreInjuries.HealthConditions.Secondary.Handlers.Modifiers.HediffModifier_Settings_FeatureFlag">
                 <key>EnableCardiacArrestOnHighBloodLoss</key>
               </li>

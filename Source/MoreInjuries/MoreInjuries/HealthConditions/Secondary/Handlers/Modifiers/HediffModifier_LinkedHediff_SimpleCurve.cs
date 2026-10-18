@@ -15,7 +15,7 @@ public partial class HediffModifier_LinkedHediff_SimpleCurve : HediffModifier_Li
         if (hediff.pawn.health.hediffSet.TryGetHediff(HediffDef, out Hediff? linkedHediff))
         {
             // if the hediff exists, we evaluate the chance based on the severity curve
-            return SeverityCurve.Evaluate(linkedHediff.Severity);
+            return SeverityCurve.Evaluate(MoreInjuries.HealthConditions.BrainDamage.CerebralInjury.ClinicalSeverity(linkedHediff));
         }
         return Unchanged;
     }

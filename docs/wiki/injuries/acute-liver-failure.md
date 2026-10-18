@@ -7,7 +7,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 > **In-Game Description**
 > _"**Acute liver failure** &mdash; No functioning liver tissue remains. A functioning replacement can resolve this failure. Without it, failure progresses toward death over approximately one game day."_
 
-This condition is part of delayed vital failure, enabled by default for supported fleshy pawns. Progression varies modestly between updates. Humans, supported fleshy HAR races, and supported bleeding fleshy Anomaly entities are included; ordinary animals are excluded.
+This condition is part of delayed vital failure, enabled by default for appropriate fleshy pawns, including animals and supported alien races and entities. Anatomy and native protections determine which failures apply. Creatures that do not require air do not develop respiratory failure from absent lungs. Progression varies modestly between updates. Animal shock, acidosis and broader trauma support remain outside this module.
 
 **Treatment**: Restore functioning liver tissue with an appropriate replacement. Tending the failure entry cannot substitute for an organ.
 

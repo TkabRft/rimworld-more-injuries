@@ -4,7 +4,7 @@ code-synced: 2026-10-18
 
 ## Current contract
 
-Status: `implemented` for the current RimWorld 1.6 build. `EnableDelayedVitalFailure` defaults to true. The module covers tracked fleshy pawns and supported bleeding fleshy Anomaly entities, all factions, respecting the shambler setting. Ordinary animals and mechanical pawns remain excluded. See the [player hypoxia guide](wiki/injuries/hypoxia.md) and [future expansion work](medical-expansion-todo.md).
+Status: `implemented` for the current RimWorld 1.6 build. `EnableDelayedVitalFailure` defaults to true. The module covers appropriate fleshy pawns, including animals, HAR races and Anomaly entities, all factions, respecting native physiology and the shambler setting. Mechanical pawns remain excluded. Animal trauma and shock/acidosis remain separate. See the [player hypoxia guide](wiki/injuries/hypoxia.md) and [future expansion work](medical-expansion-todo.md).
 
 This is an independent implementation using More Injuries conditions and treatments. Death Rattle's package is declared incompatible. Startup reports the unsupported combination; separate loadouts are required. No Death Rattle classes, identifiers, saved conditions, or settings are imported. Existing saves containing Death Rattle must not be treated as migrated saves.
 
@@ -63,5 +63,13 @@ The runtime test harness supplies minimal Verse/Unity boundaries; it does not ex
 - Test absent pumping/breathing, terminal heart attack, and prolonged full shock. Confirm a usable rescue window, worsening cerebral hypoxia, and terminal deterioration without successful treatment.
 - Compare poor/good shock tends, expiry, adrenaline, cold, transfusions, and renewed bleeding. Restored volume should stop its ongoing source before visible shock disappears.
 - Run successful/failed CPR and early defibrillation; verify brain injury remains and a missing heart cannot be restarted. Restore an actual pump/lung or clear an airway.
-- Test single/both kidneys, liver/metabolic/filtration failure, custom HAR anatomy, multiple brains, fleshbeasts, and excluded animals. Preserve immediate structural brain death and forced-harvesting behavior.
+- Test single/both kidneys, liver/metabolic/filtration failure, custom HAR anatomy, multiple brains, fleshbeasts, small/large animals and excluded mechanical pawns. Preserve immediate structural brain death and forced-harvesting behavior.
 - Test immunity, deathrest, shamblers, disabled module, save/reload, and caravan/world-pawn progression. Custom alien anatomy and third-party death patches require game acceptance.
+
+## Anatomy and DLC extension
+
+code-synced: 2026-10-18
+
+Vital eligibility now covers fleshy animals independently of trauma eligibility. Native mutant breathing and medical-care flags apply. Resurrection and transformation invalidate scheduled state. Deliberately lethal repeated xenogerm extraction remains native. Vacuum-resistance genes no longer provide blanket internal oxygen immunity; native vacuum exposure is unchanged.
+
+Cerebral production and terminal thresholds scale by affected part maximum health / 10, with clinical-unit stages and chance curves. A saved cerebralAnatomyScale converts legacy clinical severity once and preserves clinical burden when anatomy changes. Native preventsDeath protection remains authoritative. Emergency care reaches eligible owned nonhuman patients without adding the human injury pipeline.

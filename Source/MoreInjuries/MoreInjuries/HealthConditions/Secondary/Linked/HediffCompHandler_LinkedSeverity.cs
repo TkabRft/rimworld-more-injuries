@@ -18,7 +18,7 @@ public partial class HediffCompHandler_LinkedSeverity : IHediffCompHandler
 
     public virtual float Evaluate(Hediff hediff)
     {
-        float severity = hediff.Severity;
+        float severity = MoreInjuries.HealthConditions.BrainDamage.CerebralInjury.ClinicalSeverity(hediff);
         if (severity < Mathf.Epsilon)
         {
             return 0f;

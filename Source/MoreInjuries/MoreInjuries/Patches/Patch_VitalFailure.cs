@@ -2,6 +2,7 @@ using HarmonyLib;
 using MoreInjuries.Defs.WellKnown;
 using MoreInjuries.Extensions;
 using MoreInjuries.HealthConditions.VitalFailure;
+using MoreInjuries.HealthConditions.BrainDamage;
 using RimWorld;
 using Verse;
 
@@ -78,13 +79,14 @@ internal static class Patch_VitalFailure_HediffDeath
         else if (__instance.def == KnownHediffDefOf.BrainDamage_Hypoxia
             && !pawn.HasOxygenDeficiencyImmunity()
             && !(ModsConfig.BiotechActive && pawn.health.hediffSet.HasHediff(HediffDefOf.Deathrest))
-            && __instance.Severity >= VitalFailureDefOf.MI_VitalFailureConfig.TerminalCerebralSeverity)
+            && !pawn.health.hediffSet.HasPreventsDeath
+            && CerebralInjury.ClinicalSeverity(__instance) >= VitalFailureDefOf.MI_VitalFailureConfig.TerminalCerebralSeverity)
         {
             __result = true;
         }
         else if (__instance.def == KnownHediffDefOf.CardiacArrest && !pawn.HasOxygenDeficiencyImmunity()
             && !(ModsConfig.BiotechActive && pawn.health.hediffSet.HasHediff(HediffDefOf.Deathrest))
-            && __instance.Severity >= 1f)
+            && !pawn.health.hediffSet.HasPreventsDeath && __instance.Severity >= 1f)
         {
             __result = true;
         }
@@ -105,4 +107,31 @@ internal static class Patch_VitalFailure_Healing
         comp?.Refresh();
         return comp is null || comp.Deprivation <= 0f;
     }
+}
+
+[HarmonyPatch(typeof(Pawn_HealthTracker), nameof(Pawn_HealthTracker.Notify_Resurrected))]
+internal static class Patch_VitalFailure_Resurrection
+{
+    internal static void Postfix(Pawn ___pawn) => VitalFailureComp.For(___pawn)?.Resume();
+}
+
+[HarmonyPatch(typeof(Pawn_MutantTracker), nameof(Pawn_MutantTracker.Turn))]
+internal static class Patch_VitalFailure_MutantTurn
+{
+    internal static void Postfix(Pawn ___pawn)
+    {
+        VitalFailureComp.For(___pawn)?.Resume();
+    }
+}
+
+[HarmonyPatch(typeof(Pawn_MutantTracker), nameof(Pawn_MutantTracker.Revert))]
+internal static class Patch_VitalFailure_MutantRevert
+{
+    internal static void Postfix(Pawn ___pawn) => VitalFailureComp.For(___pawn)?.Resume();
+}
+
+[HarmonyPatch(typeof(Pawn_GeneTracker), "Notify_GenesChanged")]
+internal static class Patch_VitalFailure_Genes
+{
+    internal static void Postfix(Pawn ___pawn) => VitalFailureComp.For(___pawn)?.Invalidate();
 }

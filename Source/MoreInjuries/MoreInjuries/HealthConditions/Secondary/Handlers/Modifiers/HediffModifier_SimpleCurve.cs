@@ -10,5 +10,5 @@ public partial class HediffModifier_SimpleCurve : SecondaryHediffModifier
     public partial SimpleCurve SeverityCurve { get; }
 
     public override float GetModifier(Hediff hediff, IHediffCompHandler compHandler) =>
-        SeverityCurve.Evaluate(hediff.Severity);
+        SeverityCurve.Evaluate(MoreInjuries.HealthConditions.BrainDamage.CerebralInjury.ClinicalSeverity(hediff));
 }

@@ -1,4 +1,6 @@
 using MoreInjuries.HealthConditions;
+using MoreInjuries.HealthConditions.BrainDamage;
+using RimWorld;
 using MoreInjuries.HealthConditions.VitalFailure;
 using System.Collections.Generic;
 using Verse;
@@ -16,16 +18,15 @@ internal static class VitalFailure_Initializer
             {
                 continue;
             }
-            bool tracked = false, present = false;
+            bool present = false;
             if (def.comps is not null)
             {
                 foreach (CompProperties props in def.comps)
                 {
-                    tracked |= props.compClass == typeof(MoreInjuryComp);
                     present |= props.compClass == typeof(VitalFailureComp);
                 }
             }
-            if (!present && (tracked || ModsConfig.AnomalyActive && race.IsAnomalyEntity && race.bleedRateFactor > 0f))
+            if (!present)
             {
                 def.comps ??= new List<CompProperties>();
                 def.comps.Add(new VitalFailureCompProperties());

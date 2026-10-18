@@ -7,7 +7,7 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 > **In-Game Description**
 > _"**Respiratory failure** &mdash; Breathing has stopped. Restore the airway or functioning lungs immediately. Without restored oxygen delivery, cerebral hypoxia accumulates and this failure becomes fatal in approximately three game hours."_
 
-This condition is part of delayed vital failure, enabled by default for supported fleshy pawns. Progression varies modestly between updates. Humans, supported fleshy HAR races, and supported bleeding fleshy Anomaly entities are included; ordinary animals are excluded.
+This condition is part of delayed vital failure, enabled by default for appropriate fleshy pawns, including animals and supported alien races and entities. Anatomy and native protections determine which failures apply. Creatures that do not require air do not develop respiratory failure from absent lungs. Progression varies modestly between updates. Animal shock, acidosis and broader trauma support remain outside this module.
 
 **Treatment**: Restore the airway or functioning lungs. Existing CPR can clear choking on blood; this release does not provide mechanical ventilation.
 

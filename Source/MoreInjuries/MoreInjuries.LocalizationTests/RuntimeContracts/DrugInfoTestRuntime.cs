@@ -40,6 +40,7 @@ namespace Verse
     {
         public string? label;
         public float minSeverity;
+        public float regeneration;
         public IEnumerable<StatDrawEntry> SpecialDisplayStats()
         {
             yield return new StatDrawEntry(StatCategoryDefOf.Drug, "Stage effect", "effect", "effect", 0);

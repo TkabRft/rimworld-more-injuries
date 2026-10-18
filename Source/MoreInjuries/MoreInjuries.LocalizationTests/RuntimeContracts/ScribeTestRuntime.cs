@@ -2,7 +2,7 @@
 namespace Verse;
 
 public interface IExposable { void ExposeData(); }
-public enum LoadSaveMode { Inactive, Saving, LoadingVars, ResolvingCrossRefs }
+public enum LoadSaveMode { Inactive, Saving, LoadingVars, ResolvingCrossRefs, PostLoadInit }
 public enum LookMode { Value, Deep }
 
 public static class Scribe

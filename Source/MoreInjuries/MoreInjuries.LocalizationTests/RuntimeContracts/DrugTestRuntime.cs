@@ -17,7 +17,7 @@ namespace Verse
         public T? GetModExtension<T>() where T : class => Extension as T;
     }
 
-    public sealed partial class Thing
+    public partial class Thing
     {
         public ThingDef def = new();
         public int stackCount = 1;

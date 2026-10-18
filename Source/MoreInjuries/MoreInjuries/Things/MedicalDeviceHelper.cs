@@ -21,7 +21,7 @@ public static class MedicalDeviceHelper
 
     public static DisabledProcedureCause? GetCauseForDisabledProcedure(Pawn doctor, Pawn patient, string jobTitleTranslationKey, bool ignoreSelfTendSetting = false)
     {
-        if (patient.playerSettings?.medCare is MedicalCareCategory.NoCare)
+        if (patient.playerSettings?.medCare is MedicalCareCategory.NoCare || patient.IsMutant && !patient.mutant.Def.entitledToMedicalCare)
         {
             return DisabledProcedureCause.Soft(Named.Keys.ProcedureFailed_CareDisabled.Translate(jobTitleTranslationKey.Translate(), patient.Named(Named.Params.PATIENT)));
         }
@@ -101,7 +101,7 @@ public static class MedicalDeviceHelper
 
     public static Thing? FindMedicalDevice(Pawn doctor, Pawn patient, ThingDef deviceDef, Func<Pawn, int>? getNumberOfRequiredMedicalDevices, bool fromInventoryOnly = false)
     {
-        if (patient.playerSettings?.medCare is MedicalCareCategory.NoCare)
+        if (patient.playerSettings?.medCare is MedicalCareCategory.NoCare || patient.IsMutant && !patient.mutant.Def.entitledToMedicalCare)
         {
             return null;
         }

@@ -1,6 +1,6 @@
 using MoreInjuries.Defs.WellKnown;
 using MoreInjuries.Extensions;
-using MoreInjuries.HealthConditions.HeavyBleeding;
+using MoreInjuries.HealthConditions.BrainDamage;
 using MoreInjuries.HealthConditions.HypovolemicShock;
 using MoreInjuries.HealthConditions.Secondary;
 using RimWorld;
@@ -8,7 +8,7 @@ using Verse;
 
 namespace MoreInjuries.HealthConditions.VitalFailure;
 
-public sealed class VitalFailureComp : ThingComp
+public sealed partial class VitalFailureComp : ThingComp
 {
     private bool _dirty = true;
     private bool _active;
@@ -22,19 +22,27 @@ public sealed class VitalFailureComp : ThingComp
     private bool _deathresting;
     private float _underlyingPumping;
     private float _deprivation;
+    private int _settingsStamp = -1;
 
     private Pawn Patient => (Pawn)parent;
     internal bool ReadingUnderlying { get; private set; }
     internal bool CreatingCirculatoryFailure { get; private set; }
     internal float Deprivation => _deprivation;
 
-    internal static bool EnabledFor(Pawn pawn) => MoreInjuriesMod.Settings.EnableDelayedVitalFailure
-        && !pawn.Dead && pawn.RaceProps.IsFlesh && TraumaEligibility.Supports(pawn)
+    internal static bool EnabledFor(Pawn pawn) => MoreInjuriesMod.Settings.EnableDelayedVitalFailure && CanUpdate(pawn);
+
+    private static bool CanUpdate(Pawn pawn) => !pawn.Dead && !pawn.Suspended && VitalPhysiology.Supports(pawn)
         && (MoreInjuriesMod.Settings.AnomalyEnableConditionsForShamblers || !pawn.IsShambler);
 
     internal static VitalFailureComp? For(Pawn pawn) => pawn.TryGetComp<VitalFailureComp>();
 
     internal void Invalidate() => _dirty = true;
+
+    internal void Resume()
+    {
+        _lastProgressTick = Find.TickManager.TicksGame;
+        Invalidate();
+    }
 
     internal static bool OwnsOxygenProgression(Pawn pawn) => EnabledFor(pawn) && For(pawn) is not null;
 
@@ -64,7 +72,8 @@ public sealed class VitalFailureComp : ThingComp
 
     internal bool MayDelay(PawnCapacityDef capacity)
     {
-        if (!EnabledFor(Patient) || VitalAnatomy.For(Patient.RaceProps.body).BrainsDestroyed(Patient.health.hediffSet))
+        if (!EnabledFor(Patient) || VitalPhysiology.HasNativeCapacityDeath(Patient)
+            || VitalAnatomy.For(Patient.RaceProps.body).BrainsDestroyed(Patient.health.hediffSet))
         {
             return false;
         }
@@ -92,15 +101,16 @@ public sealed class VitalFailureComp : ThingComp
         {
             return;
         }
+        int stamp = (MoreInjuriesMod.Settings.EnableDelayedVitalFailure ? 1 : 0)
+            | (MoreInjuriesMod.Settings.AnomalyEnableConditionsForShamblers ? 2 : 0)
+            | (MoreInjuriesMod.Settings.AnomalyRegenerationTreatsStructuralDamage ? 4 : 0);
+        if (stamp != _settingsStamp) { _settingsStamp = stamp; _dirty = true; }
         if (_active)
         {
             _dirty = true;
         }
         Refresh();
-        if (!EnabledFor(pawn) || !_active || _lastProgressTick == now)
-        {
-            return;
-        }
+        if (!EnabledFor(pawn) || !_active || _lastProgressTick == now) { return; }
         _lastProgressTick = now;
         _evaluating = true;
         try
@@ -132,11 +142,12 @@ public sealed class VitalFailureComp : ThingComp
                 if (_brainInjury is null && VitalAnatomy.For(pawn.RaceProps.body).SurvivingBrain(pawn.health.hediffSet) is { } brain)
                 {
                     _brainInjury = pawn.health.AddHediff(KnownHediffDefOf.BrainDamage_Hypoxia, brain);
-                    _brainInjury.Severity = VitalFailureModel.INITIAL_SEVERITY;
+                    _brainInjury.Severity = VitalFailureModel.INITIAL_SEVERITY * CerebralInjury.Scale(pawn, brain);
                 }
                 if (_brainInjury is not null)
                 {
-                    Advance(_brainInjury, VitalFailureDefOf.MI_VitalFailureConfig.CerebralSeverityPerDay * _deprivation,
+                    Advance(_brainInjury, VitalFailureDefOf.MI_VitalFailureConfig.CerebralSeverityPerDay * _deprivation
+                        * CerebralInjury.Scale(pawn, _brainInjury.Part),
                         factor, dayFraction);
                 }
             }
@@ -195,6 +206,7 @@ public sealed class VitalFailureComp : ThingComp
             else if (hediff.def == KnownHediffDefOf.BrainDamage_Hypoxia)
             {
                 _brainInjury = hediff;
+                _brainInjury.TryGetComp<HediffComp_CerebralScale>()?.Rebase();
             }
             else if (hediff.def == KnownHediffDefOf.HypovolemicShock)
             {
@@ -232,6 +244,12 @@ public sealed class VitalFailureComp : ThingComp
                 }
             }
         }
+        if (pawn.Dead || pawn.Suspended)
+        {
+            _deprivation = 0f;
+            _active = false;
+            return;
+        }
         if (!EnabledFor(pawn))
         {
             _deprivation = 0f;
@@ -249,7 +267,7 @@ public sealed class VitalFailureComp : ThingComp
         try
         {
             _underlyingPumping = Capacity(pawn, PawnCapacityDefOf.BloodPumping);
-            breathing = Capacity(pawn, PawnCapacityDefOf.Breathing);
+            breathing = VitalPhysiology.BreathesAir(pawn) ? Capacity(pawn, PawnCapacityDefOf.Breathing) : 1f;
             consciousness = Capacity(pawn, PawnCapacityDefOf.Consciousness);
             filtration = Capacity(pawn, PawnCapacityDefOf.BloodFiltration);
             metabolism = Capacity(pawn, VitalFailureDefOf.Metabolism);

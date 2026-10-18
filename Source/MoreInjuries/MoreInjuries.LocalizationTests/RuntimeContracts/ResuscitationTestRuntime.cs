@@ -6,11 +6,11 @@ namespace Verse
     public class Hediff_AddedPart : Hediff;
     public static class ModLister { public static bool BiotechInstalled => ModsConfig.BiotechActive; }
     public sealed partial class Pawn { public JobTracker jobs = new(); }
-    public sealed class JobTracker { public void TryTakeOrderedJob(Job job) { } }
+    public sealed partial class JobTracker { public void TryTakeOrderedJob(Job job) { } }
 }
 namespace Verse.AI
 {
-    public sealed class Job { public object def = new(); public int count; public object? source; }
+    public sealed partial class Job { public object def = new(); public int count; public object? source; }
     public static class JobMaker { public static Job MakeJob(object def, params object[] targets) => new() { def = def }; }
 }
 namespace UnityEngine
