@@ -1,6 +1,6 @@
 # Blood loss, medical drug information, and optional hydration
 
-code-synced: 2026-10-18
+code-synced: 2026-10-19
 
 ## Current contracts
 
@@ -138,8 +138,21 @@ Cerebral injury now uses anatomy-scaled physical severity with clinical-unit cur
 
 ## Medical drug risk rebalance and death estimate
 
-Status: `implemented`. code-synced: 2026-10-18.
+Status: `implemented`. code-synced: 2026-10-19.
 
 After in-game confirmation that native addiction handling works, the configured base addiction chances are now morphine 0.05 and ketamine 0.02 per dose (previously 0.99 and 0.05). Five independent rolls at those base chances give 22.6% and 9.6% probability of at least one success. Actual native tolerance/gene modifiers can change risk. Existing tolerance gain/recovery, high doses, chemical need satisfaction, withdrawal, overdose and existing-addiction severity offsets are unchanged. Epinephrine and chloroform gain no addiction chemical. Definition/inheritance tests verify exactly one configured drug comp and the selected chances; native ingestion remains the sole addiction pipeline.
 
-The [vital-failure owner](vital-failure.md#faster-cerebral-progression-and-prognosis) owns the faster acute brain progression and optional health-tab forecast. Shock/acidosis balance scenarios above remain valid independently of cerebral lethality; those tests measure acidosis progression rather than guarantee pawn survival. The final suite contains 115 passing tests, including the existing hemorrhage/localization checks. No dependency pins, package identity, existing save keys or identifiers changed.
+The [vital-failure owner](vital-failure.md#faster-cerebral-progression-and-prognosis) owns the faster acute brain progression and optional health-tab forecast. Shock/acidosis balance scenarios above remain valid independently of cerebral lethality; those tests measure acidosis progression rather than guarantee pawn survival. The final suite contains 133 passing tests, including the existing hemorrhage/localization checks. No dependency pins, package identity, existing save keys or identifiers changed.
+
+
+## Airway rescue balance
+
+Status: `implemented`. code-synced: 2026-10-19.
+
+For choking only, CPR now multiplies the final diffused-sigmoid reduction by 0.35, including negative rolls. The 360-tick base duration, medicine-skill input, treatment modifiers and RNG call order remain. The cardiac branch retains its original curve and additional 0.5-0.75 multiplier. At Medicine 5/10/15, default choking reductions are respectively 2.06-9.06, 25.94-32.94 and 31.27-38.27 percentage points per attempt. Suction remains reusable, clears the entire obstruction on success, takes 600 base ticks and uses max(configured minimum, Medicine/8), effectively guaranteed at Medicine 8. Its minimum defaults to 0.25.
+
+`AutomaticAirwayTreatment` is shared by routine airway work and drafted first aid. It prefers a carried device, then performs a native region search within 12 cells of the patient, at most 12 regions, with global fallback disabled. It runs only after a patient/job is selected, respects care/research/access/reservations and retains CPR priority for arrest. It never scans all map devices or other pawns' inventories. Existing manual selection and public finder signatures remain available. CPR is the fallback when no eligible device is found.
+
+The [vital-failure owner](vital-failure.md#airway-capacity-repair-and-expanded-forecast) documents the final-capacity repair, broader death estimate, coverage limits and validation. The hemorrhage target curve, acidosis and transfusion balance are unchanged: 50% blood loss maps to 16.7% target shock through linear interpolation between 45% loss/zero shock and 60% loss/50% shock. The routine-donation boundary stays 0.449. Direct blood-loss hypoxia gain remains zero.
+
+All 133 focused tests pass, including unchanged cardiac resuscitation, suction success/reuse, CPR scaling, bounded automatic search and prior hemorrhage/drug/localization contracts. Current Release compilation and runtime XML/hash validation pass. Existing saves require no new migration; previously missed breathing emergencies begin normal progression when refreshed. Manual game checks remain necessary for native pathfinding, real job duration, actual capacity/Harmony interaction and UI presentation.

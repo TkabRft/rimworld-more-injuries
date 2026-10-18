@@ -1,7 +1,5 @@
 # Choking
 
-Status: `added, not verified`. code-synced: 2026-09-25.
-
 <!-- @generate_breadcrumb_trail {"template": "_:file_folder: {0}_", "connector": " :arrow_right: "} -->
 _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [Injuries and Medical Conditions A-Z](/docs/wiki/injuries/README.md) :arrow_right: [Choking](/docs/wiki/injuries/choking.md)_
 <!-- @end_generated_block -->
@@ -11,7 +9,7 @@ Choking is a medical emergency that occurs when a foreign object becomes lodged 
 ## Choking on Blood
 
 > **In-Game Description**
-> _"**Choking on blood** &mdash; Blood obstructs breathing. Stop the bleeding and clear the airway with CPR or a suction device. Conscious patients may cough it clear themselves."_
+> _"**Choking on blood** &mdash; Blood obstructs breathing and can cause fatal cerebral hypoxia. Stop bleeding and clear the airway with suction; CPR provides weaker emergency clearance. Conscious patients may cough it clear themselves."_
 
 ```mermaid
 ---
@@ -21,7 +19,7 @@ config:
 ---
 flowchart LR
   bleeding[bleeding airway injury] ==> choking_on_blood[choking on blood]
-  choking_on_blood ==> | breathing reaches 0 | death[death]
+  choking_on_blood ==> | sustained oxygen deprivation | death[fatal cerebral hypoxia]
 
   linkStyle 0,1 stroke: #b10000
   style choking_on_blood stroke-width: 4px
@@ -31,13 +29,13 @@ flowchart LR
 
 **Causes**: Severe injuries to the mouth, throat, or chest that cause bleeding into the airways.
 
-**Effects**: Coughing and a staged loss of breathing. `ChokingOnBlood` has no `lethalSeverity`. Breathing is capped from 0.95 down to 0 across severities 0 to 1, so the condition kills by suffocation at the lethal stage rather than by an instant severity kill. Moving is not penalized by the choking stages.
+**Effects**: Coughing and a staged loss of breathing. At 65% choking, breathing is limited to 35%; at 80%, to 20%; at 100%, to zero. With delayed vital failure enabled, this impaired breathing can cause [cerebral hypoxia](/docs/wiki/injuries/hypoxia.md#cerebral-hypoxia) independently of blood loss or shock. Sustained complete deprivation can become fatal in about 1.5 game hours, sooner if brain injury already exists. Choking itself does not kill merely because its bar reaches 100%.
 
 **Treatment**: Stopping the bleeding of the mouth, throat, or chest will prevent further blood from entering the airways and slow the progression of the condition. If the patient is conscious, they may be able to cough up the blood on their own and clear the airway. If the patient is unconscious, the airways must be cleared using a specialized [airway suction device](/docs/wiki/medical-devices.md#airway-suction-device) or by compressing the chest using [CPR](/docs/wiki/medical-devices.md#cpr) to expel the blood and restore breathing. To unlock [CPR](/docs/wiki/medical-devices.md#cpr), you must first complete the [cardiopulmonary resuscitation (CPR)](/docs/wiki/research.md#cardiopulmonary-resuscitation-cpr) research project.
 
 > [!NOTE]
 > **Biotech DLC**: Deathresting sanguaphages will always be able to cough up the blood on their own and clear the airway - once the bleeding has been stopped.  
-> **Odyssey DLC**: The Breathless gene greatly slows further worsening of choking on blood and choking on a tourniquet, to about 5% of the normal increase. It does not stop choking, and it does not clear an airway that is already blocked.
+> **Odyssey DLC**: The Breathless gene slows random worsening of blood choking and reduces tourniquet choking's growth to about 5% of normal. Blood choking retains its separate baseline progression. The gene does not clear an existing obstruction or repair failed circulation.
 
 ## Choking on Tourniquet
 
