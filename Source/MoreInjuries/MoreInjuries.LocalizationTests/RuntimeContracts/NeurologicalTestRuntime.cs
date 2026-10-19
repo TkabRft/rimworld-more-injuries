@@ -109,7 +109,7 @@ namespace RimWorld
         public static bool CanUseDrug(Verse.Pawn pawn, Verse.ThingDef drug) => pawn.mutant.Def.canUseDrugs
             && (pawn.mutant.Def.drugWhitelist is null || pawn.mutant.Def.drugWhitelist.Contains(drug));
     }
-    public sealed class Pawn_GeneTracker { public void Notify_GenesChanged() { } }
+    public sealed partial class Pawn_GeneTracker { public void Notify_GenesChanged() { } }
     public sealed class Pawn_MutantTracker { public MutantDef Def = new(); public void Turn() { } public void Revert() { } }
     public class Recipe_Surgery
     {

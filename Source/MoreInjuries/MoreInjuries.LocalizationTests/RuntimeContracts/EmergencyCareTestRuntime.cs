@@ -36,6 +36,8 @@ namespace Verse
     public sealed class CarryTracker { public Thing? CarriedThing; }
     public sealed partial class Pawn
     {
+        public RimWorld.Pawn_GeneTracker? genes;
+        public readonly List<KeyValuePair<BodyPartRecord, float>> LimbBleeding = [];
         public Inventory inventory = new(); public CarryTracker carryTracker = new();
         public Dictionary<ThingDef, Thing> Devices => inventory.innerContainer.Devices; public readonly Dictionary<ThingDef, Thing> RetrievedDevices = [];
         public bool DisabledDoctor, Reachable = true, Downed; public int TicksPerMoveCardinal = 13;
@@ -65,6 +67,13 @@ namespace Verse
 namespace Verse.AI { public sealed partial class Job { public bool endAfterTendedOnce; public object[] Targets = []; public Target targetB => new(Targets.Length > 1 ? Targets[1] as Thing : null); } }
 namespace RimWorld
 {
+    public sealed class GeneDef : Def;
+    public sealed class Gene { public GeneDef def = new(); public bool Active = true; }
+    public sealed partial class Pawn_GeneTracker
+    {
+        public readonly List<Gene> GenesListForReading = [];
+        public bool HasActiveGene(GeneDef def) => GenesListForReading.Any(gene => gene.def == def && gene.Active);
+    }
     public static class WorkTypeDefOf { public static readonly object Doctor = new(); }
     public static class StatDefOf { public static readonly object MedicalPotency = new(), MedicalTendSpeed = new(), MarketValue = new(); }
     public static class MedicalCareUtility
@@ -129,7 +138,11 @@ namespace MoreInjuries.HealthConditions.HeavyBleeding.HemostaticAgents
 namespace MoreInjuries.HealthConditions.HeavyBleeding.Tourniquets
 {
     public sealed class BleedRateByLimbEnumerable : List<KeyValuePair<BodyPartRecord, float>>, IDisposable
-    { public static BleedRateByLimbEnumerable EvaluateLimbs(Pawn patient) => new(); public void Dispose() { } }
+    {
+        public static BleedRateByLimbEnumerable EvaluateLimbs(Pawn patient)
+        { BleedRateByLimbEnumerable result = new(); result.AddRange(patient.LimbBleeding); return result; }
+        public void Dispose() { }
+    }
     public static class JobDriver_TourniquetBase { public static bool PawnKnowsWhatTheyreDoing(Pawn doctor) => true; }
     public static class JobDriver_UseTourniquet { public static IJobDescriptor GetDispatcher(Pawn doctor, Pawn patient, Thing device, BodyPartRecord part) => new EmergencyDescriptor(KnownJobDefOf.Tourniquet); }
     public static class JobDriver_RemoveTourniquetSafely { public static IJobDescriptor GetDispatcher(Pawn doctor, Pawn patient, BodyPartRecord part) => new EmergencyDescriptor(KnownJobDefOf.RemoveTourniquet); }

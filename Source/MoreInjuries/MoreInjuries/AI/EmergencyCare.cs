@@ -53,17 +53,20 @@ internal static class EmergencyCare
             || doctor.WorkTypeIsDisabled(WorkTypeDefOf.Doctor)
             || !doctor.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation)
             || !doctor.health.capacities.CapableOf(PawnCapacityDefOf.Sight)) { return null; }
+        bool superclotting = ModsConfig.BiotechActive && patient.genes is { } genes
+            && DefDatabase<GeneDef>.GetNamedSilentFail("Superclotting") is { } clotting && genes.HasActiveGene(clotting);
         bool arrest = patient.health.hediffSet.HasHediff(KnownHediffDefOf.CardiacArrest);
         Hediff? choking = patient.health.hediffSet.GetFirstHediffOfDef(KnownHediffDefOf.ChokingOnBlood);
         bool criticalAirway = choking is not null && patient.health.capacities.GetLevel(PawnCapacityDefOf.Breathing) <= .2f;
         bool critical = arrest || criticalAirway;
         bool cprAvailable = KnownResearchProjectDefOf.Cpr.IsFinished && (arrest || choking is not null);
         bool quickAllowed = !s_history.TryGetValue(patient, out History? history) || !history.MustResuscitate;
-        Candidate best = default, rescue = default, quick = default;
+        Candidate best = default, rescue = default, quick = default, otherEmergency = default;
         bool miBleeding = false;
         float nativeBleeding = patient.health.hediffSet.BleedRateTotal, woundBleeding = 0f;
         foreach (Hediff injury in patient.health.hediffSet.hediffs) { woundBleeding += Math.Max(0f, injury.BleedRate); }
         float normalization = woundBleeding > 0f ? nativeBleeding / woundBleeding : 0f;
+        bool TreatBleeding(float rate) => !superclotting || rate >= EmergencyPriority.MINOR_BLEEDING;
         bool Better(Candidate value, Candidate previous) => previous.Kind == Kind.None || value.Score > previous.Score
             || value.Score == previous.Score && (value.Retrieval < previous.Retrieval
                 || value.Retrieval == previous.Retrieval && value.Cost < previous.Cost);
@@ -89,6 +92,8 @@ internal static class EmergencyCare
                 criticalTreatment, fast, native);
             if (kind is Kind.Tourniquet or Kind.Hemostat or Kind.Bandage) { miBleeding = true; }
             if (Better(value, best)) { best = value; }
+            if (kind is not (Kind.Tourniquet or Kind.Hemostat or Kind.Bandage or Kind.Stabilize)
+                && Better(value, otherEmergency)) { otherEmergency = value; }
             if (criticalTreatment && Better(value, rescue)) { rescue = value; }
             if (fast && Better(value, quick)) { quick = value; }
         }
@@ -100,7 +105,7 @@ internal static class EmergencyCare
         }
         float Reduction(ThingDef def, float fallback) => 1f - (def.GetModExtension<HemostasisModExtension>()?.CoagulationMultiplier ?? 1f - fallback);
 
-        if (KnownResearchProjectDefOf.BasicFirstAid.IsFinished && nativeBleeding > Mathf.Epsilon
+        if (!superclotting && KnownResearchProjectDefOf.BasicFirstAid.IsFinished && nativeBleeding > Mathf.Epsilon
             && MedicalDeviceHelper.FindFeasibleInventoryDevice(doctor, KnownThingDefOf.Tourniquet) is Thing tourniquet)
         {
             using BleedRateByLimbEnumerable limbs = BleedRateByLimbEnumerable.EvaluateLimbs(patient);
@@ -115,15 +120,15 @@ internal static class EmergencyCare
         }
         Hediff? wound = patient.health.hediffSet.hediffs.Where(JobDriver_HemostasisBase.JobCanTreat)
             .OrderByDescending(static injury => injury.BleedRate).FirstOrDefault();
-        if (wound is not null)
+        if (wound is not null && TreatBleeding(wound.BleedRate * normalization))
         {
             float rate = wound.BleedRate * normalization;
             if (KnownResearchProjectDefOf.AdvancedFirstAid.IsFinished)
             { Devices(KnownThingDefOf.HemostaticAgent, item => Consider(Kind.Hemostat, item, EmergencyPriority.BleedingUrgency(rate),
-                Reduction(KnownThingDefOf.HemostaticAgent, .95f) * EmergencyPriority.Suitability(true, rate), 40, bleeding: rate), true); }
+                Reduction(KnownThingDefOf.HemostaticAgent, .95f) * EmergencyPriority.Suitability(true, rate, superclotting), 40, bleeding: rate), true); }
             if (KnownResearchProjectDefOf.BasicAnatomy.IsFinished)
             { Devices(KnownThingDefOf.Bandage, item => Consider(Kind.Bandage, item, EmergencyPriority.BleedingUrgency(rate),
-                Reduction(KnownThingDefOf.Bandage, .8f) * EmergencyPriority.Suitability(false, rate), 80, bleeding: rate), true); }
+                Reduction(KnownThingDefOf.Bandage, .8f) * EmergencyPriority.Suitability(false, rate, superclotting), 80, bleeding: rate), true); }
         }
         if (!miBleeding && nativeBleeding > Mathf.Epsilon && CombatExtendedBridge.TryCreateStabilizationJob(doctor, patient) is Job stabilize)
         {
@@ -133,7 +138,8 @@ internal static class EmergencyCare
                 if (!CombatExtendedBridge.CanStabilize(injury)) { continue; }
                 count++; // Native batch time includes overlapping MI-controlled wounds too.
                 if (injury is IStatefulInjury state && (state.State.IsTemporarilyCoagulated || state.State.CoagulationMultiplier < 1f)) { continue; }
-                rate += injury.BleedRate * normalization;
+                float contribution = injury.BleedRate * normalization;
+                if (TreatBleeding(contribution)) { rate += contribution; }
             }
             Consider(Kind.Stabilize, stabilize.targetB.Thing, EmergencyPriority.BleedingUrgency(rate), 1f,
                 Math.Max(1, (int)(60f * count / Math.Max(.001f, doctor.GetStatValue(StatDefOf.MedicalTendSpeed)))), native: stabilize);
@@ -174,7 +180,8 @@ internal static class EmergencyCare
             { Consider(Kind.Blood, blood, urgency, 1f, 720); }
         }
         Candidate selected = critical && rescue.Kind != Kind.None
-            ? quickAllowed && quick.Kind != Kind.None ? quick : rescue : best;
+            ? !superclotting && quickAllowed && quick.Kind != Kind.None ? quick : rescue
+            : superclotting && otherEmergency.Kind != Kind.None ? otherEmergency : best;
         Job? result = selected.Kind switch
         {
             Kind.Tourniquet => JobDriver_UseTourniquet.GetDispatcher(doctor, patient, selected.Device!, selected.Limb!).CreateJob(),
@@ -191,7 +198,7 @@ internal static class EmergencyCare
         };
         if (result is not null) { result.endAfterTendedOnce = true; return result; }
         if (!aftercare) { return null; }
-        if (patient.Downed && patient.health.hediffSet.hediffs.Any(static injury => injury.TendableNow()))
+        if (!superclotting && patient.Downed && patient.health.hediffSet.hediffs.Any(static injury => injury.TendableNow()))
         {
             Job tend = JobMaker.MakeJob(JobDefOf.TendPatient, patient);
             tend.endAfterTendedOnce = true;
