@@ -17,6 +17,11 @@
     <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalReservations.cs" Link="Production\NpcMedicalReservations.cs" />
     <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalModel.cs" Link="Production\NpcMedicalModel.cs" />
     <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalIngestionPatch.cs" Link="Production\NpcMedicalIngestionPatch.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcPainPolicy.cs" Link="Production\NpcPainPolicy.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcPainProjection.cs" Link="Production\NpcPainProjection.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcPainCare.cs" Link="Production\NpcPainCare.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcPainJobs.cs" Link="Production\NpcPainJobs.cs" />
+    <Compile Include="..\MoreInjuries\HealthConditions\Drugs\MedicalDrugAdministration.cs" Link="Production\MedicalDrugAdministration.cs" />
     <Compile Include="..\MoreInjuries\AI\Toils_MedicalDevice.cs" Link="Production\Toils_MedicalDevice.cs" />
   </ItemGroup>
 </Project>

@@ -10,4 +10,8 @@
   <MI_NpcEvacuate.reportString>evacuating TargetA.</MI_NpcEvacuate.reportString>
   <!-- EN: taking a combat drug. -->
   <MI_NpcPerformanceDrug.reportString>taking a combat drug.</MI_NpcPerformanceDrug.reportString>
+  <!-- EN: taking medicine for pain. -->
+  <MI_NpcPainSelf.reportString>taking medicine for pain.</MI_NpcPainSelf.reportString>
+  <!-- EN: administering pain relief to TargetA. -->
+  <MI_NpcPainAssist.reportString>administering pain relief to TargetA.</MI_NpcPainAssist.reportString>
 </LanguageData>

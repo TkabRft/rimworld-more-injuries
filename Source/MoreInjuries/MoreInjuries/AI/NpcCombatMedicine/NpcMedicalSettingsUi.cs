@@ -35,6 +35,8 @@ internal static class NpcMedicalSettingsUi
         });
         SettingsUi.Section(list, "MI_NpcMedicine_Drugs", "MI_NpcMedicine_DrugsTip", () =>
         {
+            list.CheckboxLabeled("MI_NpcMedicine_PainCare".Translate(), ref settings.NpcPainCare, "MI_NpcMedicine_PainCareTip".Translate());
+            Slider(list, "MI_NpcMedicine_PainThreshold", "MI_NpcMedicine_PainThresholdTip", ref settings.NpcPainThreshold, 0f, 1f, percent: true);
             list.CheckboxLabeled("MI_NpcMedicine_Boosts".Translate(), ref settings.NpcPerformanceDrugs, "MI_NpcMedicine_BoostsTip".Translate());
             SettingsUi.Choice(list, "MI_NpcMedicine_Selection", "MI_NpcMedicine_SelectionTip", settings.NpcDrugSelection,
                 s_selections, s_selectionTips, selected => settings.NpcDrugSelection = selected);

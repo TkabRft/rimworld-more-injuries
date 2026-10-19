@@ -49,4 +49,27 @@ internal static class NpcMedicalReservations
             NpcMedicalCompatibility.InventoryChanged(pawn);
         }
     }
+
+    internal static bool TakeDrug(Pawn pawn, Job job, TargetIndex target, Thing dose, ThingOwner source)
+    {
+        if (dose.Destroyed || !NpcMedicalGeneration.IsPerformance(dose.def) || dose.stackCount < 1) { return false; }
+        if (pawn.carryTracker.CarriedThing == dose) { return dose.stackCount == 1; }
+        if (pawn.carryTracker.CarriedThing is not null || !source.Contains(dose)) { return false; }
+        if (source.TryTransferToContainer(dose, pawn.carryTracker.innerContainer, 1, out Thing transferred) != 1
+            || transferred != pawn.carryTracker.CarriedThing) { return false; }
+        job.SetTarget(target, transferred);
+        NpcMedicalCompatibility.InventoryChanged(pawn);
+        return true;
+    }
+
+    internal static void RestockUnusedDrug(Pawn pawn, Job job, TargetIndex target)
+    {
+        Thing? dose = pawn.carryTracker.CarriedThing;
+        if (dose is null || dose.Destroyed || job.GetTarget(target).Thing != dose
+            || !NpcMedicalGeneration.IsPerformance(dose.def)) { return; }
+        NpcMedicalCompatibility.InventoryChanged(pawn);
+        int count = Math.Min(dose.stackCount, NpcMedicalCompatibility.Fit(pawn, dose));
+        if (count > 0) { pawn.carryTracker.innerContainer.TryTransferToContainer(dose, pawn.inventory.innerContainer, count); }
+        NpcMedicalCompatibility.InventoryChanged(pawn);
+    }
 }

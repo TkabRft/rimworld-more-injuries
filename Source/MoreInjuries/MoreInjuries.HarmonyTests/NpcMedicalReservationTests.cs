@@ -151,7 +151,7 @@ namespace MoreInjuries.HarmonyTests
 // Main-thread game boundaries for the source-linked reservation/cleanup policy.
 namespace Verse
 {
-    public class Thing
+    public partial class Thing
     {
         public ThingDef def = new();
         public int stackCount = 1;
@@ -163,13 +163,18 @@ namespace Verse
         {
             stackCount--; Destroyed = stackCount <= 0;
             IngestionEffect?.Invoke(ingester);
+            if (Destroyed)
+            {
+                if (ParentHolder is Pawn_InventoryTracker inventory) { inventory.innerContainer.Items.Remove(this); }
+                if (ParentHolder is CarryTracker carry) { carry.innerContainer.Items.Remove(this); }
+            }
             return nutritionWanted;
         }
     }
-    public sealed class Pawn : Thing
+    public sealed partial class Pawn : Thing
     {
         public Map Map = new();
-        public Inventory inventory = new();
+        public Pawn_InventoryTracker inventory = new();
         public CarryTracker carryTracker = new();
         public int FitCount = int.MaxValue, InventoryUpdates;
         public bool ManagedByMi = true, SafeDrug = true;
@@ -178,7 +183,7 @@ namespace Verse
         public Job CurJob { get => jobs.curJob; set => jobs.curJob = value; }
     }
     public sealed class Map { public ReservationManager reservationManager = new(); }
-    public sealed class Inventory { public ThingOwner innerContainer = new(); }
+    public sealed class Pawn_InventoryTracker { public Pawn pawn = null!; public ThingOwner innerContainer = new(); }
     public sealed class CarryTracker
     {
         public ThingOwner innerContainer = new();
@@ -190,13 +195,16 @@ namespace Verse
                 || CarriedThing is Thing carried && carried.def != thing.def) { return 0; }
             int moved = Math.Min(thing.stackCount, Math.Min(count, MaxPickup));
             if (CarriedThing is Thing existing) { existing.stackCount += moved; thing.stackCount -= moved; }
-            else if (moved == thing.stackCount) { innerContainer.Items.Add(thing); thing.Spawned = false; }
-            else { thing.stackCount -= moved; innerContainer.Items.Add(new() { def = thing.def, stackCount = moved, Spawned = false }); }
+            else if (moved == thing.stackCount) { innerContainer.Items.Add(thing); thing.Spawned = false; thing.ParentHolder = this; }
+            else { thing.stackCount -= moved; innerContainer.Items.Add(new() { def = thing.def, stackCount = moved, Spawned = false, ParentHolder = this }); }
             return moved;
         }
     }
-    public sealed class ThingOwner
+    public sealed class ThingOwner : IEnumerable<Thing>
     {
+        public object? Owner;
+        public IEnumerator<Thing> GetEnumerator() => Items.GetEnumerator();
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
         public List<Thing> Items = [];
         public int TransferLimit = int.MaxValue;
         public bool Contains(Thing item) => Items.Contains(item);
@@ -211,8 +219,8 @@ namespace Verse
             if (!Items.Contains(item)) { return 0; }
             int moved = Math.Min(item.stackCount, Math.Min(count, TransferLimit));
             if (moved <= 0) { return 0; }
-            if (moved == item.stackCount) { Items.Remove(item); destination.Items.Add(item); }
-            else { item.stackCount -= moved; destination.Items.Add(new() { def = item.def, stackCount = moved, Spawned = false }); }
+            if (moved == item.stackCount) { Items.Remove(item); item.ParentHolder = destination.Owner; destination.Items.Add(item); }
+            else { item.stackCount -= moved; destination.Items.Add(new() { def = item.def, stackCount = moved, Spawned = false, ParentHolder = destination.Owner }); }
             return moved;
         }
     }
@@ -235,28 +243,33 @@ namespace Verse
     }
     public static class ReservationUtility
     {
-        public static bool Reserve(this Pawn pawn, Thing target, Job job, int maxPawns, int stackCount)
-            => stackCount > 0 && pawn.Map.reservationManager.Reserve(pawn, job, target);
+        public static bool Reserve(this Pawn pawn, Thing target, Job job, int maxPawns = 1, int stackCount = -1, bool errorOnFailed = false)
+            => stackCount != 0 && pawn.Map.reservationManager.Reserve(pawn, job, target);
         public static bool CanReserve(this Pawn pawn, Thing target, int maxPawns, int stackCount, bool ignoreOtherReservations)
         {
             Assert.AreEqual(1, maxPawns); Assert.AreEqual(-1, stackCount); Assert.IsFalse(ignoreOtherReservations);
             return !pawn.Map.reservationManager.Claims.Any(claim => claim.Target == target && claim.Pawn != pawn);
         }
     }
-    public static class Find { public static TickManager TickManager = new(); }
+    public static partial class Find { public static TickManager TickManager = new(); }
     public sealed class TickManager { public int TicksGame = 1000; }
     public sealed class JobDef { }
 }
 namespace Verse.AI
 {
-    public readonly struct LocalTargetInfo(Thing thing) { public Thing Thing { get; } = thing; }
+    public readonly struct LocalTargetInfo(Thing thing) { public Thing Thing { get; } = thing; public Pawn Pawn => (Pawn)Thing; }
     public sealed class Job
     {
+        public LocalTargetInfo targetA;
         public LocalTargetInfo targetB;
+        public LocalTargetInfo targetC;
+        public bool endAfterTendedOnce;
         public JobDef def = new();
         public int count = 1;
-        public LocalTargetInfo GetTarget(TargetIndex index) => targetB;
-        public void SetTarget(TargetIndex index, Thing? thing) => targetB = new(thing!);
+        public int startTick;
+        public LocalTargetInfo GetTarget(TargetIndex index) => index == TargetIndex.A ? targetA : index == TargetIndex.B ? targetB : targetC;
+        public void SetTarget(TargetIndex index, Thing? thing)
+        { if (index == TargetIndex.A) { targetA = new(thing!); } else if (index == TargetIndex.B) { targetB = new(thing!); } else { targetC = new(thing!); } }
         public Func<Pawn, bool, bool>? ReservationAttempt;
         public bool TryMakePreToilReservations(Pawn pawn, bool errorOnFailed) => ReservationAttempt?.Invoke(pawn, errorOnFailed) ?? true;
     }
@@ -271,6 +284,10 @@ namespace Verse.AI
     }
     public sealed class Toil
     {
+        public readonly List<Func<bool>> Failures = [];
+        public Toil? JumpTarget;
+        public Func<bool>? JumpCondition;
+        public string? Tag;
         public Pawn actor = null!;
         public Action initAction = null!;
         public ToilCompleteMode defaultCompleteMode;
@@ -285,12 +302,12 @@ namespace MoreInjuries.AI.NpcCombatMedicine
         internal static void InventoryChanged(Pawn pawn) => pawn.InventoryUpdates++;
         internal static int Fit(Pawn pawn, Thing thing) => pawn.FitCount;
     }
-    internal static class NpcMedicalAi
+    internal sealed class NpcMedicalState { internal readonly NpcDrugBudget Drugs = new(); }
+    internal static partial class NpcMedicalAi
     {
-        internal sealed class StateData { internal readonly NpcDrugBudget Drugs = new(); }
-        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Pawn, StateData> s_states = new();
-        internal static StateData State(Pawn pawn) => s_states.GetOrCreateValue(pawn);
-        internal static bool Managed(Pawn pawn) => pawn.ManagedByMi;
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Pawn, NpcMedicalState> s_states = new();
+        internal static NpcMedicalState State(Pawn pawn) => s_states.GetOrCreateValue(pawn);
+        internal static bool Managed(Pawn pawn) => pawn.ManagedByMi && MoreInjuriesMod.Settings.EnableNpcCombatMedicine;
         internal static bool SafePerformance(Pawn pawn, Thing thing) => pawn.SafeDrug;
     }
     internal static class NpcMedicalMemory { internal static void Remember(Pawn pawn) => pawn.Remembered++; }
@@ -301,19 +318,21 @@ namespace MoreInjuries
     {
         internal bool EnableNpcCombatMedicine = true, NpcPerformanceDrugs = true;
         internal int NpcPerformanceMaximum = 1, NpcPerformanceInterval = 20000;
+        internal bool NpcPainCare = true;
+        internal float NpcPainThreshold = .5f;
     }
     internal static class MoreInjuriesMod { internal static MoreInjuriesSettings Settings = new(); }
 }
 namespace MoreInjuries.Defs.WellKnown
 {
-    internal static class KnownThingDefOf { internal static readonly ThingDef Epinephrine = new(); }
-    internal static class KnownJobDefOf { internal static readonly JobDef MI_NpcPerformanceDrug = new(); }
+    internal static class KnownThingDefOf { internal static readonly ThingDef Epinephrine = new(); internal static ThingDef Morphine = new(); }
+    internal static class KnownJobDefOf { internal static readonly JobDef MI_NpcPerformanceDrug = new(), MI_NpcPainSelf = new(), MI_NpcPainAssist = new(); }
 }
 namespace MoreInjuries.Things
 { internal static class MedicalDeviceHelper { internal const int MAX_MEDICAL_DEVICE_RESERVATIONS = 10; } }
 namespace UnityEngine
 {
-    public static class Mathf
+    public static partial class Mathf
     {
         public static int Min(int a, int b) => Math.Min(a, b);
         public static int Max(int a, int b) => Math.Max(a, b);

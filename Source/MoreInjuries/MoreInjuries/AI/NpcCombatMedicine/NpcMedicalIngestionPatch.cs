@@ -1,5 +1,6 @@
 using HarmonyLib;
 using MoreInjuries.Defs.WellKnown;
+using MoreInjuries.HealthConditions.Drugs;
 using Verse;
 
 namespace MoreInjuries.AI.NpcCombatMedicine;
@@ -16,7 +17,20 @@ internal static class NpcMedicalIngestionPatch
     private static bool Prefix(Thing __instance, Pawn ingester, ref float __result, out DoseState __state)
     {
         __state = new(true, false);
-        if (!NpcMedicalAi.Managed(ingester) || ingester.CurJob?.def != KnownJobDefOf.MI_NpcPerformanceDrug) { return true; }
+        Pawn? clinician = MedicalDrugAdministration.GetDoctor(__instance);
+        bool clinicalSelf = clinician is null && ingester.CurJob?.def == KnownJobDefOf.MI_NpcPainSelf
+            && ingester.CurJob.targetA.Thing == __instance;
+        if (clinicalSelf || MedicalDrugAdministration.IsClinicalPain(__instance))
+        {
+            Pawn actor = clinician ?? ingester;
+            if (NpcPainCare.FinalCheck(actor, ingester, __instance)) { return true; }
+            if (clinicalSelf && ingester.CurJob is { } painJob) { painJob.count = 0; }
+            __state = default;
+            __result = 0f;
+            return false;
+        }
+        if (clinician is not null || !NpcMedicalAi.Managed(ingester)
+            || ingester.CurJob?.def != KnownJobDefOf.MI_NpcPerformanceDrug) { return true; }
         __state = new(true, true);
         MoreInjuriesSettings settings = MoreInjuriesMod.Settings;
         if (settings.NpcPerformanceDrugs && NpcMedicalAi.SafePerformance(ingester, __instance)

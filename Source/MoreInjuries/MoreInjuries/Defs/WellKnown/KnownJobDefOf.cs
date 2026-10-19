@@ -30,4 +30,6 @@ public static class KnownJobDefOf
     public static JobDef MI_NpcWithdraw = null!;
     public static JobDef MI_NpcEvacuate = null!;
     public static JobDef MI_NpcPerformanceDrug = null!;
+    public static JobDef MI_NpcPainSelf = null!;
+    public static JobDef MI_NpcPainAssist = null!;
 }

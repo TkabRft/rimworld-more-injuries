@@ -1,0 +1,306 @@
+// Headless boundaries only. Production assessment/projection/selection and the
+// real Harmony ingestion detour are linked into this assembly. Native worker
+// formulas, ingestion RNG and game travel still require live acceptance.
+using MoreInjuries.AI.NpcCombatMedicine;
+using MoreInjuries.Defs.WellKnown;
+using RimWorld;
+using Verse;
+using Verse.AI;
+
+namespace Verse
+{
+    public sealed partial class ThingDef
+    {
+        public string defName = "fixture";
+        public float BaseMarketValue = 1f;
+        public IngestibleProperties ingestible = new();
+        public CompProperties_Drug Drug = new();
+    }
+    public sealed class IngestibleProperties
+    { public List<IngestionOutcomeDoer_GiveHediff> outcomeDoers = []; public DrugCategory drugCategory = DrugCategory.Hard; }
+    public partial class Thing
+    {
+        public object? ParentHolder;
+        public bool IngestibleNow = true, Forbidden;
+        public IntVec3 PositionHeld;
+        public IntVec3 Position => PositionHeld;
+        public string ThingID = "fixture";
+        public bool IsForbidden(Pawn pawn) => Forbidden;
+    }
+    public readonly struct IntVec3(float value)
+    {
+        public float DistanceToSquared(IntVec3 other) => (value - other.Value) * (value - other.Value);
+        public bool InHorDistOf(IntVec3 other, float radius) => DistanceToSquared(other) <= radius * radius;
+        public float Value => value;
+    }
+    public sealed partial class Pawn
+    {
+        public Health health;
+        public Pawn()
+        { health = new(this); inventory.pawn = this; inventory.innerContainer.Owner = inventory; carryTracker.innerContainer.Owner = carryTracker; }
+        public float BodySize = 1f, RawPain = .5f, PainFactor = 1f, PainThreshold = .8f, ChemicalEffect = 1f;
+        public bool Downed, Dead, IsMutant, IsPrisoner, Teetotaler, AllowDrug = true, DoctorCapable = true, Hostile;
+        public int CareRelation;
+        public new IntVec3 Position;
+        private static readonly object s_faction = new();
+        public object Faction = s_faction;
+        public bool Reachable = true;
+        public bool CanReach(Thing thing, PathEndMode end, Danger danger) => Reachable;
+        public RaceProperties RaceProps = new();
+        public MutantTracker mutant = new();
+        public PlayerSettings? playerSettings;
+        public Pawn_GeneTracker? genes;
+        public Pawn_DrugPolicyTracker? drugs;
+        public bool IsTeetotaler() => Teetotaler;
+        public bool HostileTo(Pawn other) => other != this && (Hostile || other.Hostile);
+        public float GetStatValue(object stat) => PainThreshold;
+        public bool CanReachImmediate(Thing target, PathEndMode end) => target is Pawn other
+            ? other.Position.DistanceToSquared(Position) <= 2.25f : target.PositionHeld.DistanceToSquared(Position) <= 2.25f;
+        public readonly HashSet<HistoryEventDef> RefusedEvents = [];
+        public readonly List<Thing> Supplies = [];
+    }
+    public sealed class RaceProperties { public bool Humanlike = true, IsFlesh = true; }
+    public sealed class MutantTracker { public MutantDef Def = new(); }
+    public sealed class MutantDef { public bool entitledToMedicalCare = true; }
+    public sealed class PlayerSettings { public MedicalCareCategory medCare = MedicalCareCategory.Best; }
+    public sealed class Health
+    {
+        public Health(Pawn pawn) { hediffSet = new(pawn); capacities = new(hediffSet); }
+        public HediffSet hediffSet;
+        public CapacityTracker capacities;
+        public bool forceDowned;
+        public bool InPainShock => hediffSet.PainTotal >= hediffSet.pawn.PainThreshold;
+    }
+    public class Hediff
+    {
+        public Pawn pawn = null!;
+        public HediffDef def = null!;
+        protected float severityInt;
+        public float Severity { get => severityInt; set => severityInt = value; }
+        public HediffStage? CurStage => def.stages.LastOrDefault(stage => stage.minSeverity <= Severity);
+    }
+    public sealed class HediffDef
+    { public string defName = "fixture high"; public List<HediffStage> stages = []; public float initialSeverity = .01f, minSeverity, maxSeverity = 1f, lethalSeverity = -1f; }
+    public sealed class HediffStage
+    { public bool lifeThreatening; public float minSeverity, painFactor = 1f, painOffset; public List<PawnCapacityModifier> capMods = []; }
+    public sealed class PawnCapacityModifier
+    { public PawnCapacityDef capacity = null!; public float offset, setMax = float.MaxValue; }
+    public sealed class HediffSet(Pawn pawn)
+    {
+        public Pawn pawn = pawn;
+        public List<Hediff> hediffs = [];
+        public float PainTotal => Math.Min(1f, Math.Max(0f, (pawn.RawPain + hediffs.Sum(hediff => hediff.CurStage?.painOffset ?? 0f))
+            * hediffs.Aggregate(pawn.PainFactor, (factor, hediff) => factor * (hediff.CurStage?.painFactor ?? 1f))));
+        public Hediff? GetFirstHediffOfDef(HediffDef def) => hediffs.FirstOrDefault(hediff => hediff.def == def);
+    }
+    public sealed class PawnCapacityDef(string name, float minimum)
+    { public string defName = name; public float minForCapable = minimum; }
+    public sealed class CapacityTracker(HediffSet set)
+    {
+        public readonly Dictionary<PawnCapacityDef, float> Base = [];
+        public float GetLevel(PawnCapacityDef capacity) => PawnCapacityUtility.CalculateCapacityLevel(set, capacity);
+        public bool CapableOf(PawnCapacityDef capacity) => GetLevel(capacity) > capacity.minForCapable;
+    }
+    public static class PawnCapacityUtility
+    {
+        public static float CalculateCapacityLevel(HediffSet set, PawnCapacityDef capacity)
+        {
+            float value = set.pawn.health.capacities.Base.TryGetValue(capacity, out float baseline) ? baseline : 1f;
+            float max = float.MaxValue;
+            foreach (PawnCapacityModifier modifier in set.hediffs.SelectMany(hediff => hediff.CurStage?.capMods ?? []))
+            { if (modifier.capacity == capacity) { value += modifier.offset; max = Math.Min(max, modifier.setMax); } }
+            return Math.Max(0f, Math.Min(max, value));
+        }
+    }
+    public sealed class GeneDef { public ChemicalDef? chemical; public float overdoseChanceFactor = 1f; }
+    public sealed class Gene { public bool Active = true; public GeneDef def = new(); }
+    public static class ModsConfig { public static bool BiotechActive, IdeologyActive; }
+    public static class Prefs { public static bool DevMode; }
+    public enum Danger { Some }
+    public static partial class Log { public static readonly List<string> Messages = []; public static void Message(string text) => Messages.Add(text); }
+    public readonly struct NamedArgument(object value) { public object Value => value; }
+    public static class NamedArgumentExtensions { public static NamedArgument Named(this Pawn pawn, string key) => new(pawn); }
+    public static partial class Find { public static readonly HistoryEventsManager HistoryEventsManager = new(); }
+}
+namespace Verse.AI
+{
+    public enum PathEndMode { Touch, ClosestTouch }
+    public static class JobMaker
+    {
+        public static Job MakeJob(JobDef def, Thing a, Thing? b = null) => new() { def = def, targetA = new(a), targetB = new(b!) };
+    }
+    public abstract class JobDriver
+    {
+        public Pawn pawn = null!;
+        public Job job => pawn.CurJob;
+        public readonly List<Func<bool>> Failures = [];
+        private readonly List<Action<JobCondition>> _finish = [];
+        public virtual bool TryMakePreToilReservations(bool errorOnFailed) => true;
+        protected virtual IEnumerable<Toil> MakeNewToils() => [];
+        protected void AddFinishAction(Action<JobCondition> action) => _finish.Add(action);
+        protected void EndJobWith(JobCondition condition) => pawn.jobs.EndCurrentJob(condition);
+        public int ResumeIndex;
+        public List<Toil> BuildToils() => MakeNewToils().ToList();
+        public void Run()
+        {
+            try
+            {
+                List<Toil> toils = BuildToils();
+                foreach (Toil toil in toils) { toil.actor = pawn; }
+                for (int index = ResumeIndex, steps = 0; index < toils.Count && steps < 40; steps++)
+                {
+                    Toil toil = toils[index];
+                    if (Failures.Any(fail => fail()) || toil.Failures.Any(fail => fail())) { EndJobWith(JobCondition.Incompletable); break; }
+                    toil.initAction?.Invoke();
+                    if (pawn.jobs.Ended is not null) { break; }
+                    index = toil.JumpTarget is not null && toil.JumpCondition!() ? toils.IndexOf(toil.JumpTarget) : index + 1;
+                }
+            }
+            finally { foreach (Action<JobCondition> finish in _finish) { finish(JobCondition.Succeeded); } }
+        }
+    }
+    public static class PainToilExtensions
+    {
+        public static void FailOn(this JobDriver driver, Func<bool> condition) => driver.Failures.Add(condition);
+        public static Toil FailOn(this Toil toil, Func<bool> condition) { toil.Failures.Add(condition); return toil; }
+        public static Toil FailOnDespawnedNullOrForbidden(this Toil toil, TargetIndex target)
+            => toil.FailOn(() => toil.actor.CurJob.GetTarget(target).Thing is not { Spawned: true, Destroyed: false, Forbidden: false });
+    }
+    public static class Toils_General { public static Toil Do(Action action) => new() { initAction = action }; }
+    public static class Toils_Jump
+    {
+        public static Toil Jump(Toil target) => JumpIf(target, () => true);
+        public static Toil JumpIf(Toil target, Func<bool> condition) => new() { JumpTarget = target, JumpCondition = condition };
+    }
+    public static class Toils_Goto { public static Toil GotoThing(TargetIndex target, PathEndMode end) => new(); }
+    public static class Toils_Haul
+    {
+        public static Toil StartCarryThing(TargetIndex target)
+        {
+            Toil toil = new();
+            toil.initAction = () =>
+            {
+                Pawn actor = toil.actor;
+                if (actor.carryTracker.TryStartCarry(actor.CurJob.GetTarget(target).Thing, actor.CurJob.count) != 1)
+                { actor.jobs.EndCurrentJob(JobCondition.Incompletable); return; }
+                actor.CurJob.SetTarget(target, actor.carryTracker.CarriedThing);
+                actor.CurJob.count--;
+            };
+            return toil;
+        }
+    }
+}
+namespace RimWorld
+{
+    public class JobDriver_Ingest : JobDriver;
+    public static class Toils_Ingest
+    {
+        public static Toil ChewIngestible(Pawn actor, float multiplier, TargetIndex source, TargetIndex table) => new() { Tag = "native chewing boundary" };
+        public static Toil FinalizeIngest(Pawn actor, TargetIndex source)
+            => Toils_General.Do(() =>
+            {
+                Microsoft.VisualStudio.TestTools.UnitTesting.Assert.AreEqual(1, actor.CurJob.count);
+                actor.CurJob.GetTarget(source).Thing.Ingested(actor, 0f);
+            });
+    }
+    public enum MedicalCareCategory { NoCare, NoMeds, HerbalOrWorse, NormalOrWorse, Best }
+    public enum DrugCategory { None, Medical, Social, Hard }
+    public static class StatDefOf { public static readonly object PainShockThreshold = new(); }
+    public static class PawnCapacityDefOf
+    {
+        public static readonly PawnCapacityDef Consciousness = new("Consciousness", .3f), Breathing = new("Breathing", 0f),
+            BloodPumping = new("BloodPumping", 0f), Moving = new("Moving", .15f), Manipulation = new("Manipulation", .1f);
+    }
+    public sealed class IngestionOutcomeDoer_GiveHediff
+    {
+        public float chance = 1f;
+        public HediffDef hediffDef = new(); public float severity = .5f;
+        public ChemicalDef? toleranceChemical;
+        // Reflection reads this XML-initialized private field in production.
+        private bool divideByBodySize;
+        public bool multiplyByGeneToleranceFactors;
+        public void SetBodySizeDivision(bool divide) => divideByBodySize = divide;
+    }
+    public sealed class ChemicalDef { public HediffDef toleranceHediff = new(); }
+    public sealed class CompProperties_Drug
+    {
+        public ChemicalDef? chemical = new(); public bool CanCauseOverdose = true;
+        public FloatRange overdoseSeverityOffset = new(.18f, .35f); public float largeOverdoseChance = .01f, addictiveness = .1f;
+    }
+    public readonly struct FloatRange(float min, float max) { public readonly float max = max; }
+    public sealed class Pawn_GeneTracker { public readonly List<Gene> GenesListForReading = []; public float AddictionFactor = 1f; public float AddictionChanceFactor(ChemicalDef? chemical) => AddictionFactor; }
+    public sealed class Pawn_DrugPolicyTracker
+    {
+        public bool OverdosePossible = true;
+        private bool CanCauseOverdose(ThingDef drug) => OverdosePossible;
+    }
+    public static class DrugStatsUtility
+    {
+        public static IngestionOutcomeDoer_GiveHediff? GetDrugHighGiver(ThingDef def) => def.ingestible.outcomeDoers.FirstOrDefault();
+        public static CompProperties_Drug GetDrugComp(ThingDef def) => def.Drug;
+        public static float GetAddictivenessAtTolerance(ThingDef def, float tolerance) => def.Drug.addictiveness;
+    }
+    public static class AddictionUtility
+    {
+        public static void ModifyChemicalEffectForToleranceAndBodySize(Pawn pawn, ChemicalDef? chemical, ref float effect,
+            bool applyGeneToleranceFactor, bool divideByBodySize = true)
+        { effect *= pawn.ChemicalEffect; if (divideByBodySize) { effect /= pawn.BodySize; } }
+        public static Hediff? FindToleranceHediff(Pawn pawn, ChemicalDef chemical) => pawn.health.hediffSet.GetFirstHediffOfDef(chemical.toleranceHediff);
+    }
+    public static class HediffDefOf { public static readonly HediffDef DrugOverdose = new() { defName = "DrugOverdose" }; }
+    public static class ThingDefOf { public static ThingDef Yayo = new(), GoJuice = new(); }
+    public static class PawnUtility { public static bool CanTakeDrug(Pawn pawn, ThingDef drug) => pawn.AllowDrug; }
+    public sealed class HistoryEventDef;
+    public static class HistoryEventArgsNames { public const string Doer = "Doer"; }
+    public readonly struct HistoryEvent(HistoryEventDef def, NamedArgument doer)
+    { public HistoryEventDef Def => def; public Pawn Actor => (Pawn)doer.Value; }
+    public sealed class HistoryEventsManager
+    { public readonly List<HistoryEvent> Events = []; public void RecordEvent(HistoryEvent historyEvent) => Events.Add(historyEvent); }
+    public static class HistoryEventDefOf
+    {
+        public static readonly HistoryEventDef IngestedDrug = new(), AdministeredDrug = new(), IngestedHardDrug = new(),
+            AdministeredHardDrug = new(), IngestedRecreationalDrug = new(), AdministeredRecreationalDrug = new();
+    }
+    public static class IdeoUtility { public static bool DoerWillingToDo(HistoryEventDef def, Pawn actor) => !actor.RefusedEvents.Contains(def); }
+}
+namespace MoreInjuries.HealthConditions.Drugs
+{
+    public abstract class JobDriver_UseMedicalDrug : JobDriver
+    {
+        protected Thing? DeviceUsed => job.targetB.Thing;
+        protected Pawn Patient => job.targetA.Pawn;
+        protected abstract ThingDef DeviceDef { get; }
+        protected virtual bool RequiresTreatment(Pawn patient) => true;
+        protected abstract bool ApplyDevice(Pawn doctor, Pawn patient, Thing? device);
+        // Travel/waiting are native/shared boundaries; exercise the real final
+        // application implementation without pretending to simulate game pathing.
+        protected override IEnumerable<Toil> MakeNewToils()
+        { yield return Toils_General.Do(() => ApplyDevice(pawn, Patient, DeviceUsed)); }
+    }
+}
+namespace MoreInjuries.AI.NpcCombatMedicine
+{
+    internal static class NpcMedicalGeneration
+    {
+        internal static bool IsPerformance(ThingDef def) => def == KnownThingDefOf.Morphine || def == ThingDefOf.Yayo || def == ThingDefOf.GoJuice;
+        internal static bool CanDoctor(Pawn actor) => actor.DoctorCapable;
+    }
+    internal static partial class NpcMedicalAi
+    {
+        internal static int Relation(Pawn actor, Pawn patient) => actor.HostileTo(patient) ? -1 : patient.CareRelation;
+        internal static float Severity(Pawn patient, string name) => patient.health.hediffSet.hediffs.FirstOrDefault(hediff => hediff.def.defName == name)?.Severity ?? 0f;
+        internal static Thing? FindSupply(Pawn actor, Pawn patient, ThingDef def) => actor.inventory.innerContainer
+            .Concat(patient.inventory.innerContainer).Concat(actor.Supplies.Where(item => item.PositionHeld.DistanceToSquared(actor.Position) <= 144f))
+            .FirstOrDefault(item => item.def == def && !item.Destroyed && !item.Forbidden);
+    }
+}
+namespace UnityEngine
+{
+    public static partial class Mathf
+    {
+        public static float Abs(float value) => Math.Abs(value);
+        public static float Max(float a, float b) => Math.Max(a, b);
+        public static float Clamp(float value, float min, float max) => Math.Max(min, Math.Min(max, value));
+        public static float Clamp01(float value) => Clamp(value, 0, 1);
+    }
+}

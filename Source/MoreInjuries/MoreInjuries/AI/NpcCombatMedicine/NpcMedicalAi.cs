@@ -35,7 +35,8 @@ internal static class NpcMedicalAi
 
     internal static bool Owns(Job? job) => job is not null && (job.def == KnownJobDefOf.MI_NpcTend
         || job.def == KnownJobDefOf.MI_NpcReposition || job.def == KnownJobDefOf.MI_NpcWithdraw
-        || job.def == KnownJobDefOf.MI_NpcEvacuate || job.def == KnownJobDefOf.MI_NpcPerformanceDrug)
+        || job.def == KnownJobDefOf.MI_NpcEvacuate || job.def == KnownJobDefOf.MI_NpcPerformanceDrug
+        || job.def == KnownJobDefOf.MI_NpcPainSelf || job.def == KnownJobDefOf.MI_NpcPainAssist)
         || job?.def.driverClass is Type driver && typeof(JobDriver_TendPatient).IsAssignableFrom(driver)
         || job?.def.driverClass?.Namespace?.StartsWith("MoreInjuries.HealthConditions", StringComparison.Ordinal) == true;
 
@@ -53,14 +54,15 @@ internal static class NpcMedicalAi
 
     internal static float Severity(Pawn pawn, string defName) => pawn.health.hediffSet.hediffs
         .FirstOrDefault(hediff => hediff.def.defName == defName)?.Severity ?? 0f;
-    internal static float Urgency(Pawn patient) => NpcMedicalTriage.Urgency(patient);
+    internal static float Urgency(Pawn patient) => Mathf.Max(NpcMedicalTriage.Urgency(patient), NpcPainCare.Priority(patient));
 
-    private static int Relation(Pawn doctor, Pawn patient)
+    internal static int Relation(Pawn doctor, Pawn patient)
     {
         MoreInjuriesSettings settings = MoreInjuriesMod.Settings;
         if (patient.Dead || !patient.RaceProps.Humanlike || !patient.RaceProps.IsFlesh || doctor.HostileTo(patient)
             || patient.IsMutant && !patient.mutant.Def.entitledToMedicalCare) { return -1; }
-        int Rank(int relation) => NpcMedicalModel.CareRank(relation, Urgency(patient), settings.NpcTreatOwnFaction,
+        int Rank(int relation) => NpcMedicalModel.CareRank(relation,
+            NpcPainCare.Priority(patient) > 0f && patient.health.InPainShock ? Mathf.Max(70f, Urgency(patient)) : Urgency(patient), settings.NpcTreatOwnFaction,
             settings.NpcTreatFriendly, settings.NpcTreatNeutral, settings.NpcTreatPlayer);
         if (patient == doctor) { return Rank(0); }
         if (patient.IsColonistPlayerControlled)
@@ -83,7 +85,7 @@ internal static class NpcMedicalAi
         bool threatened = Threats(doctor).Any(enemy => GenSight.LineOfSight(enemy.Position, doctor.Position, doctor.Map));
         if (threatened) { state.Drugs.Threat(now); }
         bool canDoctor = NpcMedicalGeneration.CanDoctor(doctor);
-        if (canDoctor)
+        // Self-ingestion does not require doctoring. Other care still does.
         {
             float radius = IsMedic(doctor) ? 24f : 12f;
             List<Pawn> patients = Nearby(doctor, radius).Where(patient => Relation(doctor, patient) >= 0 && Urgency(patient) > 0f)
@@ -91,12 +93,19 @@ internal static class NpcMedicalAi
                 .ThenBy(patient => patient.Position.DistanceToSquared(doctor.Position)).ToList();
             foreach (Pawn patient in patients)
             {
-                if (!NpcMedicalReservations.PatientAvailable(doctor, patient)
+                if (patient != doctor && !canDoctor || !NpcMedicalReservations.PatientAvailable(doctor, patient)
                     || patient != doctor && !doctor.CanReach(patient, PathEndMode.Touch, Danger.Deadly)) { continue; }
-                Job? treatment = Treatment(doctor, patient);
+                Job? treatment = canDoctor && NpcMedicalTriage.Urgency(patient) >= NpcPainCare.Priority(patient)
+                    ? Treatment(doctor, patient) : null;
+                treatment ??= NpcPainCare.Select(doctor, patient, pocketOnly: patient == doctor && threatened);
+                treatment ??= canDoctor ? Treatment(doctor, patient) : null;
                 if (treatment is null) { continue; }
                 if (threatened && Exposure(doctor, doctor.Position) > 0)
                 {
+                    // A dose already in one's pocket needs no exposed retrieval or
+                    // medical procedure; native ingestion still owns interruptions.
+                    if (treatment.def == KnownJobDefOf.MI_NpcPainSelf
+                        && treatment.targetA.Thing.ParentHolder == doctor.inventory) { return treatment; }
                     if (MoreInjuriesMod.Settings.NpcMedicalAiMode >= 1 && patient == doctor && SaferPosition(doctor) is IntVec3 cell)
                     { return Move(KnownJobDefOf.MI_NpcReposition, cell); }
                     if (Urgency(patient) < 90f || !patient.Position.InHorDistOf(doctor.Position, 1.5f)

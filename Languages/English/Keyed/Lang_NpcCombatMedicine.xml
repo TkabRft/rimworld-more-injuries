@@ -108,6 +108,14 @@
   <MI_NpcMedicine_MaximumTip>Maximum performance-drug doses per combat engagement. Zero prevents automatic performance use. Clinical epinephrine has a separate budget.</MI_NpcMedicine_MaximumTip>
   <!-- EN: Minimum time between performance-drug doses, including across engagements and saved games. 2,500 ticks equal one in-game hour. Zero removes this interval; other limits still apply. -->
   <MI_NpcMedicine_PerformanceIntervalTip>Minimum time between performance-drug doses, including across engagements and saved games. 2,500 ticks equal one in-game hour. Zero removes this interval; other limits still apply.</MI_NpcMedicine_PerformanceIntervalTip>
-  <!-- EN: Minimum time between clinical drug doses such as emergency epinephrine. Separate from performance-drug limits. 2,500 ticks equal one in-game hour. -->
-  <MI_NpcMedicine_ClinicalIntervalTip>Minimum time between clinical drug doses such as emergency epinephrine. Separate from performance-drug limits. 2,500 ticks equal one in-game hour.</MI_NpcMedicine_ClinicalIntervalTip>
+  <!-- EN: Minimum time between emergency epinephrine doses. Clinical pain care uses effect-based redosing and does not consume this interval or performance allowance. 2,500 ticks equal one in-game hour. -->
+  <MI_NpcMedicine_ClinicalIntervalTip>Minimum time between emergency epinephrine doses. Clinical pain care uses effect-based redosing and does not consume this interval or performance allowance. 2,500 ticks equal one in-game hour.</MI_NpcMedicine_ClinicalIntervalTip>
+  <!-- EN: Allow clinical pain care -->
+  <MI_NpcMedicine_PainCare>Allow clinical pain care</MI_NpcMedicine_PainCare>
+  <!-- EN: Use available morphine, yayo or go-juice for indicated pain relief and help nearby pawns downed by pain. Actors respect personal refusals. Unsafe or ineffective doses are skipped. Separate from combat boosting; supplies are unchanged. -->
+  <MI_NpcMedicine_PainCareTip>Use available morphine, yayo or go-juice for indicated pain relief and help nearby pawns downed by pain. Actors respect personal refusals. Unsafe or ineffective doses are skipped. Separate from combat boosting; supplies are unchanged.</MI_NpcMedicine_PainCareTip>
+  <!-- EN: Preventive pain trigger -->
+  <MI_NpcMedicine_PainThreshold>Preventive pain trigger</MI_NpcMedicine_PainThreshold>
+  <!-- EN: Fraction of each patient's actual pain-shock threshold at which preventive relief may begin. Default 50%. Existing sufficient analgesia prevents ineffective top-ups. Pain shock remains an emergency regardless of this setting. -->
+  <MI_NpcMedicine_PainThresholdTip>Fraction of each patient's actual pain-shock threshold at which preventive relief may begin. Default 50%. Existing sufficient analgesia prevents ineffective top-ups. Pain shock remains an emergency regardless of this setting.</MI_NpcMedicine_PainThresholdTip>
 </LanguageData>

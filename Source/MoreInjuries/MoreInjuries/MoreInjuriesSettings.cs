@@ -289,6 +289,12 @@ public partial class MoreInjuriesSettings : ModSettings
     [SettingsEntry<int>(DefaultValue = 600)]
     internal partial ref int NpcClinicalInterval { get; }
 
+    [SettingsEntry<bool>(DefaultValue = true)]
+    internal partial ref bool NpcPainCare { get; }
+
+    [SettingsEntry<float>(DefaultValue = 0.5f)]
+    internal partial ref float NpcPainThreshold { get; }
+
     [SettingsEntry<bool>(DefaultValue = false)]
     internal partial ref bool NpcTrainMedics { get; }
 

@@ -53,13 +53,13 @@ namespace MoreInjuries.HarmonyTests
 // Minimal game boundary. The production guard above is the code exercised by Harmony.
 namespace Verse
 {
-    public sealed class ThingDef
+    public sealed partial class ThingDef
     {
         public bool IsWeapon;
         public bool IsMedicine;
         public List<string>? weaponTags;
     }
-    public static class Log
+    public static partial class Log
     {
         public static void Warning(string message) { }
     }

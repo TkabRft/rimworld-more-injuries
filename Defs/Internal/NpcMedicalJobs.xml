@@ -35,4 +35,16 @@
     <reportString>taking a combat drug.</reportString>
     <casualInterruptible>false</casualInterruptible>
   </JobDef>
+  <JobDef>
+    <defName>MI_NpcPainSelf</defName>
+    <driverClass>MoreInjuries.AI.NpcCombatMedicine.JobDriver_NpcPainSelf</driverClass>
+    <reportString>taking medicine for pain.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+  <JobDef>
+    <defName>MI_NpcPainAssist</defName>
+    <driverClass>MoreInjuries.AI.NpcCombatMedicine.JobDriver_NpcPainAssist</driverClass>
+    <reportString>administering pain relief to TargetA.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
 </Defs>
