@@ -1,4 +1,4 @@
-﻿using MoreInjuries.AI.Jobs;
+using MoreInjuries.AI.Jobs;
 using MoreInjuries.Defs.WellKnown;
 using Verse;
 
@@ -10,7 +10,7 @@ public class JobDriver_UseHemostaticAgent : JobDriver_HemostasisBase
 
     protected override ThingDef DeviceDef => KnownThingDefOf.HemostaticAgent;
 
-    protected override int BaseTendDuration => 60;
+    protected override int BaseTendDuration => 40;
 
     public static IJobDescriptor GetDispatcher(Pawn doctor, Pawn patient, Thing device, bool fromInventoryOnly) =>
         GetDispatcher(KnownJobDefOf.UseHemostaticAgent, doctor, patient, device, fromInventoryOnly);

@@ -1,4 +1,4 @@
-﻿using MoreInjuries.AI.Jobs;
+using MoreInjuries.AI.Jobs;
 using MoreInjuries.Defs.WellKnown;
 using Verse;
 
@@ -10,7 +10,7 @@ public class JobDriver_UseBandage : JobDriver_HemostasisBase
 
     protected override ThingDef DeviceDef => KnownThingDefOf.Bandage;
 
-    protected override int BaseTendDuration => 180;
+    protected override int BaseTendDuration => 80;
 
     public static IJobDescriptor GetDispatcher(Pawn doctor, Pawn patient, Thing device, bool fromInventoryOnly) =>
         GetDispatcher(KnownJobDefOf.UseBandage, doctor, patient, device, fromInventoryOnly);

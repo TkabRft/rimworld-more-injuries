@@ -1,33 +1,24 @@
-﻿using MoreInjuries.Defs.WellKnown;
-using MoreInjuries.HealthConditions.HeavyBleeding.Transfusions;
-using MoreInjuries.Things;
-using RimWorld;
+using MoreInjuries.Defs.WellKnown;
 using Verse;
 using Verse.AI;
-using static MoreInjuries.HealthConditions.HeavyBleeding.BloodLossConstants;
 
 namespace MoreInjuries.AI.WorkGivers;
 
+// Retain this workgiver's def/public type while sharing coordinated patient-level selection.
 public class WorkGiver_UseBloodBag : WorkGiver_MoreInjuriesTreatmentBase
 {
-    private Thing? TryFindBloodBag(Pawn doctor, Pawn patient) =>
-        MedicalDeviceHelper.FindMedicalDevice(doctor, patient, JobDriver_UseBloodBag.JobDeviceDef, static hediff => JobDriver_UseBloodBag.JobCanTreat(hediff, BLOOD_LOSS_THRESHOLD));
-
-    protected override bool IsValidPatient(Pawn doctor, Thing thing, out Pawn patient) => base.IsValidPatient(doctor, thing, out patient)
-        && patient.playerSettings?.medCare is not MedicalCareCategory.NoCare and not MedicalCareCategory.NoMeds;
-
     public override bool ShouldSkip(Pawn pawn, bool forced = false) => !KnownResearchProjectDefOf.BasicFirstAid.IsFinished;
 
-    public override bool HasJobOnThing(Pawn pawn, Thing thing, bool forced = false)
-    {
-        if (IsValidPatient(pawn, thing, out Pawn patient) && TryFindBloodBag(pawn, patient) is not null)
-        {
-            return pawn.CanReserve(patient, ignoreOtherReservations: forced);
-        }
-        return false;
-    }
+    protected override bool IsValidPatient(Pawn doctor, Thing thing, out Pawn patient)
+        => base.IsValidPatient(doctor, thing, out patient)
+            && patient.playerSettings?.medCare is not RimWorld.MedicalCareCategory.NoCare and not RimWorld.MedicalCareCategory.NoMeds;
 
-    protected override Job CreateJob(Pawn doctor, Pawn patient) => TryFindBloodBag(doctor, patient) is Thing bloodBag
-        ? JobDriver_UseBloodBag.GetDispatcher(doctor, patient, bloodBag, fromInventoryOnly: false, fullyHeal: false).CreateJob()
-        : GetDummyDefaultJob(doctor);
+    public override bool HasJobOnThing(Pawn pawn, Thing thing, bool forced = false)
+        => base.HasJobOnThing(pawn, thing, forced);
+
+    protected override bool CanTreat(Pawn doctor, Pawn patient)
+        => EmergencyCare.CreateJob(doctor, patient, aftercare: false)?.def == KnownJobDefOf.UseBloodBag;
+
+    protected override Job CreateJob(Pawn doctor, Pawn patient)
+        => EmergencyCare.CreateJob(doctor, patient, aftercare: false)!;
 }

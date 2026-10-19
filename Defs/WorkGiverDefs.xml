@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <WorkGiverDef>
+    <defName>DoctorMoreInjuriesEmergencyCare</defName>
+    <label>provide coordinated emergency care</label>
+    <giverClass>MoreInjuries.AI.WorkGivers.WorkGiver_EmergencyCare</giverClass>
+    <workType>Doctor</workType>
+    <emergency>true</emergency>
+    <verb>provide emergency care to</verb>
+    <gerund>providing emergency care to</gerund>
+    <requiredCapacities><li>Manipulation</li></requiredCapacities>
+    <priorityInType>130</priorityInType>
+    <prioritizeSustains>true</prioritizeSustains>
+  </WorkGiverDef>
+  <WorkGiverDef>
     <defName>DoctorUseDefibrillator</defName>
     <label>stabilize or resuscitate patients with arrhythmia or cardiac arrest</label>
     <giverClass>MoreInjuries.AI.WorkGivers.WorkGiver_UseDefibrillator</giverClass>

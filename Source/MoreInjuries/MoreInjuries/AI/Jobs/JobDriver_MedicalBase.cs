@@ -27,7 +27,7 @@ public abstract class JobDriver_MedicalBase<TTarget> : JobDriver where TTarget :
         float manipulationCapacity = Mathf.Max(doctor.health.capacities.GetLevel(PawnCapacityDefOf.Manipulation), 0.05f);
         float medicalTendSpeed = doctor.GetStatValue(StatDefOf.MedicalTendSpeed);
         Logger.LogDebug($"Doctor {doctor.Name} has manipulation capacity of {manipulationCapacity} and medical tend speed of {medicalTendSpeed}");
-        return (int)(1f / (medicalTendSpeed * manipulationCapacity) * BaseTendDuration);
+        return MedicalTiming.Duration(doctor, BaseTendDuration);
     }
 
     protected abstract void FinalizeTreatment(Pawn doctor, TTarget target, Thing? thing);
@@ -46,6 +46,8 @@ public abstract class JobDriver_MedicalBase<TTarget> : JobDriver where TTarget :
             }
             TTarget target = GetTarget(in actor.CurJob.targetA);
             FinalizeTreatment(actor, target, thing);
+            if (target is Pawn patient && actor.CurJob is { } completed)
+            { EmergencyCare.NotifyTreatmentCompleted(patient, completed.def); }
             if (actor.CurJob is null)
             {
                 if (!ReferenceEquals(actor, target))

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
+  <!-- EN: provide coordinated emergency care -->
+  <DoctorMoreInjuriesEmergencyCare.label>provide coordinated emergency care</DoctorMoreInjuriesEmergencyCare.label>
+  <!-- EN: provide emergency care to -->
+  <DoctorMoreInjuriesEmergencyCare.verb>provide emergency care to</DoctorMoreInjuriesEmergencyCare.verb>
+  <!-- EN: providing emergency care to -->
+  <DoctorMoreInjuriesEmergencyCare.gerund>providing emergency care to</DoctorMoreInjuriesEmergencyCare.gerund>
   <!-- EN: stabilize or resuscitate patients with arrhythmia or cardiac arrest -->
   <DoctorUseDefibrillator.label>stabilize or resuscitate patients with arrhythmia or cardiac arrest</DoctorUseDefibrillator.label>
   <!-- EN: resuscitate -->

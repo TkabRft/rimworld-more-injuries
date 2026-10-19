@@ -86,6 +86,15 @@ public static class MedicalDeviceHelper
 
     private static bool CanDoctorGetDevice(Pawn doctor, Thing device) => !device.IsForbidden(doctor) && doctor.CanReserve(device, MAX_MEDICAL_DEVICE_RESERVATIONS, stackCount: 1);
 
+    internal static Thing? FindFeasibleInventoryDevice(Pawn doctor, ThingDef deviceDef)
+    {
+        foreach (Thing item in doctor.inventory.innerContainer)
+        {
+            if (item.def == deviceDef && !item.Destroyed && item.stackCount > 0 && CanDoctorGetDevice(doctor, item)) { return item; }
+        }
+        return null;
+    }
+
     public static Thing? FindMedicalDevice(Pawn doctor, Pawn patient, ThingDef deviceDef, HediffDef[] hediffDefs, bool fromInventoryOnly = false) =>
         FindMedicalDevice(doctor, patient, deviceDef, hediff => Array.IndexOf(hediffDefs, hediff.def) != -1, fromInventoryOnly);
 
@@ -116,25 +125,36 @@ public static class MedicalDeviceHelper
         }
         if (!fromInventoryOnly)
         {
-            Thing? thingOnMap = GenClosest.ClosestThing_Global_Reachable(
-                center: patient.Position,
-                map: patient.MapHeld,
-                searchSet: patient.MapHeld.listerThings.ThingsOfDef(deviceDef),
-                peMode: PathEndMode.ClosestTouch,
-                traverseParams: TraverseParms.For(doctor),
-                validator: thing => CanDoctorGetDevice(doctor, thing));
-            if (thingOnMap is Thing deviceOnMap)
+            return FindRetrievedDevice(doctor, patient, deviceDef);
+        }
+        return null;
+    }
+
+    // Separate retrieval candidate lets emergency scoring compare a nearby superior tool with
+    // an inferior pocket tool without changing the public inventory-first finder contract.
+    internal static Thing? FindRetrievedDevice(Pawn doctor, Pawn patient, ThingDef deviceDef)
+    {
+        if (doctor.Map is null || patient.MapHeld != doctor.Map) { return null; }
+        Thing? thingOnMap = GenClosest.ClosestThing_Global_Reachable(
+            center: patient.Position,
+            map: patient.MapHeld,
+            searchSet: patient.MapHeld.listerThings.ThingsOfDef(deviceDef),
+            peMode: PathEndMode.ClosestTouch,
+            traverseParams: TraverseParms.For(doctor),
+            validator: thing => CanDoctorGetDevice(doctor, thing));
+        if (thingOnMap is Thing deviceOnMap)
+        {
+            return deviceOnMap;
+        }
+        if (doctor.IsColonist && doctor.Map is not null)
+        {
+            foreach (Pawn colonyAnimal in doctor.Map.mapPawns.SpawnedColonyAnimals)
             {
-                return deviceOnMap;
-            }
-            if (doctor.IsColonist && doctor.Map is not null)
-            {
-                foreach (Pawn colonyAnimal in doctor.Map.mapPawns.SpawnedColonyAnimals)
+                if (GetThingFromInventory(colonyAnimal.inventory.innerContainer, deviceDef) is Thing deviceInAnimalInventory
+                    && CanDoctorGetDevice(doctor, deviceInAnimalInventory) && !colonyAnimal.IsForbidden(doctor)
+                    && doctor.CanReach(colonyAnimal, PathEndMode.ClosestTouch, Danger.Deadly))
                 {
-                    if (GetThingFromInventory(colonyAnimal.inventory.innerContainer, deviceDef) is Thing deviceInAnimalInventory)
-                    {
-                        return deviceInAnimalInventory;
-                    }
+                    return deviceInAnimalInventory;
                 }
             }
         }
