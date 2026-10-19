@@ -327,4 +327,50 @@
   <!-- EN: More Injuries takes priority over Death Rattle. Follow the in-game migration notice before removing Death Rattle. -->
   <!-- OPTS: {"allow_unused": true} -->
   <MI_VitalFailure_DeathRattleConflict>More Injuries takes priority over Death Rattle. Follow the in-game migration notice before removing Death Rattle.</MI_VitalFailure_DeathRattleConflict>
+
+  <!-- Settings controls and hover explanations. -->
+  <!-- EN: Click to expand or collapse this group. Collapsing it does not change your settings. -->
+  <MI_Settings_SectionTip>Click to expand or collapse this group. Collapsing it does not change your settings.</MI_Settings_SectionTip>
+  <!-- EN: Logging and the repair action for misplaced bionic parts on the current map. -->
+  <MI_Settings_GeneralTip>Logging and the repair action for misplaced bionic parts on the current map.</MI_Settings_GeneralTip>
+  <!-- EN: Write More Injuries diagnostic messages to the game log. Useful when investigating a problem. -->
+  <MI_Settings_General_LoggingTooltip>Write More Injuries diagnostic messages to the game log. Useful when investigating a problem.</MI_Settings_General_LoggingTooltip>
+  <!-- EN: Include detailed diagnostic messages when logging is enabled. This can produce a large log; leave it off during normal play. -->
+  <MI_Settings_General_LoggingVerboseTooltip>Include detailed diagnostic messages when logging is enabled. This can produce a large log; leave it off during normal play.</MI_Settings_General_LoggingVerboseTooltip>
+  <!-- EN: Repair misplaced supported bionics on human pawns on the current map. Moves them to an eligible body part, or removes them if none is available. This changes the pawns immediately. -->
+  <MI_Settings_General_DebugAction_FixBionicsTooltip>Repair misplaced supported bionics on human pawns on the current map. Moves them to an eligible body part, or removes them if none is available. This changes the pawns immediately.</MI_Settings_General_DebugAction_FixBionicsTooltip>
+  <!-- EN: Bone fractures, bone-fragment wounds, and applying splints. -->
+  <MI_Settings_Features_FracturesTip>Bone fractures, bone-fragment wounds, and applying splints.</MI_Settings_Features_FracturesTip>
+  <!-- EN: Choking, suction-device success, fire inhalation, and collapsed lungs. -->
+  <MI_Settings_Features_RespiratoryTip>Choking, suction-device success, fire inhalation, and collapsed lungs.</MI_Settings_Features_RespiratoryTip>
+  <!-- EN: Armor fragments that injure the wearer, including the armor condition threshold and injury chance. -->
+  <MI_Settings_Features_SpallingTip>Armor fragments that injure the wearer, including the armor condition threshold and injury chance.</MI_Settings_Features_SpallingTip>
+  <!-- EN: Armor below this fraction of its maximum hit points can produce spalling injuries when spalling is enabled. -->
+  <MI_Settings_Features_Spalling_DamageThresholdTooltip>Armor below this fraction of its maximum hit points can produce spalling injuries when spalling is enabled.</MI_Settings_Features_Spalling_DamageThresholdTooltip>
+  <!-- EN: Vital failure and prognosis -->
+  <MI_Settings_VitalFailure_Title>Vital failure and prognosis</MI_Settings_VitalFailure_Title>
+  <!-- EN: Delayed failure of vital organs and the health-tab estimate of time until death. -->
+  <MI_Settings_VitalFailure_TitleTip>Delayed failure of vital organs and the health-tab estimate of time until death.</MI_Settings_VitalFailure_TitleTip>
+  <!-- EN: Blood-loss shock, organ hypoxia, cardiac arrest, and defibrillator success and breakage. -->
+  <MI_Settings_Features_HypovolemicShockTip>Blood-loss shock, organ hypoxia, cardiac arrest, and defibrillator success and breakage.</MI_Settings_Features_HypovolemicShockTip>
+  <!-- EN: Interacting hypothermia, acidosis and coagulopathy, direct blood-loss death, and automatic saline safety. -->
+  <MI_Settings_Features_LethalTriadTip>Interacting hypothermia, acidosis and coagulopathy, direct blood-loss death, and automatic saline safety.</MI_Settings_Features_LethalTriadTip>
+  <!-- EN: Lasting neurological damage, the protection from tending, and possible skill and passion changes. -->
+  <MI_Settings_Features_NeuralDamageTip>Lasting neurological damage, the protection from tending, and possible skill and passion changes.</MI_Settings_Features_NeuralDamageTip>
+  <!-- EN: Concussion from head trauma, including the trauma threshold and severity added. -->
+  <MI_Settings_Features_ConcussionTip>Concussion from head trauma, including the trauma threshold and severity added.</MI_Settings_Features_ConcussionTip>
+  <!-- EN: Hemorrhagic strokes, including the head-trauma threshold and severity added. -->
+  <MI_Settings_Features_HemorrhagicStrokeTip>Hemorrhagic strokes, including the head-trauma threshold and severity added.</MI_Settings_Features_HemorrhagicStrokeTip>
+  <!-- EN: Temporary shutdown of bionic parts after EMP hits. -->
+  <MI_Settings_Features_EmpDamageTip>Temporary shutdown of bionic parts after EMP hits.</MI_Settings_Features_EmpDamageTip>
+  <!-- EN: Adrenaline rushes after injury, including their chance and guaranteed damage threshold. -->
+  <MI_Settings_Features_AdrenalineTip>Adrenaline rushes after injury, including their chance and guaranteed damage threshold.</MI_Settings_Features_AdrenalineTip>
+  <!-- EN: Hydrostatic shock from projectile hits and its chance to occur. -->
+  <MI_Settings_Features_HydrostaticShockTip>Hydrostatic shock from projectile hits and its chance to occur.</MI_Settings_Features_HydrostaticShockTip>
+  <!-- EN: Tourniquet controls, automatic application, gangrene risk and infection timing. -->
+  <MI_Settings_Features_TourniquetsTip>Tourniquet controls, automatic application, gangrene risk and infection timing.</MI_Settings_Features_TourniquetsTip>
+  <!-- EN: Hearing damage from gunfire and explosions, nearby bystanders, and permanent damage risk. -->
+  <MI_Settings_Features_HearingDamageTip>Hearing damage from gunfire and explosions, nearby bystanders, and permanent damage risk.</MI_Settings_Features_HearingDamageTip>
+  <!-- EN: DLC integration, enclosed bleeding, paralysis, intestinal spilling, and blood-harvesting skill. -->
+  <MI_Settings_Features_MiscTip>DLC integration, enclosed bleeding, paralysis, intestinal spilling, and blood-harvesting skill.</MI_Settings_Features_MiscTip>
 </LanguageData>

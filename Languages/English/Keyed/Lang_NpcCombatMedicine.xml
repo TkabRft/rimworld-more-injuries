@@ -68,4 +68,46 @@
   <MI_NpcMedicine_PerformanceInterval>Minimum performance interval (ticks)</MI_NpcMedicine_PerformanceInterval>
   <!-- EN: Minimum clinical drug interval (ticks) -->
   <MI_NpcMedicine_ClinicalInterval>Minimum clinical drug interval (ticks)</MI_NpcMedicine_ClinicalInterval>
+
+  <!-- Settings controls and hover explanations. -->
+  <!-- EN: Medical supplies and emergency behavior for NPC combatants and prisoners. Includes medic equipment, permitted patients, and combat-drug limits. -->
+  <MI_NpcMedicine_TitleTip>Medical supplies and emergency behavior for NPC combatants and prisoners. Includes medic equipment, permitted patients, and combat-drug limits.</MI_NpcMedicine_TitleTip>
+  <!-- EN: Choose how much control More Injuries has over NPC treatment and survival decisions. Hover each menu choice for its behavior. -->
+  <MI_NpcMedicine_ModeTip>Choose how much control More Injuries has over NPC treatment and survival decisions. Hover each menu choice for its behavior.</MI_NpcMedicine_ModeTip>
+  <!-- EN: Adds medical actions without choosing safer treatment positions, medical withdrawal, or evacuation. -->
+  <MI_NpcMedicine_Mode0Tip>Adds medical actions without choosing safer treatment positions, medical withdrawal, or evacuation.</MI_NpcMedicine_Mode0Tip>
+  <!-- EN: Adds medical actions and allows injured NPCs to move to nearby safer treatment positions. Other mods retain retreat and rescue decisions. -->
+  <MI_NpcMedicine_Mode1Tip>Adds medical actions and allows injured NPCs to move to nearby safer treatment positions. Other mods retain retreat and rescue decisions.</MI_NpcMedicine_Mode1Tip>
+  <!-- EN: Also permits individual medical withdrawal and evacuation of nearby downed faction members. Does not change group retreat decisions. -->
+  <MI_NpcMedicine_Mode2Tip>Also permits individual medical withdrawal and evacuation of nearby downed faction members. Does not change group retreat decisions.</MI_NpcMedicine_Mode2Tip>
+  <!-- EN: Supply quantities, medic prevalence, rare scavenged equipment, and optional training for newly generated medics. Existing pawns receive no free equipment. -->
+  <MI_NpcMedicine_EquipmentTip>Supply quantities, medic prevalence, rare scavenged equipment, and optional training for newly generated medics. Existing pawns receive no free equipment.</MI_NpcMedicine_EquipmentTip>
+  <!-- EN: Scale ordinary medical consumables granted to newly generated NPCs. Does not multiply reusable devices, sedatives or performance doses. Existing supplies count toward the kit. -->
+  <MI_NpcMedicine_SuppliesTip>Scale ordinary medical consumables granted to newly generated NPCs. Does not multiply reusable devices, sedatives or performance doses. Existing supplies count toward the kit.</MI_NpcMedicine_SuppliesTip>
+  <!-- EN: Scale the proportion of newly generated combatants selected as medics. Zero stops selecting medics; ordinary personal supplies are controlled separately. -->
+  <MI_NpcMedicine_MedicsTip>Scale the proportion of newly generated combatants selected as medics. Zero stops selecting medics; ordinary personal supplies are controlled separately.</MI_NpcMedicine_MedicsTip>
+  <!-- EN: Chance for a newly equipped NPC to carry an extra scavenged medical item. Allows rare equipment outside the usual technology-tier kit. -->
+  <MI_NpcMedicine_ScavengingTip>Chance for a newly equipped NPC to carry an extra scavenged medical item. Allows rare equipment outside the usual technology-tier kit.</MI_NpcMedicine_ScavengingTip>
+  <!-- EN: Choose which nearby non-hostile patients NPCs may assist. Self-treatment remains available independently of these flags. -->
+  <MI_NpcMedicine_CareTip>Choose which nearby non-hostile patients NPCs may assist. Self-treatment remains available independently of these flags.</MI_NpcMedicine_CareTip>
+  <!-- EN: Performance-drug provisioning and use, per-engagement dose limits, and separate intervals for performance and clinical drugs. -->
+  <MI_NpcMedicine_DrugsTip>Performance-drug provisioning and use, per-engagement dose limits, and separate intervals for performance and clinical drugs.</MI_NpcMedicine_DrugsTip>
+  <!-- EN: Choose which performance drugs are supplied to newly generated NPCs. Existing items are preserved. This choice does not override the use chance, dose limit or safety checks. -->
+  <MI_NpcMedicine_SelectionTip>Choose which performance drugs are supplied to newly generated NPCs. Existing items are preserved. This choice does not override the use chance, dose limit or safety checks.</MI_NpcMedicine_SelectionTip>
+  <!-- EN: Choose performance drugs from the NPC technology-tier profile. More advanced factions can receive different drugs; this does not guarantee a dose. -->
+  <MI_NpcMedicine_Selection0Tip>Choose performance drugs from the NPC technology-tier profile. More advanced factions can receive different drugs; this does not guarantee a dose.</MI_NpcMedicine_Selection0Tip>
+  <!-- EN: Use morphine for performance-drug provisioning. It reduces pain but can sedate, impair breathing and cause addiction; it is not equivalent to a stimulant. -->
+  <MI_NpcMedicine_Selection1Tip>Use morphine for performance-drug provisioning. It reduces pain but can sedate, impair breathing and cause addiction; it is not equivalent to a stimulant.</MI_NpcMedicine_Selection1Tip>
+  <!-- EN: Add no performance drugs, including medic-kit morphine. NPCs may still use permitted drugs already supplied by vanilla or another mod. -->
+  <MI_NpcMedicine_Selection2Tip>Add no performance drugs, including medic-kit morphine. NPCs may still use permitted drugs already supplied by vanilla or another mod.</MI_NpcMedicine_Selection2Tip>
+  <!-- EN: Scale the chance that newly generated NPCs receive a performance drug. Zero stops new performance-drug grants; existing supplies can still be used. -->
+  <MI_NpcMedicine_PrevalenceTip>Scale the chance that newly generated NPCs receive a performance drug. Zero stops new performance-drug grants; existing supplies can still be used.</MI_NpcMedicine_PrevalenceTip>
+  <!-- EN: Chance for an eligible carrier to use performance drugs during a combat engagement. Rolled once per engagement. Medical safety checks and dose limits still apply. -->
+  <MI_NpcMedicine_UseChanceTip>Chance for an eligible carrier to use performance drugs during a combat engagement. Rolled once per engagement. Medical safety checks and dose limits still apply.</MI_NpcMedicine_UseChanceTip>
+  <!-- EN: Maximum performance-drug doses per combat engagement. Zero prevents automatic performance use. Clinical epinephrine has a separate budget. -->
+  <MI_NpcMedicine_MaximumTip>Maximum performance-drug doses per combat engagement. Zero prevents automatic performance use. Clinical epinephrine has a separate budget.</MI_NpcMedicine_MaximumTip>
+  <!-- EN: Minimum time between performance-drug doses, including across engagements and saved games. 2,500 ticks equal one in-game hour. Zero removes this interval; other limits still apply. -->
+  <MI_NpcMedicine_PerformanceIntervalTip>Minimum time between performance-drug doses, including across engagements and saved games. 2,500 ticks equal one in-game hour. Zero removes this interval; other limits still apply.</MI_NpcMedicine_PerformanceIntervalTip>
+  <!-- EN: Minimum time between clinical drug doses such as emergency epinephrine. Separate from performance-drug limits. 2,500 ticks equal one in-game hour. -->
+  <MI_NpcMedicine_ClinicalIntervalTip>Minimum time between clinical drug doses such as emergency epinephrine. Separate from performance-drug limits. 2,500 ticks equal one in-game hour.</MI_NpcMedicine_ClinicalIntervalTip>
 </LanguageData>

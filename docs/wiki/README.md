@@ -14,6 +14,8 @@ _If you would like to contribute to this project or improve the documentation, p
 The More Injuries mod aims to increase the simulation depth of RimWorld's medical system by adding a variety of new injuries, medical conditions, and treatment options, as well as simulating body part damage in more detail and introducing pathophysiological interactions between injuries and medical conditions; meaning that injuries and medical conditions can affect each other in complex ways, leading to cascading effects that can be difficult to manage. The mod also adds new body parts, medical devices, procedures, surgeries, research projects, and work types to enhance the medical gameplay experience.
 Its goal is to make the medical system more challenging and interesting in some aspects, while also making it more realistic and immersive. A detailed mod settings menu is provided to allow players to customize many aspects of the mod to their liking.
 
+In Mod Options, click a `[+]` group button to expand its settings and `[-]` to collapse it. All injury groups and NPC medicine use the same controls. Hover a group, option, slider or action button for an explanation. AI behavior and performance-drug supplies open menus where you can hover each choice before selecting it. Your existing settings carry over when updating the mod; opening or collapsing a group does not reset or round your values. Group expansion lasts for the current session.
+
 Adding the mod to a colony that was saved without it is described in [save compatibility](/docs/wiki/save-compatibility.md#save-compatibility).
 
 ## Table of Contents

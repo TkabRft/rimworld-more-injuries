@@ -32,7 +32,7 @@ Package `Th3Fr3d.ExtendedInjuries`. Namespace `MoreInjuries`. Declared versions:
 | Research | `docs/wiki/research.md` | `Defs/Research/` |
 | Surgeries | `docs/wiki/surgeries.md` | `Defs/RecipeDefs/Surgeries/`, `Patches/Patch_Surgeries.xml` |
 | Work types | `docs/wiki/work-types.md` | `Defs/WorkGiverDefs.xml`, `AI/WorkGivers/` |
-| Mod settings | `docs/coding-style.md` only if adding a setting | `Languages/English/Keyed/Lang_Settings.xml`, `Roslyn/Metadata/Settings/` |
+| Mod settings | `docs/settings.md`; `docs/coding-style.md` if adding a setting | `MoreInjuriesSettingsUi.cs`, `SettingsUi.cs`, `Languages/English/Keyed/Lang_Settings.xml`, `Roslyn/Metadata/Settings/` |
 | Compatibility | `COMPATIBILITY.md` | `Patches/Mod_*.xml`, `Patches/Dlc_*.xml`, `Integrations/` |
 | Localization | `Languages/TRANSLATING.md` | `Languages/`, `MoreInjuries.LocalizationTests` |
 | Save upgrade | none until blocked | `Versioning/` |

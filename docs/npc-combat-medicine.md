@@ -80,6 +80,8 @@ Scavenging defaults to 3%, adds at most one item per equipped pawn and never add
 
 ## Drug policy and settings
 
+The NPC controls use the shared expandable settings UI. Both AI behavior and drug provisioning have explicit choice menus with per-choice tooltips; rendering does not change saved values. The UI and persistence contract are documented in [mod settings](settings.md).
+
 | Setting | Default | Range |
 |---|---|---|
 | Module / mode | Enabled / treatment-aware | Off; three modes |
