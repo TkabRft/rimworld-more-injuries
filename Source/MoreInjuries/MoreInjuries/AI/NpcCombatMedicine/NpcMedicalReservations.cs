@@ -23,6 +23,18 @@ internal static class NpcMedicalReservations
         return false;
     }
 
+    internal static bool TakeMedicine(Pawn pawn, Job job, Thing medicine, ThingOwner source)
+    {
+        if (medicine.Destroyed || !medicine.def.IsMedicine || medicine.stackCount <= 0) { return false; }
+        if (pawn.carryTracker.CarriedThing == medicine) { return true; }
+        if (pawn.carryTracker.CarriedThing is not null || !source.Contains(medicine)) { return false; }
+        if (source.TryTransferToContainer(medicine, pawn.carryTracker.innerContainer, 1, out Thing transferred) != 1
+            || transferred != pawn.carryTracker.CarriedThing) { return false; }
+        job.SetTarget(TargetIndex.B, transferred);
+        NpcMedicalCompatibility.InventoryChanged(pawn);
+        return true;
+    }
+
     internal static void RestockUnusedMedicine(Pawn pawn, Job job)
     {
         Thing? medicine = pawn.carryTracker.CarriedThing;

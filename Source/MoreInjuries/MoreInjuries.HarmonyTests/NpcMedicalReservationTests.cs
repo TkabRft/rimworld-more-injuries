@@ -90,6 +90,61 @@ namespace MoreInjuries.HarmonyTests
             Assert.AreEqual(2, doctor.carryTracker.CarriedThing!.stackCount);
             Assert.AreEqual(3, doctor.InventoryUpdates);
         }
+
+        [TestMethod]
+        public void InventoryTendingTransfersExactlyOneDoseAndReturnsItOnFailure()
+        {
+            Pawn doctor = new(), supplier = new();
+            Thing medicine = new() { def = new() { IsMedicine = true }, stackCount = 8, Spawned = false };
+            supplier.inventory.innerContainer.Items.Add(medicine);
+            Job job = new() { targetB = new(medicine) };
+            Assert.IsTrue(NpcMedicalReservations.TakeMedicine(doctor, job, medicine, supplier.inventory.innerContainer));
+            Assert.AreEqual(7, medicine.stackCount);
+            Thing carried = doctor.carryTracker.CarriedThing!;
+            Assert.AreEqual(1, carried.stackCount);
+            Assert.AreSame(carried, job.targetB.Thing);
+            Assert.IsFalse(carried.Spawned, "Inventory collection must never stage medicine on the ground.");
+            Assert.IsTrue(NpcMedicalReservations.TakeMedicine(doctor, job, carried, supplier.inventory.innerContainer));
+            Assert.AreEqual(7, medicine.stackCount, "An already-carried dose must not be collected again.");
+            NpcMedicalReservations.RestockUnusedMedicine(doctor, job);
+            Assert.IsNull(doctor.carryTracker.CarriedThing);
+            Assert.AreEqual(8, supplier.inventory.innerContainer.Items.Sum(item => item.stackCount)
+                + doctor.inventory.innerContainer.Items.Sum(item => item.stackCount));
+        }
+
+        [TestMethod]
+        public void MissingInventoryMedicineOrUnrelatedCargoCannotBeRetargeted()
+        {
+            Pawn doctor = new();
+            Thing medicine = new() { def = new() { IsMedicine = true }, stackCount = 5, Spawned = false };
+            ThingOwner source = new();
+            Job job = new() { targetB = new(medicine) };
+            Assert.IsFalse(NpcMedicalReservations.TakeMedicine(doctor, job, medicine, source));
+            source.Items.Add(medicine);
+            Thing cargo = new(); doctor.carryTracker.innerContainer.Items.Add(cargo);
+            Assert.IsFalse(NpcMedicalReservations.TakeMedicine(doctor, job, medicine, source));
+            Assert.AreSame(cargo, doctor.carryTracker.CarriedThing);
+            Assert.AreSame(medicine, job.targetB.Thing);
+            Assert.AreEqual(5, medicine.stackCount);
+            doctor.carryTracker.innerContainer.Items.Clear(); source.TransferLimit = 0;
+            Assert.IsFalse(NpcMedicalReservations.TakeMedicine(doctor, job, medicine, source));
+            Assert.AreEqual(5, medicine.stackCount);
+        }
+
+        [TestMethod]
+        public void SelfTendingKeepsTheRestOfItsOwnStackInInventory()
+        {
+            Pawn doctor = new();
+            Thing medicine = new() { def = new() { IsMedicine = true }, stackCount = 4, Spawned = false };
+            doctor.inventory.innerContainer.Items.Add(medicine);
+            Job job = new() { targetB = new(medicine) };
+            Assert.IsTrue(NpcMedicalReservations.TakeMedicine(doctor, job, medicine, doctor.inventory.innerContainer));
+            Assert.AreEqual(3, medicine.stackCount);
+            Assert.AreSame(medicine, doctor.inventory.innerContainer.Items.Single());
+            Assert.AreEqual(1, doctor.carryTracker.CarriedThing!.stackCount);
+            Assert.IsFalse(doctor.carryTracker.CarriedThing.Spawned);
+            Assert.AreEqual(1, doctor.InventoryUpdates);
+        }
     }
 }
 
@@ -143,12 +198,21 @@ namespace Verse
     public sealed class ThingOwner
     {
         public List<Thing> Items = [];
+        public int TransferLimit = int.MaxValue;
+        public bool Contains(Thing item) => Items.Contains(item);
+        public int TryTransferToContainer(Thing item, ThingOwner destination, int count, out Thing transferred)
+        {
+            int moved = TryTransferToContainer(item, destination, count);
+            transferred = moved > 0 ? destination.Items.Last() : null!;
+            return moved;
+        }
         public int TryTransferToContainer(Thing item, ThingOwner destination, int count)
         {
             if (!Items.Contains(item)) { return 0; }
-            int moved = Math.Min(item.stackCount, count);
+            int moved = Math.Min(item.stackCount, Math.Min(count, TransferLimit));
+            if (moved <= 0) { return 0; }
             if (moved == item.stackCount) { Items.Remove(item); destination.Items.Add(item); }
-            else { item.stackCount -= moved; destination.Items.Add(new() { def = item.def, stackCount = moved }); }
+            else { item.stackCount -= moved; destination.Items.Add(new() { def = item.def, stackCount = moved, Spawned = false }); }
             return moved;
         }
     }

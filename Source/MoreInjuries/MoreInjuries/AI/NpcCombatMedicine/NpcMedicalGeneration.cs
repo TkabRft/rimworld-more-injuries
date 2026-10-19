@@ -73,15 +73,28 @@ internal static class NpcMedicalGeneration
                 int medics = Math.Min(equipped, NpcMedicalModel.Quota(members.Count,
                     NpcMedicalModel.Interpolate(profile.MedicChance.min, profile.MedicChance.max, strength), MoreInjuriesMod.Settings.NpcMedicMultiplier));
                 List<Pawn> capable = members.Where(CanDoctor).ToList();
-                HashSet<Pawn> selectedMedics = new(capable
-                    .OrderByDescending(pawn => pawn.skills.GetSkill(SkillDefOf.Medicine).Level).ThenBy(pawn => pawn.thingIDNumber).Take(medics));
+                Dictionary<Pawn, Dictionary<ThingDef, int>> medicKits = new();
+                while (medicKits.Count < medics && capable.Count > 0)
+                {
+                    Dictionary<ThingDef, int> kit = RollKit(profile, true, strength);
+                    Dictionary<Pawn, float> coverage = capable.ToDictionary(pawn => pawn,
+                        pawn => Loadout(pawn, kit).CoreCoverage(NpcMedicalCompatibility.Space(pawn)));
+                    Pawn medic = NpcMedicalLoadout<ThingDef>.SelectMedic(capable, pawn => coverage[pawn],
+                        pawn => pawn.skills.GetSkill(SkillDefOf.Medicine).Level, pawn => pawn.thingIDNumber);
+                    medicKits.Add(medic, kit);
+                    capable.Remove(medic);
+                }
+                HashSet<Pawn> selectedMedics = new(medicKits.Keys);
                 List<Pawn> recipients = selectedMedics.ToList();
                 recipients.AddRange(members.Where(pawn => !selectedMedics.Contains(pawn)).OrderBy(_ => Rand.Value).Take(equipped - recipients.Count));
                 foreach (Pawn pawn in recipients)
-                { Provision(pawn, profile, selectedMedics.Contains(pawn), strength, s_states.GetOrCreateValue(pawn).New); }
+                {
+                    medicKits.TryGetValue(pawn, out Dictionary<ThingDef, int>? kit);
+                    Provision(pawn, profile, selectedMedics.Contains(pawn), strength, s_states.GetOrCreateValue(pawn).New, kit);
+                }
                 if (Prefs.DevMode)
                 {
-                    Log.Message($"More Injuries NPC medicine: profile={profile.defName}, candidates={members.Count}, equipped={recipients.Count}, capable doctors={capable.Count}, medic quota={medics}, selected medics={selectedMedics.Count}.");
+                    Log.Message($"More Injuries NPC medicine: profile={profile.defName}, candidates={members.Count}, equipped={recipients.Count}, capable doctors={capable.Count + selectedMedics.Count}, medic quota={medics}, selected medics={selectedMedics.Count}.");
                     HashSet<ThingDef> medical = new(profile.Medic.Where(item => item.ThingDef is not null).Select(item => item.ThingDef!))
                     { Blood, KnownThingDefOf.SalineBag };
                     foreach (Pawn medic in selectedMedics)
@@ -101,7 +114,8 @@ internal static class NpcMedicalGeneration
         && !pawn.WorkTypeIsDisabled(WorkTypeDefOf.Doctor) && pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation)
         && pawn.health.capacities.CapableOf(PawnCapacityDefOf.Sight);
 
-    private static void Provision(Pawn pawn, NpcMedicalProfileDef profile, bool medic, float strength, bool newlyGenerated)
+    private static void Provision(Pawn pawn, NpcMedicalProfileDef profile, bool medic, float strength, bool newlyGenerated,
+        Dictionary<ThingDef, int>? rolledKit = null)
     {
         NpcMedicalAi.State(pawn).Medic = medic;
         if (medic) { NpcMedicalMemory.Remember(pawn); }
@@ -110,6 +124,24 @@ internal static class NpcMedicalGeneration
             SkillRecord skill = pawn.skills.GetSkill(SkillDefOf.Medicine);
             if (!skill.TotallyDisabled && skill.Level < profile.MedicalSkillFloor) { skill.Level = profile.MedicalSkillFloor; }
         }
+        Dictionary<ThingDef, int> counts = rolledKit ?? RollKit(profile, medic, strength);
+        if (HasPerformanceDrug(pawn))
+        {
+            foreach (ThingDef def in counts.Keys.Where(IsPerformance).ToList()) { counts.Remove(def); }
+        }
+        NpcMedicalSpace space = NpcMedicalCompatibility.Space(pawn);
+        Dictionary<ThingDef, int> allocation = Loadout(pawn, counts).Allocate(space);
+        foreach (KeyValuePair<ThingDef, int> entry in allocation)
+        { TopUp(pawn, entry.Key, Count(pawn, entry.Key) + entry.Value); }
+        if (Prefs.DevMode && medic)
+        {
+            Log.Message($"More Injuries NPC medicine: medic capacity before kit={space.Mass:0.00} kg/{space.Bulk:0.00} bulk; requested={counts.Values.Sum()}, granted={allocation.Values.Sum()} units.");
+        }
+        AddExtras(pawn, profile, strength);
+    }
+
+    private static Dictionary<ThingDef, int> RollKit(NpcMedicalProfileDef profile, bool medic, float strength)
+    {
         Dictionary<ThingDef, int> counts = new();
         IReadOnlyList<NpcMedicalItem> kit = medic ? profile.Medic : profile.Personal;
         foreach (NpcMedicalItem entry in kit.Where(item => item.ChoiceGroup == 0)) { Roll(entry); }
@@ -118,7 +150,7 @@ internal static class NpcMedicalGeneration
         void Roll(NpcMedicalItem entry)
         {
             if (entry.ThingDef is ThingDef drug && IsPerformance(drug)
-                && (!MoreInjuriesMod.Settings.NpcPerformanceDrugs || MoreInjuriesMod.Settings.NpcDrugSelection == 2 || HasPerformanceDrug(pawn))) { return; }
+                && (!MoreInjuriesMod.Settings.NpcPerformanceDrugs || MoreInjuriesMod.Settings.NpcDrugSelection == 2)) { return; }
             if (!Rand.Chance(entry.Chance)) { return; }
             int count = entry.Count.RandomInRange;
             if (!entry.Unscaled) { count = NpcMedicalModel.Quantity(count, MoreInjuriesMod.Settings.NpcSupplyMultiplier, strength); }
@@ -129,7 +161,29 @@ internal static class NpcMedicalGeneration
             else if (entry.ThingDef is not null) { Add(entry.ThingDef, count); }
         }
         void Add(ThingDef def, int count) { counts.TryGetValue(def, out int old); counts[def] = old + count; }
-        foreach (KeyValuePair<ThingDef, int> entry in counts.OrderBy(entry => Priority(entry.Key))) { TopUp(pawn, entry.Key, entry.Value); }
+        return counts;
+    }
+
+    private static NpcMedicalLoadout<ThingDef> Loadout(Pawn pawn, Dictionary<ThingDef, int> kit)
+    {
+        List<NpcMedicalLoadout<ThingDef>.Item> items = [];
+        foreach (KeyValuePair<ThingDef, int> entry in kit)
+        {
+            Thing sample = ThingMaker.MakeThing(entry.Key);
+            try
+            {
+                bool essential = !IsPerformance(entry.Key) && entry.Key != KnownThingDefOf.Ketamine
+                    && entry.Key != KnownThingDefOf.Chloroform;
+                items.Add(new(entry.Key, entry.Value, Count(pawn, entry.Key), sample.GetStatValue(StatDefOf.Mass),
+                    NpcMedicalCompatibility.Bulk(sample), essential, Priority(entry.Key)));
+            }
+            finally { sample.Destroy(); }
+        }
+        return new(items);
+    }
+
+    private static void AddExtras(Pawn pawn, NpcMedicalProfileDef profile, float strength)
+    {
         if (Rand.Chance(MoreInjuriesMod.Settings.NpcScavengingChance))
         {
             ThingDef? scavenged;

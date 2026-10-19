@@ -16,7 +16,7 @@ internal static class NpcMedicalCompatibility
 {
     private static readonly Harmony s_harmony = new("Th3Fr3d.MoreInjuries.NpcCombatMedicine");
     private static Type? s_inventory;
-    private static MethodInfo? s_fit, s_update;
+    private static MethodInfo? s_fit, s_update, s_availableWeight, s_availableBulk;
     private static PropertyInfo? s_cePawn;
     private static bool s_ceActive;
     private static readonly HashSet<string> s_reported = [];
@@ -33,7 +33,13 @@ internal static class NpcMedicalCompatibility
             s_inventory = OwnedType("CombatExtended.CompInventory", "CombatExtended");
             s_fit = s_inventory?.GetMethod("CanFitInInventory", [typeof(Thing), typeof(int).MakeByRefType(), typeof(bool), typeof(bool)]);
             s_update = s_inventory is null ? null : AccessTools.Method(s_inventory, "UpdateInventory", Type.EmptyTypes);
-            if (s_fit?.ReturnType != typeof(bool) || s_update?.ReturnType != typeof(void)) { s_fit = null; s_update = null; }
+            s_availableWeight = s_inventory?.GetMethod("GetAvailableWeight", [typeof(bool)]);
+            s_availableBulk = s_inventory?.GetMethod("GetAvailableBulk", [typeof(bool)]);
+            if (s_fit?.ReturnType != typeof(bool) || s_update?.ReturnType != typeof(void)
+                || s_availableWeight?.ReturnType != typeof(float) || s_availableBulk?.ReturnType != typeof(float)
+                || new[] { s_fit, s_update, s_availableWeight, s_availableBulk }
+                    .Any(method => method is null || method.IsStatic || method.DeclaringType != s_inventory))
+            { s_fit = null; s_update = null; }
             if (s_fit is null || s_update is null) { Log.Warning("More Injuries: unrecognized CE inventory API; NPC medical provisioning is disabled for CE inventories."); }
             s_cePawn = OwnedType("CombatExtended.AI.CompTend", "CombatExtended")?.GetProperty("SelPawn");
             if (s_cePawn?.PropertyType == typeof(Pawn)) { Bind("CombatExtended", "CombatExtended.AI.CompTend", "TryGiveTacticalJob", nameof(CeTend), typeof(Job), false); }
@@ -77,10 +83,29 @@ internal static class NpcMedicalCompatibility
     }
 
     private static object? Inventory(Pawn pawn) => s_inventory is null ? null : pawn.AllComps.FirstOrDefault(comp => s_inventory.IsInstanceOfType(comp));
+    internal static NpcMedicalSpace Space(Pawn pawn)
+    {
+        if (s_ceActive)
+        {
+            if (s_fit is null || Inventory(pawn) is not object inventory) { return new(0f, 0f); }
+            try
+            {
+                // Gear generation can leave CE's cache stale until PostSpawnSetup. Refresh before provisioning.
+                float mass = (float)s_availableWeight!.Invoke(inventory, [true]);
+                float bulk = (float)s_availableBulk!.Invoke(inventory, [false]);
+                return new(mass, bulk);
+            }
+            catch (Exception exception) { InventoryUnavailable(exception); return new(0f, 0f); }
+        }
+        return new(MassUtility.Capacity(pawn) - MassUtility.GearAndInventoryMass(pawn), float.PositiveInfinity);
+    }
+    internal static float Bulk(Thing thing) => s_ceActive && DefDatabase<StatDef>.GetNamedSilentFail("Bulk") is StatDef bulk
+        ? thing.GetStatValue(bulk) : 0f;
     internal static int Fit(Pawn pawn, Thing thing)
     {
         if (s_ceActive && (s_inventory is null || s_fit is null || s_update is null)) { return 0; }
         object? inventory = Inventory(pawn);
+        if (s_ceActive && inventory is null) { return 0; }
         if (inventory is not null)
         {
             if (s_fit is null) { return 0; }
