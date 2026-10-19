@@ -26,6 +26,8 @@ flowchart LR
 
 *See the section on the [pathophysiological system](/docs/wiki/pathophysiological-system.md#pathophysiological-system) for more information on the graphical representation.*
 
+Spalling is **disabled by default**. Explicitly stored choices are retained; a settings file without a stored spalling value uses the new off default. Its interaction with Combat Extended armor is approximate; proper CE integration remains future work. You can still enable the mechanic in mod settings.
+
 **Causes**: High-velocity projectiles impacting degraded armor plating.
 
 **Effects**: Additional cuts and lacerations caused by bullet fragments and armor shrapnel.

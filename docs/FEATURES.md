@@ -26,6 +26,7 @@ Package `Th3Fr3d.ExtendedInjuries`. Namespace `MoreInjuries`. Supported versions
 | Neurological profiles, injury milestones, diffuse damage, artificial coma | `docs/neurological-runtime.md` | `HealthConditions/BrainDamage/`, `Defs/Internal/NeurologicalProfiles.xml` |
 | Death Rattle priority and save transition | `docs/death-rattle-transition.md` | `Integrations/DeathRattle/`, `Versioning/GameComponent_DeathRattleTransition.cs` |
 | Future medical expansion | `docs/medical-expansion-todo.md` | `docs/vital-failure.md` |
+| Spalling default and deferred CE armor integration | `docs/spalling.md`, `docs/wiki/injuries/spalling-injury.md` | `HealthConditions/SpallingInjury/`, `MoreInjuriesSettings.cs` |
 | Body parts | `docs/wiki/body-parts.md` | `Defs/BodyPartDefs/`, `Patches/Patch_BodyParts.xml` |
 | Research | `docs/wiki/research.md` | `Defs/Research/` |
 | Surgeries | `docs/wiki/surgeries.md` | `Defs/RecipeDefs/Surgeries/`, `Patches/Patch_Surgeries.xml` |

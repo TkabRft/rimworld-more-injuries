@@ -93,7 +93,7 @@ public partial class MoreInjuriesSettings : ModSettings
     internal partial ref float LungCollapseMaxSeverityRoot { get; }
 
     // spalling
-    [SettingsEntry<bool>(DefaultValue = true)]
+    [SettingsEntry<bool>(DefaultValue = false)]
     internal partial ref bool EnableSpalling { get; }
 
     [SettingsEntry<float>(DefaultValue = 0.95f)]

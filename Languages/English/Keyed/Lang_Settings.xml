@@ -91,8 +91,8 @@
   <MI_Settings_Features_Spalling>Spalling</MI_Settings_Features_Spalling>
   <!-- EN: Enable spalling mechanics (default: {DEFAULT}) -->
   <MI_Settings_Features_Spalling_EnableLabel>Enable spalling mechanics (default: {DEFAULT})</MI_Settings_Features_Spalling_EnableLabel>
-  <!-- EN: Projectiles stopped by armor can cause fragment injuries to exposed parts. -->
-  <MI_Settings_Features_Spalling_EnableTooltip>Projectiles stopped by armor can cause fragment injuries to exposed parts.</MI_Settings_Features_Spalling_EnableTooltip>
+  <!-- EN: Disabled by default. Projectiles stopped by armor can cause fragment injuries to exposed parts. Combat Extended armor integration is approximate and needs further work. -->
+  <MI_Settings_Features_Spalling_EnableTooltip>Disabled by default. Projectiles stopped by armor can cause fragment injuries to exposed parts. Combat Extended armor integration is approximate and needs further work.</MI_Settings_Features_Spalling_EnableTooltip>
   <!-- EN: Base spalling chance from armor condition: {VALUE} (default: {DEFAULT}) -->
   <MI_Settings_Features_Spalling_DamageThresholdLabel>Base spalling chance from armor condition: {VALUE} (default: {DEFAULT})</MI_Settings_Features_Spalling_DamageThresholdLabel>
   <!-- EN: Chance of spalling injuries: {VALUE} (default: {DEFAULT}) -->
