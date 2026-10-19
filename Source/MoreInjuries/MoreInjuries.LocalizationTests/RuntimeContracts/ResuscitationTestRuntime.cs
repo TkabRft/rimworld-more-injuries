@@ -10,8 +10,8 @@ namespace Verse
 }
 namespace Verse.AI
 {
-    public sealed partial class Job { public object def = new(); public int count; public object? source; }
-    public static class JobMaker { public static Job MakeJob(object def, params object[] targets) => new() { def = def, Targets = targets }; }
+    public sealed partial class Job { public JobDef def = new(); public int count; public object? source; }
+    public static class JobMaker { public static Job MakeJob(object def, params object[] targets) => new() { def = (JobDef)def, Targets = targets }; }
 }
 namespace UnityEngine
 {

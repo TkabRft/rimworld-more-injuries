@@ -9,6 +9,7 @@
   <JobDef>
     <defName>MI_NpcTend</defName>
     <driverClass>MoreInjuries.AI.NpcCombatMedicine.JobDriver_NpcTend</driverClass>
+    <suspendable>false</suspendable>
     <reportString>providing battlefield care to TargetA.</reportString>
     <casualInterruptible>false</casualInterruptible>
   </JobDef>

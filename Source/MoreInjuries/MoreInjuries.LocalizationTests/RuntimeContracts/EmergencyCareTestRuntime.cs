@@ -84,7 +84,7 @@ namespace RimWorld
     public static class StatDefOf { public static readonly object MedicalPotency = new(), MedicalTendSpeed = new(), MarketValue = new(); }
     public static class MedicalCareUtility
     { public static bool AllowsMedicine(this MedicalCareCategory care, ThingDef def) => care >= MedicalCareCategory.HerbalOrWorse && (care == MedicalCareCategory.Best || def.MedicineTier <= (int)care - 1); }
-    public static class JobDefOf { public static readonly object TendPatient = new(); }
+    public static class JobDefOf { public static readonly JobDef TendPatient = new(); }
     public static class HealthAIUtility { public static Thing? FindBestMedicine(Pawn doctor, Pawn patient, bool onlyUseInventory) => null; }
 }
 namespace UnityEngine { public static partial class Mathf { public static float Sqrt(float value) => MathF.Sqrt(value); } }
@@ -107,7 +107,7 @@ namespace MoreInjuries.Defs.WellKnown
     { public static readonly ThingDef Tourniquet = new(), Bandage = new(), HemostaticAgent = new(), Epinephrine = new(), SalineBag = new(), BloodBag = new(); }
     public static partial class KnownJobDefOf
     { public static readonly JobDef Tourniquet = new(), Bandage = new(), Hemostat = new(), Epinephrine = new(), Saline = new(), Blood = new(), RemoveTourniquet = new();
-      public static JobDef UseTourniquet => Tourniquet; public static JobDef UseBandage => Bandage; public static JobDef UseHemostaticAgent => Hemostat; public static JobDef UseEpinephrine => Epinephrine; }
+      public static JobDef UseTourniquet => Tourniquet; public static JobDef UseBandage => Bandage; public static JobDef UseHemostaticAgent => Hemostat; public static JobDef UseEpinephrine => Epinephrine; public static JobDef UseSalineBag => Saline; public static JobDef UseBloodBag => Blood; }
     public static class KnownBodyPartDefOf { public static readonly BodyPartDef Neck = new(); }
 }
 namespace MoreInjuries.Things

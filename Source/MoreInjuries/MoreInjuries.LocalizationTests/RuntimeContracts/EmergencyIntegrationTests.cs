@@ -42,6 +42,26 @@ public sealed class EmergencyIntegrationTests
     }
 
     [TestMethod]
+    public void DeferredCandidateDoesNotMaskIndependentEmergencyCareOrAlterColonistSelection()
+    {
+        var (doctor, patient) = Pair();
+        VitalFailureTests.Add(patient, KnownHediffDefOf.ChokingOnBlood, .8f);
+        Thing suction = new();
+        EmergencyCare.NpcContext context = new()
+        {
+            Emergency = true, Cpr = true,
+            Find = def => def == KnownThingDefOf.SuctionDevice ? suction : null,
+            Allowed = (action, _) => action != KnownJobDefOf.UseSuctionDevice
+        };
+        Assert.AreSame(KnownJobDefOf.PerformCpr, EmergencyCare.CreateJob(doctor, patient, false, context)!.def,
+            "A deferred suction attempt must leave independently eligible CPR available.");
+        context.Allowed = (_, _) => false;
+        Assert.IsNull(EmergencyCare.CreateJob(doctor, patient, false, context));
+        Assert.AreSame(KnownJobDefOf.PerformCpr, EmergencyCare.CreateJob(doctor, patient, false)!.def,
+            "The NPC-only eligibility callback must not affect the existing colonist/drafted caller.");
+    }
+
+    [TestMethod]
     public void AutomaticCprDoesNotRepeatAgainstIrreversiblePumpingFailureButCanStillClearAirways()
     {
         var (doctor, patient) = Pair();

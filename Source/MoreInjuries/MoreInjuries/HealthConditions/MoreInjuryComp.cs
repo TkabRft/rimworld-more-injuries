@@ -196,6 +196,7 @@ public class MoreInjuryComp : ThingComp
                 }
             }
         }
+        AI.NpcCombatMedicine.NpcMedicalSafety.NotifyDamage(Pawn, dinfo, totalDamageDealt);
         base.PostPostApplyDamage(dinfo, totalDamageDealt);
     }
 

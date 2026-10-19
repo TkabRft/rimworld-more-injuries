@@ -1,4 +1,5 @@
 using System;
+using RimWorld;
 using Verse;
 using Verse.AI;
 
@@ -23,6 +24,17 @@ internal static class NpcMedicalReservations
         return false;
     }
 
+    internal static bool DeliveryAllowed(Pawn doctor, Pawn patient, Thing? supply)
+        => !patient.Dead && !patient.IsForbidden(doctor) && (doctor == patient || !doctor.HostileTo(patient))
+            && PatientAvailable(doctor, patient)
+            && (doctor.carryTracker.CarriedThing is null || doctor.carryTracker.CarriedThing == supply)
+            && (doctor == patient || doctor.CanReach(patient, PathEndMode.Touch, Danger.Some))
+            && (supply is null || !supply.Destroyed && !supply.IsForbidden(doctor)
+                && supply.stackCount > 0 && doctor.CanReserve(supply, 10, 1)
+                && (doctor.carryTracker.CarriedThing == supply || doctor.carryTracker.CarriedThing is null
+                    && doctor.carryTracker.AvailableStackSpace(supply.def) > 0)
+                && NpcPainCare.SourceAllowed(doctor, patient, supply));
+
     internal static bool TakeMedicine(Pawn pawn, Job job, Thing medicine, ThingOwner source)
     {
         if (medicine.Destroyed || !medicine.def.IsMedicine || medicine.stackCount <= 0) { return false; }
@@ -37,17 +49,17 @@ internal static class NpcMedicalReservations
 
     internal static void RestockUnusedMedicine(Pawn pawn, Job job)
     {
-        Thing? medicine = pawn.carryTracker.CarriedThing;
-        if (medicine is null || medicine.Destroyed || !medicine.def.IsMedicine || job.targetB.Thing != medicine)
-        {
-            return;
-        }
+        if (job.targetB.Thing?.def.IsMedicine == true) { RestockSelected(pawn, job, TargetIndex.B); }
+    }
+
+    internal static void RestockSelected(Pawn pawn, Job job, TargetIndex target)
+    {
+        Thing? selected = pawn.carryTracker.CarriedThing;
+        if (selected is null || selected.Destroyed || job.GetTarget(target).Thing != selected) { return; }
         NpcMedicalCompatibility.InventoryChanged(pawn);
-        int count = Math.Min(medicine.stackCount, NpcMedicalCompatibility.Fit(pawn, medicine));
-        if (count > 0 && pawn.carryTracker.innerContainer.TryTransferToContainer(medicine, pawn.inventory.innerContainer, count) > 0)
-        {
-            NpcMedicalCompatibility.InventoryChanged(pawn);
-        }
+        int count = Math.Min(selected.stackCount, NpcMedicalCompatibility.Fit(pawn, selected));
+        if (count > 0 && pawn.carryTracker.innerContainer.TryTransferToContainer(selected, pawn.inventory.innerContainer, count) > 0)
+        { NpcMedicalCompatibility.InventoryChanged(pawn); }
     }
 
     internal static bool TakeDrug(Pawn pawn, Job job, TargetIndex target, Thing dose, ThingOwner source)

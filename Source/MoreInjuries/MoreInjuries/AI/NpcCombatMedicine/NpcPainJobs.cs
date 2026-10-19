@@ -9,14 +9,29 @@ namespace MoreInjuries.AI.NpcCombatMedicine;
 public sealed class JobDriver_NpcPainSelf : JobDriver_Ingest
 {
     public override bool TryMakePreToilReservations(bool errorOnFailed)
-        => (pawn.carryTracker.CarriedThing is null || pawn.carryTracker.CarriedThing == job.targetA.Thing)
-            && job.targetA.Thing is { } dose
+    {
+        NpcMedicalAttempts.Begin(pawn, job, pawn, job.targetA.Thing);
+        bool reserved = job.targetA.Thing is { } dose
+            && NpcMedicalReservations.DeliveryAllowed(pawn, pawn, dose)
             && pawn.Reserve(pawn, job, errorOnFailed: errorOnFailed)
             && pawn.Reserve(dose, job, 10, 1, errorOnFailed: errorOnFailed);
+        if (!reserved)
+        {
+            NpcMedicalAttempts.Finish(job, JobCondition.Incompletable);
+            pawn.Map.reservationManager.ReleaseClaimedBy(pawn, job);
+        }
+        return reserved;
+    }
 
     protected override IEnumerable<Toil> MakeNewToils()
     {
-        AddFinishAction(_ => NpcMedicalReservations.RestockUnusedDrug(pawn, job, TargetIndex.A));
+        Job attemptJob = job;
+        NpcMedicalAttempts.Begin(pawn, attemptJob, pawn, attemptJob.targetA.Thing);
+        AddFinishAction(condition =>
+        {
+            NpcMedicalAttempts.Finish(attemptJob, condition);
+            NpcMedicalReservations.RestockUnusedDrug(pawn, attemptJob, TargetIndex.A);
+        });
         this.FailOn(() => pawn.Downed || job.targetA.Thing is not { Destroyed: false, IngestibleNow: true }
             || !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation));
         this.FailOn(() => !NpcPainCare.SourceAllowed(pawn, pawn, job.targetA.Thing));
@@ -61,7 +76,10 @@ public sealed class JobDriver_NpcPainSelf : JobDriver_Ingest
         // tolerance, addiction, overdose, genes and recipient social consequences.
         yield return Toils_Ingest.ChewIngestible(pawn, 1f, TargetIndex.A, TargetIndex.B)
             .FailOn(() => pawn.carryTracker.CarriedThing != job.targetA.Thing);
-        yield return Toils_Ingest.FinalizeIngest(pawn, TargetIndex.A);
+        Toil finalize = Toils_Ingest.FinalizeIngest(pawn, TargetIndex.A);
+        finalize.AddPreInitAction(() => NpcMedicalAttempts.Applying(attemptJob));
+        finalize.AddFinishAction(() => NpcMedicalAttempts.Applied(attemptJob, accepted: true));
+        yield return finalize;
     }
 }
 

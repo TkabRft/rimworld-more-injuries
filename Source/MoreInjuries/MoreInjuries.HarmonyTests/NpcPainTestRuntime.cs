@@ -32,6 +32,7 @@ namespace Verse
         public float DistanceToSquared(IntVec3 other) => (value - other.Value) * (value - other.Value);
         public bool InHorDistOf(IntVec3 other, float radius) => DistanceToSquared(other) <= radius * radius;
         public float Value => value;
+        public override string ToString() => value.ToString();
     }
     public sealed partial class Pawn
     {
@@ -39,6 +40,9 @@ namespace Verse
         public Pawn()
         { health = new(this); inventory.pawn = this; inventory.innerContainer.Owner = inventory; carryTracker.innerContainer.Owner = carryTracker; }
         public float BodySize = 1f, RawPain = .5f, PainFactor = 1f, PainThreshold = .8f, ChemicalEffect = 1f;
+        public bool IsColonistPlayerControlled, NativeSafety;
+        public float EmergencyUrgency;
+        public JobDef CurJobDef => CurJob.def;
         public bool Downed, Dead, IsMutant, IsPrisoner, Teetotaler, AllowDrug = true, DoctorCapable = true, Hostile;
         public int CareRelation;
         public new IntVec3 Position;
@@ -69,10 +73,16 @@ namespace Verse
         public HediffSet hediffSet;
         public CapacityTracker capacities;
         public bool forceDowned;
+        public bool NeedsTend = true;
+        public bool HasHediffsNeedingTend() => NeedsTend;
         public bool InPainShock => hediffSet.PainTotal >= hediffSet.pawn.PainThreshold;
     }
     public class Hediff
     {
+        public string GetUniqueLoadID() => System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this).ToString();
+        public bool Tended;
+        public bool IsTended() => Tended;
+        public bool TendableNow() => !Tended;
         public Pawn pawn = null!;
         public HediffDef def = null!;
         protected float severityInt;
@@ -89,6 +99,7 @@ namespace Verse
     {
         public Pawn pawn = pawn;
         public List<Hediff> hediffs = [];
+        public float BleedRateTotal;
         public float PainTotal => Math.Min(1f, Math.Max(0f, (pawn.RawPain + hediffs.Sum(hediff => hediff.CurStage?.painOffset ?? 0f))
             * hediffs.Aggregate(pawn.PainFactor, (factor, hediff) => factor * (hediff.CurStage?.painFactor ?? 1f))));
         public Hediff? GetFirstHediffOfDef(HediffDef def) => hediffs.FirstOrDefault(hediff => hediff.def == def);
@@ -137,12 +148,15 @@ namespace Verse.AI
         private readonly List<Action<JobCondition>> _finish = [];
         public virtual bool TryMakePreToilReservations(bool errorOnFailed) => true;
         protected virtual IEnumerable<Toil> MakeNewToils() => [];
+        protected void AddEndCondition(Func<JobCondition> condition) { }
         protected void AddFinishAction(Action<JobCondition> action) => _finish.Add(action);
         protected void EndJobWith(JobCondition condition) => pawn.jobs.EndCurrentJob(condition);
         public int ResumeIndex;
+        public Action<int, Toil>? BeforeToil;
         public List<Toil> BuildToils() => MakeNewToils().ToList();
         public void Run()
         {
+            Job attemptJob = job;
             try
             {
                 List<Toil> toils = BuildToils();
@@ -150,23 +164,34 @@ namespace Verse.AI
                 for (int index = ResumeIndex, steps = 0; index < toils.Count && steps < 40; steps++)
                 {
                     Toil toil = toils[index];
+                    BeforeToil?.Invoke(index, toil);
+                    if (pawn.jobs.Ended is not null) { break; }
                     if (Failures.Any(fail => fail()) || toil.Failures.Any(fail => fail())) { EndJobWith(JobCondition.Incompletable); break; }
                     toil.initAction?.Invoke();
+                    foreach (Action finish in toil.FinishActions) { finish(); }
                     if (pawn.jobs.Ended is not null) { break; }
                     index = toil.JumpTarget is not null && toil.JumpCondition!() ? toils.IndexOf(toil.JumpTarget) : index + 1;
                 }
             }
-            finally { foreach (Action<JobCondition> finish in _finish) { finish(JobCondition.Succeeded); } }
+            finally
+            {
+                foreach (Action<JobCondition> finish in _finish) { finish(pawn.jobs.Ended ?? JobCondition.Succeeded); }
+                pawn.Map.reservationManager.ReleaseClaimedBy(pawn, attemptJob);
+            }
         }
     }
     public static class PainToilExtensions
     {
         public static void FailOn(this JobDriver driver, Func<bool> condition) => driver.Failures.Add(condition);
         public static Toil FailOn(this Toil toil, Func<bool> condition) { toil.Failures.Add(condition); return toil; }
+        public static void FailOnDespawnedNullOrForbidden(this JobDriver driver, TargetIndex target) => driver.FailOn(() => driver.job.GetTarget(target).Thing is not { Spawned: true, Destroyed: false, Forbidden: false });
+        public static Toil WithProgressBarToilDelay(this Toil toil, TargetIndex target) => toil;
+        public static Toil PlaySustainerOrSound(this Toil toil, object sound) => toil;
+        public static Toil FailOnCannotTouch(this Toil toil, TargetIndex target, PathEndMode end) => toil.FailOn(() => !toil.actor.CanReachImmediate(toil.actor.CurJob.GetTarget(target).Thing, end));
         public static Toil FailOnDespawnedNullOrForbidden(this Toil toil, TargetIndex target)
             => toil.FailOn(() => toil.actor.CurJob.GetTarget(target).Thing is not { Spawned: true, Destroyed: false, Forbidden: false });
     }
-    public static class Toils_General { public static Toil Do(Action action) => new() { initAction = action }; }
+    public static class Toils_General { public static Toil Wait(int ticks) => new(); public static Toil Do(Action action) => new() { initAction = action }; }
     public static class Toils_Jump
     {
         public static Toil Jump(Toil target) => JumpIf(target, () => true);
@@ -249,7 +274,7 @@ namespace RimWorld
     }
     public static class HediffDefOf { public static readonly HediffDef DrugOverdose = new() { defName = "DrugOverdose" }; }
     public static class ThingDefOf { public static ThingDef Yayo = new(), GoJuice = new(); }
-    public static class PawnUtility { public static bool CanTakeDrug(Pawn pawn, ThingDef drug) => pawn.AllowDrug; }
+    public static class PawnUtility { public static void ForceWait(Pawn pawn, int ticks, bool maintainPosture) { } public static bool CanTakeDrug(Pawn pawn, ThingDef drug) => pawn.AllowDrug; }
     public sealed class HistoryEventDef;
     public static class HistoryEventArgsNames { public const string Doer = "Doer"; }
     public readonly struct HistoryEvent(HistoryEventDef def, NamedArgument doer)
@@ -287,6 +312,7 @@ namespace MoreInjuries.AI.NpcCombatMedicine
     }
     internal static partial class NpcMedicalAi
     {
+        internal static float Urgency(Pawn patient) => Math.Max(patient.EmergencyUrgency, patient.health.NeedsTend ? 50f : NpcPainCare.Priority(patient));
         internal static int Relation(Pawn actor, Pawn patient) => actor.HostileTo(patient) ? -1 : patient.CareRelation;
         internal static float Severity(Pawn patient, string name) => patient.health.hediffSet.hediffs.FirstOrDefault(hediff => hediff.def.defName == name)?.Severity ?? 0f;
         internal static Thing? FindSupply(Pawn actor, Pawn patient, ThingDef def) => actor.inventory.innerContainer

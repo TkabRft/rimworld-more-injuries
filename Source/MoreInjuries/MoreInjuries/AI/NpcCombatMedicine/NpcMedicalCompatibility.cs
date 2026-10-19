@@ -19,6 +19,8 @@ internal static class NpcMedicalCompatibility
     private static MethodInfo? s_fit, s_update, s_availableWeight, s_availableBulk;
     private static PropertyInfo? s_cePawn;
     private static bool s_ceActive;
+    private static NpcMedicalCeSafety? s_ceSafety;
+    private static bool s_ceSafetyFailed;
     private static readonly HashSet<string> s_reported = [];
 
     static NpcMedicalCompatibility()
@@ -30,6 +32,14 @@ internal static class NpcMedicalCompatibility
         if (ModsConfig.IsActive("CETeam.CombatExtended"))
         {
             s_ceActive = true;
+            try
+            {
+                s_ceSafety = new(OwnedType("CombatExtended.CompSuppressable", "CombatExtended"),
+                    OwnedType("CombatExtended.CE_JobDefOf", "CombatExtended"));
+                if (!s_ceSafety.Supported || s_ceSafety.Cover is null || s_ceSafety.Hunker is null)
+                { SafetyUnavailable("unrecognized suppression API"); }
+            }
+            catch (Exception exception) { SafetyUnavailable(exception.Message); }
             s_inventory = OwnedType("CombatExtended.CompInventory", "CombatExtended");
             s_fit = s_inventory?.GetMethod("CanFitInInventory", [typeof(Thing), typeof(int).MakeByRefType(), typeof(bool), typeof(bool)]);
             s_update = s_inventory is null ? null : AccessTools.Method(s_inventory, "UpdateInventory", Type.EmptyTypes);
@@ -134,14 +144,53 @@ internal static class NpcMedicalCompatibility
         Log.Warning("More Injuries: CE NPC medical provisioning stopped after an inventory API failure. " + exception.Message);
     }
 
+    private static void SafetyUnavailable(string reason)
+    {
+        if (!s_reported.Add("CE safety")) { return; }
+        Log.Warning("More Injuries: optional CE suppression reads unavailable (" + reason
+            + "); preserving recognized cover jobs, recent-impact safeguards and external behavior.");
+    }
+
+    internal static bool IsStabilization(Job? job) => job?.def.driverClass is Type driver
+        && driver.FullName == "CombatExtended.JobDriver_Stabilize" && driver.Assembly.GetName().Name == "CombatExtended";
+
+    internal static bool SafetyOwned(Pawn pawn)
+    {
+        if (!s_ceActive) { return false; }
+        if (s_ceSafety?.OwnsJob(pawn.CurJobDef) == true) { return true; }
+        // Retain job protection when a newer suppression signature is unsupported.
+        if (pawn.CurJobDef is { defName: "RunForCover" or "HunkerDown" } job
+            && job.driverClass?.Assembly.GetName().Name == "CombatExtended") { return true; }
+        if (s_ceSafety?.Supported != true || s_ceSafetyFailed) { return false; }
+        try
+        {
+            object? comp = pawn.AllComps.FirstOrDefault(s_ceSafety.IsComp);
+            return comp is not null && s_ceSafety.Suppressed(comp);
+        }
+        catch (Exception exception)
+        {
+            s_ceSafetyFailed = true;
+            SafetyUnavailable(exception.Message);
+            return false;
+        }
+    }
+
     private static bool CeTend(object __instance, ref Job? __result)
     {
         Pawn? pawn = s_cePawn?.GetValue(__instance) as Pawn;
         if (pawn is null || !pawn.Spawned || !NpcMedicalAi.Managed(pawn)) { return true; }
-        if (NpcMedicalAi.Owns(pawn.CurJob) || !NpcMedicalReservations.PatientAvailable(pawn, pawn))
+        if (NpcMedicalAi.Owns(pawn.CurJob) || SafetyOwned(pawn) || !NpcMedicalReservations.PatientAvailable(pawn, pawn))
         { __result = null; return false; }
         Job? job = NpcMedicalAi.Decide(pawn);
-        if (job is null) { return true; }
+        if (job is null)
+        {
+            // Native CE self-tending must not bypass an MI deferral and restart
+            // the same unsafe trip. Other tactical comps and safety jobs run on.
+            if (NpcMedicalSafety.Recent(pawn)
+                || !NpcMedicalAttempts.Allowed(pawn, pawn, KnownJobDefOf.MI_NpcTend, NpcMedicalAi.FindMedicine(pawn, pawn)))
+            { __result = null; return false; }
+            return true;
+        }
         __result = NpcMedicalReservations.PrepareTacticalJob(pawn, job) ? job : null;
         return false;
     }

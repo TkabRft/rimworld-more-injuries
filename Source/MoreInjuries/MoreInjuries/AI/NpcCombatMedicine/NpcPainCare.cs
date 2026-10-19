@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using MoreInjuries.Defs.WellKnown;
@@ -96,7 +97,7 @@ internal static class NpcPainCare
         return NpcPainProjection.TryDose(patient, dose.def, out projection, out reason);
     }
 
-    internal static Job? Select(Pawn actor, Pawn patient, bool pocketOnly = false)
+    internal static Job? Select(Pawn actor, Pawn patient, bool pocketOnly = false, Func<JobDef, Thing?, bool>? allowed = null)
     {
         if (Priority(patient) <= 0f || actor.carryTracker.CarriedThing is not null) { return null; }
         Thing? best = null;
@@ -107,7 +108,7 @@ internal static class NpcPainCare
         {
             Thing? item = pocketOnly ? actor.inventory?.innerContainer.FirstOrDefault(thing => thing.def == def)
                 : NpcMedicalAi.FindSupply(actor, patient, def);
-            if (item is null) { continue; }
+            if (item is null || allowed?.Invoke(actor == patient ? KnownJobDefOf.MI_NpcPainSelf : KnownJobDefOf.MI_NpcPainAssist, item) == false) { continue; }
             if (!Evaluate(actor, patient, item, out NpcPainDose dose, out reason)) { continue; }
             if (best is null || Compare(actor, item, dose, best, bestDose, threshold) < 0) { best = item; bestDose = dose; }
         }

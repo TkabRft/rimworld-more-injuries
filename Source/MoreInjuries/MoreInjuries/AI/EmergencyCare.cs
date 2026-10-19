@@ -51,6 +51,7 @@ internal static class EmergencyCare
         internal bool Basic = true, Bandages = true, Advanced, Emergency, Cpr, ClinicalAllowed = true, IgnoreCare;
         internal Func<ThingDef, Thing?> Find = null!;
         internal Func<Thing?>? Medicine;
+        internal Func<JobDef, Thing?, bool>? Allowed;
     }
 
     internal static Job? CreateJob(Pawn doctor, Pawn patient, bool aftercare, NpcContext? npc = null)
@@ -85,6 +86,15 @@ internal static class EmergencyCare
             bool reusable = false, bool criticalTreatment = false, float bleeding = 0f, BodyPartRecord? limb = null, Job? native = null)
         {
             if (urgency <= 0f || benefit <= 0f) { return; }
+            JobDef? action = kind switch
+            {
+                Kind.Tourniquet => KnownJobDefOf.UseTourniquet, Kind.Hemostat => KnownJobDefOf.UseHemostaticAgent,
+                Kind.Bandage => KnownJobDefOf.UseBandage, Kind.Stabilize => native?.def,
+                Kind.Epinephrine => KnownJobDefOf.UseEpinephrine, Kind.Defibrillator => KnownJobDefOf.UseDefibrillator,
+                Kind.Cpr => KnownJobDefOf.PerformCpr, Kind.Suction => KnownJobDefOf.UseSuctionDevice,
+                Kind.Saline => KnownJobDefOf.UseSalineBag, Kind.Blood => KnownJobDefOf.UseBloodBag, _ => null
+            };
+            if (npc?.Allowed is { } allowed && (action is null || !allowed(action, device))) { return; }
             if (device is not null && (device.Destroyed || device.stackCount <= 0 || device.IsForbidden(doctor)
                 || !doctor.CanReserve(device, MedicalDeviceHelper.MAX_MEDICAL_DEVICE_RESERVATIONS, stackCount: 1))) { return; }
             int duration = kind == Kind.Stabilize ? baseTicks : MedicalTiming.Duration(doctor, baseTicks);

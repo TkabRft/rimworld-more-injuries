@@ -38,6 +38,12 @@ The pawn doing the action must be willing: a drug-averse actor refuses self-use 
 
 Clinical analgesia does not spend combat-boost allowance or the emergency epinephrine interval. Clinical epinephrine for shock or resuscitation retains its separate repeat interval, default 600 ticks and adjustable from 0–2,500. Taking a performance drug does not spend this clinical allowance; drug-specific safety limits still apply. Pain-care settings do not change kit quantities or the existing drug-provisioning controls. Low-tier medics may carry chloroform and higher-tier medics ketamine, but NPCs do not automatically administer either on the battlefield. Surgery-only problems still require surgery. With compatible optional mods, MI coordinates medical decisions automatically; the lower modes retain external retreat/rescue behavior.
 
+NPCs give incoming fire time to settle before ordinary medical trips. Ranged or explosive injuries to the helper or patient, including mortar hits from far away, start a 600-tick quiet period. Safe self-care from pocket supplies and immediately adjacent lifesaving care can still be possible. With Combat Extended, taking cover and hunkering take priority in every AI mode. Normal movement and suppression reactions remain available.
+
+A treatment attempt keeps its selected patient and supply through one application. If retrieval or treatment repeatedly fails without improvement, that treatment pauses for increasingly longer retries, up to 2,500 ticks. Switching between equivalent medicine stacks on the floor does not restart the timer. Meaningful changes, such as a moved patient or a newly available pocket supply, allow reconsideration. Other nearby patients and independent treatments can still receive care. Unused selected supplies, including devices, return to the helper's inventory when space permits; excess items may still be dropped normally. Successful pain relief keeps its effect-based redosing rules.
+
+Smarter Raider AI keeps its combat and avoidance behavior. Its inspected version has no identified direct medical cancellation path; combined in-game testing is still needed.
+
 Testing this NPC pain behavior in game with vanilla and Combat Extended is still pending, including RimWorld 1.7.
 
 <!-- @generate_toc {"source": "$self", "indent": 2} -->
