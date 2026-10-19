@@ -24,6 +24,19 @@ The following mods are officially supported by More Injuries and even integrate 
 - Combat Extended: MI corrects duplicated stabilization on its injury and missing-part implementations so CE's bleeding multiplier applies once. Prognosis separates current bleeding control held constant from no further tending with CE decay and staged MI hemostasis, including the choking source wound. Suppressed wounds without a reliable baseline receive an uncertain estimate. Drafted First Aid and routine MI emergency care share weighted feasible treatment selection, retaining MI bleeding-control preference before CE's native stabilization fallback with permitted medicine. CE batches can overlap MI-controlled wounds when another eligible wound requires care. See [Death Estimate](docs/wiki/medical-devices.md#death-estimate) and [First Aid](docs/wiki/medical-devices.md#first-aid). Ordinary tending priorities and CE's manual command are retained. Spalling is disabled by default; proper CE armor integration is deferred. Live saves, actual jobs and the full game patch chain still require in-game acceptance.
 - Dub's Bad Hygiene
 
+### NPC combat medicine adapters
+
+The default-enabled [NPC combat medicine module](docs/npc-combat-medicine.md) adds optional, capability-specific integration. These adapters are implemented and their signatures have been checked against the available 1.6 sources/assemblies. Full in-game acceptance, including the complete Harmony chain and 1.7, remains pending; compilation and fixture tests do not establish live compatibility.
+
+| Optional mod | Implemented boundary |
+|---|---|
+| Combat Extended (`CETeam.CombatExtended`) | Kit grants check effective remaining mass and bulk after gear generation. Its tactical tending defers to active MI treatment/positioning and feasible MI decisions; otherwise CE retains control. Shared CE stabilization uses the bounded NPC medicine resolver. |
+| Smart Medicine (`Memegoddess.SmartMedicine`) | Managed NPC medicine/job selection is bounded, and MI tending avoids conflicting inventory-drop/count rewrites. Colonist settings, inventory features and unrelated tending remain available. |
+| Enemy Self Preservation (`Mlie.EnemySelfPreservation`) | Only Full survival suppresses its damage-response withdrawal for eligible MI-managed individuals. Lower modes retain its behavior. |
+| No One Left Behind (`NinaGoblin.NoOneLeftBehind`) | Only Full survival suppresses its rescue job giver when MI owns that pawn's evacuation decisions. Lower modes retain its behavior. |
+
+Recognition is automatic. Disabling the module restores external decisions. No optional mod is globally unpatched, reconfigured or required, and no installed files are modified. Runtime binding verifies declaring assemblies and exact signatures; an unsupported hook leaves the affected external behavior intact and emits a diagnostic. If CE's inventory interface is unsupported, new MI kit grants stop rather than assuming available bulk. Prisoners only enter MI withdrawal/evacuation ownership during an existing breakout, respecting ordinary access rules.
+
 ### Compatible Mods
 
 These mods are known to be compatible with More Injuries, but they aren't directly integrated into More Injuries, and there may not necessarily be cross-interactions between features. We won't list every compatible mod here, but rather focus on those frequently asked about:

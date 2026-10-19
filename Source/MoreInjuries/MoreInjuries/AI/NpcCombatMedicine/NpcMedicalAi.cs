@@ -1,0 +1,297 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using MoreInjuries.Defs.WellKnown;
+using MoreInjuries.HealthConditions.Drugs.Epinephrine;
+using MoreInjuries.HealthConditions.Fractures;
+using MoreInjuries.HealthConditions.HeavyBleeding.Transfusions;
+using RimWorld;
+using UnityEngine;
+using Verse;
+using Verse.AI;
+using Verse.AI.Group;
+
+namespace MoreInjuries.AI.NpcCombatMedicine;
+
+internal sealed class NpcMedicalState
+{
+    internal bool Medic;
+    internal int LastDecision = -1000;
+    internal int ThreatTick = -1000;
+    internal readonly List<Pawn> Threats = [];
+    internal readonly NpcDrugBudget Drugs = new();
+}
+
+internal static class NpcMedicalAi
+{
+    private static readonly ConditionalWeakTable<Pawn, NpcMedicalState> s_states = new();
+    internal static NpcMedicalState State(Pawn pawn) => s_states.GetOrCreateValue(pawn);
+    internal static bool Managed(Pawn pawn) => MoreInjuriesMod.Settings.EnableNpcCombatMedicine
+        && pawn.RaceProps.Humanlike && pawn.RaceProps.IsFlesh && !pawn.Dead
+        && !pawn.IsColonistPlayerControlled && !pawn.IsSlaveOfColony
+        && (pawn.IsPrisoner || pawn.Faction is { IsPlayer: false }
+            && (pawn.kindDef.isFighter || pawn.equipment?.Primary?.def.IsWeapon == true));
+
+    internal static bool Owns(Job? job) => job is not null && (job.def == KnownJobDefOf.MI_NpcTend
+        || job.def == KnownJobDefOf.MI_NpcReposition || job.def == KnownJobDefOf.MI_NpcWithdraw
+        || job.def == KnownJobDefOf.MI_NpcEvacuate || job.def == KnownJobDefOf.MI_NpcPerformanceDrug)
+        || job?.def.driverClass?.Namespace?.StartsWith("MoreInjuries.HealthConditions", StringComparison.Ordinal) == true;
+
+    internal static bool CanTakeDecision(Pawn pawn) => Managed(pawn) && pawn.Spawned && !pawn.Downed
+        && !pawn.Drafted && (!pawn.InMentalState || PrisonBreak(pawn)) && pawn.CurJob?.playerForced != true;
+
+    internal static bool PrisonBreak(Pawn pawn) => pawn.IsPrisoner
+        && pawn.GetLord()?.LordJob?.GetType().Name.IndexOf("PrisonBreak", StringComparison.Ordinal) >= 0;
+    internal static bool OwnsSurvival(Pawn pawn) => NpcMedicalModel.Survival(MoreInjuriesMod.Settings.EnableNpcCombatMedicine,
+        MoreInjuriesMod.Settings.NpcMedicalAiMode, Managed(pawn), CanTakeDecision(pawn), PreservedDuty(pawn), pawn.IsPrisoner, PrisonBreak(pawn));
+
+    internal static bool IsMedic(Pawn pawn) => State(pawn).Medic || pawn.inventory.innerContainer.Any(thing =>
+        thing.def == KnownThingDefOf.Defibrillator || thing.def == KnownThingDefOf.SuctionDevice
+        || thing.def == KnownThingDefOf.Bandage && thing.stackCount >= 6);
+
+    internal static float Severity(Pawn pawn, string defName) => pawn.health.hediffSet.hediffs
+        .FirstOrDefault(hediff => hediff.def.defName == defName)?.Severity ?? 0f;
+    internal static float Urgency(Pawn patient)
+    {
+        bool arrest = patient.health.hediffSet.HasHediff(KnownHediffDefOf.CardiacArrest);
+        bool airway = patient.health.hediffSet.HasHediff(KnownHediffDefOf.ChokingOnBlood)
+            && patient.health.capacities.GetLevel(PawnCapacityDefOf.Breathing) <= .2f;
+        float shock = Severity(patient, "HypovolemicShock"), loss = Severity(patient, "BloodLoss");
+        float breathing = patient.health.capacities.GetLevel(PawnCapacityDefOf.Breathing);
+        float pumping = patient.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
+        return NpcMedicalModel.Urgency(arrest, airway, shock, loss, patient.health.hediffSet.BleedRateTotal,
+            breathing, pumping, patient.health.HasHediffsNeedingTend() || patient.health.hediffSet.HasHediff(KnownHediffDefOf.Fracture),
+            patient.health.capacities.GetLevel(PawnCapacityDefOf.Consciousness));
+    }
+
+    private static int Relation(Pawn doctor, Pawn patient)
+    {
+        MoreInjuriesSettings settings = MoreInjuriesMod.Settings;
+        if (patient.Dead || !patient.RaceProps.Humanlike || !patient.RaceProps.IsFlesh || doctor.HostileTo(patient)
+            || patient.IsMutant && !patient.mutant.Def.entitledToMedicalCare) { return -1; }
+        int Rank(int relation) => NpcMedicalModel.CareRank(relation, Urgency(patient), settings.NpcTreatOwnFaction,
+            settings.NpcTreatFriendly, settings.NpcTreatNeutral, settings.NpcTreatPlayer);
+        if (patient == doctor) { return Rank(0); }
+        if (patient.IsColonistPlayerControlled)
+        { return patient.playerSettings?.medCare is not MedicalCareCategory.NoCare
+            && (patient.Downed || patient.CurJob?.playerForced != true) ? Rank(4) : -1; }
+        if (patient.Faction == doctor.Faction || patient.GetLord() is { } group && group == doctor.GetLord())
+        { return Rank(1); }
+        if (doctor.Faction is null || patient.Faction is null) { return Rank(3); }
+        return doctor.Faction.RelationKindWith(patient.Faction) == FactionRelationKind.Ally
+            ? Rank(2) : Rank(3);
+    }
+
+    internal static Job? Decide(Pawn doctor)
+    {
+        if (!CanTakeDecision(doctor) || Owns(doctor.CurJob) || PreservedDuty(doctor)) { return null; }
+        NpcMedicalState state = State(doctor);
+        int now = Find.TickManager.TicksGame;
+        if (now - state.LastDecision < 150) { return null; }
+        state.LastDecision = now;
+        bool threatened = Threats(doctor).Any(enemy => GenSight.LineOfSight(enemy.Position, doctor.Position, doctor.Map));
+        if (threatened) { state.Drugs.Threat(now); }
+        bool canDoctor = NpcMedicalGeneration.CanDoctor(doctor);
+        if (canDoctor)
+        {
+            float radius = IsMedic(doctor) ? 24f : 12f;
+            List<Pawn> patients = Nearby(doctor, radius).Where(patient => Relation(doctor, patient) >= 0 && Urgency(patient) > 0f)
+                .OrderByDescending(Urgency).ThenBy(patient => Relation(doctor, patient))
+                .ThenBy(patient => patient.Position.DistanceToSquared(doctor.Position)).ToList();
+            foreach (Pawn patient in patients)
+            {
+                if (patient != doctor && !doctor.CanReserveAndReach(patient, PathEndMode.Touch, Danger.Deadly)) { continue; }
+                Job? treatment = Treatment(doctor, patient);
+                if (treatment is null) { continue; }
+                if (threatened && Exposure(doctor, doctor.Position) > 0)
+                {
+                    if (MoreInjuriesMod.Settings.NpcMedicalAiMode >= 1 && patient == doctor && SaferPosition(doctor) is IntVec3 cell)
+                    { return Move(KnownJobDefOf.MI_NpcReposition, cell); }
+                    if (Urgency(patient) < 90f || !patient.Position.InHorDistOf(doctor.Position, 1.5f)
+                        || Threats(doctor).Any(enemy => enemy.Position.InHorDistOf(doctor.Position, 8f))) { continue; }
+                }
+                return treatment;
+            }
+        }
+        if (OwnsSurvival(doctor))
+        {
+            Job? withdrawal = Withdrawal(doctor, ShouldWithdraw(doctor));
+            if (withdrawal is not null) { return withdrawal; }
+        }
+        return threatened && (!doctor.IsPrisoner || PrisonBreak(doctor)) ? Performance(doctor, state) : null;
+    }
+
+    private static bool PreservedDuty(Pawn pawn)
+    {
+        string? job = pawn.CurJob?.def.defName;
+        if (job is "Kidnap" or "CarryDownedPawn" or "EnterTransporter" or "EnterTransporterAndWait" or "EnterShuttle") { return true; }
+        if (pawn.CurJob?.exitMapOnArrival == true) { return true; }
+        // Quest scripts and rituals retain ownership of their actors.
+        string? lord = pawn.GetLord()?.LordJob?.GetType().Name;
+        return lord is not null && (lord.Contains("Ritual") || lord.Contains("Ceremony") || lord.Contains("Bestowing"));
+    }
+
+    private static Job? Treatment(Pawn doctor, Pawn patient)
+    {
+        if (patient.playerSettings?.medCare == MedicalCareCategory.NoCare && !(doctor == patient && doctor.IsPrisoner)) { return null; }
+        TechLevel tech = NpcMedicalGeneration.Profile(doctor).TechLevel;
+        NpcDrugBudget budget = State(patient).Drugs;
+        Dictionary<ThingDef, Thing?> supplies = new();
+        Thing? FindDevice(ThingDef def)
+        {
+            if (!supplies.TryGetValue(def, out Thing? item)) { supplies[def] = item = FindSupply(doctor, patient, def); }
+            return item;
+        }
+        EmergencyCare.NpcContext context = new()
+        {
+            Basic = tech >= TechLevel.Medieval, Advanced = tech >= TechLevel.Industrial,
+            Emergency = tech >= TechLevel.Industrial, Cpr = tech >= TechLevel.Medieval,
+            ClinicalAllowed = budget.ClinicalAllowed(Find.TickManager.TicksGame, MoreInjuriesMod.Settings.NpcClinicalInterval),
+            IgnoreCare = doctor == patient && doctor.IsPrisoner,
+            Medicine = () => FindMedicine(doctor, patient),
+            Find = FindDevice
+        };
+        // A carried simple scavenged treatment may be used below its normal supply tier.
+        context.Basic |= FindDevice(KnownThingDefOf.Tourniquet) is not null;
+        context.Advanced |= FindDevice(KnownThingDefOf.HemostaticAgent) is not null;
+        Job? job = EmergencyCare.CreateJob(doctor, patient, aftercare: false, context);
+        if (job is not null) { return job; }
+        if (Urgency(patient) < 70f && !Threats(doctor).Any())
+        {
+            if (patient.health.hediffSet.HasHediff(KnownHediffDefOf.Fracture) && FindSupply(doctor, patient, KnownThingDefOf.Splint) is Thing splint)
+            { return JobDriver_UseSplint.GetDispatcher(doctor, patient, splint).CreateJob(); }
+        }
+        if (patient.health.HasHediffsNeedingTend() && (!Threats(doctor).Any() || patient.health.hediffSet.BleedRateTotal > .5f))
+        {
+            Thing? medicine = FindMedicine(doctor, patient);
+            Job tend = JobMaker.MakeJob(KnownJobDefOf.MI_NpcTend, patient, medicine);
+            tend.count = medicine is null ? 0 : 1;
+            tend.endAfterTendedOnce = true;
+            return tend;
+        }
+        return null;
+    }
+
+    internal static Thing? FindMedicine(Pawn doctor, Pawn patient)
+    {
+        MedicalCareCategory care = doctor == patient && doctor.IsPrisoner ? MedicalCareCategory.Best
+            : patient.playerSettings?.medCare ?? MedicalCareCategory.Best;
+        if (care is MedicalCareCategory.NoCare or MedicalCareCategory.NoMeds) { return null; }
+        foreach (ThingDef def in new[] { ThingDefOf.MedicineUltratech, ThingDefOf.MedicineIndustrial, ThingDefOf.MedicineHerbal })
+        { if (care.AllowsMedicine(def) && FindSupply(doctor, patient, def) is Thing item) { return item; } }
+        return null;
+    }
+
+    internal static Thing? FindSupply(Pawn doctor, Pawn patient, ThingDef def)
+    {
+        bool Allowed(Thing item) => item.def == def && !item.Destroyed && item.stackCount > 0 && !item.IsForbidden(doctor)
+            && doctor.CanReserve(item, 10, stackCount: 1);
+        Thing? Own(Pawn holder) => holder.inventory?.innerContainer.FirstOrDefault(Allowed);
+        Thing? result = Own(doctor) ?? Own(patient);
+        if (result is not null) { return result; }
+        foreach (Pawn holder in Nearby(doctor, 12f))
+        {
+            if (holder != doctor && holder != patient && holder.Faction == doctor.Faction && !holder.HostileTo(doctor)
+                && holder.Position.InHorDistOf(doctor.Position, 12f) && !holder.IsForbidden(doctor)
+                && doctor.CanReach(holder, PathEndMode.Touch, Danger.Some) && Own(holder) is Thing supply) { return supply; }
+        }
+        return GenClosest.ClosestThingReachable(doctor.Position, doctor.Map, ThingRequest.ForDef(def),
+            PathEndMode.ClosestTouch, TraverseParms.For(doctor, Danger.Some), maxDistance: 12f, validator: Allowed,
+            searchRegionsMin: 0, searchRegionsMax: 12, forceAllowGlobalSearch: false);
+    }
+
+    private static IEnumerable<Pawn> Nearby(Pawn pawn, float radius)
+        => GenRadial.RadialDistinctThingsAround(pawn.Position, pawn.Map, radius, true).OfType<Pawn>();
+    private static IEnumerable<Pawn> Threats(Pawn pawn)
+    {
+        NpcMedicalState state = State(pawn);
+        int now = Find.TickManager.TicksGame;
+        if (now - state.ThreatTick >= 150)
+        {
+            state.ThreatTick = now;
+            state.Threats.Clear();
+            state.Threats.AddRange(Nearby(pawn, 35f).Where(enemy => !enemy.Dead && !enemy.Downed && enemy.HostileTo(pawn)));
+        }
+        return state.Threats.Where(enemy => enemy.Spawned && !enemy.Dead && !enemy.Downed && enemy.HostileTo(pawn));
+    }
+    private static int Exposure(Pawn pawn, IntVec3 cell) => Threats(pawn).Count(enemy => GenSight.LineOfSight(enemy.Position, cell, pawn.Map)
+        && CoverUtility.CalculateOverallBlockChance(cell, enemy.Position, pawn.Map) < .5f);
+    private static IntVec3? SaferPosition(Pawn pawn)
+    {
+        int exposure = Exposure(pawn, pawn.Position);
+        IntVec3? best = null;
+        foreach (IntVec3 cell in GenRadial.RadialCellsAround(pawn.Position, 12f, false))
+        {
+            if (!cell.InBounds(pawn.Map) || !cell.Standable(pawn.Map) || cell.IsForbidden(pawn)
+                || cell.DistanceTo(pawn.Position) * pawn.TicksPerMoveCardinal > 600f
+                || !pawn.CanReserveAndReach(cell, PathEndMode.OnCell, Danger.Some)) { continue; }
+            int next = Exposure(pawn, cell);
+            if (next < exposure) { exposure = next; best = cell; if (next == 0) { break; } }
+        }
+        return best;
+    }
+    private static Job Move(JobDef def, IntVec3 cell) => JobMaker.MakeJob(def, cell);
+    private static bool ShouldWithdraw(Pawn pawn) => Urgency(pawn) >= 70f
+        || pawn.health.capacities.GetLevel(PawnCapacityDefOf.Moving) < .5f
+        || pawn.health.capacities.GetLevel(PawnCapacityDefOf.Consciousness) < .5f;
+
+    private static Job? Withdrawal(Pawn pawn, bool mustWithdraw)
+    {
+        Pawn? patient = Nearby(pawn, 12f).Where(other => other != pawn && other.Downed && !other.Dead
+            && other.Faction == pawn.Faction && !other.HostileTo(pawn) && other.Position.InHorDistOf(pawn.Position, 12f)
+            && pawn.CanReserveAndReach(other, PathEndMode.Touch, Danger.Some)).OrderByDescending(Urgency).FirstOrDefault();
+        if (!mustWithdraw && patient is null) { return null; }
+        if (!CellFinder.TryFindRandomEdgeCellWith(cell => cell.Standable(pawn.Map)
+            && pawn.CanReach(cell, PathEndMode.OnCell, Danger.Some), pawn.Map, CellFinder.EdgeRoadChance_Neutral, out IntVec3 exit)) { return null; }
+        if (patient is not null && pawn.health.capacities.GetLevel(PawnCapacityDefOf.Moving) >= .5f && Exposure(pawn, patient.Position) == 0)
+        { return JobMaker.MakeJob(KnownJobDefOf.MI_NpcEvacuate, patient, exit); }
+        if (!mustWithdraw) { return null; }
+        Job job = Move(KnownJobDefOf.MI_NpcWithdraw, exit);
+        job.exitMapOnArrival = true;
+        return job;
+    }
+
+    private static Job? Performance(Pawn pawn, NpcMedicalState state)
+    {
+        MoreInjuriesSettings settings = MoreInjuriesMod.Settings;
+        int now = Find.TickManager.TicksGame;
+        if (!settings.NpcPerformanceDrugs || !state.Drugs.PerformanceAllowed(now, settings.NpcPerformanceMaximum, settings.NpcPerformanceInterval)) { return null; }
+        if (!state.Drugs.OpportunityRolled)
+        {
+            state.Drugs.OpportunityRolled = true;
+            state.Drugs.OpportunityAllowed = Rand.Chance(settings.NpcPerformanceUseChance);
+            NpcMedicalMemory.Remember(pawn);
+        }
+        if (!state.Drugs.OpportunityAllowed) { return null; }
+        Thing? item = pawn.inventory.innerContainer.Where(thing => NpcMedicalGeneration.IsPerformance(thing.def))
+            .OrderByDescending(thing => thing.def.BaseMarketValue).FirstOrDefault(thing => SafePerformance(pawn, thing));
+        if (item is null) { return null; }
+        Job job = JobMaker.MakeJob(KnownJobDefOf.MI_NpcPerformanceDrug, item);
+        job.count = 1;
+        return job;
+    }
+
+    internal static bool SafePerformance(Pawn pawn, Thing item)
+    {
+        if (item.Destroyed || item.stackCount < 1 || item.IsForbidden(pawn) || pawn.IsTeetotaler()
+            || !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) || Urgency(pawn) >= 70f
+            || Severity(pawn, "DrugOverdose") >= .15f || Severity(pawn, "GoJuiceHigh") > 0f || Severity(pawn, "YayoHigh") > 0f
+            || Severity(pawn, "MorphineBuildup") >= .04f || Severity(pawn, "KetamineBuildup") > 0f
+            || Severity(pawn, "ChloroformBuildup") > 0f || Severity(pawn, "AlcoholHigh") > 0f) { return false; }
+        if (item.def == KnownThingDefOf.Morphine)
+        {
+            return pawn.health.hediffSet.PainTotal >= .25f && Severity(pawn, "BloodLoss") < .2f
+                && Severity(pawn, "HypovolemicShock") <= 0f
+                && pawn.health.capacities.GetLevel(PawnCapacityDefOf.Consciousness) >= .8f
+                && pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing) >= .9f
+                && pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping) >= .9f;
+        }
+        return true;
+    }
+}
+
+public sealed class JobGiver_NpcCombatMedicine : ThinkNode_JobGiver
+{
+    protected override Job? TryGiveJob(Pawn pawn) => NpcMedicalAi.Decide(pawn);
+}

@@ -45,10 +45,17 @@ internal static class EmergencyCare
         || patient.health.hediffSet.HasHediff(KnownHediffDefOf.ChokingOnBlood)
             && patient.health.capacities.GetLevel(PawnCapacityDefOf.Breathing) <= .2f;
 
-    internal static Job? CreateJob(Pawn doctor, Pawn patient, bool aftercare)
+    internal sealed class NpcContext
     {
-        if (doctor == patient || patient.Dead || !doctor.CanReachPatient(patient)
-            || patient.playerSettings?.medCare is MedicalCareCategory.NoCare
+        internal bool Basic = true, Bandages = true, Advanced, Emergency, Cpr, ClinicalAllowed = true, IgnoreCare;
+        internal Func<ThingDef, Thing?> Find = null!;
+        internal Func<Thing?>? Medicine;
+    }
+
+    internal static Job? CreateJob(Pawn doctor, Pawn patient, bool aftercare, NpcContext? npc = null)
+    {
+        if ((npc is null && doctor == patient) || patient.Dead || !doctor.CanReachPatient(patient)
+            || !(npc?.IgnoreCare ?? false) && patient.playerSettings?.medCare is MedicalCareCategory.NoCare
             || patient.IsMutant && !patient.mutant.Def.entitledToMedicalCare
             || doctor.WorkTypeIsDisabled(WorkTypeDefOf.Doctor)
             || !doctor.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation)
@@ -59,7 +66,7 @@ internal static class EmergencyCare
         Hediff? choking = patient.health.hediffSet.GetFirstHediffOfDef(KnownHediffDefOf.ChokingOnBlood);
         bool criticalAirway = choking is not null && patient.health.capacities.GetLevel(PawnCapacityDefOf.Breathing) <= .2f;
         bool critical = arrest || criticalAirway;
-        bool cprAvailable = KnownResearchProjectDefOf.Cpr.IsFinished && (arrest || choking is not null);
+        bool cprAvailable = doctor != patient && (npc?.Cpr ?? KnownResearchProjectDefOf.Cpr.IsFinished) && (arrest || choking is not null);
         bool quickAllowed = !s_history.TryGetValue(patient, out History? history) || !history.MustResuscitate;
         Candidate best = default, rescue = default, quick = default, otherEmergency = default;
         bool miBleeding = false;
@@ -99,14 +106,19 @@ internal static class EmergencyCare
         }
         void Devices(ThingDef def, Action<Thing> add, bool retrieve)
         {
+            if (npc is not null)
+            {
+                if (npc.Find(def) is Thing carried) { add(carried); }
+                return;
+            }
             Thing? pocket = MedicalDeviceHelper.FindFeasibleInventoryDevice(doctor, def);
             if (pocket is not null) { add(pocket); }
             if (retrieve && MedicalDeviceHelper.FindRetrievedDevice(doctor, patient, def) is Thing nearby && nearby != pocket) { add(nearby); }
         }
         float Reduction(ThingDef def, float fallback) => 1f - (def.GetModExtension<HemostasisModExtension>()?.CoagulationMultiplier ?? 1f - fallback);
 
-        if (!superclotting && KnownResearchProjectDefOf.BasicFirstAid.IsFinished && nativeBleeding > Mathf.Epsilon
-            && MedicalDeviceHelper.FindFeasibleInventoryDevice(doctor, KnownThingDefOf.Tourniquet) is Thing tourniquet)
+        if (!superclotting && (npc?.Basic ?? KnownResearchProjectDefOf.BasicFirstAid.IsFinished) && nativeBleeding > Mathf.Epsilon
+            && (npc is null ? MedicalDeviceHelper.FindFeasibleInventoryDevice(doctor, KnownThingDefOf.Tourniquet) : npc.Find(KnownThingDefOf.Tourniquet)) is Thing tourniquet)
         {
             using BleedRateByLimbEnumerable limbs = BleedRateByLimbEnumerable.EvaluateLimbs(patient);
             bool competent = JobDriver_TourniquetBase.PawnKnowsWhatTheyreDoing(doctor);
@@ -123,14 +135,15 @@ internal static class EmergencyCare
         if (wound is not null && TreatBleeding(wound.BleedRate * normalization))
         {
             float rate = wound.BleedRate * normalization;
-            if (KnownResearchProjectDefOf.AdvancedFirstAid.IsFinished)
+            if ((npc?.Advanced ?? KnownResearchProjectDefOf.AdvancedFirstAid.IsFinished))
             { Devices(KnownThingDefOf.HemostaticAgent, item => Consider(Kind.Hemostat, item, EmergencyPriority.BleedingUrgency(rate),
                 Reduction(KnownThingDefOf.HemostaticAgent, .95f) * EmergencyPriority.Suitability(true, rate, superclotting), 40, bleeding: rate), true); }
-            if (KnownResearchProjectDefOf.BasicAnatomy.IsFinished)
+            if ((npc?.Bandages ?? KnownResearchProjectDefOf.BasicAnatomy.IsFinished))
             { Devices(KnownThingDefOf.Bandage, item => Consider(Kind.Bandage, item, EmergencyPriority.BleedingUrgency(rate),
                 Reduction(KnownThingDefOf.Bandage, .8f) * EmergencyPriority.Suitability(false, rate, superclotting), 80, bleeding: rate), true); }
         }
-        if (!miBleeding && nativeBleeding > Mathf.Epsilon && CombatExtendedBridge.TryCreateStabilizationJob(doctor, patient) is Job stabilize)
+        if (!miBleeding && nativeBleeding > Mathf.Epsilon
+            && CombatExtendedBridge.TryCreateStabilizationJob(doctor, patient, npc?.Medicine, npc?.IgnoreCare ?? false) is Job stabilize)
         {
             int count = 0; float rate = 0f;
             foreach (Hediff injury in patient.health.hediffSet.GetHediffsTendable())
@@ -144,39 +157,47 @@ internal static class EmergencyCare
             Consider(Kind.Stabilize, stabilize.targetB.Thing, EmergencyPriority.BleedingUrgency(rate), 1f,
                 Math.Max(1, (int)(60f * count / Math.Max(.001f, doctor.GetStatValue(StatDefOf.MedicalTendSpeed)))), native: stabilize);
         }
-        if (KnownResearchProjectDefOf.EmergencyMedicine.IsFinished && patient.health.hediffSet.hediffs.Any(JobDriver_UseDefibrillator.JobCanTreat))
+        if ((npc?.Emergency ?? KnownResearchProjectDefOf.EmergencyMedicine.IsFinished) && (patient.health.hediffSet.hediffs.Any(JobDriver_UseDefibrillator.JobCanTreat)
+                || npc is not null && (patient.health.hediffSet.GetFirstHediffOfDef(KnownHediffDefOf.HypovolemicShock)?.Severity ?? 0f) >= .5f))
         {
             float urgency = arrest ? 100f : 60f;
-            if (MoreInjuriesMod.Settings.EnableAdrenaline
+            if (MoreInjuriesMod.Settings.EnableAdrenaline && (npc?.ClinicalAllowed ?? true)
                 && (!patient.health.hediffSet.TryGetHediff(KnownHediffDefOf.AdrenalineRush, out Hediff? adrenaline)
                     || adrenaline.Severity < JobDriver_UseEpinephrine.SAFETY_THRESHOLD))
             { Devices(KnownThingDefOf.Epinephrine, item => Consider(Kind.Epinephrine, item, urgency, 1.75f, 40, criticalTreatment: arrest), !aftercare); }
-            Devices(KnownThingDefOf.Defibrillator, item => Consider(Kind.Defibrillator, item, urgency, 1.5f, 180,
-                reusable: true, criticalTreatment: arrest), true);
+            if (doctor != patient && patient.health.hediffSet.hediffs.Any(JobDriver_UseDefibrillator.JobCanTreat))
+            { Devices(KnownThingDefOf.Defibrillator, item => Consider(Kind.Defibrillator, item, urgency, 1.5f, 180,
+                reusable: true, criticalTreatment: arrest), true); }
         }
         if (cprAvailable)
         {
             float urgency = arrest ? 100f : criticalAirway ? 80f : 20f * choking!.Severity;
             Consider(Kind.Cpr, null, urgency, 1f, 360, criticalTreatment: critical);
-            if (!arrest && KnownResearchProjectDefOf.EmergencyMedicine.IsFinished)
+            if (!arrest && (npc?.Emergency ?? KnownResearchProjectDefOf.EmergencyMedicine.IsFinished))
             {
                 // Preserve the airway-specific bounded search instead of broad map retrieval.
-                Job airway = AutomaticAirwayTreatment.CreateJob(doctor, patient);
+                Job airway = npc is null ? AutomaticAirwayTreatment.CreateJob(doctor, patient)
+                    : npc.Find(KnownThingDefOf.SuctionDevice) is Thing suction
+                        ? JobDriver_UseSuctionDevice.GetDispatcher(doctor, patient, suction).CreateJob()
+                        : JobDriver_PerformCpr.GetDispatcher(doctor, patient).CreateJob();
                 if (airway.def == KnownJobDefOf.UseSuctionDevice)
                 { Consider(Kind.Suction, airway.targetB.Thing, urgency, 1.5f, 600, reusable: true, criticalTreatment: criticalAirway); }
             }
         }
-        if (KnownResearchProjectDefOf.EmergencyMedicine.IsFinished && patient.playerSettings?.medCare is not MedicalCareCategory.NoMeds)
+        if ((npc is null || doctor != patient) && (npc?.Emergency ?? KnownResearchProjectDefOf.EmergencyMedicine.IsFinished)
+            && ((npc?.IgnoreCare ?? false) || patient.playerSettings?.medCare is not MedicalCareCategory.NoMeds))
         {
             float loss = patient.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss)?.Severity ?? 0f;
             float dilution = patient.health.hediffSet.GetFirstHediffOfDef(KnownHediffDefOf.Hemodilution)?.Severity ?? 0f;
             float shock = patient.health.hediffSet.GetFirstHediffOfDef(KnownHediffDefOf.HypovolemicShock)?.Severity ?? 0f;
             float urgency = EmergencyPriority.TransfusionUrgency(loss, dilution, ShockPerfusionModel.EffectiveShock(shock, loss));
-            if (MedicalDeviceHelper.FindMedicalDevice(doctor, patient, JobDriver_UseSalineBag.JobDeviceDef,
-                static target => JobDriver_UseSalineBag.JobGetMedicalDeviceCountToFullyHeal(target, false), fromInventoryOnly: aftercare) is Thing saline)
+            if ((npc is null ? MedicalDeviceHelper.FindMedicalDevice(doctor, patient, JobDriver_UseSalineBag.JobDeviceDef,
+                static target => JobDriver_UseSalineBag.JobGetMedicalDeviceCountToFullyHeal(target, false), fromInventoryOnly: aftercare)
+                : JobDriver_UseSalineBag.JobGetMedicalDeviceCountToFullyHeal(patient, false) > 0 ? npc.Find(JobDriver_UseSalineBag.JobDeviceDef) : null) is Thing saline)
             { Consider(Kind.Saline, saline, urgency, 1f, 720); }
-            if (MedicalDeviceHelper.FindMedicalDevice(doctor, patient, JobDriver_UseBloodBag.JobDeviceDef,
-                static target => JobDriver_UseBloodBag.JobGetMedicalDeviceCountToFullyHeal(target, false), fromInventoryOnly: aftercare) is Thing blood)
+            if ((npc is null ? MedicalDeviceHelper.FindMedicalDevice(doctor, patient, JobDriver_UseBloodBag.JobDeviceDef,
+                static target => JobDriver_UseBloodBag.JobGetMedicalDeviceCountToFullyHeal(target, false), fromInventoryOnly: aftercare)
+                : JobDriver_UseBloodBag.JobGetMedicalDeviceCountToFullyHeal(patient, false) > 0 ? npc.Find(JobDriver_UseBloodBag.JobDeviceDef) : null) is Thing blood)
             { Consider(Kind.Blood, blood, urgency, 1f, 720); }
         }
         Candidate selected = critical && rescue.Kind != Kind.None
@@ -197,7 +218,7 @@ internal static class EmergencyCare
             _ => null
         };
         if (result is not null) { result.endAfterTendedOnce = true; return result; }
-        if (!aftercare) { return null; }
+        if (!aftercare || npc is not null) { return null; }
         if (!superclotting && patient.Downed && patient.health.hediffSet.hediffs.Any(static injury => injury.TendableNow()))
         {
             Job tend = JobMaker.MakeJob(JobDefOf.TendPatient, patient);

@@ -85,6 +85,43 @@ public sealed class EmergencyIntegrationTests
     }
 
     [TestMethod]
+    public void NpcCeStabilizationCannotFallBackToUnboundedOrUnselectedMedicine()
+    {
+        var (doctor, patient) = Pair(true); CeWound(patient);
+        Medicine nearby = new() { def = new() { MedicineTier = 2 }, Potency = 1f };
+        Medicine unselected = new() { def = new() { MedicineTier = 3 }, Potency = 1.6f };
+        doctor.inventory.innerContainer.Add(unselected);
+        patient.inventory.innerContainer.Add(nearby);
+        GenClosest.Device = unselected;
+        EmergencyCare.NpcContext context = new() { Find = _ => null, Medicine = () => null };
+        Assert.IsNull(EmergencyCare.CreateJob(doctor, patient, false, context));
+        context.Medicine = () => nearby;
+        var job = EmergencyCare.CreateJob(doctor, patient, false, context)!;
+        Assert.IsNotNull(job);
+        Assert.AreSame(nearby, job.Targets[1]);
+        patient.playerSettings!.medCare = MedicalCareCategory.NoCare;
+        Assert.IsNull(EmergencyCare.CreateJob(doctor, patient, false, context));
+        context.IgnoreCare = true; // Only supplied by the NPC caller for a prisoner's own care.
+        Assert.IsNotNull(EmergencyCare.CreateJob(doctor, patient, false, context));
+    }
+
+    [TestMethod]
+    public void NpcShockEpinephrineIsClinicalAndHonorsItsSeparateSafetyGate()
+    {
+        var (doctor, patient) = Pair();
+        MoreInjuriesMod.Settings.EnableAdrenaline = true;
+        VitalFailureTests.Add(patient, KnownHediffDefOf.HypovolemicShock, .6f);
+        Thing injector = new(); doctor.Devices[KnownThingDefOf.Epinephrine] = injector;
+        EmergencyCare.NpcContext context = new() { Emergency = true, Find = def => def == KnownThingDefOf.Epinephrine ? injector : null };
+        Assert.AreSame(KnownJobDefOf.UseEpinephrine, EmergencyCare.CreateJob(doctor, patient, false, context)!.def);
+        context.ClinicalAllowed = false;
+        Assert.IsNull(EmergencyCare.CreateJob(doctor, patient, false, context));
+        context.ClinicalAllowed = true;
+        VitalFailureTests.Add(patient, KnownHediffDefOf.AdrenalineRush, .3f);
+        Assert.IsNull(EmergencyCare.CreateJob(doctor, patient, false, context));
+    }
+
+    [TestMethod]
     public void CeFallbackDoesNotBlockResuscitationOrRetryAlreadyStabilizedWounds()
     {
         var (doctor, patient) = Pair(true); CEWoundFixture wound = CeWound(patient);

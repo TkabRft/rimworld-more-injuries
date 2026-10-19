@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalModel.cs" Link="RuntimeContracts\Production\NpcMedicalModel.cs" />
     <Compile Include="..\MoreInjuries\AI\MedicalTiming.cs" Link="RuntimeContracts\Production\MedicalTiming.cs" />
     <Compile Include="..\MoreInjuries\AI\EmergencyTravel.cs" Link="RuntimeContracts\Production\EmergencyTravel.cs" />
     <Compile Include="..\MoreInjuries\AI\EmergencyPriority.cs" Link="RuntimeContracts\Production\EmergencyPriority.cs" />

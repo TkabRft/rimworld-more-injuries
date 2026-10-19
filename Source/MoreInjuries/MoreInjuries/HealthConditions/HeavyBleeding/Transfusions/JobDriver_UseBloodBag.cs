@@ -17,8 +17,9 @@ public sealed class JobDriver_UseBloodBag : JobDriver_TransfusionBase
         dataProvider: static (pawn, fullyHeal) => new TransfusionState(fullyHeal, JobGetMedicalDeviceCountToFullyHeal(pawn, fullyHeal))
     );
 
-    public static ThingDef JobDeviceDef => ModLister.BiotechInstalled && MoreInjuriesMod.Settings.BiotechEnableIntegration
-        ? ThingDefOf.HemogenPack
+    public static ThingDef JobDeviceDef => ModsConfig.BiotechActive && MoreInjuriesMod.Settings.BiotechEnableIntegration
+        && ThingDefOf.HemogenPack is ThingDef hemogen
+        ? hemogen
         : KnownThingDefOf.WholeBloodBag;
 
     protected override ThingDef DeviceDef => JobDeviceDef;

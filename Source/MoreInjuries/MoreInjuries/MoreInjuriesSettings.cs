@@ -239,5 +239,58 @@ public partial class MoreInjuriesSettings : ModSettings
     internal partial ref float ClosedInternalWouldBleedingModifier { get; }
 
     public override partial void ExposeData();
+
+    // NPC combat medicine
+    [SettingsEntry<bool>(DefaultValue = true)]
+    internal partial ref bool EnableNpcCombatMedicine { get; }
+
+    [SettingsEntry<int>(DefaultValue = 1)]
+    internal partial ref int NpcMedicalAiMode { get; }
+
+    [SettingsEntry<float>(DefaultValue = 1f)]
+    internal partial ref float NpcSupplyMultiplier { get; }
+
+    [SettingsEntry<float>(DefaultValue = 1f)]
+    internal partial ref float NpcMedicMultiplier { get; }
+
+    [SettingsEntry<float>(DefaultValue = .03f)]
+    internal partial ref float NpcScavengingChance { get; }
+
+    [SettingsEntry<bool>(DefaultValue = true)]
+    internal partial ref bool NpcTreatOwnFaction { get; }
+
+    [SettingsEntry<bool>(DefaultValue = true)]
+    internal partial ref bool NpcTreatFriendly { get; }
+
+    [SettingsEntry<bool>(DefaultValue = true)]
+    internal partial ref bool NpcTreatNeutral { get; }
+
+    [SettingsEntry<bool>(DefaultValue = true)]
+    internal partial ref bool NpcTreatPlayer { get; }
+
+    [SettingsEntry<bool>(DefaultValue = true)]
+    internal partial ref bool NpcPerformanceDrugs { get; }
+
+    [SettingsEntry<int>(DefaultValue = 0)]
+    internal partial ref int NpcDrugSelection { get; }
+
+    [SettingsEntry<float>(DefaultValue = 1f)]
+    internal partial ref float NpcPerformancePrevalence { get; }
+
+    [SettingsEntry<float>(DefaultValue = 1f)]
+    internal partial ref float NpcPerformanceUseChance { get; }
+
+    [SettingsEntry<int>(DefaultValue = 1)]
+    internal partial ref int NpcPerformanceMaximum { get; }
+
+    [SettingsEntry<int>(DefaultValue = 20000)]
+    internal partial ref int NpcPerformanceInterval { get; }
+
+    [SettingsEntry<int>(DefaultValue = 600)]
+    internal partial ref int NpcClinicalInterval { get; }
+
+    [SettingsEntry<bool>(DefaultValue = false)]
+    internal partial ref bool NpcTrainMedics { get; }
+
 }
 

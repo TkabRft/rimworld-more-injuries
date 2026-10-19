@@ -41,10 +41,10 @@ internal static partial class CombatExtendedBridge
         }
     }
 
-    internal static Job? TryCreateStabilizationJob(Pawn doctor, Pawn patient)
+    internal static Job? TryCreateStabilizationJob(Pawn doctor, Pawn patient, Func<Thing?>? boundedMedicine = null, bool ignoreCare = false)
     {
         VerifyRegistration();
-        if (!s_active || !s_available || patient.playerSettings?.medCare is MedicalCareCategory.NoCare or MedicalCareCategory.NoMeds) { return null; }
+        if (!s_active || !s_available || (!ignoreCare && patient.playerSettings?.medCare is MedicalCareCategory.NoCare or MedicalCareCategory.NoMeds)) { return null; }
         if (!s_treatmentResolved) { BindTreatment(); }
         if (s_canStabilize is null || s_stabilizeJob is null) { return null; }
         bool needed = false;
@@ -54,7 +54,7 @@ internal static partial class CombatExtendedBridge
             if (s_canStabilize(wound)) { needed = true; break; }
         }
         if (!needed) { return null; }
-        MedicalCareCategory care = patient.playerSettings?.medCare ?? MedicalCareCategory.Best;
+        MedicalCareCategory care = ignoreCare ? MedicalCareCategory.Best : patient.playerSettings?.medCare ?? MedicalCareCategory.Best;
         bool Allowed(Thing thing) => thing is Medicine && !thing.Destroyed && thing.stackCount > 0
             && care.AllowsMedicine(thing.def) && !thing.IsForbidden(doctor)
             && doctor.CanReserve(thing, stackCount: 1);
@@ -66,10 +66,14 @@ internal static partial class CombatExtendedBridge
             float candidate = medicine.GetStatValue(StatDefOf.MedicalPotency);
             if (candidate > potency) { best = medicine; potency = candidate; }
         }
-        Consider(doctor.carryTracker?.CarriedThing);
-        if (doctor.inventory is { } carried) { foreach (Thing thing in carried.innerContainer) { Consider(thing); } }
-        if (patient.inventory is { } personal) { foreach (Thing thing in personal.innerContainer) { Consider(thing); } }
-        if (best is null && doctor.Map is { } map && patient.MapHeld == map)
+        if (boundedMedicine is not null) { Consider(boundedMedicine()); }
+        else
+        {
+            Consider(doctor.carryTracker?.CarriedThing);
+            if (doctor.inventory is { } carried) { foreach (Thing thing in carried.innerContainer) { Consider(thing); } }
+            if (patient.inventory is { } personal) { foreach (Thing thing in personal.innerContainer) { Consider(thing); } }
+        }
+        if (boundedMedicine is null && best is null && doctor.Map is { } map && patient.MapHeld == map)
         {
             float radius = Mathf.Sqrt(Mathf.Max(0f, s_searchRadiusSquared!()));
             Thing? Nearby(IntVec3 center) => GenClosest.ClosestThingReachable(center, map,

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- EN: providing battlefield care to TargetA. -->
+  <MI_NpcTend.reportString>providing battlefield care to TargetA.</MI_NpcTend.reportString>
+  <!-- EN: moving to a safer treatment position. -->
+  <MI_NpcReposition.reportString>moving to a safer treatment position.</MI_NpcReposition.reportString>
+  <!-- EN: withdrawing for medical reasons. -->
+  <MI_NpcWithdraw.reportString>withdrawing for medical reasons.</MI_NpcWithdraw.reportString>
+  <!-- EN: evacuating TargetA. -->
+  <MI_NpcEvacuate.reportString>evacuating TargetA.</MI_NpcEvacuate.reportString>
+  <!-- EN: taking a combat drug. -->
+  <MI_NpcPerformanceDrug.reportString>taking a combat drug.</MI_NpcPerformanceDrug.reportString>
+</LanguageData>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- EN: NPC combat medicine -->
+  <MI_NpcMedicine_Title>NPC combat medicine</MI_NpcMedicine_Title>
+  <!-- EN: Enable NPC combat medicine -->
+  <MI_NpcMedicine_Enabled>Enable NPC combat medicine</MI_NpcMedicine_Enabled>
+  <!-- EN: Equip newly generated NPC combatants and let NPCs and prisoners use appropriate medical supplies. Existing pawns receive no free equipment. -->
+  <MI_NpcMedicine_EnabledTip>Equip newly generated NPC combatants and let NPCs and prisoners use appropriate medical supplies. Existing pawns receive no free equipment.</MI_NpcMedicine_EnabledTip>
+  <!-- EN: AI behavior -->
+  <MI_NpcMedicine_Mode>AI behavior</MI_NpcMedicine_Mode>
+  <!-- EN: Medical actions only -->
+  <MI_NpcMedicine_Mode0>Medical actions only</MI_NpcMedicine_Mode0>
+  <!-- EN: Treatment-aware tactics -->
+  <MI_NpcMedicine_Mode1>Treatment-aware tactics</MI_NpcMedicine_Mode1>
+  <!-- EN: Full survival -->
+  <MI_NpcMedicine_Mode2>Full survival</MI_NpcMedicine_Mode2>
+  <!-- EN: Equipment and medics -->
+  <MI_NpcMedicine_Equipment>Equipment and medics</MI_NpcMedicine_Equipment>
+  <!-- EN: Supply multiplier -->
+  <MI_NpcMedicine_Supplies>Supply multiplier</MI_NpcMedicine_Supplies>
+  <!-- EN: Medic prevalence multiplier -->
+  <MI_NpcMedicine_Medics>Medic prevalence multiplier</MI_NpcMedicine_Medics>
+  <!-- EN: Scavenged equipment chance -->
+  <MI_NpcMedicine_Scavenging>Scavenged equipment chance</MI_NpcMedicine_Scavenging>
+  <!-- EN: Improve newly generated medics' Medical skill -->
+  <MI_NpcMedicine_Training>Improve newly generated medics' Medical skill</MI_NpcMedicine_Training>
+  <!-- EN: Apply a technology-scaled minimum Medical skill to newly generated medics. Existing world pawns keep their skills. -->
+  <MI_NpcMedicine_TrainingTip>Apply a technology-scaled minimum Medical skill to newly generated medics. Existing world pawns keep their skills.</MI_NpcMedicine_TrainingTip>
+  <!-- EN: Who NPCs may treat -->
+  <MI_NpcMedicine_Care>Who NPCs may treat</MI_NpcMedicine_Care>
+  <!-- EN: Treat own faction and group -->
+  <MI_NpcMedicine_Own>Treat own faction and group</MI_NpcMedicine_Own>
+  <!-- EN: Allow care for nearby group members. Self-treatment remains available. -->
+  <MI_NpcMedicine_OwnTip>Allow care for nearby group members. Self-treatment remains available.</MI_NpcMedicine_OwnTip>
+  <!-- EN: Treat friendly factions -->
+  <MI_NpcMedicine_Friendly>Treat friendly factions</MI_NpcMedicine_Friendly>
+  <!-- EN: Provide nearby emergency assistance to allied factions. -->
+  <MI_NpcMedicine_FriendlyTip>Provide nearby emergency assistance to allied factions.</MI_NpcMedicine_FriendlyTip>
+  <!-- EN: Treat neutral factions -->
+  <MI_NpcMedicine_Neutral>Treat neutral factions</MI_NpcMedicine_Neutral>
+  <!-- EN: Provide nearby emergency assistance to non-hostile strangers after comparable emergencies in their own group. -->
+  <MI_NpcMedicine_NeutralTip>Provide nearby emergency assistance to non-hostile strangers after comparable emergencies in their own group.</MI_NpcMedicine_NeutralTip>
+  <!-- EN: Treat player colonists -->
+  <MI_NpcMedicine_Player>Treat player colonists</MI_NpcMedicine_Player>
+  <!-- EN: Allow nearby NPCs to help colonists in a life-threatening emergency, respecting medical-care restrictions. -->
+  <MI_NpcMedicine_PlayerTip>Allow nearby NPCs to help colonists in a life-threatening emergency, respecting medical-care restrictions.</MI_NpcMedicine_PlayerTip>
+  <!-- EN: Combat drugs -->
+  <MI_NpcMedicine_Drugs>Combat drugs</MI_NpcMedicine_Drugs>
+  <!-- EN: Allow performance drugs -->
+  <MI_NpcMedicine_Boosts>Allow performance drugs</MI_NpcMedicine_Boosts>
+  <!-- EN: Allow eligible carriers to take a performance drug in combat. Clinical epinephrine has separate limits. -->
+  <MI_NpcMedicine_BoostsTip>Allow eligible carriers to take a performance drug in combat. Clinical epinephrine has separate limits.</MI_NpcMedicine_BoostsTip>
+  <!-- EN: Performance drug supplies -->
+  <MI_NpcMedicine_Selection>Performance drug supplies</MI_NpcMedicine_Selection>
+  <!-- EN: Tech-scaled selection -->
+  <MI_NpcMedicine_Selection0>Tech-scaled selection</MI_NpcMedicine_Selection0>
+  <!-- EN: Prefer cheap morphine -->
+  <MI_NpcMedicine_Selection1>Prefer cheap morphine</MI_NpcMedicine_Selection1>
+  <!-- EN: Existing provisioning only -->
+  <MI_NpcMedicine_Selection2>Existing provisioning only</MI_NpcMedicine_Selection2>
+  <!-- EN: Performance drug prevalence multiplier -->
+  <MI_NpcMedicine_Prevalence>Performance drug prevalence multiplier</MI_NpcMedicine_Prevalence>
+  <!-- EN: Performance use chance -->
+  <MI_NpcMedicine_UseChance>Performance use chance</MI_NpcMedicine_UseChance>
+  <!-- EN: Maximum performance doses per engagement -->
+  <MI_NpcMedicine_Maximum>Maximum performance doses per engagement</MI_NpcMedicine_Maximum>
+  <!-- EN: Minimum performance interval (ticks) -->
+  <MI_NpcMedicine_PerformanceInterval>Minimum performance interval (ticks)</MI_NpcMedicine_PerformanceInterval>
+  <!-- EN: Minimum clinical drug interval (ticks) -->
+  <MI_NpcMedicine_ClinicalInterval>Minimum clinical drug interval (ticks)</MI_NpcMedicine_ClinicalInterval>
+</LanguageData>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThinkTreeDef>
+    <defName>MI_NpcCombatMedicine</defName>
+    <insertTag>Humanlike_PostMentalState</insertTag>
+    <insertPriority>10</insertPriority>
+    <thinkRoot Class="MoreInjuries.AI.NpcCombatMedicine.JobGiver_NpcCombatMedicine" />
+  </ThinkTreeDef>
+  <JobDef>
+    <defName>MI_NpcTend</defName>
+    <driverClass>MoreInjuries.AI.NpcCombatMedicine.JobDriver_NpcTend</driverClass>
+    <reportString>providing battlefield care to TargetA.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+  <JobDef>
+    <defName>MI_NpcReposition</defName>
+    <driverClass>JobDriver_Goto</driverClass>
+    <reportString>moving to a safer treatment position.</reportString>
+  </JobDef>
+  <JobDef>
+    <defName>MI_NpcWithdraw</defName>
+    <driverClass>JobDriver_Goto</driverClass>
+    <reportString>withdrawing for medical reasons.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+  <JobDef>
+    <defName>MI_NpcEvacuate</defName>
+    <driverClass>MoreInjuries.AI.NpcCombatMedicine.JobDriver_NpcEvacuate</driverClass>
+    <reportString>evacuating TargetA.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+  <JobDef>
+    <defName>MI_NpcPerformanceDrug</defName>
+    <driverClass>JobDriver_Ingest</driverClass>
+    <reportString>taking a combat drug.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+</Defs>

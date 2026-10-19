@@ -79,6 +79,7 @@ public class MoreInjuriesMod : Mod
         Text.Font = GameFont.Medium;
         list.Label("MI_Settings_Features".Translate());
         Text.Font = GameFont.Small;
+        AI.NpcCombatMedicine.NpcMedicalSettingsUi.Draw(list, Settings);
         // fractures
         list.GapLine();
         Text.Font = GameFont.Medium;

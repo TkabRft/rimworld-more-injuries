@@ -2,12 +2,12 @@
 
 Read this file first, then load only the owner docs for the current task. Do not preload `docs/wiki/`.
 
-Package `Th3Fr3d.ExtendedInjuries`. Namespace `MoreInjuries`. Supported versions: 1.5 and 1.6. Required dependency: `brrainz.harmony`.
+Package `Th3Fr3d.ExtendedInjuries`. Namespace `MoreInjuries`. Declared versions: 1.5, 1.6 and 1.7. Current compilation targets pinned 1.6; 1.7 game acceptance is pending. Required dependency: `brrainz.harmony`.
 
 ## Baseline
 
 - Editable content is the mod root: `About/`, `Defs/`, `Patches/`, `Languages/`, `Textures/`, `Sounds/`, `Source/`.
-- `LoadFolders.xml` also loads a `1.5/` or `1.6/` folder when present. Do not invent those folders.
+- `LoadFolders.xml` also loads a `1.5/` or `1.6/` folder when present. The 1.7 rule reuses the shared root and existing 1.6 implementation. Do not invent source version folders.
 - `oldversions/` and `steam/` are not source. `Source/MoreInjuries/MoreInjuries/_build/deploy.ps1` installs into the game `Mods/MoreInjuries` folder and deletes that folder first. Do not run it unless the user asks for an install.
 - Game assembly ref: `Krafs.Rimworld.Ref` `1.6.4633` (Combat Extended main project pin, not the compat pin `1.6.4850`). Harmony `2.3.6` with `ExcludeAssets="runtime"` so `0Harmony.dll` is not copied to the mod output. Project target: `net48` on `MoreInjuries.csproj` and `MoreInjuries.Tests.csproj`. WikiGen and LocalizationTests are `net10.0`. The source generator stays `netstandard2.0`. Latest C#, nullable enabled.
 - Modern C# used on that target is shimmed under `Source/MoreInjuries/MoreInjuries/Roslyn`. `net48` can see APIs the game's Mono profile does not have. Do not add `net48`-only calls. Do not bump `TargetFramework` further to make a language feature compile.
@@ -21,6 +21,7 @@ Package `Th3Fr3d.ExtendedInjuries`. Namespace `MoreInjuries`. Supported versions
 | concussion / trauma stroke | `docs/concussion.md` | `HealthConditions/HeadInjury/` and `Defs/Internal/HeadTraumaProperties.xml` |
 | Cascading conditions | `docs/wiki/pathophysiological-system.md`, `docs/wiki/concepts.md` | `HealthConditions/Secondary/` |
 | Devices, drugs, CPR, transfusions, coordinated emergency care | `docs/medical-runtime.md`, `docs/wiki/medical-devices.md` | `Defs/ThingDefs/Medicine/`, `AI/`, `HealthConditions/Drugs/`, `HealthConditions/HeavyBleeding/` |
+| NPC combat medicine, prisoner self-care, technology kits, performance drugs and survival adapters | `docs/npc-combat-medicine.md`, `docs/wiki/medical-devices.md` | `AI/NpcCombatMedicine/`, `Defs/Internal/NpcMedicalProfiles.xml`, `Defs/Internal/NpcMedicalJobs.xml` |
 | Blood-loss scheduling, drug information cards, chemical gene icons, optional hydration | `docs/medical-runtime.md` | `HealthConditions/Secondary/`, `HealthConditions/Drugs/`, `Initialization/`, `Integrations/DubsBadHygiene/` |
 | Delayed vital failure, systemic cerebral hypoxia, resuscitation death rules, health-tab prognosis | `docs/vital-failure.md` | `HealthConditions/VitalFailure/`, `Patches/Patch_VitalFailure.cs`, `Patches/Patch_PhysiologyDeathEstimate.cs` |
 | Neurological profiles, injury milestones, diffuse damage, artificial coma | `docs/neurological-runtime.md` | `HealthConditions/BrainDamage/`, `Defs/Internal/NeurologicalProfiles.xml` |

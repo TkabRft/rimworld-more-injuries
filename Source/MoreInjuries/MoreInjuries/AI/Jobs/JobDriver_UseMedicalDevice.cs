@@ -122,6 +122,8 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
         Pawn doctor = Doctor;
         Pawn patient = Patient;
         this.FailOnDespawnedNullOrForbidden(PATIENT_INDEX);
+        this.FailOn(() => NpcCombatMedicine.NpcMedicalAi.Managed(doctor) && doctor != patient
+            && (doctor.HostileTo(patient) || patient.playerSettings?.medCare == MedicalCareCategory.NoCare));
         this.FailOn(() =>
         {
             // we can't apply a device if the patient is set to no medical care
@@ -135,7 +137,8 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
             }
             return false;
         });
-        if (MustReservePatient(doctor, patient))
+        if (MustReservePatient(doctor, patient)
+            && !(doctor == patient && NpcCombatMedicine.NpcMedicalAi.Managed(doctor) && NpcCombatMedicine.NpcMedicalAi.PrisonBreak(doctor)))
         {
             this.FailOnAggroMentalState(PATIENT_INDEX);
         }
