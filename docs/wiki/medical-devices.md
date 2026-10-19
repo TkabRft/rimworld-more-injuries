@@ -20,6 +20,10 @@ NPCs wait for a patient's current treatment to finish rather than starting compe
 
 NPCs abandon medical travel that is still unfinished after 2,500 ticks, and safer-position moves are limited to 600 ticks. Medical application time still depends on the doctor's abilities. NPC device care, including splinting, reassesses after each application instead of collecting supplies for a longer course. Missing supplies, failed pickups and loss of the doctor's required capabilities stop the affected job. Treatment cleanup leaves replacement orders alone; a rejected performance drug is not retried indefinitely. Evacuation requires the pawn to be able to carry the patient and to have free carrying hands.
 
+NPCs recognize choking on blood from its early stages, even when the patient has no open bleeding or wounds that ordinary tending can treat. A capable pawn with an accessible suction device can clear its own airway or help a nearby patient; CPR requires another capable pawn. Blood loss remains relevant after bleeding stops, and dangerous hemodilution also receives attention. Safe transfusions can be self-administered when supplies and the pawn's abilities permit them. Shock, heart attacks and other life-threatening conditions receive priority, although conditions requiring surgery still need surgery.
+
+Once nearby threats are gone, NPCs can gradually remove a tourniquet after its wound has been treated and bleeding is controlled. They keep it in place when an untreated wound could bleed again as temporary suppression wears off.
+
 Automatic care does not repeat CPR for cardiac arrest caused by a pumping failure that CPR cannot reverse. A separate choking obstruction can still receive airway care. A nonfunctional heart needs repair or replacement; manual CPR orders remain available.
 
 MI includes a compatibility fix for an inventory-tab crash in Nice Inventory Tab CE Integration. This fix stays active even when NPC combat medicine is disabled.

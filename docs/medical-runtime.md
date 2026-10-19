@@ -1,6 +1,6 @@
 # Blood loss, medical drug information, and optional hydration
 
-code-synced: 2026-10-19
+code-synced: 2026-10-20
 
 ## Current contracts
 
@@ -152,6 +152,8 @@ Status: `implemented`. code-synced: 2026-10-19.
 For choking only, CPR now multiplies the final diffused-sigmoid reduction by 0.35, including negative rolls. The 360-tick base duration, medicine-skill input, treatment modifiers and RNG call order remain. The cardiac branch retains its original curve and additional 0.5-0.75 multiplier. At Medicine 5/10/15, default choking reductions are respectively 2.06-9.06, 25.94-32.94 and 31.27-38.27 percentage points per attempt. Suction remains reusable, clears the entire obstruction on success, takes 600 base ticks and uses max(configured minimum, Medicine/8), effectively guaranteed at Medicine 8. Its minimum defaults to 0.25.
 
 `AutomaticAirwayTreatment` is shared by routine airway work and drafted first aid. It prefers a carried device, then performs a native region search within 12 cells of the patient, at most 12 regions, with global fallback disabled. It runs only after a patient/job is selected, respects care/research/access/reservations and retains CPR priority for arrest. It never scans all map devices or other pawns' inventories. Existing manual selection and public finder signatures remain available. CPR is the fallback when no eligible device is found.
+
+NPC callers use their bounded supply resolver instead. Their suction candidate is independent of CPR eligibility, so feasible self-suction and an available device with CPR disabled are no longer rejected by the CPR branch. NPC transfusions also permit feasible self-administration under the existing volume/dilution and care checks. The colonist caller's self-selection, research gates, bounded airway finder and arrest priority remain unchanged. The [NPC module owner](npc-combat-medicine.md) records condition-aware triage and the regression matrix, including non-tendable choking and volume deficits after bleeding stops. Its routine tourniquet aftercare reuses `CreateSafeTourniquetRemoval`, extracted from the existing aftercare rule without weakening the untreated-wound guard.
 
 The [vital-failure owner](vital-failure.md#airway-capacity-repair-and-expanded-forecast) documents the final-capacity repair, broader death estimate, coverage limits and validation. The hemorrhage target curve, acidosis and transfusion balance are unchanged: 50% blood loss maps to 16.7% target shock through linear interpolation between 45% loss/zero shock and 60% loss/50% shock. The routine-donation boundary stays 0.449. Direct blood-loss hypoxia gain remains zero.
 

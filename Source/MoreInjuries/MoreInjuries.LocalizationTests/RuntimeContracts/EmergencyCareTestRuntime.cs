@@ -1,5 +1,6 @@
 using MoreInjuries.AI.Jobs;
 using MoreInjuries.Defs.WellKnown;
+using MoreInjuries.HealthConditions.HeavyBleeding;
 using MoreInjuries.HealthConditions.HeavyBleeding.Overrides;
 using MoreInjuries.Integrations.CombatExtended;
 using MoreInjuries.LocalizationTests.RuntimeContracts;
@@ -49,6 +50,7 @@ namespace Verse
     { private readonly int _value = value; public float DistanceTo(IntVec3 other) => Math.Abs(_value - other._value); public static implicit operator IntVec3(int value) => new(value); public static implicit operator int(IntVec3 value) => value._value; }
     public partial class Hediff
     {
+        public bool IsCurrentlyLifeThreatening;
         public bool TestBleedingEligible;
         public bool TendableNow() => !Tended && TestBleedingEligible;
         public bool IsPermanent() => false;
@@ -62,6 +64,10 @@ namespace Verse
     {
         public IEnumerable<Hediff> GetHediffsTendable() => hediffs.Where(wound => !wound.Tended);
         public bool TryGetHediff(HediffDef def, out Hediff? hediff) { hediff = GetFirstHediffOfDef(def); return hediff is not null; }
+    }
+    public sealed partial class HealthTracker
+    {
+        public bool HasHediffsNeedingTend() => hediffSet.hediffs.Any(hediff => hediff.TendableNow());
     }
 }
 namespace Verse.AI { public sealed partial class Job { public bool endAfterTendedOnce; public object[] Targets = []; public Target targetB => new(Targets.Length > 1 ? Targets[1] as Thing : null); } }
@@ -94,7 +100,7 @@ namespace MoreInjuries.Extensions
 namespace MoreInjuries.Roslyn.Future.Extensions { }
 namespace MoreInjuries.Defs.WellKnown
 {
-    public static partial class KnownHediffDefOf { public static readonly HediffDef TourniquetApplied = new(); }
+    public static partial class KnownHediffDefOf { public static readonly HediffDef TourniquetApplied = new(), Fracture = new(); }
     public static partial class KnownResearchProjectDefOf
     { public static readonly ResearchDef Cpr = new(), BasicAnatomy = new(), BasicFirstAid = new(), AdvancedFirstAid = new(); }
     public static partial class KnownThingDefOf
@@ -153,13 +159,16 @@ namespace MoreInjuries.HealthConditions.HeavyBleeding.Transfusions
     public static class JobDriver_UseSalineBag
     {
         public static ThingDef JobDeviceDef => KnownThingDefOf.SalineBag;
-        public static int JobGetMedicalDeviceCountToFullyHeal(Pawn patient, bool fullyHeal) => patient.health.hediffSet.GetFirstHediffOfDef(RimWorld.HediffDefOf.BloodLoss)?.Severity > .45f ? 1 : 0;
+        public static int JobGetMedicalDeviceCountToFullyHeal(Pawn patient, bool fullyHeal)
+            => patient.health.hediffSet.GetFirstHediffOfDef(RimWorld.HediffDefOf.BloodLoss)?.Severity > BloodLossConstants.BLOOD_LOSS_THRESHOLD ? 1 : 0;
         public static IJobDescriptor GetDispatcher(Pawn doctor, Pawn patient, Thing thing, bool fromInventoryOnly, SalineTransfusionMode mode) => new EmergencyDescriptor(KnownJobDefOf.Saline);
     }
     public static class JobDriver_UseBloodBag
     {
         public static ThingDef JobDeviceDef => KnownThingDefOf.BloodBag;
-        public static int JobGetMedicalDeviceCountToFullyHeal(Pawn patient, bool fullyHeal) => JobDriver_UseSalineBag.JobGetMedicalDeviceCountToFullyHeal(patient, fullyHeal);
+        public static int JobGetMedicalDeviceCountToFullyHeal(Pawn patient, bool fullyHeal)
+            => JobDriver_UseSalineBag.JobGetMedicalDeviceCountToFullyHeal(patient, fullyHeal) > 0
+                || patient.health.hediffSet.GetFirstHediffOfDef(KnownHediffDefOf.Hemodilution)?.Severity > BloodLossConstants.BLOOD_LOSS_THRESHOLD ? 1 : 0;
         public static IJobDescriptor GetDispatcher(Pawn doctor, Pawn patient, Thing thing, bool fromInventoryOnly, bool fullyHeal) => new EmergencyDescriptor(KnownJobDefOf.Blood);
     }
 }

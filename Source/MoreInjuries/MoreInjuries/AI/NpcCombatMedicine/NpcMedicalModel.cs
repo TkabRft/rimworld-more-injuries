@@ -27,10 +27,13 @@ internal static class NpcMedicalModel
             _ => -1
         };
     internal static float Urgency(bool arrest, bool criticalAirway, float shock, float loss, float bleeding,
-        float breathing, float pumping, bool needsCare, float consciousness = 1f)
+        float breathing, float pumping, bool needsCare, float consciousness = 1f,
+        float choking = 0f, bool volumeCare = false, bool lifeThreatening = false)
         => arrest ? 100f : criticalAirway ? 90f
-            : shock >= .5f || breathing <= .4f || pumping <= .4f || consciousness <= .4f || loss >= .45f && bleeding > 0f ? 70f
-            : bleeding > 0f ? 30f + Math.Min(30f, bleeding * 20f) : needsCare ? 10f : 0f;
+            : choking >= .45f ? 80f
+            : choking > 0f || volumeCare || lifeThreatening || shock >= .5f
+                || breathing <= .4f || pumping <= .4f || consciousness <= .4f || loss >= .45f ? 70f
+            : bleeding > 0f ? 30f + Math.Min(30f, bleeding * 20f) : needsCare || shock > 0f ? 10f : 0f;
     internal static bool Survival(bool enabled, int mode, bool managed, bool available, bool scripted,
         bool prisoner, bool prisonBreak) => enabled && mode >= 2 && managed && available && !scripted && (!prisoner || prisonBreak);
 }

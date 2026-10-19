@@ -10,6 +10,7 @@
     <ItemGroup>
         <Compile Include="..\MoreInjuries\SettingsSliderValue.cs" Link="RuntimeContracts\Production\SettingsSliderValue.cs" />
         <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalModel.cs" Link="RuntimeContracts\Production\NpcMedicalModel.cs" />
+        <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalTriage.cs" Link="RuntimeContracts\Production\NpcMedicalTriage.cs" />
         <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalLoadout.cs" Link="RuntimeContracts\Production\NpcMedicalLoadout.cs" />
     <Compile Include="..\MoreInjuries\AI\MedicalTiming.cs" Link="RuntimeContracts\Production\MedicalTiming.cs" />
     <Compile Include="..\MoreInjuries\AI\EmergencyTravel.cs" Link="RuntimeContracts\Production\EmergencyTravel.cs" />

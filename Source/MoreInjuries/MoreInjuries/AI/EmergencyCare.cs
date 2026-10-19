@@ -177,18 +177,19 @@ internal static class EmergencyCare
         {
             float urgency = arrest ? 100f : criticalAirway ? 80f : 20f * choking!.Severity;
             Consider(Kind.Cpr, null, urgency, 1f, 360, criticalTreatment: critical);
-            if (!arrest && (npc?.Emergency ?? KnownResearchProjectDefOf.EmergencyMedicine.IsFinished))
-            {
-                // Preserve the airway-specific bounded search instead of broad map retrieval.
-                Job airway = npc is null ? AutomaticAirwayTreatment.CreateJob(doctor, patient)
-                    : npc.Find(KnownThingDefOf.SuctionDevice) is Thing suction
-                        ? JobDriver_UseSuctionDevice.GetDispatcher(doctor, patient, suction).CreateJob()
-                        : JobDriver_PerformCpr.GetDispatcher(doctor, patient).CreateJob();
-                if (airway.def == KnownJobDefOf.UseSuctionDevice)
-                { Consider(Kind.Suction, airway.targetB.Thing, urgency, 1.5f, 600, reusable: true, criticalTreatment: criticalAirway); }
-            }
         }
-        if ((npc is null || doctor != patient) && (npc?.Emergency ?? KnownResearchProjectDefOf.EmergencyMedicine.IsFinished)
+        if (choking is not null && (npc is not null ? npc.Emergency
+            : cprAvailable && !arrest && KnownResearchProjectDefOf.EmergencyMedicine.IsFinished))
+        {
+            // Suction is independent of CPR eligibility, including feasible NPC self-care.
+            // Keep the existing colonist airway search and arrest policy unchanged.
+            Thing? suction = npc is null ? AutomaticAirwayTreatment.CreateJob(doctor, patient).targetB.Thing
+                : npc.Find(KnownThingDefOf.SuctionDevice);
+            if (suction is not null)
+            { Consider(Kind.Suction, suction, criticalAirway ? 80f : 20f * choking.Severity,
+                1.5f, 600, reusable: true, criticalTreatment: criticalAirway); }
+        }
+        if ((npc?.Emergency ?? KnownResearchProjectDefOf.EmergencyMedicine.IsFinished)
             && ((npc?.IgnoreCare ?? false) || patient.playerSettings?.medCare is not MedicalCareCategory.NoMeds))
         {
             float loss = patient.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss)?.Severity ?? 0f;
@@ -229,6 +230,12 @@ internal static class EmergencyCare
             tend.endAfterTendedOnce = true;
             return tend;
         }
+        return CreateSafeTourniquetRemoval(doctor, patient);
+    }
+
+    internal static Job? CreateSafeTourniquetRemoval(Pawn doctor, Pawn patient)
+    {
+        if (!MedicalTiming.CanWork(doctor)) { return null; }
         if (patient.health.hediffSet.BleedRateTotal < Mathf.Epsilon && !HasUntreatedTourniquetWound(patient)
             && patient.health.hediffSet.hediffs.Find(static injury => injury.def == KnownHediffDefOf.TourniquetApplied) is Hediff tourniquetApplied)
         { return JobDriver_RemoveTourniquetSafely.GetDispatcher(doctor, patient, tourniquetApplied.Part).CreateJob(); }

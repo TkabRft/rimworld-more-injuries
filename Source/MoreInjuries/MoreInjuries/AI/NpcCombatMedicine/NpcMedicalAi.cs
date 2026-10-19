@@ -53,18 +53,7 @@ internal static class NpcMedicalAi
 
     internal static float Severity(Pawn pawn, string defName) => pawn.health.hediffSet.hediffs
         .FirstOrDefault(hediff => hediff.def.defName == defName)?.Severity ?? 0f;
-    internal static float Urgency(Pawn patient)
-    {
-        bool arrest = patient.health.hediffSet.HasHediff(KnownHediffDefOf.CardiacArrest);
-        bool airway = patient.health.hediffSet.HasHediff(KnownHediffDefOf.ChokingOnBlood)
-            && patient.health.capacities.GetLevel(PawnCapacityDefOf.Breathing) <= .2f;
-        float shock = Severity(patient, "HypovolemicShock"), loss = Severity(patient, "BloodLoss");
-        float breathing = patient.health.capacities.GetLevel(PawnCapacityDefOf.Breathing);
-        float pumping = patient.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
-        return NpcMedicalModel.Urgency(arrest, airway, shock, loss, patient.health.hediffSet.BleedRateTotal,
-            breathing, pumping, patient.health.HasHediffsNeedingTend() || patient.health.hediffSet.HasHediff(KnownHediffDefOf.Fracture),
-            patient.health.capacities.GetLevel(PawnCapacityDefOf.Consciousness));
-    }
+    internal static float Urgency(Pawn patient) => NpcMedicalTriage.Urgency(patient);
 
     private static int Relation(Pawn doctor, Pawn patient)
     {
@@ -159,6 +148,8 @@ internal static class NpcMedicalAi
         context.Advanced |= FindDevice(KnownThingDefOf.HemostaticAgent) is not null;
         Job? job = EmergencyCare.CreateJob(doctor, patient, aftercare: false, context);
         if (job is not null) { return job; }
+        if (!Threats(doctor).Any() && EmergencyCare.CreateSafeTourniquetRemoval(doctor, patient) is Job removal)
+        { return removal; }
         if (Urgency(patient) < 70f && !Threats(doctor).Any())
         {
             if (patient.health.hediffSet.HasHediff(KnownHediffDefOf.Fracture) && FindSupply(doctor, patient, KnownThingDefOf.Splint) is Thing splint)

@@ -176,8 +176,10 @@ public sealed class EmergencyIntegrationTests
         patient.health.hediffSet.hediffs.Add(wound); patient.health.hediffSet.NativeBleeding = true;
         VitalFailureTests.Add(patient, KnownHediffDefOf.TourniquetApplied, .1f).Part = limb;
         Assert.IsNull(EmergencyCare.CreateJob(doctor, patient, true));
+        Assert.IsNull(EmergencyCare.CreateSafeTourniquetRemoval(doctor, patient));
         wound.Tended = true;
         Assert.AreSame(KnownJobDefOf.RemoveTourniquet, EmergencyCare.CreateJob(doctor, patient, true)!.def);
+        Assert.AreSame(KnownJobDefOf.RemoveTourniquet, EmergencyCare.CreateSafeTourniquetRemoval(doctor, patient)!.def);
     }
 
     [TestMethod]
