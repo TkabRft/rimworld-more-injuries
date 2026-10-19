@@ -16,8 +16,6 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
     private const TargetIndex PATIENT_INDEX = TARGET_INDEX;
     private const TargetIndex DEVICE_HOLDER_INDEX = TargetIndex.C;
 
-    private static readonly List<Toil> s_tmpCollectToils = [];
-
     protected PathEndMode _pathEndMode;
     protected bool _usesDevice;
     protected bool _fromInventoryOnly;
@@ -41,6 +39,12 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
     protected virtual bool IsTreatable(Hediff hediff) => throw new NotSupportedException($"{nameof(IsTreatable)} must be overridden in {GetType().Name} to determine if a hediff is treatable with the device");
 
     protected virtual int GetMedicalDeviceCountToFullyHeal(Pawn patient) => MedicalDeviceHelper.GetMedicalDeviceCountToFullyHeal(patient, IsTreatable);
+
+    private int GetRequiredDeviceCount(Pawn patient)
+    {
+        int total = GetMedicalDeviceCountToFullyHeal(patient);
+        return _oneShot || job.endAfterTendedOnce || Parameters?.oneShot == true ? Math.Min(1, total) : total;
+    }
 
     protected virtual bool RequiresTreatment(Pawn patient) => patient.health.hediffSet.hediffs.Any(IsTreatable);
 
@@ -67,6 +71,7 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
             _oneShot = parameters.oneShot;
         }
         _oneShotUsed = false;
+        _oneShot |= job.endAfterTendedOnce;
         _usesDevice = DeviceUsed is not null;
         if (Patient == Doctor)
         {
@@ -86,7 +91,8 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
     {
         Pawn doctor = Doctor;
         Pawn patient = Patient;
-        if (patient != doctor && !doctor.Reserve(Patient, job, errorOnFailed: errorOnFailed) && MustReservePatient(doctor, patient))
+        if ((patient != doctor || NpcCombatMedicine.NpcMedicalAi.Managed(doctor))
+            && !doctor.Reserve(Patient, job, errorOnFailed: errorOnFailed) && MustReservePatient(doctor, patient))
         {
             // we couldn't reserve the patient, so we can't do the job
             return false;
@@ -100,11 +106,8 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
         {
             // we allow up to 10 pawns to concurrently reserve devices from the same stack (taken from JobDriver_TendPatient)
             int availableDevices = doctor.Map.reservationManager.CanReserveStack(doctor, DeviceUsed, maxPawns: MedicalDeviceHelper.MAX_MEDICAL_DEVICE_RESERVATIONS);
-            int requiredDevices = 1;
-            if (!_oneShot)
-            {
-                requiredDevices = GetMedicalDeviceCountToFullyHeal(Patient);
-            }
+            int requiredDevices = GetRequiredDeviceCount(Patient);
+            if (requiredDevices <= 0) { return false; }
             // attempt to reserve a device
             if (availableDevices >= 1 && doctor.Reserve(DeviceUsed, job, MedicalDeviceHelper.MAX_MEDICAL_DEVICE_RESERVATIONS,
                 Mathf.Min(availableDevices, requiredDevices),
@@ -122,6 +125,10 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
         Pawn doctor = Doctor;
         Pawn patient = Patient;
         this.FailOnDespawnedNullOrForbidden(PATIENT_INDEX);
+        this.FailOn(() => doctor.WorkTypeIsDisabled(WorkTypeDefOf.Doctor)
+            || !doctor.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation)
+            || !doctor.health.capacities.CapableOf(PawnCapacityDefOf.Sight)
+            || !MedicalTiming.CanWork(doctor));
         this.FailOn(() => NpcCombatMedicine.NpcMedicalAi.Managed(doctor) && doctor != patient
             && (doctor.HostileTo(patient) || patient.playerSettings?.medCare == MedicalCareCategory.NoCare));
         this.FailOn(() =>
@@ -164,6 +171,7 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
         });
         Toil? reserveDevices = null;
         Toil gotoPatientToil = Toils_Goto.Goto(PATIENT_INDEX, _pathEndMode);
+        gotoPatientToil.FailOn(NpcTravelExpired);
         if (_usesDevice)
         {
             List<Toil> collectDeviceToils = CollectDevicesToils(doctor, patient, job, gotoPatientToil, out reserveDevices);
@@ -181,6 +189,8 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
         }
         else
         {
+            Job? ownedPatientWait = null;
+            PawnPosture previousPosture = default;
             waitToil = Toils_General.WaitWith(PATIENT_INDEX, ticks, maintainPosture: true, face: PATIENT_INDEX, pathEndMode: _pathEndMode);
             waitToil.initAction = () =>
             {
@@ -190,18 +200,26 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
                 {
                     return;
                 }
-                if (!patientLocal.InBed()
-                    && (!patientLocal.HostileTo(doctorLocal) || patientLocal.Downed)
-                    && waitToil.actor.CurJobDef.GetModExtension<MedicalJobProperties_ModExtension>() is { ShouldEverBeTreatedFacingUp: true })
-                {
-                    patientLocal.jobs.posture = PawnPosture.LayingOnGroundFaceUp;
-                }
+                previousPosture = patientLocal.jobs.posture;
+                Job? previousJob = patientLocal.CurJob;
                 PawnUtility.ForceWait(patientLocal, ticks, maintainPosture: true);
+                if (patientLocal.CurJob != previousJob
+                    && patientLocal.CurJob?.def is JobDef wait && (wait == JobDefOf.Wait || wait == JobDefOf.Wait_MaintainPosture))
+                {
+                    ownedPatientWait = patientLocal.CurJob;
+                    if (!patientLocal.InBed()
+                        && (!patientLocal.HostileTo(doctorLocal) || patientLocal.Downed)
+                        && waitToil.actor.CurJobDef.GetModExtension<MedicalJobProperties_ModExtension>() is { ShouldEverBeTreatedFacingUp: true })
+                    {
+                        patientLocal.jobs.posture = PawnPosture.LayingOnGroundFaceUp;
+                    }
+                }
             };
             waitToil.AddFinishAction(() =>
             {
-                if (patient?.CurJob?.def is JobDef jobDef && (jobDef == JobDefOf.Wait || jobDef == JobDefOf.Wait_MaintainPosture))
+                if (ownedPatientWait is not null && patient.CurJob == ownedPatientWait)
                 {
+                    if (!patient.Downed && !patient.InBed()) { patient.jobs.posture = previousPosture; }
                     patient.jobs.EndCurrentJob(JobCondition.InterruptForced, startNewJob: true, canReturnToPool: true);
                 }
             });
@@ -240,7 +258,7 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
             return false;
         });
         yield return Toils_Jump.JumpIf(waitToil, () => !_usesDevice || DeviceUsed is not null and not { Destroyed: true } && doctor.inventory.Contains(DeviceUsed));
-        yield return Toils_MedicalDevice.PickupDevice(DEVICE_INDEX, patient, GetMedicalDeviceCountToFullyHeal).FailOnDestroyedOrNull(DEVICE_INDEX);
+        yield return Toils_MedicalDevice.PickupDevice(DEVICE_INDEX, patient, GetRequiredDeviceCount).FailOnDestroyedOrNull(DEVICE_INDEX);
         yield return waitToil;
         yield return FinalizeTreatmentToil();
         if (_usesDevice)
@@ -269,46 +287,50 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
 
     private List<Toil> CollectDevicesToils(Pawn doctor, Pawn patient, Job job, Toil gotoToil, out Toil reserveDevices)
     {
-        s_tmpCollectToils.Clear();
+        List<Toil> collect = [];
         Thing deviceUsed = job.targetB.Thing;
         Pawn_InventoryTracker? deviceHolderInventory = deviceUsed.ParentHolder as Pawn_InventoryTracker;
-        Pawn otherPawnDeviceHolder = job.targetC.Pawn;
 
-        reserveDevices = Toils_MedicalDevice.ReserveDevice(DEVICE_INDEX, patient, GetMedicalDeviceCountToFullyHeal)
+        reserveDevices = Toils_MedicalDevice.ReserveDevice(DEVICE_INDEX, patient, GetRequiredDeviceCount)
             .FailOnDespawnedNullOrForbidden(DEVICE_INDEX);
-        s_tmpCollectToils.Add(Toils_Jump.JumpIf(gotoToil, () => deviceUsed is not null && doctor.inventory.Contains(deviceUsed)));
+        collect.Add(Toils_Jump.JumpIf(gotoToil, () => deviceUsed is not null && doctor.inventory.Contains(deviceUsed)));
         Toil jumpIfCarriedByOther = Toils_Goto.GotoThing(DEVICE_HOLDER_INDEX, PathEndMode.Touch)
-            .FailOn(() => otherPawnDeviceHolder != deviceHolderInventory?.pawn
-                || otherPawnDeviceHolder.IsForbidden(doctor));
-        s_tmpCollectToils.Add(Toils_Haul.CheckItemCarriedByOtherPawn(deviceUsed, DEVICE_HOLDER_INDEX, jumpIfCarriedByOther));
-        s_tmpCollectToils.Add(reserveDevices);
-        s_tmpCollectToils.Add(Toils_Goto.GotoThing(DEVICE_INDEX, PathEndMode.ClosestTouch)
-            .FailOnDespawnedNullOrForbidden(DEVICE_INDEX));
-        s_tmpCollectToils.Add(Toils_MedicalDevice.PickupDevice(DEVICE_INDEX, patient, GetMedicalDeviceCountToFullyHeal)
+            .FailOn(() => job.GetTarget(DEVICE_HOLDER_INDEX).Pawn is not Pawn holder
+                || holder != deviceHolderInventory?.pawn || deviceUsed.ParentHolder != deviceHolderInventory || holder.IsForbidden(doctor))
+            .FailOn(NpcTravelExpired);
+        collect.Add(Toils_Haul.CheckItemCarriedByOtherPawn(deviceUsed, DEVICE_HOLDER_INDEX, jumpIfCarriedByOther));
+        collect.Add(reserveDevices);
+        collect.Add(Toils_Goto.GotoThing(DEVICE_INDEX, PathEndMode.ClosestTouch)
+            .FailOnDespawnedNullOrForbidden(DEVICE_INDEX).FailOn(NpcTravelExpired));
+        collect.Add(Toils_MedicalDevice.PickupDevice(DEVICE_INDEX, patient, GetRequiredDeviceCount)
             .FailOnDestroyedOrNull(DEVICE_INDEX));
-        s_tmpCollectToils.Add(Toils_Haul.CheckForGetOpportunityDuplicate(reserveDevices, DEVICE_INDEX, TargetIndex.None, takeFromValidStorage: true));
-        s_tmpCollectToils.Add(Toils_Jump.Jump(gotoToil));
-        s_tmpCollectToils.Add(jumpIfCarriedByOther);
-        s_tmpCollectToils.Add(Toils_General.Wait(25).WithProgressBarToilDelay(DEVICE_HOLDER_INDEX));
-        s_tmpCollectToils.Add(Toils_Haul.TakeFromOtherInventory(
+        collect.Add(Toils_Haul.CheckForGetOpportunityDuplicate(reserveDevices, DEVICE_INDEX, TargetIndex.None, takeFromValidStorage: true));
+        collect.Add(Toils_Jump.Jump(gotoToil));
+        collect.Add(jumpIfCarriedByOther);
+        collect.Add(Toils_General.Wait(25).WithProgressBarToilDelay(DEVICE_HOLDER_INDEX));
+        collect.Add(Toils_Haul.TakeFromOtherInventory(
             deviceUsed,
             doctor.inventory.innerContainer,
             deviceHolderInventory?.innerContainer,
-            GetMedicalDeviceCountToFullyHeal(patient),
+            GetRequiredDeviceCount(patient),
             DEVICE_INDEX));
-        return s_tmpCollectToils;
+        return collect;
     }
+
+    private bool NpcTravelExpired() => NpcCombatMedicine.NpcMedicalAi.Managed(pawn)
+        && NpcCombatMedicine.NpcMedicalModel.TravelExpired(Find.TickManager.TicksGame, job.startTick);
 
     private Toil FindMoreDevicesToil(Pawn doctor, Pawn patient, TargetIndex deviceIndex, Job job, Toil reserveDevice)
     {
         Toil toil = ToilMaker.MakeToil(nameof(FindMoreDevicesToil));
         toil.initAction = () =>
         {
+            if (job.endAfterTendedOnce || _oneShot && _oneShotUsed) { return; }
             if (!job.GetTarget(deviceIndex).Thing.DestroyedOrNull())
             {
                 return;
             }
-            Thing? device = MedicalDeviceHelper.FindMedicalDevice(doctor, patient, DeviceDef, GetMedicalDeviceCountToFullyHeal, _fromInventoryOnly);
+            Thing? device = MedicalDeviceHelper.FindMedicalDevice(doctor, patient, DeviceDef, GetRequiredDeviceCount, _fromInventoryOnly);
             if (device is not null)
             {
                 job.SetTarget(deviceIndex, device);

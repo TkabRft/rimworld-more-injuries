@@ -20,6 +20,12 @@ Patient searches use spatial queries within 12 cells, or 24 for medics. Arrest, 
 
 Decisions and local threat snapshots are throttled to 150 ticks. Supplies are sought in doctor/patient inventories, permitted nearby same-faction inventories, then reachable ground items within 12 cells. Collection uses physical retrieval and reservations, including native tending from another pawn's inventory. Jobs revalidate their targets; failed reservations/retrieval return control to normal AI.
 
+`NpcMedicalReservations` applies the same exclusive patient availability check to self-care and other-pawn care. An NPC receiving treatment must not start competing self-treatment; managed self-device jobs also reserve their patient. Existing native tending jobs retain ownership rather than being interrupted by a new MI decision. CE's tactical manager calls `StartJob` directly, so the adapter performs `Job.TryMakePreToilReservations` quietly before returning an MI job. Failed preflight releases only that proposed job's claims, leaving the current job and other doctors' reservations intact. No job is started just to discover a predictable reservation failure.
+
+`JobDriver_NpcTend` returns the selected, unused medicine still in the carry tracker to the pawn's inventory on cleanup, up to remaining mass/bulk capacity. It does not create medicine, reclaim items already dropped on the ground, take unrelated carried cargo or bypass capacity; overflow retains normal cleanup behavior. This avoids dumping the remaining kit dose after an interrupted or completed tending application when it can be retained.
+
+NPC medical travel has a 2,500-tick deadline measured from the existing job start tick, checked during movement rather than during the medical application. It covers native tending movement and MI device/patient retrieval, including moving inventory holders. Repositioning checks native path cost and has a hard 600-tick job expiry; it cannot remain protected indefinitely while walking a detour. NPC splinting and other selected device actions finish after one application. Evacuation selection requires free carrying hands, manipulation, sufficient movement and native carrying space; map exit requires the intended patient actually to be carried.
+
 Generation observes completed gear generation and accepted pawn generation. Group enumeration is materialized once under a scoped generation context, then yielded in its original order. Only pawns with fresh gear events are provisioned; reused world pawns are never trained as new pawns. Existing items are counted, with no confiscation. Loading a save or changing settings grants nothing. Disabling stops new decisions/grants; current applications and carrying jobs can finish safely.
 
 `NpcMedicalMemory` saves MI-only medic roles and drug history through a game component; it stores pawn references and primitive values, never third-party objects. Existing save keys are unchanged. New jobs and this component become part of saves; keep a backup before removing the mod mid-treatment. No migration or load-time replenishment is performed.
@@ -51,6 +57,10 @@ Actual instantiated item statistics determine capacity. Vanilla uses remaining c
 ## Provisioning rules
 
 Group strength is `clamp01((points - 400) / 2600)`. Quotas round to the nearest pawn and select the most skilled medically capable members as medics; other recipients are randomized. Standalone generation uses low-point probabilities. Optional training, off by default, raises newly generated medic Medical skill to floors 4/6/8/10/12 without lowering skills or removing incapabilities.
+
+At 2,000 points, the default Ultra/Empire medic quota is 13.0769%: 1-3 fresh eligible combatants round to zero, 4-11 to one, and 12-19 to two. Actual selection is capped by doctor-capable candidates. Roles do not change pawn titles; high Medical skill is not guaranteed while training is disabled. CE capacity can reduce a selected medic's actual kit.
+
+The original group points are captured before enumeration. With Development mode enabled, generation logs `More Injuries NPC medicine:` summaries for total generated/fresh eligible pawns, profile, equipped count, capable doctors, requested medic quota and actual selected medics. Each selected medic's pawn ID, name, Medical skill and actual carried medical supplies are logged after provisioning. These diagnostics distinguish zero quota, incapabilities, missed gear events and missing kit grants without altering prevalence or granting equipment to existing pawns.
 
 | Technology | Equipped | Medics | Performance slot | Morphine/yayo/go-juice |
 |---|---|---|---|---|
@@ -95,10 +105,11 @@ Runtime binding checks active package IDs, declaring assembly, exact parameter/r
 
 | Package | Boundary |
 |---|---|
-| `CETeam.CombatExtended` | Remaining mass/bulk through `CompInventory`; `CompTend.TryGiveTacticalJob` defers to active MI treatment/positioning or a new feasible MI decision, otherwise retains CE. Shared stabilization receives exclusively bounded permitted medicine. Unsupported inventory APIs stop new MI provisioning instead of assuming unlimited bulk. |
+| `CETeam.CombatExtended` | Remaining mass/bulk through `CompInventory`; `CompTend.TryGiveTacticalJob` preserves active MI/native tending and patients already receiving care. MI tactical jobs pass reservation preflight before CE receives them; failed candidates are released quietly. Otherwise CE retains control. Shared stabilization receives exclusively bounded permitted medicine. Unsupported inventory APIs stop new MI provisioning instead of assuming unlimited bulk. |
 | `Memegoddess.SmartMedicine` | Recognized medicine/job prefixes use bounded medicine/counts for managed NPC tending. MI's custom tend driver suppresses Smart Medicine's inventory-drop/count rewrite. Colonist settings, stocking and unrelated tending retain Smart Medicine behavior. |
 | `Mlie.EnemySelfPreservation` | Guard `MUR_ESP.Pawn_PostApplyDamage.Postfix` only when full survival owns that pawn's withdrawal. |
 | `NinaGoblin.NoOneLeftBehind` | Guard `CM_No_Pawn_Left_Behind.JobGiver_Rescue.TryGiveJob` only when full survival owns evacuation. |
+| `Andromeda.NITICE` | `Integrations/NiceInventoryTab/NiceInventoryTabGuard` guards the recognized `NITIntegrationCE.MakeItemSlot_Patch.IsGrenade(ThingDef)` method. Missing definitions/tag lists return false; all tagged definitions retain the original check. No weapon definition is mutated. This inventory UI repair remains active independently of the NPC medicine setting. |
 
 Lower modes retain external retreat/rescue; disabling MI restores external decisions. Adapter signatures were inspected against the available 1.6 sources/assemblies. This establishes the source contract, not successful execution of the entire game's Harmony chain.
 
@@ -106,9 +117,34 @@ Lower modes retain external retreat/rescue; disabling MI restores external decis
 
 `NpcCombatMedicineTests` covers policy thresholds, quotas, fluid statistics, independent budgets, hostility/care flags, prisoner survival ownership, inherited item mass/bulk and mandatory medical-item classification. `EmergencyIntegrationTests` exercises the actual shared selector for NPC self-hemostasis, clinical epinephrine and bounded CE fallback. Existing emergency/physiology/localization and real-Harmony bleeding fixtures remain regression coverage. These fixtures do not execute real game movement, inventory toils or serialization.
 
-Validation on 2026-10-19: the prescribed Release build passed; all 189 runtime/localization tests, including localization coverage, and both real-Harmony fixtures passed. The refreshed 235-file runtime package passed XML, load-layout and SHA256 validation. The packaged main assembly matches the final successful build. No game was launched or installed for these checks.
+`NiceInventoryTabGuardTests` reproduces the inspected integration's null-tag grenade check and applies the production guard through real Harmony. It verifies the exception is avoided, tagged grenade/rifle/nonweapon behavior is preserved, no definition data is mutated, and unpatching restores the original failing check. The full custom inventory tab still requires in-game acceptance.
+
+`NpcMedicalReservationTests` source-links the production reservation/cleanup helper. Main-thread game boundary fixtures cover a patient already reserved by another doctor attempting self-care, competing doctors, partial preflight failure retaining unrelated reservations and untouched inventory, idempotent reservation at job start, and unused medicine restocking with capacity/overflow and item identity preserved. The complete CE scheduler and native tending toils still require in-game acceptance. No pawn-card drawing, footer alignment or shared GUI alignment state is modified by these fixes.
+
+Validation on 2026-10-19: the prescribed Release build passed; all 193 runtime/localization tests, including localization coverage, and all 21 reservation/pickup/Harmony tests passed. The latter include real-detour tests of the production ingestion and inventory guards as well as source-linked reservation and device-transfer cases. The refreshed 235-file runtime package passed XML, load-layout and SHA256 validation. The packaged main assembly matches the final successful build. No game was launched or installed for these checks.
 
 Manual acceptance must cover 1.6 and 1.7 independently: generate each tier at low/high points; verify medic selection/new-only training and capacity with blood versus hemogen; verify preexisting supplies, scavenging and no normal personal glitterworld medicine. Exercise all modes, nearby ally/neutral/player care flags and changing hostility, a confined prisoner and an existing breakout, safer positioning, failed retrieval/reservation, medical withdrawal and downed evacuation. Test performance presets/limits followed by indicated clinical epinephrine, sedative carry-only behavior, save/reload, toggling during treatment and carrying, and unchanged colonist First Aid. Repeat with each optional mod alone, Smart Medicine/ESP/NOLB together and CE combinations; exercise an unsupported signature's fallback. No completed in-game acceptance is claimed here.
+
+## Job-progress audit
+
+The 2026-10-19 audit covered NPC decisions, native tending/ingestion handoff, shared MI device jobs, inventory/ground retrieval, First Aid rescan queues, patient waiting, repositioning, withdrawal, evacuation and cleanup. Source inspection and bounded fixtures identify concrete failure paths; this is not a proof against every possible third-party scheduler or pathfinding interaction.
+
+| Failure path | Implemented guard | Verification boundary |
+|---|---|---|
+| Self-care competes with another medic; CE starts an unreserved job | Exclusive patient checks for self and others; tactical reservation preflight; job-specific rollback | Source-linked contention/cleanup tests; complete game scheduler pending |
+| A moving inventory holder is captured before the hauling toil assigns its target | Read the live holder target, verify its original inventory still owns the item, use a per-job toil list | Source reviewed; live holder movement/transfer and save/resume pending |
+| A missing/contested device, unrelated cargo or failed pickup becomes the treatment target | Abort without retargeting; handle already-carried devices; count actual transferred units; exit resolved treatment before zero-count reservations | Production pickup/reservation toils exercised by boundary fixtures |
+| A single application over-collects and searches for replacement supplies | Required count capped to one, including preflight; no replacement search after that application; NPC splinting uses single application | Source reviewed plus partial-pickup tests; actual job collection pending |
+| A performance dose is rejected but native ingestion keeps retrying its unconsumed count | Clear only that MI job's requested count; leave dose and clinical allowance intact | Actual production Harmony patch tested against count-based ingestion replay |
+| An ingestion outcome replaces the current job or incapacitates its user | Capture performance intent before ingestion; preserve cooldown accounting; medical finalization checks job identity before touching targets or finishing | Production ingestion detour test; shared finalizer source reviewed |
+| Treatment cleanup cancels an unrelated wait or leaves a forced treatment pose behind | Release only the exact wait created by this application; restore its prior posture only when medically appropriate | Source reviewed; real wait/mental-state/save-resume acceptance pending |
+| Zero, negative or non-finite work rates produce invalid or effectively endless waits | Reject those rates; recheck doctor capability during device/corpse jobs; retain finite slow-doctor timing | Numeric policy tests and existing emergency-selector regressions |
+| Automatic CPR repeatedly targets a mechanical pumping failure it cannot reverse | Require restorable circulation for arrest-only automatic CPR; a separate choking obstruction remains treatable; manual CPR is unchanged | Shared-selector regression with irreversible pumping failure and coexisting choking |
+| Failed First Aid repeatedly queues instant rescans in one game tick | One tick between scans; rejected jobs are not deliberately requeued | Source reviewed; actual native queue acceptance pending |
+| Medical travel chases a moving pawn indefinitely, or protected repositioning takes an excessive detour | NPC movement deadline from saved native job age; exact path check and 600-tick reposition expiry | Deadline policy tests; actual path costs and dynamic obstacles pending |
+| Repeated evacuation attempts cannot pick up a patient, or exit loses that patient | Carrying/capability/space prechecks; verify carried patient before exit; normal failure/drop cleanup | Source reviewed; native carrying/map-exit acceptance pending |
+
+No new save fields, job identifiers, dependency, Harmony target or pawn-card drawing changes were introduced by the progress audit. The existing ingestion hook was moved to its own source file without changing its identity. Successful procedures can legitimately repeat for ongoing bleeding or resuscitation; finite slow treatment is not classified as a deadlock. Already-dropped supplies are not replenished or teleported back to a pawn.
 
 ## Mandatory maintenance for new drugs and devices
 

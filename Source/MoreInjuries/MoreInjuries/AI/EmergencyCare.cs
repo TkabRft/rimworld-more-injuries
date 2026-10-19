@@ -11,6 +11,7 @@ using MoreInjuries.HealthConditions.HeavyBleeding.Overrides;
 using MoreInjuries.HealthConditions.HeavyBleeding.Tourniquets;
 using MoreInjuries.HealthConditions.HeavyBleeding.Transfusions;
 using MoreInjuries.HealthConditions.HypovolemicShock;
+using MoreInjuries.HealthConditions.VitalFailure;
 using MoreInjuries.Integrations.CombatExtended;
 using MoreInjuries.Things;
 using RimWorld;
@@ -54,7 +55,7 @@ internal static class EmergencyCare
 
     internal static Job? CreateJob(Pawn doctor, Pawn patient, bool aftercare, NpcContext? npc = null)
     {
-        if ((npc is null && doctor == patient) || patient.Dead || !doctor.CanReachPatient(patient)
+        if ((npc is null && doctor == patient) || patient.Dead || !doctor.CanReachPatient(patient) || !MedicalTiming.CanWork(doctor)
             || !(npc?.IgnoreCare ?? false) && patient.playerSettings?.medCare is MedicalCareCategory.NoCare
             || patient.IsMutant && !patient.mutant.Def.entitledToMedicalCare
             || doctor.WorkTypeIsDisabled(WorkTypeDefOf.Doctor)
@@ -66,7 +67,10 @@ internal static class EmergencyCare
         Hediff? choking = patient.health.hediffSet.GetFirstHediffOfDef(KnownHediffDefOf.ChokingOnBlood);
         bool criticalAirway = choking is not null && patient.health.capacities.GetLevel(PawnCapacityDefOf.Breathing) <= .2f;
         bool critical = arrest || criticalAirway;
-        bool cprAvailable = doctor != patient && (npc?.Cpr ?? KnownResearchProjectDefOf.Cpr.IsFinished) && (arrest || choking is not null);
+        bool reversibleArrest = arrest && (!VitalFailureComp.OwnsOxygenProgression(patient)
+            || VitalFailureComp.For(patient)?.CanRestoreCirculation() == true);
+        bool cprAvailable = doctor != patient && (npc?.Cpr ?? KnownResearchProjectDefOf.Cpr.IsFinished)
+            && (reversibleArrest || choking is not null);
         bool quickAllowed = !s_history.TryGetValue(patient, out History? history) || !history.MustResuscitate;
         Candidate best = default, rescue = default, quick = default, otherEmergency = default;
         bool miBleeding = false;

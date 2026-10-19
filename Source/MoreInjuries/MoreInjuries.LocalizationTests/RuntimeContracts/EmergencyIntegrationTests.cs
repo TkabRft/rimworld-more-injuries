@@ -42,6 +42,22 @@ public sealed class EmergencyIntegrationTests
     }
 
     [TestMethod]
+    public void AutomaticCprDoesNotRepeatAgainstIrreversiblePumpingFailureButCanStillClearAirways()
+    {
+        var (doctor, patient) = Pair();
+        patient.health.hediffSet.Capacities[PawnCapacityDefOf.BloodPumping] = 0;
+        patient.Vital!.Invalidate(); patient.Vital.Refresh();
+        Assert.IsTrue(patient.health.hediffSet.HasHediff(KnownHediffDefOf.CardiacArrest));
+        Assert.IsFalse(patient.Vital.CanRestoreCirculation());
+        KnownResearchProjectDefOf.Cpr.IsFinished = true;
+        Assert.IsNull(EmergencyCare.CreateJob(doctor, patient, true));
+        EmergencyCare.NpcContext context = new() { Cpr = true, Find = _ => null };
+        Assert.IsNull(EmergencyCare.CreateJob(doctor, patient, false, context));
+        VitalFailureTests.Add(patient, KnownHediffDefOf.ChokingOnBlood, .8f);
+        Assert.AreSame(KnownJobDefOf.PerformCpr, EmergencyCare.CreateJob(doctor, patient, false, context)!.def);
+    }
+
+    [TestMethod]
     public void SharedSelectorAllowsOneQuickMajorBleedAndPrioritizesResuscitationOverBandages()
     {
         var (doctor, patient) = Pair();

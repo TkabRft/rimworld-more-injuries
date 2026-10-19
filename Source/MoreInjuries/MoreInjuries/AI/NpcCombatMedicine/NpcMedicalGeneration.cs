@@ -50,6 +50,7 @@ internal static class NpcMedicalGeneration
     {
         // Enumerate exactly once under a scoped context. No grants before successful completion.
         List<Pawn> pawns;
+        float points = parms.points;
         bool previous = t_inGroup;
         t_inGroup = true;
         try { pawns = source.ToList(); }
@@ -58,21 +59,38 @@ internal static class NpcMedicalGeneration
         {
             List<Pawn> candidates = pawns.Where(pawn => NpcMedicalAi.Managed(pawn)
                 && s_states.TryGetValue(pawn, out GenerationState state) && state.Pending).ToList();
+            if (Prefs.DevMode)
+            {
+                Log.Message($"More Injuries NPC medicine: faction={parms.faction?.def.defName}, points={points:0}, generated={pawns.Count}, fresh eligible={candidates.Count}.");
+            }
             foreach (IGrouping<NpcMedicalProfileDef, Pawn> group in candidates.GroupBy(Profile))
             {
                 NpcMedicalProfileDef profile = group.Key;
                 List<Pawn> members = group.ToList();
-                float strength = NpcMedicalModel.Strength(parms.points);
+                float strength = NpcMedicalModel.Strength(points);
                 int equipped = NpcMedicalModel.Quota(members.Count,
                     NpcMedicalModel.Interpolate(profile.EquippedChance.min, profile.EquippedChance.max, strength));
                 int medics = Math.Min(equipped, NpcMedicalModel.Quota(members.Count,
                     NpcMedicalModel.Interpolate(profile.MedicChance.min, profile.MedicChance.max, strength), MoreInjuriesMod.Settings.NpcMedicMultiplier));
-                HashSet<Pawn> selectedMedics = new(members.Where(CanDoctor)
+                List<Pawn> capable = members.Where(CanDoctor).ToList();
+                HashSet<Pawn> selectedMedics = new(capable
                     .OrderByDescending(pawn => pawn.skills.GetSkill(SkillDefOf.Medicine).Level).ThenBy(pawn => pawn.thingIDNumber).Take(medics));
                 List<Pawn> recipients = selectedMedics.ToList();
                 recipients.AddRange(members.Where(pawn => !selectedMedics.Contains(pawn)).OrderBy(_ => Rand.Value).Take(equipped - recipients.Count));
                 foreach (Pawn pawn in recipients)
                 { Provision(pawn, profile, selectedMedics.Contains(pawn), strength, s_states.GetOrCreateValue(pawn).New); }
+                if (Prefs.DevMode)
+                {
+                    Log.Message($"More Injuries NPC medicine: profile={profile.defName}, candidates={members.Count}, equipped={recipients.Count}, capable doctors={capable.Count}, medic quota={medics}, selected medics={selectedMedics.Count}.");
+                    HashSet<ThingDef> medical = new(profile.Medic.Where(item => item.ThingDef is not null).Select(item => item.ThingDef!))
+                    { Blood, KnownThingDefOf.SalineBag };
+                    foreach (Pawn medic in selectedMedics)
+                    {
+                        string supplies = string.Join(", ", medic.inventory.innerContainer.Where(item => medical.Contains(item.def) || item.def.IsMedicine)
+                            .Select(item => item.def.defName + "=" + item.stackCount));
+                        Log.Message($"More Injuries NPC medicine: medic={medic.ThingID}, name={medic.LabelShort}, Medical={medic.skills.GetSkill(SkillDefOf.Medicine).Level}, actual supplies=[{supplies}].");
+                    }
+                }
             }
             foreach (Pawn pawn in candidates) { s_states.GetOrCreateValue(pawn).Pending = false; }
         }

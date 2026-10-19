@@ -38,28 +38,30 @@ public abstract class JobDriver_MedicalBase<TTarget> : JobDriver where TTarget :
         toil.initAction = () =>
         {
             Pawn actor = toil.actor;
-            Thing? thing = actor.CurJob.targetB.Thing;
+            Job applyingJob = actor.CurJob;
+            Thing? thing = applyingJob.targetB.Thing;
             if (actor.skills is not null)
             {
                 float gainFactor = thing?.def.MedicineTendXpGainFactor ?? 0.5f;
                 actor.skills.Learn(SkillDefOf.Medicine, BaseExperience * gainFactor);
             }
-            TTarget target = GetTarget(in actor.CurJob.targetA);
+            if (actor.CurJob != applyingJob) { return; }
+            TTarget target = GetTarget(in applyingJob.targetA);
             FinalizeTreatment(actor, target, thing);
-            if (target is Pawn patient && actor.CurJob is { } completed)
-            { EmergencyCare.NotifyTreatmentCompleted(patient, completed.def); }
-            if (actor.CurJob is null)
+            if (actor.CurJob != applyingJob)
             {
-                if (!ReferenceEquals(actor, target))
+                if (actor.CurJob is null && !ReferenceEquals(actor, target))
                 {
                     Logger.Warning($"{nameof(FinalizeTreatment)}: Job is null after finalizing treatment. What's going on? Did our doctor die?");
                 }
                 else
                 {
-                    Logger.LogVerbose($"{nameof(FinalizeTreatment)}: Job is null after finalizing treatment, but the doctor is the target. So perhaps they overdosed or died. This is probably fine.");
+                    Logger.LogVerbose($"{nameof(FinalizeTreatment)}: The application ended or replaced its job; leaving the doctor's new job unchanged.");
                 }
                 return;
             }
+            if (target is Pawn patient)
+            { EmergencyCare.NotifyTreatmentCompleted(patient, applyingJob.def); }
             if (thing is { Destroyed: true })
             {
                 // set null to prevent double-usage

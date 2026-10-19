@@ -30,12 +30,14 @@ The default-enabled [NPC combat medicine module](docs/npc-combat-medicine.md) ad
 
 | Optional mod | Implemented boundary |
 |---|---|
-| Combat Extended (`CETeam.CombatExtended`) | Kit grants check effective remaining mass and bulk after gear generation. Its tactical tending defers to active MI treatment/positioning and feasible MI decisions; otherwise CE retains control. Shared CE stabilization uses the bounded NPC medicine resolver. |
+| Combat Extended (`CETeam.CombatExtended`) | Kit grants check effective remaining mass and bulk after gear generation. Its tactical tending preserves active treatment and patients already receiving care; MI tactical jobs pass reservation preflight before CE starts them. Failed candidates release only their own reservations and are skipped quietly. Otherwise CE retains control. Shared CE stabilization uses the bounded NPC medicine resolver. |
 | Smart Medicine (`Memegoddess.SmartMedicine`) | Managed NPC medicine/job selection is bounded, and MI tending avoids conflicting inventory-drop/count rewrites. Colonist settings, inventory features and unrelated tending remain available. |
 | Enemy Self Preservation (`Mlie.EnemySelfPreservation`) | Only Full survival suppresses its damage-response withdrawal for eligible MI-managed individuals. Lower modes retain its behavior. |
 | No One Left Behind (`NinaGoblin.NoOneLeftBehind`) | Only Full survival suppresses its rescue job giver when MI owns that pawn's evacuation decisions. Lower modes retain its behavior. |
 
 Recognition is automatic. Disabling the module restores external decisions. No optional mod is globally unpatched, reconfigured or required, and no installed files are modified. Runtime binding verifies declaring assemblies and exact signatures; an unsupported hook leaves the affected external behavior intact and emits a diagnostic. If CE's inventory interface is unsupported, new MI kit grants stop rather than assuming available bulk. Prisoners only enter MI withdrawal/evacuation ownership during an existing breakout, respecting ordinary access rules.
+
+Nice Inventory Tab CE Integration (`Andromeda.NITICE`): MI also guards the recognized `NITIntegrationCE.MakeItemSlot_Patch.IsGrenade(ThingDef)` helper. The inspected 1.6 DLL dereferences `weaponTags` for every weapon; a missing list throws while filling the CE inventory tab. The guard returns false only when the definition or tag list is absent, and leaves tagged weapon/grenade handling unchanged. It edits no definitions or installed files, adds no dependency and remains active when NPC medicine is disabled. A real-Harmony regression reproduces and guards the failure; opening the complete custom tab in-game remains the acceptance check.
 
 ### Compatible Mods
 

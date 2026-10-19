@@ -1,5 +1,6 @@
 ﻿using MoreInjuries.AI.Jobs;
 using MoreInjuries.Defs.WellKnown;
+using MoreInjuries.AI;
 using RimWorld;
 using System.Collections.Generic;
 using Verse;
@@ -42,6 +43,9 @@ public class JobDriver_RemoveTourniquetFromDead : JobDriver_MedicalBase<Corpse>
         Pawn doctor = Doctor;
         Corpse corpse = Corpse;
         this.FailOnDespawnedNullOrForbidden(CORPSE_INDEX);
+        this.FailOn(() => !MedicalTiming.CanWork(doctor)
+            || !doctor.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation)
+            || !doctor.health.capacities.CapableOf(PawnCapacityDefOf.Sight));
         AddEndCondition(() =>
         {
             if (HasTourniquet(corpse))

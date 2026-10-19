@@ -5,6 +5,9 @@ namespace MoreInjuries.AI.NpcCombatMedicine;
 // Engine-independent policy shared by generation and regression tests.
 internal static class NpcMedicalModel
 {
+    internal const int TRAVEL_TIMEOUT = 2500;
+    internal const int REPOSITION_TIMEOUT = 600;
+    internal static bool TravelExpired(int now, int started) => started >= 0 && now - started >= TRAVEL_TIMEOUT;
     internal static float Clamp(float value) => Math.Max(0f, Math.Min(1f, value));
     internal static float Strength(float points) => Clamp((points - 400f) / 2600f);
     internal static float Interpolate(float low, float high, float strength) => low + (high - low) * Clamp(strength);

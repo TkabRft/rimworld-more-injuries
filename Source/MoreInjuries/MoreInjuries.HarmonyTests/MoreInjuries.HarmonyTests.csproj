@@ -13,5 +13,10 @@
     <PackageReference Include="Lib.Harmony" Version="2.3.6" />
     <Compile Include="..\MoreInjuries\Integrations\CombatExtended\CombatExtendedBleedingHooks.cs" Link="Production\CombatExtendedBleedingHooks.cs" />
     <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\PrognosisBleeding.cs" Link="Production\PrognosisBleeding.cs" />
+    <Compile Include="..\MoreInjuries\Integrations\NiceInventoryTab\NiceInventoryTabGuard.cs" Link="Production\NiceInventoryTabGuard.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalReservations.cs" Link="Production\NpcMedicalReservations.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalModel.cs" Link="Production\NpcMedicalModel.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalIngestionPatch.cs" Link="Production\NpcMedicalIngestionPatch.cs" />
+    <Compile Include="..\MoreInjuries\AI\Toils_MedicalDevice.cs" Link="Production\Toils_MedicalDevice.cs" />
   </ItemGroup>
 </Project>

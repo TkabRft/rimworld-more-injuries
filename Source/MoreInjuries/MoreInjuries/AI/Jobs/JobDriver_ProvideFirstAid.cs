@@ -37,7 +37,8 @@ public sealed class JobDriver_ProvideFirstAid : JobDriver
             }
         };
         toil.defaultCompleteMode = ToilCompleteMode.Instant;
-        return [toil];
+        // A rejected application must not create an unbounded chain of instant scans in one tick.
+        return [Toils_General.Wait(1), toil];
     }
 
     private bool TryScanForInjuries()

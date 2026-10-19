@@ -17,4 +17,6 @@ internal static class EmergencyPriority
         => urgency * benefit / (600f + Math.Max(0, application) + Math.Max(0, retrieval) + 20f * Math.Max(0f, cost));
     internal static int Duration(int baseTicks, float speed, float manipulation)
         => Math.Max(1, (int)(baseTicks / (Math.Max(.001f, speed) * Math.Max(.05f, manipulation))));
+    internal static bool ValidWorkRate(float speed, float manipulation) => speed > 0f && manipulation > 0f
+        && !float.IsNaN(speed) && !float.IsInfinity(speed) && !float.IsNaN(manipulation) && !float.IsInfinity(manipulation);
 }

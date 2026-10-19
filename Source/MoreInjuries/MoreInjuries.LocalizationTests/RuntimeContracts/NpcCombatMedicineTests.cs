@@ -14,6 +14,27 @@ public sealed class NpcCombatMedicineTests
 {
     private static XDocument Profiles() => XDocument.Load(Path.Combine(RuntimeDefinitionTests.ModRoot, "Defs", "Internal", "NpcMedicalProfiles.xml"));
     [TestMethod]
+    public void TravelDeadlineDoesNotResetWithDecisionReevaluation()
+    {
+        Assert.IsFalse(NpcMedicalModel.TravelExpired(3499, 1000));
+        Assert.IsTrue(NpcMedicalModel.TravelExpired(3500, 1000));
+        Assert.IsTrue(NpcMedicalModel.TravelExpired(8000, 1000));
+        Assert.IsFalse(NpcMedicalModel.TravelExpired(8000, -1));
+        Assert.AreEqual(600, NpcMedicalModel.REPOSITION_TIMEOUT);
+    }
+
+    [TestMethod]
+    public void InvalidMedicalWorkRatesCannotCreateEffectivelyEndlessApplicationWaits()
+    {
+        foreach (float invalid in new[] { 0f, -1f, float.NaN, float.PositiveInfinity, float.NegativeInfinity })
+        {
+            Assert.IsFalse(EmergencyPriority.ValidWorkRate(invalid, 1f));
+            Assert.IsFalse(EmergencyPriority.ValidWorkRate(1f, invalid));
+        }
+        Assert.IsTrue(EmergencyPriority.ValidWorkRate(.05f, .1f), "Finite, slow but capable doctors retain normal procedure timing.");
+    }
+
+    [TestMethod]
     public void TechnologyQuotasSaturateWithoutMakingTribalsUniversallyEquipped()
     {
         Assert.AreEqual(0f, NpcMedicalModel.Strength(50));
@@ -24,6 +45,20 @@ public sealed class NpcCombatMedicineTests
         Assert.AreEqual(100, NpcMedicalModel.Quota(100, .99f, 2));
         Assert.AreEqual(0, NpcMedicalModel.Quota(100, .5f, 0));
         Assert.AreEqual(9, NpcMedicalModel.Quantity(6, 1, 1));
+    }
+
+    [TestMethod]
+    public void EmpireTwoThousandPointQuotaUsesHeadcountAndCanRoundToZero()
+    {
+        XElement ultra = Profiles().Root!.Elements().Single(profile => profile.Element("techLevel")!.Value == "Ultra");
+        float[] range = ultra.Element("medicChance")!.Value.Split('~').Select(value => float.Parse(value, CultureInfo.InvariantCulture)).ToArray();
+        float chance = NpcMedicalModel.Interpolate(range[0], range[1], NpcMedicalModel.Strength(2000));
+        Assert.AreEqual(.13076923f, chance, .000001f);
+        Assert.AreEqual(0, NpcMedicalModel.Quota(3, chance));
+        Assert.AreEqual(1, NpcMedicalModel.Quota(4, chance));
+        Assert.AreEqual(1, NpcMedicalModel.Quota(11, chance));
+        Assert.AreEqual(2, NpcMedicalModel.Quota(12, chance));
+        Assert.AreEqual(0, NpcMedicalModel.Quota(12, chance, 0));
     }
 
     [TestMethod]

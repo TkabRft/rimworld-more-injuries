@@ -36,6 +36,7 @@ internal static class NpcMedicalAi
     internal static bool Owns(Job? job) => job is not null && (job.def == KnownJobDefOf.MI_NpcTend
         || job.def == KnownJobDefOf.MI_NpcReposition || job.def == KnownJobDefOf.MI_NpcWithdraw
         || job.def == KnownJobDefOf.MI_NpcEvacuate || job.def == KnownJobDefOf.MI_NpcPerformanceDrug)
+        || job?.def.driverClass is Type driver && typeof(JobDriver_TendPatient).IsAssignableFrom(driver)
         || job?.def.driverClass?.Namespace?.StartsWith("MoreInjuries.HealthConditions", StringComparison.Ordinal) == true;
 
     internal static bool CanTakeDecision(Pawn pawn) => Managed(pawn) && pawn.Spawned && !pawn.Downed
@@ -101,7 +102,8 @@ internal static class NpcMedicalAi
                 .ThenBy(patient => patient.Position.DistanceToSquared(doctor.Position)).ToList();
             foreach (Pawn patient in patients)
             {
-                if (patient != doctor && !doctor.CanReserveAndReach(patient, PathEndMode.Touch, Danger.Deadly)) { continue; }
+                if (!NpcMedicalReservations.PatientAvailable(doctor, patient)
+                    || patient != doctor && !doctor.CanReach(patient, PathEndMode.Touch, Danger.Deadly)) { continue; }
                 Job? treatment = Treatment(doctor, patient);
                 if (treatment is null) { continue; }
                 if (threatened && Exposure(doctor, doctor.Position) > 0)
@@ -160,7 +162,11 @@ internal static class NpcMedicalAi
         if (Urgency(patient) < 70f && !Threats(doctor).Any())
         {
             if (patient.health.hediffSet.HasHediff(KnownHediffDefOf.Fracture) && FindSupply(doctor, patient, KnownThingDefOf.Splint) is Thing splint)
-            { return JobDriver_UseSplint.GetDispatcher(doctor, patient, splint).CreateJob(); }
+            {
+                Job splinting = JobDriver_UseSplint.GetDispatcher(doctor, patient, splint).CreateJob();
+                splinting.endAfterTendedOnce = true;
+                return splinting;
+            }
         }
         if (patient.health.HasHediffsNeedingTend() && (!Threats(doctor).Any() || patient.health.hediffSet.BleedRateTotal > .5f))
         {
@@ -229,22 +235,41 @@ internal static class NpcMedicalAi
             int next = Exposure(pawn, cell);
             if (next < exposure) { exposure = next; best = cell; if (next == 0) { break; } }
         }
+        if (best is IntVec3 destination)
+        {
+            PawnPath path = pawn.Map.pathFinder.FindPathNow(pawn.Position, destination, pawn, peMode: PathEndMode.OnCell);
+            try { if (!path.Found || path.TotalCost > NpcMedicalModel.REPOSITION_TIMEOUT) { return null; } }
+            finally { path.ReleaseToPool(); }
+        }
         return best;
     }
-    private static Job Move(JobDef def, IntVec3 cell) => JobMaker.MakeJob(def, cell);
+    private static Job Move(JobDef def, IntVec3 cell)
+    {
+        Job job = JobMaker.MakeJob(def, cell);
+        if (def == KnownJobDefOf.MI_NpcReposition)
+        {
+            job.expiryInterval = NpcMedicalModel.REPOSITION_TIMEOUT;
+            job.checkOverrideOnExpire = false;
+        }
+        return job;
+    }
     private static bool ShouldWithdraw(Pawn pawn) => Urgency(pawn) >= 70f
         || pawn.health.capacities.GetLevel(PawnCapacityDefOf.Moving) < .5f
         || pawn.health.capacities.GetLevel(PawnCapacityDefOf.Consciousness) < .5f;
 
     private static Job? Withdrawal(Pawn pawn, bool mustWithdraw)
     {
-        Pawn? patient = Nearby(pawn, 12f).Where(other => other != pawn && other.Downed && !other.Dead
+        bool canEvacuate = pawn.carryTracker.CarriedThing is null
+            && pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation)
+            && pawn.health.capacities.GetLevel(PawnCapacityDefOf.Moving) >= .5f;
+        Pawn? patient = !canEvacuate ? null : Nearby(pawn, 12f).Where(other => other != pawn && other.Downed && !other.Dead
             && other.Faction == pawn.Faction && !other.HostileTo(pawn) && other.Position.InHorDistOf(pawn.Position, 12f)
+            && pawn.carryTracker.AvailableStackSpace(other.def) > 0
             && pawn.CanReserveAndReach(other, PathEndMode.Touch, Danger.Some)).OrderByDescending(Urgency).FirstOrDefault();
         if (!mustWithdraw && patient is null) { return null; }
         if (!CellFinder.TryFindRandomEdgeCellWith(cell => cell.Standable(pawn.Map)
             && pawn.CanReach(cell, PathEndMode.OnCell, Danger.Some), pawn.Map, CellFinder.EdgeRoadChance_Neutral, out IntVec3 exit)) { return null; }
-        if (patient is not null && pawn.health.capacities.GetLevel(PawnCapacityDefOf.Moving) >= .5f && Exposure(pawn, patient.Position) == 0)
+        if (patient is not null && Exposure(pawn, patient.Position) == 0)
         { return JobMaker.MakeJob(KnownJobDefOf.MI_NpcEvacuate, patient, exit); }
         if (!mustWithdraw) { return null; }
         Job job = Move(KnownJobDefOf.MI_NpcWithdraw, exit);

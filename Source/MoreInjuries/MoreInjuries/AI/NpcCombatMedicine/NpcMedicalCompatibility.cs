@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using MoreInjuries.Defs.WellKnown;
+using MoreInjuries.Integrations.NiceInventoryTab;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -22,6 +23,10 @@ internal static class NpcMedicalCompatibility
 
     static NpcMedicalCompatibility()
     {
+        if (ModsConfig.IsActive("Andromeda.NITICE") && ModsConfig.IsActive("CETeam.CombatExtended"))
+        {
+            NiceInventoryTabGuard.Install(s_harmony);
+        }
         if (ModsConfig.IsActive("CETeam.CombatExtended"))
         {
             s_ceActive = true;
@@ -107,11 +112,12 @@ internal static class NpcMedicalCompatibility
     private static bool CeTend(object __instance, ref Job? __result)
     {
         Pawn? pawn = s_cePawn?.GetValue(__instance) as Pawn;
-        if (pawn is null || !NpcMedicalAi.Managed(pawn)) { return true; }
-        if (NpcMedicalAi.Owns(pawn.CurJob)) { __result = null; return false; }
+        if (pawn is null || !pawn.Spawned || !NpcMedicalAi.Managed(pawn)) { return true; }
+        if (NpcMedicalAi.Owns(pawn.CurJob) || !NpcMedicalReservations.PatientAvailable(pawn, pawn))
+        { __result = null; return false; }
         Job? job = NpcMedicalAi.Decide(pawn);
         if (job is null) { return true; }
-        __result = job;
+        __result = NpcMedicalReservations.PrepareTacticalJob(pawn, job) ? job : null;
         return false;
     }
     private static bool Preservation([HarmonyArgument(0)] ref Pawn pawn)

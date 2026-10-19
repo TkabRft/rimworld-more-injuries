@@ -15,8 +15,19 @@ internal static class Toils_MedicalDevice
             Pawn actor = toil.actor;
             Job curJob = actor.jobs.curJob;
             Thing thing = curJob.GetTarget(targetIndex).Thing;
+            int needed = getDeviceCountToFullyHeal(patient);
+            if (needed <= 0)
+            {
+                actor.jobs.EndCurrentJob(JobCondition.Succeeded);
+                return;
+            }
+            if (thing is null || thing.Destroyed || thing.stackCount <= 0)
+            {
+                actor.jobs.EndCurrentJob(JobCondition.Incompletable);
+                return;
+            }
             int availableDevices = actor.Map.reservationManager.CanReserveStack(actor, thing, MedicalDeviceHelper.MAX_MEDICAL_DEVICE_RESERVATIONS);
-            if (availableDevices > 0 && actor.Reserve(thing, curJob, MedicalDeviceHelper.MAX_MEDICAL_DEVICE_RESERVATIONS, Mathf.Min(availableDevices, getDeviceCountToFullyHeal(patient))))
+            if (availableDevices > 0 && actor.Reserve(thing, curJob, MedicalDeviceHelper.MAX_MEDICAL_DEVICE_RESERVATIONS, Mathf.Min(availableDevices, needed)))
             {
                 return;
             }
@@ -37,15 +48,46 @@ internal static class Toils_MedicalDevice
             Job curJob = actor.jobs.curJob;
             Thing thing = curJob.GetTarget(targetIndex).Thing;
             int countToFullyHeal = getDeviceCountToFullyHeal(patient);
+            if (countToFullyHeal <= 0)
+            {
+                actor.jobs.EndCurrentJob(JobCondition.Succeeded);
+                return;
+            }
+            if (thing is null || thing.Destroyed || thing.stackCount <= 0)
+            {
+                actor.jobs.EndCurrentJob(JobCondition.Incompletable);
+                return;
+            }
             if (actor.carryTracker.CarriedThing is not null)
             {
+                if (actor.carryTracker.CarriedThing.def != thing.def)
+                {
+                    actor.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    return;
+                }
                 countToFullyHeal -= actor.carryTracker.CarriedThing.stackCount;
+                if (ReferenceEquals(actor.carryTracker.CarriedThing, thing))
+                {
+                    curJob.count = Mathf.Max(0, countToFullyHeal);
+                    return;
+                }
             }
 
             int count = Mathf.Min(actor.Map.reservationManager.CanReserveStack(actor, thing, MedicalDeviceHelper.MAX_MEDICAL_DEVICE_RESERVATIONS), countToFullyHeal);
             if (count > 0)
             {
-                actor.carryTracker.TryStartCarry(thing, count);
+                count = actor.carryTracker.TryStartCarry(thing, count);
+                if (count <= 0)
+                {
+                    actor.jobs.EndCurrentJob(JobCondition.Incompletable);
+                    return;
+                }
+            }
+
+            if (actor.carryTracker.CarriedThing is not Thing carried || carried.def != thing.def)
+            {
+                actor.jobs.EndCurrentJob(JobCondition.Incompletable);
+                return;
             }
 
             curJob.count = countToFullyHeal - count;

@@ -11,6 +11,7 @@ public sealed class JobDriver_NpcTend : JobDriver_TendPatient
 {
     protected override IEnumerable<Toil> MakeNewToils()
     {
+        AddFinishAction(_ => NpcMedicalReservations.RestockUnusedMedicine(pawn, job));
         this.FailOn(() => job.targetA.Pawn is not Pawn patient || patient.Dead
             || pawn != patient && (pawn.HostileTo(patient) || patient.playerSettings?.medCare == MedicalCareCategory.NoCare));
         Thing? medicine = job.targetB.Thing;
@@ -19,18 +20,26 @@ public sealed class JobDriver_NpcTend : JobDriver_TendPatient
             this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
             job.SetTarget(TargetIndex.C, holder.pawn);
             yield return Toils_Goto.GotoThing(TargetIndex.C, PathEndMode.Touch)
-                .FailOnDespawnedNullOrForbidden(TargetIndex.C);
+                .FailOnDespawnedNullOrForbidden(TargetIndex.C)
+                .FailOn(() => medicine.ParentHolder != holder || holder.pawn.IsForbidden(pawn)
+                    || NpcMedicalModel.TravelExpired(Find.TickManager.TicksGame, job.startTick));
             yield return Toils_Haul.TakeFromOtherInventory(medicine, pawn.inventory.innerContainer,
                 holder.innerContainer, 1, TargetIndex.B);
         }
-        foreach (Toil toil in base.MakeNewToils()) { yield return toil; }
+        foreach (Toil toil in base.MakeNewToils())
+        {
+            if (toil.defaultCompleteMode == ToilCompleteMode.PatherArrival)
+            { toil.FailOn(() => NpcMedicalModel.TravelExpired(Find.TickManager.TicksGame, job.startTick)); }
+            yield return toil;
+        }
     }
 }
 
 public sealed class JobDriver_NpcEvacuate : JobDriver
 {
     public override bool TryMakePreToilReservations(bool errorOnFailed)
-        => pawn.Reserve(job.targetA, job, errorOnFailed: errorOnFailed);
+        => pawn.carryTracker.CarriedThing is null && pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation)
+            && pawn.Reserve(job.targetA, job, errorOnFailed: errorOnFailed);
     protected override IEnumerable<Toil> MakeNewToils()
     {
         // Carried patients are deliberately despawned. A global despawn check would abort evacuation.
@@ -39,33 +48,11 @@ public sealed class JobDriver_NpcEvacuate : JobDriver
         yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
         yield return Toils_Haul.StartCarryThing(TargetIndex.A);
         yield return Toils_Goto.GotoCell(TargetIndex.B, PathEndMode.OnCell);
-        yield return Toils_General.Do(() => pawn.ExitMap(false, Rot4.Invalid));
-    }
-}
-
-[HarmonyPatch(typeof(Thing), nameof(Thing.Ingested))]
-internal static class NpcMedicalIngestionPatch
-{
-    private static bool Prefix(Thing __instance, Pawn ingester, ref float __result, out bool __state)
-    {
-        __state = true;
-        if (!NpcMedicalAi.Managed(ingester) || ingester.CurJob?.def != KnownJobDefOf.MI_NpcPerformanceDrug) { return true; }
-        MoreInjuriesSettings settings = MoreInjuriesMod.Settings;
-        if (settings.NpcPerformanceDrugs && NpcMedicalAi.SafePerformance(ingester, __instance)
-            && NpcMedicalAi.State(ingester).Drugs.PerformanceAllowed(Find.TickManager.TicksGame,
-                settings.NpcPerformanceMaximum, settings.NpcPerformanceInterval)) { return true; }
-        __state = false;
-        __result = 0f;
-        return false;
-    }
-    private static void Postfix(Thing __instance, Pawn ingester, bool __state)
-    {
-        if (!__state || !MoreInjuriesMod.Settings.EnableNpcCombatMedicine) { return; }
-        int now = Find.TickManager.TicksGame;
-        if (__instance.def == KnownThingDefOf.Epinephrine)
-        { NpcMedicalAi.State(ingester).Drugs.ClinicalTaken(now); NpcMedicalMemory.Remember(ingester); }
-        else if (NpcMedicalAi.Managed(ingester) && ingester.CurJob?.def == KnownJobDefOf.MI_NpcPerformanceDrug)
-        { NpcMedicalAi.State(ingester).Drugs.PerformanceTaken(now); NpcMedicalMemory.Remember(ingester); }
+        yield return Toils_General.Do(() =>
+        {
+            if (pawn.carryTracker.CarriedThing != job.targetA.Thing) { EndJobWith(JobCondition.Incompletable); return; }
+            pawn.ExitMap(false, Rot4.Invalid);
+        });
     }
 }
 
