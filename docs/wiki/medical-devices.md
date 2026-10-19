@@ -75,7 +75,9 @@ A successful attempt clears the entire blood obstruction. At default settings, s
 **Production**: At a crafting spot or tailor bench.  
 **Production Skill Requirement**: None  
 **Research Requirements**: [Basic anatomy](/docs/wiki/research.md#basic-anatomy)  
-**Ingredients**: 2x `any fabric`  
+**Ingredients**: 1x `any textile`\
+**Base market value**: $2 each\
+**Crafting work**: 50 per bandage; 250 per five\
 **Success Chance**: 100%  
 **Mass**: 0.05 kg  
 **Bulk (Combat Extended)**: 0.05
@@ -293,7 +295,9 @@ After each step (and while doing vanilla treatment), the doctor will re-evaluate
 **Production**: At a drug lab.  
 **Production Skill Requirement**: `Crafting` at level 4  
 **Research Requirements**: [Advanced first aid](/docs/wiki/research.md#advanced-first-aid)  
-**Ingredients**: 5x `any textile`, 3x `Chemfuel`  
+**Ingredients**: 10x `fabric`, 5x `Chemfuel` per batch of five\
+**Base market value**: $6 each\
+**Crafting work**: 750 per batch of five\
 **Success Chance**: 100%  
 **Mass**: 0.03 kg  
 **Bulk (Combat Extended)**: 0.03
@@ -390,7 +394,9 @@ If Dub's Bad Hygiene is loaded, each saline infusion will restore hydration by 3
 
 **Production**: At a drug lab.  
 **Research Requirements**: [Emergency medicine](/docs/wiki/research.md#emergency-medicine)   
-**Ingredients**: 2x `any stone block`, (2x `water`, if Dub's Bad Hygiene is loaded)  
+**Ingredients**: 1x `any stone block`, (2x `water`, if Dub's Bad Hygiene is loaded)\
+**Base market value**: $2 each\
+**Crafting work**: 200 per bag; 1,000 per five\
 **Success Chance**: 100%  
 **Mass**: 0.25 kg  
 **Bulk (Combat Extended)**: 0.5

@@ -16,7 +16,7 @@
     <statBases>
       <Mass>0.03</Mass>
       <Bulk MayRequire="CETeam.CombatExtended">0.03</Bulk>
-      <MarketValue>20</MarketValue>
+      <MarketValue>6</MarketValue>
       <MaxHitPoints>5</MaxHitPoints>
       <WorkToMake>150</WorkToMake>
     </statBases>
