@@ -15,6 +15,7 @@ public sealed partial class VitalFailureComp
     private static readonly AccessTools.FieldRef<HediffComp_Immunizable, float> s_diseaseFactor
         = AccessTools.FieldRefAccess<HediffComp_Immunizable, float>("severityPerDayNotImmuneRandomFactor");
     private PrognosisTrend[] _nativeTrends = new PrognosisTrend[16];
+    private Hediff?[] _chokingSources = new Hediff?[16];
     private int _nativeTrendCount;
     private bool _indefiniteProtection;
     private PrognosisCapacityTerm[] _nativeCapacityTerms = new PrognosisCapacityTerm[32];
@@ -26,13 +27,15 @@ public sealed partial class VitalFailureComp
     partial void BeginNativePrognosis()
     {
         _nativeTrendCount = 0;
+        Array.Clear(_chokingSources, 0, _chokingSources.Length);
         _indefiniteProtection = false;
         _nativeCapacityTermCount = 0;
     }
 
     private void AddNativeTrend(ref PhysiologySnapshot result, PrognosisTrend trend)
     {
-        if (_nativeTrendCount == _nativeTrends.Length) { Array.Resize(ref _nativeTrends, _nativeTrends.Length * 2); }
+        if (_nativeTrendCount == _nativeTrends.Length)
+        { Array.Resize(ref _nativeTrends, _nativeTrends.Length * 2); Array.Resize(ref _chokingSources, _nativeTrends.Length); }
         _nativeTrends[_nativeTrendCount++] = trend;
         result.Relevant |= trend.Terminal > 0f && (trend.Rate > 0f || trend.Severity >= trend.Terminal);
     }
@@ -119,30 +122,39 @@ public sealed partial class VitalFailureComp
         }
         string name = condition.def.defName;
         if (name is "Heatstroke" or "Hypothermia" or "ToxicBuildup" or "VacuumExposure" or "Malnutrition") { return; }
+        Hediff? chokingSource = null;
         if (condition.TryGetComp<HediffComp_Choking>() is { } choking)
         {
-            Hediff_Injury? source = choking.GetSource(validate: false);
-            float increase = .1f, decrease = 0f;
-            if (source is { BleedRate: > .01f }) { increase += Math.Max(.05f, Math.Min(.25f, source.BleedRate / 5f)); }
-            else { decrease = source is null || source.IsTended() ? .075f : .025f; }
-            float negative = -decrease * decrease / (2f * (increase + decrease));
-            float positive = increase * increase / (2f * (increase + decrease));
+            Hediff_Injury? source = choking.PeekSource();
+            chokingSource = source;
+            float negative = -1f, positive = 1f;
             if (condition.def.GetModExtension<HediffModifier_SeverityModifiers_ModExtension>() is { } modifiers)
             { negative = modifiers.ApplyTo(negative, condition, choking); positive = modifiers.ApplyTo(positive, condition, choking); }
-            bool coughs = source is not { Bleeding: true } && (Capacity(Patient, PawnCapacityDefOf.Consciousness) > .3f
-                || ModsConfig.BiotechActive && Patient.health.hediffSet.HasHediff(HediffDefOf.Deathrest));
-            trend.Rate += (positive + negative - (coughs ? .1f : 0f)) * GenDate.TicksPerDay / choking.Properties.ChokingIntervalTicks;
+            trend.Choking = new()
+            {
+                Active = true, SourcePresent = source is not null, Tended = source?.IsTended() == true,
+                CoughCapable = Capacity(Patient, PawnCapacityDefOf.Consciousness) > .3f
+                    || ModsConfig.BiotechActive && Patient.health.hediffSet.HasHediff(HediffDefOf.Deathrest),
+                PositiveFactor = positive, NegativeFactor = -negative,
+                Interval = choking.Properties.ChokingIntervalTicks, NextTick = NextGate(Patient, choking.Properties.ChokingIntervalTicks),
+                Source = new(source?.BleedRate ?? 0f, 1f, false, false, result.NextBloodTick, false)
+            };
             result.UnmodeledRisk = true; result.Relevant = true;
         }
         if (!known && condition.IsCurrentlyLifeThreatening) { result.UnmodeledRisk = true; result.Relevant = true; }
         int trendIndex = -1;
-        if (known && !unsupportedProgression && (trend.Terminal > 0f || trend.Rate != 0f || trend.StageRate != 0f || trend.TendedRate != 0f))
-        { trendIndex = _nativeTrendCount; AddNativeTrend(ref result, trend); }
+        if (known && !unsupportedProgression && (trend.Terminal > 0f || trend.Rate != 0f || trend.StageRate != 0f || trend.TendedRate != 0f || trend.Choking.Active))
+        { trendIndex = _nativeTrendCount; AddNativeTrend(ref result, trend); _chokingSources[trendIndex] = chokingSource; }
         CaptureCapacityTerms(condition.def, trendIndex, condition.Severity, condition.CurStage);
     }
 
     partial void FinishNativePrognosis(ref PhysiologySnapshot result)
     {
+        for (int i = 0; i < _nativeTrendCount; i++)
+        {
+            if (_chokingSources[i] is { } wound && _combatExtendedBleeding is { } bleeding)
+            { _nativeTrends[i].Choking.Source = bleeding.For(wound); }
+        }
         if (_indefiniteProtection) { result.ProtectionTicks = 0; }
         CaptureEnvironment(ref result);
         float totalInjuries = 0f;

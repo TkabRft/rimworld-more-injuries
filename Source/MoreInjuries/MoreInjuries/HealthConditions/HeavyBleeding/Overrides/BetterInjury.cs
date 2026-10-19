@@ -90,6 +90,12 @@ public class BetterInjury : Hediff_Injury, IStatefulInjury, IInjuryStateOwner
         }
     }
 
+    public override void TickInterval(int delta)
+    {
+        base.TickInterval(delta);
+        _state.Tick();
+    }
+
     private bool HasRelatedBlockingExternalWound(bool forceRefresh)
     {
         BodyPartRecord? part = Part;

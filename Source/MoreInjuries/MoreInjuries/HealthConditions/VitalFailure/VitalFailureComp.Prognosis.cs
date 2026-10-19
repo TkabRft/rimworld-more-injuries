@@ -1,6 +1,7 @@
 using HarmonyLib;
 using MoreInjuries.Defs.WellKnown;
 using MoreInjuries.Extensions;
+using MoreInjuries.Integrations.CombatExtended;
 using MoreInjuries.HealthConditions.BrainDamage;
 using MoreInjuries.HealthConditions.HeavyBleeding;
 using MoreInjuries.HealthConditions.HypovolemicShock;
@@ -16,15 +17,18 @@ public sealed partial class VitalFailureComp
         = AccessTools.FieldRefAccess<HediffComp_TendDuration, int>("tendTicksLeft");
     private PhysiologySnapshot _prognosisSource;
     private PhysiologyEstimate _prognosis;
+    private PhysiologyEstimate _currentControlPrognosis;
     private bool _hasPrognosis;
     private int _prognosisTick = -1;
     private int _prognosisSettings;
     private readonly Hediff?[] _prognosisFailures = new Hediff?[6];
     private readonly float[] _prognosisFailureRates = new float[7];
     private readonly HediffDef[] _prognosisFailureDefs = new HediffDef[7];
+    private CombatExtendedBleedingCapture? _combatExtendedBleeding;
     internal string PrognosisTooltip { get; private set; } = string.Empty;
 
-    partial void InvalidatePrognosis() => _hasPrognosis = false;
+    partial void InvalidatePrognosis() => InvalidateForecast();
+    internal void InvalidateForecast() => _hasPrognosis = false;
     partial void BeginNativePrognosis();
     partial void CaptureNativeCondition(ref PhysiologySnapshot result, Hediff condition);
     partial void FinishNativePrognosis(ref PhysiologySnapshot result);
@@ -38,14 +42,26 @@ public sealed partial class VitalFailureComp
             | (MoreInjuriesMod.Settings.AnomalyEnableConditionsForShamblers ? 8 : 0);
         if (!_hasPrognosis || now < _prognosisTick || now - _prognosisTick >= VitalFailureModel.INTERVAL
             || _prognosis.Ticks != int.MaxValue && now - _prognosisTick >= _prognosis.Ticks
+            || _currentControlPrognosis.Ticks != int.MaxValue && now - _prognosisTick >= _currentControlPrognosis.Ticks
             || settings != _prognosisSettings)
         {
             PhysiologySnapshot current = CapturePrognosis();
             _prognosisSource = current;
             _prognosis = current.Relevant ? PhysiologyPrognosis.Estimate(in current, VitalFailureDefOf.MI_VitalFailureConfig,
                 HediffDefOf.BloodLoss, KnownHediffDefOf.BrainDamage_Hypoxia) : new(int.MaxValue, null);
-            PrognosisTooltip = PrognosisRescueHints.Tooltip(in current, in _prognosis);
+            current.HoldBleedingControl = true;
+            _currentControlPrognosis = current.TemporaryBleedingRisk ? PhysiologyPrognosis.Estimate(in current, VitalFailureDefOf.MI_VitalFailureConfig,
+                HediffDefOf.BloodLoss, KnownHediffDefOf.BrainDamage_Hypoxia) : _prognosis;
+            PrognosisTooltip = "MI_Prognosis_CurrentScenario".Translate() + "\n"
+                + PrognosisRescueHints.Tooltip(in current, in _currentControlPrognosis) + "\n\n"
+                + "MI_Prognosis_UntendedScenario".Translate() + "\n"
+                + PrognosisRescueHints.Tooltip(in _prognosisSource, in _prognosis);
+            PrognosisTooltip += "\n" + "MI_Prognosis_Scenarios".Translate(FullStatus(in current, in _currentControlPrognosis, false),
+                FullStatus(in current, in _prognosis, current.BleedingUncertain));
+            if (current.TemporaryBleedingRisk) { PrognosisTooltip += "\n" + "MI_Prognosis_TemporaryControl".Translate(); }
+            if (current.BleedingUncertain) { PrognosisTooltip += "\n" + "MI_Prognosis_Uncertain".Translate(); }
             if (current.UnmodeledRisk) { PrognosisTooltip += "\n" + "MI_Prognosis_OtherRisks".Translate(); }
+            if (current.CeStabilization) { PrognosisTooltip += "\n" + "MI_Prognosis_CEStabilization".Translate(); }
             if (_prognosis.Ticks != int.MaxValue && current.TrendCount > 0)
             { PrognosisTooltip += "\n" + "MI_Prognosis_CurrentConditions".Translate(); }
             _prognosisTick = now;
@@ -55,6 +71,21 @@ public sealed partial class VitalFailureComp
         source = _prognosisSource;
         estimate = new(_prognosis.Ticks == int.MaxValue ? int.MaxValue : Math.Max(0, _prognosis.Ticks - (now - _prognosisTick)), _prognosis.Cause, _prognosis.CapacityLabel);
         return source.Relevant;
+    }
+
+    private static string FullStatus(in PhysiologySnapshot source, in PhysiologyEstimate estimate, bool uncertain)
+        => source.NativeComaProtection || source.Protected && source.ProtectionTicks <= 0 ? "MI_Prognosis_Protected".Translate()
+            : uncertain && estimate.Ticks == int.MaxValue ? "MI_Prognosis_Uncertain".Translate()
+            : estimate.Ticks == int.MaxValue ? "MI_Prognosis_NoPrediction".Translate()
+            : "MI_Prognosis_Time".Translate(GenDate.ToStringTicksToPeriod(estimate.Ticks));
+
+    internal bool TryGetPrognoses(out PhysiologySnapshot source, out PhysiologyEstimate held, out PhysiologyEstimate untended)
+    {
+        bool relevant = TryGetPrognosis(out source, out untended);
+        int elapsed = Find.TickManager.TicksGame - _prognosisTick;
+        held = new(_currentControlPrognosis.Ticks == int.MaxValue ? int.MaxValue
+            : Math.Max(0, _currentControlPrognosis.Ticks - elapsed), _currentControlPrognosis.Cause, _currentControlPrognosis.CapacityLabel);
+        return relevant;
     }
 
     // No Refresh(): that method reconciles failures and may add/remove hediffs.
@@ -129,6 +160,7 @@ public sealed partial class VitalFailureComp
             }
         }
         result.BleedRate = pawn.health.hediffSet.BleedRateTotal;
+        CombatExtendedBridge.Capture(pawn, ref result, ref _combatExtendedBleeding);
         result.CanDevelopShock = !result.OxygenProtected && TraumaEligibility.Supports(pawn) && MoreInjuriesMod.Settings.EnableHypovolemicShock;
         result.DirectBloodDeath = !result.OxygenProtected && BloodLossPolicy.AllowDirectDeath(TraumaEligibility.Supports(pawn), MoreInjuriesMod.Settings.PreventDeathByBloodLoss);
         result.CanHaveBrain = VitalAnatomy.For(pawn.RaceProps.body).SurvivingBrain(pawn.health.hediffSet) is not null;

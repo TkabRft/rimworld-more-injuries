@@ -11,10 +11,12 @@ internal struct PrognosisTrend
     internal float Severity, Maximum, Terminal, Rate, TendedRate, ImmuneRate, StageRate;
     internal int TendTicks, ImmunityTicks, Interval, NextTick, StartsAfterTicks;
     internal bool TemperatureRecovery;
+    internal PrognosisChoking Choking;
 
-    internal float At(int ticks)
+    internal float At(int ticks, bool holdControl = false)
     {
         ticks = Math.Max(0, ticks - StartsAfterTicks);
+        if (Choking.Active) { return Choking.At(in this, ticks, holdControl); }
         if (TemperatureRecovery)
         {
             // Native temperature recovery: -clamp(severity * .027, .0015, .015), every 60 ticks.

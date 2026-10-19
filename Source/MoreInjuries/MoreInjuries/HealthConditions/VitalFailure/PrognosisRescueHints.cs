@@ -25,7 +25,7 @@ internal static class PrognosisRescueHints
         List<string> hints = [];
         if (estimate.Cause == KnownHediffDefOf.BrainDamage_Hypoxia || estimate.Cause == HediffDefOf.BloodLoss)
         {
-            if (source.BleedRate >= .1f) { hints.Add("MI_PrognosisHint_Bleeding".Translate()); }
+            if (source.BleedRate >= .1f || source.BleedingCount > 0) { hints.Add("MI_PrognosisHint_Bleeding".Translate()); }
             if (source.BloodLoss > .45f || source.Dilution > .45f || estimate.Cause == HediffDefOf.BloodLoss)
             { hints.Add("MI_PrognosisHint_Blood".Translate()); }
             if (estimate.Cause == KnownHediffDefOf.BrainDamage_Hypoxia)

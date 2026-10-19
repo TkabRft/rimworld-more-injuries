@@ -16,6 +16,10 @@ internal struct PhysiologySnapshot
 {
     internal bool Relevant, Protected, VitalEnabled, CanDevelopShock, ShockPresent, CanHaveBrain, OxygenProtected, DirectBloodDeath;
     internal float BloodLoss, BleedRate, Shock, ClinicalBrain, Breathing, Pumping, Dilution, ColdProtection;
+    internal PrognosisBleeding[]? Bleeding;
+    internal int BleedingCount;
+    internal bool CeStabilization;
+    internal bool HoldBleedingControl, TemporaryBleedingRisk, BleedingUncertain;
     internal float Adrenaline, AdrenalineDecayPerDay, TendQuality, ComaMultiplier;
     internal int TendTicks, NextBloodTick, NextShockTick, NextVitalTick;
     internal PhysiologyEstimate Failure;
@@ -98,8 +102,9 @@ internal static class PhysiologyPrognosis
             if (now == bloodTick)
             {
                 // Native bleeding giver: gains at >= 0.1/day, otherwise recovers each 60 ticks.
-                blood = Math.Max(0f, Math.Min(1f, blood + (source.BleedRate >= 0.1f
-                    ? source.BleedRate * 0.001f : -0.00033333333f)));
+                float bleedRate = PrognosisBleeding.Total(in source, now);
+                blood = Math.Max(0f, Math.Min(1f, blood + (bleedRate >= 0.1f
+                    ? bleedRate * 0.001f : -0.00033333333f)));
                 bloodTick += 60;
                 if (source.DirectBloodDeath && blood >= 1f && (!source.Protected || now >= source.ProtectionTicks)) { return new(now, bloodLossDef); }
             }

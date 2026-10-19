@@ -33,6 +33,12 @@ public class BetterMissingPart : Hediff_MissingPart, IStatefulInjury, IInjurySta
         _state.Tick();
     }
 
+    public override void TickInterval(int delta)
+    {
+        base.TickInterval(delta);
+        _state.Tick();
+    }
+
     public float OverrideEffectiveBleedRateMultiplier(float multiplier) => multiplier;
 
     public void AddCustomLabelAnnotations(StringBuilder builder, ref bool hasPreviousElements) { }

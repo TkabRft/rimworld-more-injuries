@@ -2,8 +2,8 @@
 <LanguageData>
   <!-- EN: Use physiology-aware death estimate -->
   <MI_Prognosis_SettingLabel>Use physiology-aware death estimate</MI_Prognosis_SettingLabel>
-  <!-- EN: Shows an approximate death countdown from current bleeding and physiology, with a projected cause and rescue hint. Calculated only while this pawn's Health tab is open. Disabling restores the vanilla countdown. -->
-  <MI_Prognosis_SettingTooltip>Shows an approximate death countdown from current bleeding and physiology, with a projected cause and rescue hint. Calculated only while this pawn's Health tab is open. Disabling restores the vanilla countdown.</MI_Prognosis_SettingTooltip>
+  <!-- EN: Shows two approximate death forecasts: current bleeding control maintained, and no further tending as temporary control wears off. The tooltip explains causes and remaining risks. Calculated only while this pawn's Health tab is open. Disabling restores the vanilla countdown. -->
+  <MI_Prognosis_SettingTooltip>Shows two approximate death forecasts: current bleeding control maintained, and no further tending as temporary control wears off. The tooltip explains causes and remaining risks. Calculated only while this pawn's Health tab is open. Disabling restores the vanilla countdown.</MI_Prognosis_SettingTooltip>
   <!-- EN: Bleeding: {0}/d; {1} -->
   <MI_Prognosis_Footer>Bleeding: {0}/d; {1}</MI_Prognosis_Footer>
   <!-- EN: Estimated death: ~{0} -->
@@ -18,8 +18,38 @@
   <MI_Prognosis_Tooltip>Projected cause: {0}\n{1}</MI_Prognosis_Tooltip>
   <!-- EN: Other hazards or random complications may cause earlier death. -->
   <MI_Prognosis_OtherRisks>Other hazards or random complications may cause earlier death.</MI_Prognosis_OtherRisks>
+  <!-- EN: CE stabilization is temporary; bleeding may return. Fully tend the wounds. -->
+  <MI_Prognosis_CEStabilization>CE stabilization is temporary; bleeding may return. Fully tend the wounds.</MI_Prognosis_CEStabilization>
   <!-- EN: Assumes current exposure and care continue, with no further treatment. -->
   <MI_Prognosis_CurrentConditions>Assumes current exposure and care continue, with no further treatment.</MI_Prognosis_CurrentConditions>
   <!-- EN: Projected cause: loss of {0}. Treat the underlying condition. -->
   <MI_Prognosis_CapacityFailure>Projected cause: loss of {0}. Treat the underlying condition.</MI_Prognosis_CapacityFailure>
+  <!-- EN: Current control: assumes present bleeding reductions are maintained. Other modeled conditions continue to progress. -->
+  <MI_Prognosis_CurrentScenario>Current control: assumes present bleeding reductions are maintained. Other modeled conditions continue to progress.</MI_Prognosis_CurrentScenario>
+  <!-- EN: Without tending: assumes no further treatment. Temporary bleeding control weakens and expires. -->
+  <MI_Prognosis_UntendedScenario>Without tending: assumes no further treatment. Temporary bleeding control weakens and expires.</MI_Prognosis_UntendedScenario>
+  <!-- EN: Untended wounds remain temporarily controlled. Bleeding can increase again; no forecast beyond its modeled horizon guarantees safety. Fully tend the wounds. -->
+  <MI_Prognosis_TemporaryControl>Untended wounds remain temporarily controlled. Bleeding can increase again; no forecast beyond its modeled horizon guarantees safety. Fully tend the wounds.</MI_Prognosis_TemporaryControl>
+  <!-- EN: The untreated bleeding baseline could not be determined. The future death estimate is uncertain. -->
+  <MI_Prognosis_Uncertain>The untreated bleeding baseline could not be determined. The future death estimate is uncertain.</MI_Prognosis_Uncertain>
+  <!-- EN: uncertain -->
+  <MI_Prognosis_UnknownShort>uncertain</MI_Prognosis_UnknownShort>
+  <!-- EN: >24h -->
+  <MI_Prognosis_BeyondHorizon>&gt;24h</MI_Prognosis_BeyondHorizon>
+  <!-- EN: Held: {0}; Untended: {1} -->
+  <MI_Prognosis_Scenarios>Held: {0}; Untended: {1}</MI_Prognosis_Scenarios>
+  <!-- EN: Held: {0} -->
+  <MI_Prognosis_HeldShort>Held: {0}</MI_Prognosis_HeldShort>
+  <!-- EN: Untended: {0} -->
+  <MI_Prognosis_UntendedShort>Untended: {0}</MI_Prognosis_UntendedShort>
+  <!-- EN: Bleeding {0}/d -->
+  <MI_Prognosis_BleedingShort>Bleeding {0}/d</MI_Prognosis_BleedingShort>
+  <!-- EN: protected -->
+  <MI_Prognosis_ProtectedShort>protected</MI_Prognosis_ProtectedShort>
+  <!-- EN: ~{0}d -->
+  <MI_Prognosis_DaysShort>~{0}d</MI_Prognosis_DaysShort>
+  <!-- EN: ~{0}h -->
+  <MI_Prognosis_HoursShort>~{0}h</MI_Prognosis_HoursShort>
+  <!-- EN: ~{0}min -->
+  <MI_Prognosis_MinutesShort>~{0}min</MI_Prognosis_MinutesShort>
 </LanguageData>

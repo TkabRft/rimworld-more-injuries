@@ -53,6 +53,10 @@ public sealed class HediffComp_Choking : HediffComp, IHediffCompHandler
         return source;
     }
 
+    // Prognosis must not clear or validate the condition's persisted source reference.
+    internal Hediff_Injury? PeekSource() => _source is not null && _source.TryGetTarget(out Hediff_Injury? source)
+        && parent.pawn.health.hediffSet.hediffs.Contains(source) ? source : null;
+
     public void SetSource(Hediff_Injury? value)
     {
         if (value is null)

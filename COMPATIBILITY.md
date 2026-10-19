@@ -21,7 +21,7 @@ If a mod is not explicitly listed here, it is assumed to be compatible with More
 The following mods are officially supported by More Injuries and even integrate directly with its features:
 
 - Biotech (DLC)
-- Combat Extended
+- Combat Extended: MI corrects duplicated stabilization on its injury and missing-part implementations so CE's bleeding multiplier applies once. Prognosis separates current bleeding control held constant from no further tending with CE decay and staged MI hemostasis, including the choking source wound. Suppressed wounds without a reliable baseline receive an uncertain estimate. Spalling is disabled by default; proper CE armor integration is deferred. Live saves and the full game patch chain still require in-game acceptance.
 - Dub's Bad Hygiene
 
 ### Compatible Mods

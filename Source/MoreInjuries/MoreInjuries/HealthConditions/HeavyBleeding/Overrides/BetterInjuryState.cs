@@ -10,8 +10,16 @@ using Verse;
 
 namespace MoreInjuries.HealthConditions.HeavyBleeding.Overrides;
 
-public class BetterInjuryState<TOwner>(TOwner owner) : IExposable, IInjuryState where TOwner : HediffWithComps, IInjuryStateOwner
+public class BetterInjuryState<TOwner>(TOwner owner) : IExposable, IInjuryState, IForecastHemostasis where TOwner : HediffWithComps, IInjuryStateOwner
 {
+    void IForecastHemostasis.CaptureHemostasis(out float constant, out float timedBase, out int remaining, out int duration)
+    {
+        bool timed = IsTemporarilyCoagulated;
+        constant = EffectiveBleedRateMultiplier / (timed ? TemporarilyTamponadedMultiplier : 1f);
+        timedBase = timed ? _temporarilyTamponadedMultiplierBase : 1f;
+        remaining = timed ? RemainingNow : 0;
+        duration = timed ? _reducedBleedRateTicksTotal : 0;
+    }
     private static readonly WeakTimedDataCache<Pawn, IReadOnlyList<HediffCrossInteraction>, TimedDataEntry<IReadOnlyList<HediffCrossInteraction>>> s_crossInteractionCache = new
     (
         minCacheRefreshIntervalTicks: GenTicks.TickRareInterval,
@@ -23,6 +31,16 @@ public class BetterInjuryState<TOwner>(TOwner owner) : IExposable, IInjuryState 
     private int _reducedBleedRateTicksRemaining;
     private int _reducedBleedRateTicksTotal;
     private float _temporarilyTamponadedMultiplierBase = 1;
+    private TimedHemostasisClock _timedClock;
+    private float _timedMultiplier = 1f;
+    private int RemainingNow => _timedClock.RemainingAt(owner.ageTicks);
+
+    private void ScheduleHemostasis()
+    {
+        _timedClock.Reset(_reducedBleedRateTicksTotal, _reducedBleedRateTicksRemaining, owner.ageTicks);
+        _timedMultiplier = TimedHemostasis.Multiplier(_temporarilyTamponadedMultiplierBase, _reducedBleedRateTicksTotal, _reducedBleedRateTicksRemaining);
+        if (owner.pawn is { } pawn) { MoreInjuries.HealthConditions.VitalFailure.VitalFailureComp.For(pawn)?.InvalidateForecast(); }
+    }
 
     public CoagulationFlag CoagulationFlags
     {
@@ -71,13 +89,19 @@ public class BetterInjuryState<TOwner>(TOwner owner) : IExposable, IInjuryState 
         {
             _reducedBleedRateTicksTotal = value;
             _reducedBleedRateTicksRemaining = value;
+            ScheduleHemostasis();
         }
     }
 
     public float TemporarilyTamponadedMultiplierBase
     {
         get => _temporarilyTamponadedMultiplierBase;
-        set => _temporarilyTamponadedMultiplierBase = value;
+        set
+        {
+            _temporarilyTamponadedMultiplierBase = value;
+            _timedMultiplier = TimedHemostasis.Multiplier(value, _reducedBleedRateTicksTotal, _reducedBleedRateTicksRemaining);
+            if (owner.pawn is { } pawn) { MoreInjuries.HealthConditions.VitalFailure.VitalFailureComp.For(pawn)?.InvalidateForecast(); }
+        }
     }
 
     public float TemporarilyTamponadedMultiplier
@@ -88,8 +112,7 @@ public class BetterInjuryState<TOwner>(TOwner owner) : IExposable, IInjuryState 
             {
                 return 1f;
             }
-            float remainingFraction = (float)_reducedBleedRateTicksRemaining / _reducedBleedRateTicksTotal;
-            return Mathf.Lerp(1f, _temporarilyTamponadedMultiplierBase, remainingFraction);
+            return _timedMultiplier;
         }
     }
 
@@ -194,12 +217,18 @@ public class BetterInjuryState<TOwner>(TOwner owner) : IExposable, IInjuryState 
         Scribe_Values.Look(ref _temporarilyTamponadedMultiplierBase, "temporarilyTamponadedMultiplierBase");
         Scribe_Values.Look(ref _coagulationMultiplier, "overriddenBleedRate");
         Scribe_Values.Look(ref _reducedBleedRateTicksTotal, "reducedBleedRateTicksTotal");
-        Scribe_Values.Look(ref _reducedBleedRateTicksRemaining, "reducedBleedRateTicksRemaining", 30000);
+        int remaining = Scribe.mode == LoadSaveMode.Saving ? RemainingNow : _reducedBleedRateTicksRemaining;
+        Scribe_Values.Look(ref remaining, "reducedBleedRateTicksRemaining", 30000);
+        if (Scribe.mode == LoadSaveMode.LoadingVars) { _reducedBleedRateTicksRemaining = remaining; }
+        if (Scribe.mode == LoadSaveMode.PostLoadInit) { ScheduleHemostasis(); }
     }
 
     public void Tick()
     {
-        if (!CoagulationFlags.IsEmpty && _reducedBleedRateTicksRemaining > 0 && --_reducedBleedRateTicksRemaining <= 0)
+        if (CoagulationFlags.IsEmpty || !_timedClock.Advance(owner.ageTicks, out int remaining)) { return; }
+        _reducedBleedRateTicksRemaining = remaining;
+        ScheduleHemostasis();
+        if (_reducedBleedRateTicksRemaining <= 0)
         {
             // revert the multiplier
             TemporarilyTamponadedMultiplierBase = 1;

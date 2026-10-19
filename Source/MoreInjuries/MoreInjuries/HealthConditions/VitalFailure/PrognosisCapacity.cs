@@ -24,7 +24,7 @@ internal static class PrognosisCapacity
             {
                 PrognosisCapacityTerm term = source.CapacityTerms![i];
                 if (term.Capacity != capacity) { continue; }
-                float severity = term.Trend < 0 ? term.Severity : source.Trends![term.Trend].At(ticks);
+                float severity = term.Trend < 0 ? term.Severity : source.Trends![term.Trend].At(ticks, source.HoldBleedingControl);
                 if (severity <= 0f || severity < term.MinimumSeverity || severity >= term.NextSeverity) { continue; }
                 value += term.Offset; factor *= term.Factor; maximum = Math.Min(maximum, term.Maximum);
             }
