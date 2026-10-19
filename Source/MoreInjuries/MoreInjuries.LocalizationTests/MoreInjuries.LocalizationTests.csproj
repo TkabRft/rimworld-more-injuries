@@ -8,6 +8,19 @@
     </PropertyGroup>
 
     <ItemGroup>
+    <Compile Include="..\MoreInjuries\AI\MedicalTiming.cs" Link="RuntimeContracts\Production\MedicalTiming.cs" />
+    <Compile Include="..\MoreInjuries\AI\EmergencyTravel.cs" Link="RuntimeContracts\Production\EmergencyTravel.cs" />
+    <Compile Include="..\MoreInjuries\AI\EmergencyPriority.cs" Link="RuntimeContracts\Production\EmergencyPriority.cs" />
+    <Compile Include="..\MoreInjuries\HealthConditions\HeavyBleeding\TimedHemostasis.cs" Link="Production\TimedHemostasis.cs" />
+
+        <Compile Include="..\MoreInjuries\AI\EmergencyCare.cs" Link="RuntimeContracts\Production\EmergencyCare.cs" />
+        <Compile Include="..\MoreInjuries\Integrations\CombatExtended\CombatExtendedTreatment.cs" Link="RuntimeContracts\Production\CombatExtendedTreatment.cs" />
+        <Compile Include="..\MoreInjuries\Integrations\CombatExtended\CombatExtendedBleedingHooks.cs" Link="RuntimeContracts\Production\CombatExtendedBleedingHooks.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\HeavyBleeding\Overrides\IForecastHemostasis.cs" Link="RuntimeContracts\Production\IForecastHemostasis.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\PrognosisChoking.cs" Link="RuntimeContracts\Production\PrognosisChoking.cs" />
+        <Compile Include="..\MoreInjuries\Integrations\CombatExtended\CombatExtendedBridge.cs" Link="RuntimeContracts\Production\CombatExtendedBridge.cs" />
+        <Compile Include="..\MoreInjuries\Integrations\SupportedMods.cs" Link="RuntimeContracts\Production\SupportedMods.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\PrognosisBleeding.cs" Link="RuntimeContracts\Production\PrognosisBleeding.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\NativeExposureModel.cs" Link="RuntimeContracts\Production\NativeExposureModel.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\PrognosisFailures.cs" Link="RuntimeContracts\Production\PrognosisFailures.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\PrognosisTrend.cs" Link="RuntimeContracts\Production\PrognosisTrend.cs" />

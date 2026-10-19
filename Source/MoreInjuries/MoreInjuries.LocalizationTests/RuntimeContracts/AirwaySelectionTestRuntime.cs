@@ -2,11 +2,11 @@ using Verse;
 
 namespace Verse
 {
-    public sealed class Map;
+    public sealed class Map { public readonly Verse.AI.PathFinder pathFinder = new(); }
     public partial class Thing
     {
         public Map? Map, MapHeld;
-        public int PositionHeld;
+        public IntVec3 PositionHeld;
         public bool Forbidden, Reservable = true;
         public bool IsForbidden(Pawn pawn) => Forbidden;
     }
@@ -15,7 +15,8 @@ namespace Verse
         public Thing? CarriedDevice;
         public bool CanReserve(Thing thing, int count, int stackCount) => thing.Reservable;
     }
-    public readonly struct ThingRequest { public static ThingRequest ForDef(ThingDef def) => new(); }
+    public readonly struct ThingRequest
+    { public static ThingRequest ForDef(ThingDef def) => new(); public static ThingRequest ForGroup(ThingRequestGroup group) => new(); }
     public readonly struct TraverseParms { public static TraverseParms For(Pawn pawn) => new(); }
     public static class GenClosest
     {
@@ -35,7 +36,7 @@ namespace Verse
 namespace Verse.AI { public enum PathEndMode { ClosestTouch } }
 namespace MoreInjuries.Things
 {
-    public static class MedicalDeviceHelper
+    public static partial class MedicalDeviceHelper
     {
         public const int MAX_MEDICAL_DEVICE_RESERVATIONS = 10;
         public static Thing? FindMedicalDevice(Pawn doctor, Pawn patient, ThingDef def, HediffDef[] targets, bool fromInventoryOnly)
@@ -51,7 +52,7 @@ namespace MoreInjuries
 }
 namespace MoreInjuries.Defs.WellKnown
 {
-    public static class KnownResearchProjectDefOf
+    public static partial class KnownResearchProjectDefOf
     {
         public static readonly ResearchDef EmergencyMedicine = new();
     }

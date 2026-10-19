@@ -97,6 +97,7 @@ Do not copy mechanic numbers into this router. Internal refactors with unchanged
 From the workspace root, `Custom\Scripts\Build.ps1 -Target MoreInjuries`. That runs `dotnet build Source\MoreInjuries\MoreInjuries\MoreInjuries.csproj -c Release` from this mod root. Do not run raw `dotnet build`. Do not use Debug (it requires `BadHygiene.dll`). Do not run `deploy.ps1`.
 
 - Tests, only if behavior under test changed: `dotnet test Source\MoreInjuries\MoreInjuries.sln -c Test`
+- Real Harmony bleeding-hook fixtures: `dotnet test Source/MoreInjuries/MoreInjuries.HarmonyTests/MoreInjuries.HarmonyTests.csproj` (`net48`, pinned Harmony 2.3.6; no game implementation assemblies).
 - Localization, only if keyed strings or def injections changed: `dotnet test Source\MoreInjuries\MoreInjuries.LocalizationTests\MoreInjuries.LocalizationTests.csproj`
 - XML-only edits: no build. Check the edited def name is referenced consistently.
 

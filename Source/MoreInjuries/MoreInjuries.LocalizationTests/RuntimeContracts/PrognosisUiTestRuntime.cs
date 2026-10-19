@@ -17,8 +17,9 @@ namespace Verse
     {
         public static UnityEngine.Color WindowBGFillColor = new(2);
         public static int Draws;
+        public static string LastLabel = "";
         public static void DrawBoxSolid(UnityEngine.Rect rect, UnityEngine.Color color) => Draws++;
-        public static void Label(UnityEngine.Rect rect, string label) => Draws++;
+        public static void Label(UnityEngine.Rect rect, string label) { LastLabel = Draws <= 1 ? label : LastLabel + " | " + label; Draws++; }
     }
     public static class TooltipHandler
     {

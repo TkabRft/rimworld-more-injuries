@@ -10,11 +10,12 @@ namespace Verse
         public int MedicalSkill = 10;
     }
 
-    public sealed class ThingDef
+    public sealed partial class ThingDef
     {
         public string defName = "test device";
         public JobOutcomeProperties_ModExtension Extension = new();
-        public T? GetModExtension<T>() where T : class => Extension as T;
+        public object? Hemostasis;
+        public T? GetModExtension<T>() where T : class => Extension as T ?? Hemostasis as T;
     }
 
     public partial class Thing

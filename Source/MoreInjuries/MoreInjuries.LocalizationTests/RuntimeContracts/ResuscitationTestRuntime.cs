@@ -11,7 +11,7 @@ namespace Verse
 namespace Verse.AI
 {
     public sealed partial class Job { public object def = new(); public int count; public object? source; }
-    public static class JobMaker { public static Job MakeJob(object def, params object[] targets) => new() { def = def }; }
+    public static class JobMaker { public static Job MakeJob(object def, params object[] targets) => new() { def = def, Targets = targets }; }
 }
 namespace UnityEngine
 {
@@ -63,9 +63,9 @@ namespace MoreInjuries.Things
 }
 namespace MoreInjuries.Defs.WellKnown
 {
-    public static class KnownThingDefOf { public static readonly ThingDef Defibrillator = new(); public static readonly ThingDef SuctionDevice = new(); }
+    public static partial class KnownThingDefOf { public static readonly ThingDef Defibrillator = new(); public static readonly ThingDef SuctionDevice = new(); }
     public static class KnownSoundDefOf { public static readonly object PerformCpr = new(); public static readonly object Defibrillator = new(); public static readonly object UseSuctionDevice = new(); }
-    public static class KnownJobDefOf { public static readonly object PerformCpr = new(); public static readonly object UseDefibrillator = new(); public static readonly object UseSuctionDevice = new(); }
+    public static partial class KnownJobDefOf { public static readonly JobDef PerformCpr = new(); public static readonly JobDef UseDefibrillator = new(); public static readonly JobDef UseSuctionDevice = new(); }
 }
 namespace RimWorld
 {

@@ -163,7 +163,7 @@ public sealed class PhysiologyPrognosisTests
         Current.ProgramState = ProgramState.Playing;
         Assert.AreEqual(0, Widgets.Draws); Assert.AreEqual(reads, pawn.health.hediffSet.CapacityReads);
         GUI.color = new(7); Patch_PhysiologyDeathEstimate.Postfix(new(0, 0, 300, 600), pawn, true);
-        Assert.AreEqual(2, Widgets.Draws); Assert.AreEqual(new Color(7), GUI.color);
+        Assert.AreEqual(3, Widgets.Draws); Assert.AreEqual(new Color(7), GUI.color);
         string source = File.ReadAllText(Path.Combine(RuntimeDefinitionTests.ModRoot, "Source/MoreInjuries/MoreInjuries/Patches/Patch_PhysiologyDeathEstimate.cs"));
         Assert.DoesNotContain("TicksUntilDeathDueToBloodLoss", source);
         OpenHealth(null);
@@ -200,7 +200,7 @@ public sealed class PhysiologyPrognosisTests
         Assert.AreEqual(0, Widgets.Draws);
         Pawn selected = patients[0]; OpenHealth(selected);
         Patch_PhysiologyDeathEstimate.Postfix(new(0, 0, 300, 600), selected, true);
-        Assert.AreEqual(2, Widgets.Draws);
+        Assert.AreEqual(3, Widgets.Draws);
         int cached = selected.health.hediffSet.CapacityReads;
         string tooltip = selected.Vital!.PrognosisTooltip;
         Find.TickManager.TicksGame += 10;

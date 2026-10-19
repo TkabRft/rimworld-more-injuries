@@ -15,12 +15,11 @@ namespace Verse
         }
     }
 
-    public class HediffWithComps
+    public class HediffWithComps : Hediff
     {
         protected float severityInt;
-        public HediffDef def = null!;
-        public Pawn? pawn;
-        public float Severity
+        public List<HediffComp> comps => TestComps;
+        public new float Severity
         {
             get => severityInt;
             set

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\MoreInjuries\HealthConditions\HeavyBleeding\TimedHemostasis.cs" Link="Production\TimedHemostasis.cs" />
+
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+    <PackageReference Include="MSTest" Version="4.2.2" />
+    <PackageReference Include="Lib.Harmony" Version="2.3.6" />
+    <Compile Include="..\MoreInjuries\Integrations\CombatExtended\CombatExtendedBleedingHooks.cs" Link="Production\CombatExtendedBleedingHooks.cs" />
+    <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\PrognosisBleeding.cs" Link="Production\PrognosisBleeding.cs" />
+  </ItemGroup>
+</Project>

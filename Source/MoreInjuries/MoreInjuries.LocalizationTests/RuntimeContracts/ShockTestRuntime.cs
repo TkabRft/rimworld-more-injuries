@@ -10,6 +10,8 @@ namespace Verse
 
     public partial class Hediff
     {
+        public float TestBleedRate;
+        public virtual float BleedRate => TestBleedRate;
         public HediffDef def = null!;
         public string Label => def.Label;
         public List<HediffComp> TestComps = [];
@@ -50,6 +52,8 @@ namespace Verse
 
     public static class ModsConfig
     {
+        public static bool CombatExtendedActive;
+        public static bool IsActive(string id) => CombatExtendedActive && id == "CETeam.CombatExtended";
         public static bool AnomalyActive;
         public static bool BiotechActive;
     }
@@ -117,7 +121,7 @@ namespace RimWorld
 
 namespace MoreInjuries.Defs.WellKnown
 {
-    public static class KnownHediffDefOf
+    public static partial class KnownHediffDefOf
     {
         public static readonly Verse.HediffDef AdrenalineRush = new();
         public static readonly Verse.HediffDef Acidosis = new() { Label = "acidosis" };

@@ -50,6 +50,7 @@ namespace Verse
     }
     public sealed partial class Pawn
     {
+        public float HealthScale = 1f;
         public bool IsShambler;
         public VitalFailureComp? Vital;
         public T? TryGetComp<T>() where T : class => Vital as T;
@@ -61,6 +62,7 @@ namespace Verse
     public sealed class BodyPartDef { public List<BodyPartTagDef> tags = []; public float MaxHealth = 10; public float GetMaxHealth(Pawn pawn) => MaxHealth; }
     public sealed class BodyPartRecord
     {
+        public BodyPartDepth depth;
         public BodyPartDef def = new();
         public bool Missing;
         public float Efficiency = 1f;
@@ -119,6 +121,7 @@ namespace Verse
     }
     public sealed partial class HealthTracker
     {
+        public bool CanBleed = true;
         public PawnCapacitiesHandler capacities = new();
         public Action? OnChanged;
         public Hediff AddHediff(HediffDef def, BodyPartRecord? part = null)
@@ -151,6 +154,8 @@ namespace Verse
     public sealed class PawnCapacitiesHandler
     {
         public readonly HashSet<PawnCapacityDef> Incapable = [];
+        public readonly Dictionary<PawnCapacityDef, float> Levels = [];
+        public float GetLevel(PawnCapacityDef def) => Levels.TryGetValue(def, out float value) ? value : 1f;
         public void Notify_CapacityLevelsDirty() { }
         public bool CapableOf(PawnCapacityDef def) => !Incapable.Contains(def);
     }
@@ -165,6 +170,7 @@ namespace RimWorld
 {
     public static class PawnCapacityDefOf
     {
+        public static readonly Verse.PawnCapacityDef Manipulation = new(), Sight = new();
         public static readonly Verse.PawnCapacityDef Consciousness = new();
         public static readonly Verse.PawnCapacityDef Breathing = new();
         public static readonly Verse.PawnCapacityDef BloodPumping = new();

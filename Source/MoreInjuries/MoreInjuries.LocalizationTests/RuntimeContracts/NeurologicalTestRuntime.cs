@@ -6,9 +6,9 @@ using MoreInjuries.HealthConditions.VitalFailure;
 
 namespace HarmonyLib
 {
-    public static class AccessTools
+    public static partial class AccessTools
     {
-        public static FieldInfo Field(Type type, string name) => type.GetField(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)!;
+        public static FieldInfo Field(Type type, string name) => type.GetField(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)!;
         public delegate ref F FieldRef<T, F>(T instance);
         public static FieldRef<T, F> FieldRefAccess<T, F>(string name) => (FieldRef<T, F>)(object)(FieldRef<Verse.HediffComp_TendDuration, int>)TendTicks;
         private static ref int TendTicks(Verse.HediffComp_TendDuration tend) => ref tend.tendTicksLeft;
@@ -39,7 +39,17 @@ namespace Verse
         public Verse.AI.Job? CurJob;
         public int HashOffsetTicks() => Tick + HashOffset;
     }
-    public sealed partial class HediffSet { public float BleedRateTotal; }
+    public sealed partial class HediffSet
+    {
+        private float _bleedRateTotal;
+        public bool NativeBleeding;
+        public float AggregateBleedFactor = 1f;
+        public float BleedRateTotal
+        {
+            get => NativeBleeding ? pawn.health.CanBleed ? hediffs.Sum(hediff => hediff.BleedRate) * AggregateBleedFactor / pawn.HealthScale : 0f : _bleedRateTotal;
+            set => _bleedRateTotal = value;
+        }
+    }
     public sealed class PlayerSettings { public RimWorld.MedicalCareCategory medCare = RimWorld.MedicalCareCategory.Best; }
     public sealed partial class JobTracker { public int Ended; public void EndCurrentJob(Verse.AI.JobCondition condition) => Ended++; }
     public partial class Hediff
@@ -73,7 +83,12 @@ namespace Verse
     }
     public static partial class Find { public static LetterStack LetterStack = new(); }
     public sealed class LetterStack { public List<string> Texts = []; public void ReceiveLetter(string title, string text, object type) => Texts.Add(text); }
-    public static class Log { public static void Error(string error) { } }
+    public static class Log
+    {
+        public static int Warnings;
+        public static void Error(string error) { }
+        public static void Warning(string warning) => Warnings++;
+    }
 
 }
 namespace Verse.AI { public sealed partial class Job { public RimWorld.Bill? bill; } }

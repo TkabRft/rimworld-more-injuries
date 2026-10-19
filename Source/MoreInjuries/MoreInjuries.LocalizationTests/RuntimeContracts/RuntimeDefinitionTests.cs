@@ -20,7 +20,10 @@ public sealed class RuntimeDefinitionTests
         MetadataReader metadata = reader.GetMetadataReader();
         var expected = new Dictionary<string, string[]>
         {
-            ["Verse.Pawn_HealthTracker"] = ["CheckForStateChange", "ShouldBeDeadFromRequiredCapacity", "HealthTickInterval", "Notify_Resurrected", "AddHediff"],
+            ["Verse.Pawn_HealthTracker"] = ["CheckForStateChange", "ShouldBeDeadFromRequiredCapacity", "HealthTickInterval", "Notify_Resurrected", "AddHediff", "get_CanBleed"],
+            ["Verse.HediffSet"] = ["get_BleedRateTotal"],
+            ["Verse.Pawn"] = ["get_HealthScale"],
+            ["Verse.Hediff_MissingPart"] = ["get_BleedRate"],
             ["RimWorld.Pawn_MutantTracker"] = ["Turn", "Revert"],
             ["RimWorld.Pawn_GeneTracker"] = ["Notify_GenesChanged"],
             ["Verse.ModContentPack"] = ["get_Patches"],
@@ -32,7 +35,7 @@ public sealed class RuntimeDefinitionTests
             ["Verse.HediffComp_Immunizable"] = ["SeverityChangePerDay"],
             ["Verse.ImmunityRecord"] = ["ImmunityChangePerTick"],
             ["Verse.Hediff"] = ["CauseDeathNow"],
-            ["Verse.Hediff_Injury"] = ["Heal"],
+            ["Verse.Hediff_Injury"] = ["Heal", "get_BleedRate"],
             ["RimWorld.PawnCapacityWorker_BloodPumping"] = ["CalculateCapacityLevel"]
         };
         foreach (TypeDefinitionHandle handle in metadata.TypeDefinitions)
@@ -108,6 +111,46 @@ public sealed class RuntimeDefinitionTests
                 Assert.IsTrue(document.Root.Elements("NeedDef").Any(def => def.Element("defName")?.Value == need));
             }
         }
+    }
+
+    [TestMethod]
+    public void CeDetoursAreInstalledByMainThreadStartupInsteadOfBackgroundModConstruction()
+    {
+        string assembly = Path.Combine(ModRoot, "Source", "MoreInjuries", "artifacts", "bin", "MoreInjuries", "release", "MoreInjuries.dll");
+        using PEReader reader = new(File.OpenRead(assembly));
+        MetadataReader metadata = reader.GetMetadataReader();
+        TypeDefinition Type(string name) => metadata.TypeDefinitions.Select(metadata.GetTypeDefinition)
+            .Single(type => metadata.GetString(type.Namespace) + "." + metadata.GetString(type.Name) == name);
+        MethodDefinitionHandle Method(TypeDefinition type, string name) => type.GetMethods()
+            .Single(handle => metadata.GetString(metadata.GetMethodDefinition(handle).Name) == name);
+        int CallOffset(MethodDefinitionHandle caller, MethodDefinitionHandle callee)
+        {
+            // Both startup calls are direct calls into the same compiled assembly. Never load it:
+            // loading game/Unity types in the test runner would itself trigger static initialization.
+            int token = System.Reflection.Metadata.Ecma335.MetadataTokens.GetToken(callee);
+            byte[] call = [0x28, .. BitConverter.GetBytes(token)];
+            MethodDefinition method = metadata.GetMethodDefinition(caller);
+            return reader.GetMethodBody(method.RelativeVirtualAddress).GetILContent().AsSpan().IndexOf(call);
+        }
+        TypeDefinition bridge = Type("MoreInjuries.Integrations.CombatExtended.CombatExtendedBridge");
+        MethodDefinitionHandle initialize = Method(bridge, "Initialize"), verify = Method(bridge, "VerifyRegistration");
+        MethodDefinitionHandle modConstructor = Method(Type("MoreInjuries.MoreInjuriesMod"), ".ctor");
+        Assert.AreEqual(-1, CallOffset(modConstructor, initialize), "Mod constructors run on RimWorld's background loading thread.");
+        Assert.AreEqual(-1, CallOffset(modConstructor, verify));
+        TypeDefinition startup = Type("MoreInjuries.Initialization.CombatExtended_Initializer");
+        Assert.IsTrue(startup.GetCustomAttributes().Any(handle =>
+        {
+            CustomAttribute attribute = metadata.GetCustomAttribute(handle);
+            if (attribute.Constructor.Kind != HandleKind.MemberReference) { return false; }
+            EntityHandle parent = metadata.GetMemberReference((MemberReferenceHandle)attribute.Constructor).Parent;
+            if (parent.Kind != HandleKind.TypeReference) { return false; }
+            TypeReference type = metadata.GetTypeReference((TypeReferenceHandle)parent);
+            return metadata.GetString(type.Namespace) == "Verse" && metadata.GetString(type.Name) == "StaticConstructorOnStartup";
+        }), "CE detouring must use RimWorld's main-thread startup lifecycle.");
+        MethodDefinitionHandle startupConstructor = Method(startup, ".cctor");
+        int initialization = CallOffset(startupConstructor, initialize);
+        Assert.IsTrue(initialization >= 0);
+        Assert.IsTrue(CallOffset(startupConstructor, verify) > initialization, "Verify CE registration only after binding and installing MI observers.");
     }
 
     [TestMethod]
