@@ -125,10 +125,6 @@ internal static class NpcMedicalGeneration
             if (!skill.TotallyDisabled && skill.Level < profile.MedicalSkillFloor) { skill.Level = profile.MedicalSkillFloor; }
         }
         Dictionary<ThingDef, int> counts = rolledKit ?? RollKit(profile, medic, strength);
-        if (HasPerformanceDrug(pawn))
-        {
-            foreach (ThingDef def in counts.Keys.Where(IsPerformance).ToList()) { counts.Remove(def); }
-        }
         NpcMedicalSpace space = NpcMedicalCompatibility.Space(pawn);
         Dictionary<ThingDef, int> allocation = Loadout(pawn, counts).Allocate(space);
         foreach (KeyValuePair<ThingDef, int> entry in allocation)
@@ -137,7 +133,7 @@ internal static class NpcMedicalGeneration
         {
             Logger.Log($"More Injuries NPC medicine: medic capacity before kit={space.Mass:0.00} kg/{space.Bulk:0.00} bulk; requested={counts.Values.Sum()}, granted={allocation.Values.Sum()} units.");
         }
-        AddExtras(pawn, profile, strength);
+        AddExtras(pawn, profile, strength, counts);
     }
 
     private static Dictionary<ThingDef, int> RollKit(NpcMedicalProfileDef profile, bool medic, float strength)
@@ -149,14 +145,21 @@ internal static class NpcMedicalGeneration
         { Roll(choices.RandomElement()); }
         void Roll(NpcMedicalItem entry)
         {
-            if (entry.ThingDef is ThingDef drug && IsPerformance(drug)
-                && (!MoreInjuriesMod.Settings.NpcPerformanceDrugs || MoreInjuriesMod.Settings.NpcDrugSelection == 2)) { return; }
+            if (entry.ThingDef is ThingDef drug && !NpcMedicalDrugs.GrantAllowed(drug)
+                && !(drug == KnownThingDefOf.Morphine && MoreInjuriesMod.Settings.NpcDrugSelection != 2
+                    && NpcMedicalDrugs.Stim(profile.TechLevel) is not null)) { return; }
             if (!Rand.Chance(entry.Chance)) { return; }
             int count = entry.Count.RandomInRange;
             if (!entry.Unscaled) { count = NpcMedicalModel.Quantity(count, MoreInjuriesMod.Settings.NpcSupplyMultiplier, strength); }
             if (entry.Fluid)
             {
                 for (int i = 0; i < count; i++) { Add(NpcMedicalModel.Saline(Rand.Value) ? KnownThingDefOf.SalineBag : Blood, 1); }
+            }
+            else if (entry.ThingDef == KnownThingDefOf.Morphine && NpcMedicalDrugs.Stim(profile.TechLevel) is ThingDef stim)
+            {
+                int replacement = NpcDrugProvisioning.RestorativeShare(count, medic, !medic && count == 1 && Rand.Chance(.5f));
+                Add(stim, replacement);
+                if (NpcMedicalDrugs.GrantAllowed(entry.ThingDef)) { Add(entry.ThingDef, count - replacement); }
             }
             else if (entry.ThingDef is not null) { Add(entry.ThingDef, count); }
         }
@@ -172,17 +175,18 @@ internal static class NpcMedicalGeneration
             Thing sample = ThingMaker.MakeThing(entry.Key);
             try
             {
-                bool essential = !IsPerformance(entry.Key) && entry.Key != KnownThingDefOf.Ketamine
+                bool clinical = NpcMedicalDrugs.Clinical(entry.Key);
+                bool essential = !clinical && !IsPerformance(entry.Key) && entry.Key != KnownThingDefOf.Ketamine
                     && entry.Key != KnownThingDefOf.Chloroform;
                 items.Add(new(entry.Key, entry.Value, Count(pawn, entry.Key), sample.GetStatValue(StatDefOf.Mass),
-                    NpcMedicalCompatibility.Bulk(sample), essential, Priority(entry.Key)));
+                    NpcMedicalCompatibility.Bulk(sample), essential, Priority(entry.Key), clinical));
             }
             finally { sample.Destroy(); }
         }
         return new(items);
     }
 
-    private static void AddExtras(Pawn pawn, NpcMedicalProfileDef profile, float strength)
+    private static void AddExtras(Pawn pawn, NpcMedicalProfileDef profile, float strength, Dictionary<ThingDef, int> clinicalTargets)
     {
         if (Rand.Chance(MoreInjuriesMod.Settings.NpcScavengingChance))
         {
@@ -192,30 +196,36 @@ internal static class NpcMedicalGeneration
             {
                 NpcMedicalProfileDef next = DefDatabase<NpcMedicalProfileDef>.AllDefsListForReading
                     .Where(def => def.TechLevel > profile.TechLevel).OrderBy(def => def.TechLevel).FirstOrDefault() ?? profile;
-                List<NpcMedicalItem> options = next.Personal.Where(item => !item.Reusable).ToList();
+                List<NpcMedicalItem> options = next.Personal.Where(item => !item.Reusable
+                    && (item.ThingDef is null || NpcMedicalDrugs.GrantAllowed(item.ThingDef))).ToList();
                 List<ThingDef> drugs = MoreInjuriesMod.Settings.NpcPerformanceDrugs && MoreInjuriesMod.Settings.NpcDrugSelection != 2
                     ? next.PerformanceDrugs.Where((_, index) => next.PerformanceWeights[index] > 0f).ToList() : [];
-                int roll = Rand.Range(0, options.Count + drugs.Count);
-                if (roll >= options.Count) { scavenged = drugs[roll - options.Count]; }
+                int roll = options.Count + drugs.Count == 0 ? -1 : Rand.Range(0, options.Count + drugs.Count);
+                if (roll < 0) { scavenged = null; }
+                else if (roll >= options.Count) { scavenged = drugs[roll - options.Count]; }
                 else
                 {
                     NpcMedicalItem choice = options[roll];
                     scavenged = choice.Fluid ? NpcMedicalModel.Saline(Rand.Value) ? KnownThingDefOf.SalineBag : Blood : choice.ThingDef;
                 }
             }
-            if (scavenged is not null && (!IsPerformance(scavenged) || !HasPerformanceDrug(pawn)))
+            if (scavenged is not null && NpcMedicalDrugs.GrantAllowed(scavenged))
             { TopUp(pawn, scavenged, Count(pawn, scavenged) + 1); }
         }
         MoreInjuriesSettings settings = MoreInjuriesMod.Settings;
-        if (!settings.NpcPerformanceDrugs || settings.NpcDrugSelection == 2 || HasPerformanceDrug(pawn)
+        if (!settings.NpcPerformanceDrugs || settings.NpcDrugSelection == 2
             || !Rand.Chance(NpcMedicalModel.Interpolate(profile.PerformanceChance.min, profile.PerformanceChance.max, strength) * settings.NpcPerformancePrevalence)) { return; }
         ThingDef? performance = settings.NpcDrugSelection == 1 ? KnownThingDefOf.Morphine : SelectDrug(profile);
-        if (performance is not null) { TopUp(pawn, performance, 1); }
+        if (performance is null) { return; }
+        int reserve = NpcMedicalModel.Quantity(profile.PerformanceCount.RandomInRange, settings.NpcSupplyMultiplier, strength);
+        clinicalTargets.TryGetValue(KnownThingDefOf.Morphine, out int clinicalMorphine);
+        int existing = pawn.inventory.innerContainer.Where(thing => IsPerformance(thing.def)
+            || thing.TryGetComp<CompDrug>()?.Props.isCombatEnhancingDrug == true).Sum(thing => thing.stackCount);
+        int missing = NpcDrugProvisioning.MissingBoosters(reserve, existing, Count(pawn, KnownThingDefOf.Morphine), clinicalMorphine);
+        TopUp(pawn, performance, Count(pawn, performance) + missing);
     }
 
-    internal static bool IsPerformance(ThingDef def) => def == KnownThingDefOf.Morphine || def.defName is "Yayo" or "GoJuice";
-    internal static bool HasPerformanceDrug(Pawn pawn) => pawn.inventory.innerContainer.Any(thing => IsPerformance(thing.def)
-        || thing.TryGetComp<CompDrug>()?.Props.isCombatEnhancingDrug == true);
+    internal static bool IsPerformance(ThingDef def) => NpcMedicalDrugs.Booster(def);
     private static ThingDef? SelectDrug(NpcMedicalProfileDef profile)
     {
         float total = profile.PerformanceWeights.Sum();

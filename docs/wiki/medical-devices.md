@@ -32,6 +32,18 @@ MI includes a compatibility fix for an inventory-tab crash in Nice Inventory Tab
 
 Performance drugs default to technology-scaled choices, one dose per engagement, a 20,000-tick minimum interval, and use by 100% of eligible carriers. Settings also offer **Prefer cheap morphine** and **Existing provisioning only**, a 0–100% use chance, 0–3 doses per engagement and a 0–60,000-tick interval. An engagement ends after 2,500 ticks without a relevant threat; the minimum interval still applies afterward. Morphine is a cheaper loadout alternative to yayo or go-juice, with different effects: it can suppress pain but also causes sedation, addiction and respiratory risks. NPCs do not treat it as an interchangeable stimulant and avoid automatic use when their physiology is unsafe. Existing drugs are retained, and normal drug effects, tolerance and genes still apply.
 
+Newly equipped Industrial, Spacer and Ultra pawns have separate clinical reserves and a chance of booster supplies. These are baseline inventory targets before the supply multiplier and the increase for higher-point groups:
+
+| Technology | Ordinary pain-relief reserve | Medic pain-relief reserve | Booster reserve, when selected |
+|---|---:|---:|---:|
+| Industrial | 1 | 2 | 1 |
+| Spacer | 1 | 4 | 1 |
+| Ultra | 2 | 6 | 2 |
+
+Baseline clinical reserves use morphine. The default booster choices shift from mostly yayo toward go-juice as technology rises; **Prefer cheap morphine** supplies morphine for that separate booster reserve. Existing supplies count toward their targets, and an existing booster does not cancel a medic's clinical reserve. Carrying more doses does not increase the number NPCs may take per engagement. No separate pawn-quality ranking is added.
+
+With **Det?s Battle Meds** enabled, early personal kits may carry one herbal powder; Neolithic and Medieval medics start with one and two respectively. Advanced medics replace half their scaled clinical reserve with industrial stimpacks, or glitter stimpacks at Ultra technology. A one-dose advanced personal reserve has an equal chance of morphine or its tier's stimpack; the baseline Ultra personal reserve has one of each. The MBH shot receives a 20% share of advanced booster selections. Capacity can reduce every grant.
+
 **Clinical pain care** is enabled by default. NPCs can use available morphine, yayo or go-juice before pain incapacitates them, and a capable nearby helper can assist a pawn downed by pain even without bleeding or tendable wounds. **Preventive pain trigger** defaults to 50% of each patient's own pain-shock threshold and is adjustable from 0–100%. Pain immunity needs no treatment. Pain collapse is an emergency under the existing friendly, neutral and player-care settings; other causes of collapse still need their own care, and pain relief may not get a seriously injured pawn standing. Existing life-threatening emergencies come first.
 
 Clinical pain care checks whether one more dose will actually reduce pain. Different active drugs can multiply their pain relief, but repeating the same drug without improving its current analgesic effect is skipped. There is no pain-dose timer: existing effects and safety determine when another dose is useful. NPCs reject unsafe sedation, overdose exposure and depressant combinations. Morphine remains a cheaper loadout option with distinct addiction, breathing and circulation risks; significant blood loss, shock or already depressed vital functions can make it unsuitable even when it is available. Carrying a painkiller does not guarantee that taking it is safe.

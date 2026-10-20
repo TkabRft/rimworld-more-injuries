@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcDrugProvisioning.cs" Link="Production\NpcDrugProvisioning.cs" />
         <Compile Include="..\MoreInjuries\AI\Jobs\Outcomes\JobOutcomeDoer_FactionRelations.cs" Link="RuntimeContracts\Production\JobOutcomeDoer_FactionRelations.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\PrognosisConditionPolicy.cs" Link="RuntimeContracts\Production\PrognosisConditionPolicy.cs" />
         <Compile Include="..\MoreInjuries\Logging\Logger.cs" Link="RuntimeContracts\Production\Logger.cs" />

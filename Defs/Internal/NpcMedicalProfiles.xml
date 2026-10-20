@@ -16,6 +16,10 @@
         <count>0~2</count>
         <thingDef>MedicineHerbal</thingDef>
       </li>
+      <li MayRequire="det.battlemeds">
+        <count>0~1</count>
+        <thingDef>HerbalPowder</thingDef>
+      </li>
     </personal>
     <medic>
       <li>
@@ -35,6 +39,10 @@
         <chance>0.25</chance>
         <unscaled>true</unscaled>
         <thingDef>Chloroform</thingDef>
+      </li>
+      <li MayRequire="det.battlemeds">
+        <count>1</count>
+        <thingDef>HerbalPowder</thingDef>
       </li>
     </medic>
   </MoreInjuries.AI.NpcCombatMedicine.NpcMedicalProfileDef>
@@ -57,6 +65,10 @@
       <li>
         <count>0~1</count>
         <thingDef>Tourniquet</thingDef>
+      </li>
+      <li MayRequire="det.battlemeds">
+        <count>0~1</count>
+        <thingDef>HerbalPowder</thingDef>
       </li>
     </personal>
     <medic>
@@ -82,6 +94,10 @@
         <unscaled>true</unscaled>
         <thingDef>Chloroform</thingDef>
       </li>
+      <li MayRequire="det.battlemeds">
+        <count>2</count>
+        <thingDef>HerbalPowder</thingDef>
+      </li>
     </medic>
   </MoreInjuries.AI.NpcCombatMedicine.NpcMedicalProfileDef>
   <MoreInjuries.AI.NpcCombatMedicine.NpcMedicalProfileDef>
@@ -91,6 +107,7 @@
     <medicChance>.06~.10</medicChance>
     <medicalSkillFloor>8</medicalSkillFloor>
     <performanceChance>.20~.40</performanceChance>
+    <performanceCount>1</performanceCount>
     <personal>
       <li>
         <count>2</count>
@@ -115,6 +132,10 @@
       <li>
         <count>0~1</count>
         <thingDef>Epinephrine</thingDef>
+      </li>
+      <li>
+        <count>1</count>
+        <thingDef>Morphine</thingDef>
       </li>
     </personal>
     <medic>
@@ -147,8 +168,7 @@
         <thingDef>Epinephrine</thingDef>
       </li>
       <li>
-        <count>1</count>
-        <unscaled>true</unscaled>
+        <count>2</count>
         <thingDef>Morphine</thingDef>
       </li>
       <li>
@@ -173,14 +193,14 @@
       </li>
     </medic>
     <performanceDrugs>
-      <li>Morphine</li>
       <li>Yayo</li>
       <li>GoJuice</li>
+      <li MayRequire="det.battlemeds">DV_AdrenalineShot</li>
     </performanceDrugs>
     <performanceWeights>
-      <li>70</li>
-      <li>25</li>
-      <li>5</li>
+      <li>85</li>
+      <li>15</li>
+      <li MayRequire="det.battlemeds">25</li>
     </performanceWeights>
   </MoreInjuries.AI.NpcCombatMedicine.NpcMedicalProfileDef>
   <MoreInjuries.AI.NpcCombatMedicine.NpcMedicalProfileDef>
@@ -190,6 +210,7 @@
     <medicChance>.08~.12</medicChance>
     <medicalSkillFloor>10</medicalSkillFloor>
     <performanceChance>.25~.50</performanceChance>
+    <performanceCount>1</performanceCount>
     <personal>
       <li>
         <count>2</count>
@@ -214,6 +235,10 @@
       <li>
         <count>1</count>
         <thingDef>Epinephrine</thingDef>
+      </li>
+      <li>
+        <count>1</count>
+        <thingDef>Morphine</thingDef>
       </li>
     </personal>
     <medic>
@@ -246,8 +271,7 @@
         <thingDef>Epinephrine</thingDef>
       </li>
       <li>
-        <count>1</count>
-        <unscaled>true</unscaled>
+        <count>4</count>
         <thingDef>Morphine</thingDef>
       </li>
       <li>
@@ -268,14 +292,14 @@
       </li>
     </medic>
     <performanceDrugs>
-      <li>Morphine</li>
       <li>Yayo</li>
       <li>GoJuice</li>
+      <li MayRequire="det.battlemeds">DV_AdrenalineShot</li>
     </performanceDrugs>
     <performanceWeights>
-      <li>20</li>
-      <li>50</li>
-      <li>30</li>
+      <li>60</li>
+      <li>40</li>
+      <li MayRequire="det.battlemeds">25</li>
     </performanceWeights>
   </MoreInjuries.AI.NpcCombatMedicine.NpcMedicalProfileDef>
   <MoreInjuries.AI.NpcCombatMedicine.NpcMedicalProfileDef>
@@ -285,6 +309,7 @@
     <medicChance>.10~.15</medicChance>
     <medicalSkillFloor>12</medicalSkillFloor>
     <performanceChance>.30~.60</performanceChance>
+    <performanceCount>2</performanceCount>
     <personal>
       <li>
         <count>2</count>
@@ -309,6 +334,10 @@
       <li>
         <count>1</count>
         <thingDef>Epinephrine</thingDef>
+      </li>
+      <li>
+        <count>2</count>
+        <thingDef>Morphine</thingDef>
       </li>
     </personal>
     <medic>
@@ -341,8 +370,7 @@
         <thingDef>Epinephrine</thingDef>
       </li>
       <li>
-        <count>1</count>
-        <unscaled>true</unscaled>
+        <count>6</count>
         <thingDef>Morphine</thingDef>
       </li>
       <li>
@@ -363,14 +391,14 @@
       </li>
     </medic>
     <performanceDrugs>
-      <li>Morphine</li>
       <li>Yayo</li>
       <li>GoJuice</li>
+      <li MayRequire="det.battlemeds">DV_AdrenalineShot</li>
     </performanceDrugs>
     <performanceWeights>
-      <li>0</li>
       <li>25</li>
       <li>75</li>
+      <li MayRequire="det.battlemeds">25</li>
     </performanceWeights>
   </MoreInjuries.AI.NpcCombatMedicine.NpcMedicalProfileDef>
 </Defs>

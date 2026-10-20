@@ -48,8 +48,8 @@
   <MI_NpcMedicine_Drugs>Combat drugs</MI_NpcMedicine_Drugs>
   <!-- EN: Allow performance drugs -->
   <MI_NpcMedicine_Boosts>Allow performance drugs</MI_NpcMedicine_Boosts>
-  <!-- EN: Allow eligible carriers to take a performance drug in combat. Clinical epinephrine has separate limits. -->
-  <MI_NpcMedicine_BoostsTip>Allow eligible carriers to take a performance drug in combat. Clinical epinephrine has separate limits.</MI_NpcMedicine_BoostsTip>
+  <!-- EN: Supply and allow eligible carriers to take combat boosters. Clinical pain and wound treatments remain separate, as do clinical epinephrine limits. -->
+  <MI_NpcMedicine_BoostsTip>Supply and allow eligible carriers to take combat boosters. Clinical pain and wound treatments remain separate, as do clinical epinephrine limits.</MI_NpcMedicine_BoostsTip>
   <!-- EN: Performance drug supplies -->
   <MI_NpcMedicine_Selection>Performance drug supplies</MI_NpcMedicine_Selection>
   <!-- EN: Tech-scaled selection -->
@@ -82,8 +82,8 @@
   <MI_NpcMedicine_Mode2Tip>Also permits individual medical withdrawal and evacuation of nearby downed faction members. Does not change group retreat decisions.</MI_NpcMedicine_Mode2Tip>
   <!-- EN: Supply quantities, medic prevalence, rare scavenged equipment, and optional training for newly generated medics. Existing pawns receive no free equipment. -->
   <MI_NpcMedicine_EquipmentTip>Supply quantities, medic prevalence, rare scavenged equipment, and optional training for newly generated medics. Existing pawns receive no free equipment.</MI_NpcMedicine_EquipmentTip>
-  <!-- EN: Scale ordinary medical consumables granted to newly generated NPCs. Does not multiply reusable devices, sedatives or performance doses. Existing supplies count toward the kit. -->
-  <MI_NpcMedicine_SuppliesTip>Scale ordinary medical consumables granted to newly generated NPCs. Does not multiply reusable devices, sedatives or performance doses. Existing supplies count toward the kit.</MI_NpcMedicine_SuppliesTip>
+  <!-- EN: Scale medical consumables, clinical reserves and booster reserves granted to newly generated NPCs. Reusable devices and sedatives are unchanged. Existing supplies count toward the kit. -->
+  <MI_NpcMedicine_SuppliesTip>Scale medical consumables, clinical reserves and booster reserves granted to newly generated NPCs. Reusable devices and sedatives are unchanged. Existing supplies count toward the kit.</MI_NpcMedicine_SuppliesTip>
   <!-- EN: Scale the proportion of newly generated combatants selected as medics. Zero stops selecting medics; ordinary personal supplies are controlled separately. -->
   <MI_NpcMedicine_MedicsTip>Scale the proportion of newly generated combatants selected as medics. Zero stops selecting medics; ordinary personal supplies are controlled separately.</MI_NpcMedicine_MedicsTip>
   <!-- EN: Chance for a newly equipped NPC to carry an extra scavenged medical item. Allows rare equipment outside the usual technology-tier kit. -->
@@ -92,14 +92,14 @@
   <MI_NpcMedicine_CareTip>Choose which nearby non-hostile patients NPCs may assist. Self-treatment remains available independently of these flags.</MI_NpcMedicine_CareTip>
   <!-- EN: Performance-drug provisioning and use, per-engagement dose limits, and separate intervals for performance and clinical drugs. -->
   <MI_NpcMedicine_DrugsTip>Performance-drug provisioning and use, per-engagement dose limits, and separate intervals for performance and clinical drugs.</MI_NpcMedicine_DrugsTip>
-  <!-- EN: Choose which performance drugs are supplied to newly generated NPCs. Existing items are preserved. This choice does not override the use chance, dose limit or safety checks. -->
-  <MI_NpcMedicine_SelectionTip>Choose which performance drugs are supplied to newly generated NPCs. Existing items are preserved. This choice does not override the use chance, dose limit or safety checks.</MI_NpcMedicine_SelectionTip>
+  <!-- EN: Choose booster supplies for newly generated NPCs. Existing provisioning only also blocks new clinical drug reserves. Existing items are preserved; use chance, dose limits and safety checks still apply. -->
+  <MI_NpcMedicine_SelectionTip>Choose booster supplies for newly generated NPCs. Existing provisioning only also blocks new clinical drug reserves. Existing items are preserved; use chance, dose limits and safety checks still apply.</MI_NpcMedicine_SelectionTip>
   <!-- EN: Choose performance drugs from the NPC technology-tier profile. More advanced factions can receive different drugs; this does not guarantee a dose. -->
   <MI_NpcMedicine_Selection0Tip>Choose performance drugs from the NPC technology-tier profile. More advanced factions can receive different drugs; this does not guarantee a dose.</MI_NpcMedicine_Selection0Tip>
   <!-- EN: Use morphine for performance-drug provisioning. It reduces pain but can sedate, impair breathing and cause addiction; it is not equivalent to a stimulant. -->
   <MI_NpcMedicine_Selection1Tip>Use morphine for performance-drug provisioning. It reduces pain but can sedate, impair breathing and cause addiction; it is not equivalent to a stimulant.</MI_NpcMedicine_Selection1Tip>
-  <!-- EN: Add no performance drugs, including medic-kit morphine. NPCs may still use permitted drugs already supplied by vanilla or another mod. -->
-  <MI_NpcMedicine_Selection2Tip>Add no performance drugs, including medic-kit morphine. NPCs may still use permitted drugs already supplied by vanilla or another mod.</MI_NpcMedicine_Selection2Tip>
+  <!-- EN: Add no new drugs to kits or scavenging, including clinical reserves and boosters. NPCs may still use permitted drugs already supplied by vanilla or another mod. -->
+  <MI_NpcMedicine_Selection2Tip>Add no new drugs to kits or scavenging, including clinical reserves and boosters. NPCs may still use permitted drugs already supplied by vanilla or another mod.</MI_NpcMedicine_Selection2Tip>
   <!-- EN: Scale the chance that newly generated NPCs receive a performance drug. Zero stops new performance-drug grants; existing supplies can still be used. -->
   <MI_NpcMedicine_PrevalenceTip>Scale the chance that newly generated NPCs receive a performance drug. Zero stops new performance-drug grants; existing supplies can still be used.</MI_NpcMedicine_PrevalenceTip>
   <!-- EN: Chance for an eligible carrier to use performance drugs during a combat engagement. Rolled once per engagement. Medical safety checks and dose limits still apply. -->
@@ -112,8 +112,8 @@
   <MI_NpcMedicine_ClinicalIntervalTip>Minimum time between emergency epinephrine doses. Clinical pain care uses effect-based redosing and does not consume this interval or performance allowance. 2,500 ticks equal one in-game hour.</MI_NpcMedicine_ClinicalIntervalTip>
   <!-- EN: Allow clinical pain care -->
   <MI_NpcMedicine_PainCare>Allow clinical pain care</MI_NpcMedicine_PainCare>
-  <!-- EN: Use available morphine, yayo or go-juice for indicated pain relief and help nearby pawns downed by pain. Actors respect personal refusals. Unsafe or ineffective doses are skipped. Separate from combat boosting; supplies are unchanged. -->
-  <MI_NpcMedicine_PainCareTip>Use available morphine, yayo or go-juice for indicated pain relief and help nearby pawns downed by pain. Actors respect personal refusals. Unsafe or ineffective doses are skipped. Separate from combat boosting; supplies are unchanged.</MI_NpcMedicine_PainCareTip>
+  <!-- EN: Use available safe analgesics for indicated pain relief and help nearby pawns downed by pain. Controls new pain-only reserves separately from combat boosters. Det?s wound treatments remain available for indicated healing or bleeding. -->
+  <MI_NpcMedicine_PainCareTip>Use available safe analgesics for indicated pain relief and help nearby pawns downed by pain. Controls new pain-only reserves separately from combat boosters. Det?s wound treatments remain available for indicated healing or bleeding.</MI_NpcMedicine_PainCareTip>
   <!-- EN: Preventive pain trigger -->
   <MI_NpcMedicine_PainThreshold>Preventive pain trigger</MI_NpcMedicine_PainThreshold>
   <!-- EN: Fraction of each patient's actual pain-shock threshold at which preventive relief may begin. Default 50%. Existing sufficient analgesia prevents ineffective top-ups. Pain shock remains an emergency regardless of this setting. -->

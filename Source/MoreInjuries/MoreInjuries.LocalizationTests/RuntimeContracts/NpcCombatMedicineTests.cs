@@ -171,7 +171,7 @@ public sealed class NpcCombatMedicineTests
         {
             Assert.IsFalse(profile.Element("personal")!.Descendants("thingDef").Any(def => def.Value == "MedicineUltratech"));
             string[] drugs = profile.Element("performanceDrugs")?.Elements().Select(def => def.Value).ToArray() ?? [];
-            CollectionAssert.IsSubsetOf(drugs, new[] { "Morphine", "Yayo", "GoJuice" });
+            CollectionAssert.IsSubsetOf(drugs, new[] { "Yayo", "GoJuice", "DV_AdrenalineShot" });
             foreach (XElement sedative in profile.Element("medic")!.Elements().Where(item => item.Element("thingDef")?.Value is "Ketamine" or "Chloroform"))
             { Assert.AreEqual("true", sedative.Element("unscaled")?.Value); }
             bool ultra = profile.Element("techLevel")!.Value == "Ultra";

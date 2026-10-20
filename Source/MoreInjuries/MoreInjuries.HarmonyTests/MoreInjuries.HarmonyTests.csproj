@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcDrugProvisioning.cs" Link="Production\NpcDrugProvisioning.cs" />
     <Compile Include="..\MoreInjuries\Logging\Logger.cs" Link="Production\Logger.cs" />
     <Compile Include="..\MoreInjuries\Patches\Patch_LethalDamageThreshold.cs" Link="Production\Patch_LethalDamageThreshold.cs" />
     <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalDecision.cs" Link="Production\NpcMedicalDecision.cs" />

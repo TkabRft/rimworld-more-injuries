@@ -14,7 +14,7 @@ internal readonly struct NpcMedicalSpace(float mass, float bulk)
 
 internal sealed class NpcMedicalLoadout<T> where T : notnull
 {
-    internal sealed class Item(T key, int wanted, int existing, float mass, float bulk, bool essential, int priority)
+    internal sealed class Item(T key, int wanted, int existing, float mass, float bulk, bool essential, int priority, bool clinical = false)
     {
         internal T Key { get; } = key;
         internal int Missing { get; } = Math.Max(0, wanted - existing);
@@ -23,6 +23,8 @@ internal sealed class NpcMedicalLoadout<T> where T : notnull
         internal float Bulk { get; } = bulk;
         internal bool Essential { get; } = essential;
         internal int Priority { get; } = priority;
+        internal bool Clinical { get; } = clinical;
+        internal bool HasClinical { get; } = clinical && existing > 0;
     }
 
     private readonly List<Item> _items;
@@ -46,8 +48,14 @@ internal sealed class NpcMedicalLoadout<T> where T : notnull
         float mass = space.Mass, bulk = space.Bulk;
         // Get one of each essential treatment/device before filling stacks of consumables.
         foreach (Item item in _items.Where(item => item.NeedsCore)) { Take(item, 1); }
+        if (!_items.Any(item => item.HasClinical))
+        {
+            foreach (Item item in _items.Where(item => item.Clinical && item.Missing > 0))
+            { Take(item, 1); if (Count(item) > 0) { break; } }
+        }
         foreach (Item item in _items.Where(item => item.Essential)) { Take(item, item.Missing - Count(item)); }
-        foreach (Item item in _items.Where(item => !item.Essential)) { Take(item, item.Missing); }
+        foreach (Item item in _items.Where(item => item.Clinical)) { Take(item, item.Missing - Count(item)); }
+        foreach (Item item in _items.Where(item => !item.Essential && !item.Clinical)) { Take(item, item.Missing); }
         return added;
 
         int Count(Item item) => added.TryGetValue(item.Key, out int count) ? count : 0;

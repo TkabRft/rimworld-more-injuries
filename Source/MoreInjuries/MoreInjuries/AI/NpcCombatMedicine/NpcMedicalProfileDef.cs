@@ -12,6 +12,7 @@ public sealed class NpcMedicalProfileDef : Def
     private readonly FloatRange equippedChance = default;
     private readonly FloatRange medicChance = default;
     private readonly FloatRange performanceChance = default;
+    private readonly IntRange performanceCount = IntRange.One;
     private readonly int medicalSkillFloor = 4;
     private readonly List<NpcMedicalItem> personal = [];
     private readonly List<NpcMedicalItem> medic = [];
@@ -22,6 +23,7 @@ public sealed class NpcMedicalProfileDef : Def
     public FloatRange EquippedChance => equippedChance;
     public FloatRange MedicChance => medicChance;
     public FloatRange PerformanceChance => performanceChance;
+    public IntRange PerformanceCount => performanceCount;
     public int MedicalSkillFloor => medicalSkillFloor;
     public IReadOnlyList<NpcMedicalItem> Personal => personal;
     public IReadOnlyList<NpcMedicalItem> Medic => medic;
@@ -32,6 +34,7 @@ public sealed class NpcMedicalProfileDef : Def
     {
         foreach (string error in base.ConfigErrors()) { yield return error; }
         if (performanceDrugs.Count != performanceWeights.Count) { yield return "NPC medical drug weights must match their definitions."; }
+        if (performanceCount.min < 0 || performanceCount.max < performanceCount.min) { yield return "Invalid NPC performance reserve quantity."; }
         foreach (float weight in performanceWeights) { if (weight < 0f) { yield return "NPC medical drug weights must be nonnegative."; } }
         foreach (NpcMedicalItem item in personal) { foreach (string error in item.Errors()) { yield return error; } }
         foreach (NpcMedicalItem item in medic) { foreach (string error in item.Errors()) { yield return error; } }
