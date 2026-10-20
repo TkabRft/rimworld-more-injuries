@@ -12,7 +12,8 @@ public class HediffComp_CardiacArrest : HediffComp
     {
         Pawn pawn = parent.pawn;
 
-        if (pawn.HasOxygenDeficiencyImmunity() || HasArtificialHeart(pawn)
+        if (!VitalAnatomy.AnyPresent(pawn.health.hediffSet, VitalAnatomy.For(pawn.RaceProps.body).Pumps)
+            || pawn.HasOxygenDeficiencyImmunity() || HasArtificialHeart(pawn)
             && !(VitalFailureComp.For(pawn) is { CreatingCirculatoryFailure: true } && VitalFailureComp.EnabledFor(pawn)))
         {
             pawn.health.RemoveHediff(parent);

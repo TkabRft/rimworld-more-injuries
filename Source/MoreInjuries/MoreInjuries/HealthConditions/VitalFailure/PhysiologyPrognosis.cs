@@ -30,7 +30,7 @@ internal struct PhysiologySnapshot
     internal float[]? RawCapacities, MinimumCapacities;
     internal PrognosisCapacityTerm[]? CapacityTerms;
     internal int CapacityTermCount, ApplicableCapacities;
-    internal bool ManageFailures, LiverFailed, RenalFailed, PersistentArrest;
+    internal bool ManageFailures, LiverFailed, RenalFailed, PersistentArrest, PumpAbsent;
     internal PrognosisFailures Failures;
     internal float[]? FailureRates;
     internal HediffDef[]? FailureDefs;

@@ -6,6 +6,8 @@ _:file_folder: [More Injuries User Manual](/docs/wiki/README.md) :arrow_right: [
 
 The More Injuries mod introduces a pathophysiological system that simulates the interactions between injuries and medical conditions in a more realistic and immersive way. This system allows for complex interactions between different injuries and medical conditions, leading to cascading effects that can be difficult to manage. For example, the presence of one injury may exacerbate the effects of another, or injecting a certain drug may have different effects depending on the presence of other injuries or medical conditions.
 
+Complications that affect a particular organ require that organ to be present. If no eligible organ remains, that complication is skipped. Losing an organ can still cause a systemic loss of function: missing lungs can cause respiratory failure, and losing all liver or kidney function can cause the corresponding organ failure. A missing heart does not acquire [cardiac arrest](/docs/wiki/injuries/cardiac-arrest.md#cardiac-arrest), but absent circulation remains dangerous.
+
 To aid in understanding these interactions, this manual introduces a graphical representation of the pathophysiological system, including flowcharts and diagrams that illustrate the chain of cause and effect between different injuries and medical conditions. The direction of these interactions is indicated by arrows, whereas arrow colors indicate whether the interaction lessens (green) or worsens/causes (red) the condition, as shown in the following diagram:
 
 ```mermaid

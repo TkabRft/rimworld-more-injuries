@@ -311,6 +311,8 @@ public sealed partial class VitalFailureComp : ThingComp
             return;
         }
         VitalAnatomy anatomy = VitalAnatomy.For(pawn.RaceProps.body);
+        bool hasPump = VitalAnatomy.AnyPresent(set, anatomy.Pumps);
+        if (!hasPump) { Remove(ref _arrest); }
         _oxygenProtected = pawn.HasOxygenDeficiencyImmunity();
         ReadingUnderlying = true;
         float breathing, consciousness, filtration, metabolism;
@@ -324,7 +326,7 @@ public sealed partial class VitalFailureComp : ThingComp
         }
         finally { ReadingUnderlying = false; }
         bool terminalHeartAttack = _heartAttack is not null && IsTerminalHeartAttack(_heartAttack);
-        if (!_oxygenProtected && !_deathresting && (_underlyingPumping <= VitalFailureModel.ZERO_FUNCTION || terminalHeartAttack) && _arrest is null)
+        if (hasPump && !_oxygenProtected && !_deathresting && (_underlyingPumping <= VitalFailureModel.ZERO_FUNCTION || terminalHeartAttack) && _arrest is null)
         {
             CreatingCirculatoryFailure = true;
             try { _arrest = pawn.health.AddHediff(KnownHediffDefOf.CardiacArrest); }
@@ -422,7 +424,8 @@ public sealed partial class VitalFailureComp : ThingComp
         ReadingUnderlying = true;
         try
         {
-            return Capacity(Patient, PawnCapacityDefOf.BloodPumping) > VitalFailureModel.ZERO_FUNCTION;
+            return VitalAnatomy.AnyPresent(Patient.health.hediffSet, VitalAnatomy.For(Patient.RaceProps.body).Pumps)
+                && Capacity(Patient, PawnCapacityDefOf.BloodPumping) > VitalFailureModel.ZERO_FUNCTION;
         }
         finally
         {

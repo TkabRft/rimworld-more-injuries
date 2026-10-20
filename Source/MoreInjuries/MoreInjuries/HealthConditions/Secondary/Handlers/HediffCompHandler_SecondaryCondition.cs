@@ -61,6 +61,11 @@ public abstract partial class HediffCompHandler_SecondaryCondition : HediffCompH
         BodyPartHediffTargetEvaluator localTargetEvaluator = TargetEvaluator;
         // check if the hediff already exists on the target body part (or anywhere if no body part is specified)
         BodyPartRecord? targetBodyPart = localTargetEvaluator.GetTargetBodyPart(comp, this);
+        if (!SecondaryConditionTarget.IsValid(comp.Pawn.health.hediffSet, targetBodyPart,
+            allowWholeBody: localTargetEvaluator is BodyPartHediffTargetEvaluator_WholeBody or BodyPartHediffTargetEvaluator_SameAsParent))
+        {
+            return;
+        }
         Hediff? existingHediff = null;
         if (targetBodyPart is null && !comp.Pawn.health.hediffSet.TryGetHediff(hediffDef, out existingHediff)
             || targetBodyPart is not null && !comp.Pawn.health.hediffSet.TryGetFirstHediffMatchingPart(targetBodyPart, hediffDef, out existingHediff))

@@ -43,7 +43,7 @@ internal struct PrognosisFailures
                 3 => filtration <= VitalFailureModel.ZERO_FUNCTION && !source.LiverFailed && !source.RenalFailed,
                 4 => PrognosisCapacity.Level(in source, 4, ticks) <= VitalFailureModel.ZERO_FUNCTION,
                 5 => !source.OxygenProtected && source.CanHaveBrain && PrognosisCapacity.Level(in source, 2, ticks) <= VitalFailureModel.ZERO_FUNCTION,
-                _ => !source.OxygenProtected && (source.PersistentArrest || pumping <= VitalFailureModel.ZERO_FUNCTION)
+                _ => !source.PumpAbsent && !source.OxygenProtected && (source.PersistentArrest || pumping <= VitalFailureModel.ZERO_FUNCTION)
             };
             float severity = failed ? Math.Max(VitalFailureModel.INITIAL_SEVERITY, Get(i))
                 + source.FailureRates![i] * VitalFailureModel.INTERVAL / GenDate.TicksPerDay : 0f;

@@ -50,7 +50,7 @@ style cardiac_arrest stroke-width: 4px
 
 With delayed vital failure enabled, arrest means absent effective pumping and has an approximately three-hour failure timer, although cerebral injury can become fatal sooner. Its severity and cerebral hypoxia both worsen; successful resuscitation stops the arrest without erasing brain injury. A terminal vanilla heart attack enters this treatable arrest pathway.
 
-CPR and a permitted early defibrillator attempt can restart a functioning heart. They cannot replace a missing or nonfunctional heart. Mechanical failure resolves when an effective pump is restored. Artificial hearts retain protection from spontaneous shock-induced arrest, but a nonfunctional artificial pump can still fail.
+CPR and a permitted early defibrillator attempt can restart a functioning heart. They cannot replace a missing or nonfunctional heart. Cardiac arrest requires a heart or another blood-pumping organ to be present. Losing every pump clears any existing arrest; it does not restore circulation. With delayed vital failure enabled, absent circulation still causes cerebral hypoxia and requires a working replacement. Mechanical failure of a present pump resolves when effective pumping returns. Artificial hearts retain protection from spontaneous shock-induced arrest, but a nonfunctional artificial pump can still fail.
 
 The failure itself still progresses toward death over about three game hours, but complete unprotected [cerebral hypoxia](/docs/wiki/injuries/hypoxia.md#cerebral-hypoxia) can become terminal in about 1.5 game hours. Brain injury can therefore limit the rescue window first. Existing native death protections remain authoritative.
 

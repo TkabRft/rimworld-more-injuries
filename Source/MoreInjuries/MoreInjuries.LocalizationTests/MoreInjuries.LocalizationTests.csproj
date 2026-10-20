@@ -47,6 +47,7 @@
 
     <ItemGroup>
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureProperties.cs" Link="RuntimeContracts\Production\VitalFailureProperties.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\Secondary\SecondaryConditionTarget.cs" Link="RuntimeContracts\Production\SecondaryConditionTarget.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureModel.cs" Link="RuntimeContracts\Production\VitalFailureModel.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalAnatomy.cs" Link="RuntimeContracts\Production\VitalAnatomy.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureComp.cs" Link="RuntimeContracts\Production\VitalFailureComp.cs" />

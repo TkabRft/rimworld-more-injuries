@@ -43,6 +43,15 @@ internal sealed class VitalAnatomy
         return parts.ToArray();
     }
 
+    internal static bool AnyPresent(HediffSet set, BodyPartRecord[] parts)
+    {
+        for (int i = 0; i < parts.Length; i++)
+        {
+            if (!set.PartIsMissing(parts[i])) { return true; }
+        }
+        return false;
+    }
+
     internal static bool AllFailed(HediffSet set, BodyPartRecord[] parts)
     {
         if (parts.Length == 0)

@@ -117,6 +117,8 @@ public sealed partial class VitalFailureComp
             NextVitalTick = NextGate(pawn, VitalFailureModel.INTERVAL)
         };
         if (!CanUpdate(pawn)) { return result; }
+        VitalAnatomy anatomy = VitalAnatomy.For(pawn.RaceProps.body);
+        result.PumpAbsent = !VitalAnatomy.AnyPresent(pawn.health.hediffSet, anatomy.Pumps);
         BeginNativePrognosis();
         Array.Clear(_prognosisFailures, 0, _prognosisFailures.Length);
         bool deathresting = ModsConfig.BiotechActive && pawn.health.hediffSet.HasHediff(HediffDefOf.Deathrest), arrest = false;
@@ -125,6 +127,7 @@ public sealed partial class VitalFailureComp
         foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
         {
             if (!PrognosisConditionPolicy.ShouldProject(hediff)) { continue; }
+            if (result.PumpAbsent && hediff.def == KnownHediffDefOf.CardiacArrest) { continue; }
             CaptureNativeCondition(ref result, hediff);
             if (hediff.def == HediffDefOf.BloodLoss) { result.BloodLoss = hediff.Severity; }
             else if (hediff.def == KnownHediffDefOf.HypovolemicShock)
@@ -165,7 +168,7 @@ public sealed partial class VitalFailureComp
                 result.Failures.Set(6, hediff.Severity);
                 result.PersistentArrest |= hediff.TryGetComp<HediffComp_VitalArrest>() is not { MechanicalFailure: true };
             }
-            else if (IsTerminalHeartAttack(hediff)) { arrest = true; result.Arrest = true; result.EarlyArrest = true; result.PersistentArrest = true; }
+            else if (!result.PumpAbsent && IsTerminalHeartAttack(hediff)) { arrest = true; result.Arrest = true; result.EarlyArrest = true; result.PersistentArrest = true; }
             else if (hediff.def.GetModExtension<VitalFailureProperties>() is not null)
             {
                 for (int i = 0; i < _prognosisFailures.Length; i++)
@@ -177,7 +180,6 @@ public sealed partial class VitalFailureComp
         result.CanDevelopShock = !result.OxygenProtected && TraumaEligibility.Supports(pawn) && MoreInjuriesMod.Settings.EnableHypovolemicShock;
         result.DirectBloodDeath = !result.OxygenProtected && BloodLossPolicy.AllowDirectDeath(TraumaEligibility.Supports(pawn), MoreInjuriesMod.Settings.PreventDeathByBloodLoss);
         result.CanHaveBrain = VitalAnatomy.For(pawn.RaceProps.body).SurvivingBrain(pawn.health.hediffSet) is not null;
-        VitalAnatomy anatomy = VitalAnatomy.For(pawn.RaceProps.body);
         if (result.VitalEnabled)
         {
             result.Breathing = VitalPhysiology.BreathesAir(pawn) ? Capacity(pawn, PawnCapacityDefOf.Breathing) : 1f;
