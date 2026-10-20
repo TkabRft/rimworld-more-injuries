@@ -43,14 +43,14 @@ internal static class NpcMedicalAttempts
         NpcMedicalRetry retry = Retry(doctor, patient, action);
         bool ready = retry.Allowed(Find.TickManager.TicksGame, Context(doctor, patient, supply));
         bool safe = NpcMedicalSafety.Allowed(doctor, patient, supply);
-        if (Prefs.DevMode)
+        if (Logger.IsEnabled && Prefs.DevMode)
         {
             Dictionary<JobDef, string> diagnostics = s_history.GetOrCreateValue(doctor).GetOrCreateValue(patient).Diagnostics;
             string state = !safe ? "incoming fire/safety" : !ready ? "retry=" + retry.Deadline : "eligible";
             if (!diagnostics.TryGetValue(action, out string? previous) || previous != state)
             {
                 diagnostics[action] = state;
-                Log.Message($"More Injuries NPC attempt: {doctor.ThingID}->{patient.ThingID}; job={action.defName}; supply={supply?.ThingID}; stage=selection; {state}; impact={NpcMedicalSafety.Recent(doctor) || NpcMedicalSafety.Recent(patient)}; safety={NpcMedicalCompatibility.SafetyOwned(doctor)}.");
+                Logger.Log($"More Injuries NPC attempt: {doctor.ThingID}->{patient.ThingID}; job={action.defName}; supply={supply?.ThingID}; stage=selection; {state}; impact={NpcMedicalSafety.Recent(doctor) || NpcMedicalSafety.Recent(patient)}; safety={NpcMedicalCompatibility.SafetyOwned(doctor)}.");
             }
         }
         return ready && safe;
@@ -154,8 +154,8 @@ internal static class NpcMedicalAttempts
         }
         internal void Diagnose(string transition)
         {
-            if (!Prefs.DevMode) { return; }
-            Log.Message($"More Injuries NPC attempt: {Doctor.ThingID}->{Patient.ThingID}; job={_job.def.defName}; supply={_supply?.ThingID}; stage={Stage}; {transition}; impact={NpcMedicalSafety.Recent(Doctor) || NpcMedicalSafety.Recent(Patient)}; safety={NpcMedicalCompatibility.SafetyOwned(Doctor)}.");
+            if (!Logger.IsEnabled || !Prefs.DevMode) { return; }
+            Logger.Log($"More Injuries NPC attempt: {Doctor.ThingID}->{Patient.ThingID}; job={_job.def.defName}; supply={_supply?.ThingID}; stage={Stage}; {transition}; impact={NpcMedicalSafety.Recent(Doctor) || NpcMedicalSafety.Recent(Patient)}; safety={NpcMedicalCompatibility.SafetyOwned(Doctor)}.");
         }
     }
 }

@@ -61,6 +61,6 @@ namespace Verse
     }
     public static partial class Log
     {
-        public static void Warning(string message) { }
+        public static void Warning(string message) => Messages.Add(message);
     }
 }

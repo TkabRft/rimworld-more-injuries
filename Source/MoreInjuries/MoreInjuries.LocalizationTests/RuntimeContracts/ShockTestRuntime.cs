@@ -156,6 +156,8 @@ namespace MoreInjuries
 
     public sealed partial class TestSettings
     {
+        public bool EnableLogging, EnableVerboseLogging;
+        public bool PreventDeathByLethalDamageThreshold = true;
         public bool EnableHypovolemicShock = true;
         public bool EnableNeuralDamage = true;
         public bool AnomalyRegenerationTreatsStructuralDamage = true;
@@ -168,12 +170,6 @@ namespace MoreInjuries
         public float HypoxiaAcidosisConversionFactor = 0.015f;
     }
 
-    public static partial class Logger
-    {
-        public static void LogVerbose(string message) { }
-        public static void LogDebug(string message) { }
-        public static void Warning(string message) { }
-    }
 }
 
 namespace MoreInjuries.HealthConditions

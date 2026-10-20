@@ -86,6 +86,8 @@ namespace Verse
     public static class Log
     {
         public static int Warnings;
+        public static readonly List<string> Messages = [];
+        public static void Message(string message) => Messages.Add(message);
         public static void Error(string error) { }
         public static void Warning(string warning) => Warnings++;
     }

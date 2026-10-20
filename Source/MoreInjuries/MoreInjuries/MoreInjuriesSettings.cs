@@ -8,6 +8,10 @@ namespace MoreInjuries;
 [KeyedMembers(Visibility = Visibility.Internal)]
 public partial class MoreInjuriesSettings : ModSettings
 {
+    // death policy
+    [SettingsEntry<bool>(DefaultValue = true)]
+    internal partial ref bool PreventDeathByLethalDamageThreshold { get; }
+
     // logging
     [SettingsEntry<bool>(DefaultValue = false)]
     internal partial ref bool EnableLogging { get; }

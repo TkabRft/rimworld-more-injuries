@@ -111,7 +111,7 @@ public sealed class GameComponent_DeathRattleTransition : GameComponent
             _ready = false;
             foreach (PawnSnapshot snapshot in snapshots) { snapshot.Restore(); }
             ReferenceReplacements.Clear();
-            Log.Error("More Injuries Death Rattle transition: " + exception);
+            Logger.Error("More Injuries Death Rattle transition: " + exception);
             Find.LetterStack.ReceiveLetter("MI_DR_TransitionTitle".Translate(), "MI_DR_TransitionBlocked".Translate(exception.Message), LetterDefOf.NegativeEvent);
         }
         finally { DeathRattleBridge.MigratingPawn = null; s_loadedPawns.Clear(); }

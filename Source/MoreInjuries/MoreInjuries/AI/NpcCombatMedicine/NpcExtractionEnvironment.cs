@@ -32,7 +32,7 @@ internal static class NpcExtractionEnvironment
     }
     private static void Warn(string key, string reason)
     {
-        if (s_warnings.Add(key)) { Log.Warning("More Injuries: extraction " + key + " unavailable: " + reason); }
+        if (s_warnings.Add(key)) { Logger.Warning("More Injuries: extraction " + key + " unavailable: " + reason); }
     }
 
     internal static void Impact(Pawn pawn, bool explosive)

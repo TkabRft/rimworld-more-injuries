@@ -47,7 +47,7 @@ internal static class Patch_DeathRattle_FinalizeSave
         }
         catch (Exception exception)
         {
-            Log.Error("More Injuries transition save validation: " + exception);
+            Logger.Error("More Injuries transition save validation: " + exception);
             Find.LetterStack.ReceiveLetter("MI_DR_TransitionTitle".Translate(), "MI_DR_SaveBlocked".Translate(exception.Message), LetterDefOf.NegativeEvent);
         }
         finally

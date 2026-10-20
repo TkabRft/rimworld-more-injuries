@@ -53,15 +53,6 @@ namespace Verse.AI
     public enum JobCondition { Incompletable }
 }
 
-namespace MoreInjuries
-{
-    public static partial class Logger
-    {
-        public static void Error(string message) { }
-        public static void ConfigError(string message) { }
-    }
-}
-
 namespace MoreInjuries.AI.Jobs
 {
     public abstract partial class JobDriver_UseMedicalDevice

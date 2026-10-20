@@ -37,7 +37,7 @@ internal static partial class CombatExtendedBridge
         catch (Exception exception)
         {
             s_canStabilize = null;
-            Log.Warning("More Injuries: CE stabilization is unavailable to automatic emergency care. " + exception.Message);
+            Logger.Warning("More Injuries: CE stabilization is unavailable to automatic emergency care. " + exception.Message);
         }
     }
 

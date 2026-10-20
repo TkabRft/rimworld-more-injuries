@@ -72,7 +72,7 @@ internal static class DeathRattleBridge
         }
         catch (Exception exception)
         {
-            Log.Error("More Injuries could not establish Death Rattle priority: " + exception);
+            Logger.Error("More Injuries could not establish Death Rattle priority: " + exception);
         }
     }
 

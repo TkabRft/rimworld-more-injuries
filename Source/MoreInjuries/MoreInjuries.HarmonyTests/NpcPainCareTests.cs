@@ -420,6 +420,7 @@ public sealed class NpcPainCareTests
     [TestMethod]
     public void DiagnosticsLogReasonChangesPerActorAndPatientRatherThanEveryEvaluation()
     {
+        MoreInjuriesMod.Settings.EnableLogging = true;
         Prefs.DevMode = true;
         Pawn actor = new(), a = new() { Downed = true, RawPain = .9f }, b = new() { Downed = true, RawPain = .9f };
         Pocket(actor, ThingDefOf.Yayo);

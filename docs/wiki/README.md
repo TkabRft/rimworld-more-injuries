@@ -18,6 +18,10 @@ In Mod Options, click a `[+]` group button to expand its settings and `[-]` to c
 
 Adding the mod to a colony that was saved without it is described in [save compatibility](/docs/wiki/save-compatibility.md#save-compatibility).
 
+Under **General Settings**, **Prevent death from cumulative injury damage** is enabled by default for all pawns, including humans, animals and mechanoids of every faction. Reaching the combined injury damage limit alone no longer kills them. Destroyed vital parts, lethal conditions and death when downed can still kill; Combat Extended's hostile-mech death-on-downed behavior still applies. Disabling the option restores the normal damage limit and can kill an already over-limit pawn at its next health check. The option applies to existing saves without a conversion and does not resurrect dead pawns.
+
+**Enable logging** is off by default. While it is off, More Injuries writes no diagnostic messages, warnings or errors, including in developer mode. Enable it when collecting a report; verbose logging requires it too. The game's own logs and other mods' output have their own controls.
+
 ## Table of Contents
 
 <!-- @generate_toc {"source": ".", "indent": 2} -->

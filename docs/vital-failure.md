@@ -1,6 +1,6 @@
 # Delayed vital failure and systemic hypoxia
 
-code-synced: 2026-10-19
+code-synced: 2026-10-20
 
 ## Current contract
 
@@ -12,7 +12,7 @@ This is an independent implementation using More Injuries conditions and treatme
 
 `VitalFailure_Initializer` adds a lightweight `VitalFailureComp` once to eligible pawn defs after XML processing. It does not inject the full injury-worker pipeline into animals or Anomaly entities. Anatomy is cached by BodyDef using consciousness-source, pumping-source, liver, and kidney tags. All members of a present organ group must be nonfunctional before that group's failure is created. A group absent from the anatomy is not considered a missing organ. Added/replacement parts are evaluated through the native part-efficiency API.
 
-The required-capacity guard suppresses only the supported first failed capacity and checks for other unsupported lethal capacities before returning. Structural destruction of all consciousness sources retains native death. Unrelated hediff lethality, lethal-damage thresholds, execution, forced blood harvesting, and the existing direct blood-loss policy remain unchanged.
+The required-capacity guard suppresses only the supported first failed capacity and checks for other unsupported lethal capacities before returning. Structural destruction of all consciousness sources retains native death. Unrelated hediff lethality, execution, forced blood harvesting, and the existing direct blood-loss policy remain unchanged. The separate default-on [cumulative injury setting](settings.md#death-policy-and-logging) suppresses the native summed-injury lethal threshold for all pawns, including those outside this module. Prognosis respects that setting while preserving the structural brain-health limit.
 
 Circulatory arrest reuses `CardiacArrest`. The new condition identifiers are `MI_RespiratoryFailure`, `MI_LiverFailure`, `MI_RenalFailure`, `MI_FiltrationFailure`, `MI_MetabolicFailure`, and `MI_Coma`. Generic filtration failure is used only when filtration is zero without complete liver/renal failure. Coma requires zero consciousness with a structurally surviving consciousness source; it does not itself drive oxygen deprivation.
 
@@ -78,7 +78,7 @@ Emergency work scanning and manual CPR/defibrillator/airway menus include eligib
 
 ## Faster cerebral progression and prognosis
 
-Status: `implemented`. code-synced: 2026-10-19.
+Status: `implemented`. code-synced: 2026-10-20.
 
 Systemic cerebral production is 128 clinical severity/day and the terminal threshold remains 8, producing a mean 1.5-game-hour complete-deprivation window without protection. Normalization, [lasting milestones](neurological-runtime.md#guaranteed-milestone-contract), maximum-based deprivation and all existing support factors remain. Focal injury rates, shock/acidosis equations, failure timers and transfusion doses are unchanged.
 
@@ -99,7 +99,7 @@ The final Release build and all 133 focused behavior/localization tests pass. Co
 
 ## Airway capacity repair and expanded forecast
 
-Status: `implemented`. code-synced: 2026-10-19.
+Status: `implemented`. code-synced: 2026-10-20.
 
 The confirmed airway regression was the direct `PawnCapacityWorker.CalculateCapacityLevel` call: it omitted the outer native calculation that applies hediff/gene offsets, post-factors and ceilings. A healthy raw breathing worker could therefore disagree with choking's displayed zero breathing. Runtime failure detection and snapshot capture now share the native `PawnCapacityUtility.CalculateCapacityLevel` path for breathing, pumping, consciousness, filtration and metabolism. The underlying-pump query scopes only MI's arrest override and does not populate native capacity caches. Capacity getters remain free of health reconciliation. Newly created cerebral injury records respiratory failure and the airway obstruction immediately.
 
@@ -119,7 +119,7 @@ Manual additions: reproduce full blood choking at moderate blood loss/shock; res
 
 ## Combat Extended stabilization and stopped-bleeding footer
 
-Status: `implemented`. code-synced: 2026-10-19.
+Status: `implemented`. code-synced: 2026-10-20.
 
 The optional `Integrations/CombatExtended/CombatExtendedBridge` binds CE's stabilization comp and private saved modifier/flag through cached runtime accessors. It introduces no compiled CE reference, dependency, load rule, setting or save key. Initialization requires CE's active package and expected members; the first visible forecast also checks CE's bleeding-patch ownership. An unsupported CE layout retains the current-rate fallback and logs one diagnostic. Temporarily suppressed untreated wounds without a reliable baseline also receive an explicit uncertain future estimate and remain visible.
 
@@ -139,7 +139,7 @@ Manual acceptance remains: load MI with CE and confirm no patch errors; compare 
 
 ## Scheduled choking and inherited CE getter correction
 
-Status: `implemented`. code-synced: 2026-10-19.
+Status: `implemented`. code-synced: 2026-10-20.
 
 After mod constructors have registered their patches, `CombatExtended_Initializer` verifies CE's exact native bleeding postfix and removes that postfix only from `BetterInjury.BleedRate` and `BetterMissingPart.BleedRate`. Native-base CE patches and every unrelated owner's patches remain. This fixes the inherited getter chain applying CE stabilization twice; it changes live bleeding, not CE's stabilization quality, decay, jobs or medicine consumption. Existing stabilized wounds can therefore bleed more than under the previous compounded reduction. Unknown registrations retain the risk-marked fallback rather than unpatching an unidentified implementation. Real Harmony tests cover both registration orders, zero/negative modifiers, internal/missing-part factors, MI hemostasis and preservation of another postfix.
 
@@ -157,7 +157,7 @@ After replacing a build that already produced the off-thread texture error, full
 
 ## Two-scenario prognosis and staged temporary control
 
-Status: `implemented`. code-synced: 2026-10-19.
+Status: `implemented`. code-synced: 2026-10-20.
 
 `TryGetPrognoses` captures health once and caches both results. The existing `TryGetPrognosis` interface retains the no-further-treatment result. `HoldBleedingControl` freezes only current MI/CE bleeding reductions; other modeled physiology continues. Without that flag, numeric profiles advance CE's native decay and the shared 250-tick `TimedHemostasis` curve. The scenario is passed through pawn-total rates and choking-source wound rates into stage/capacity, shock, cerebral and failure calculations. Immutable snapshot buffers are reused, and identical scenarios reuse the existing estimate when no temporary bleeding risk exists. The 24-hour cerebral/hemorrhage horizon and longer supported native/organ-failure boundaries are unchanged. Future proper tending is never invented.
 

@@ -199,7 +199,8 @@ public sealed partial class VitalFailureComp
             }
             result.NextHealingTick = NextGate(Patient, 600);
         }
-        float remaining = Math.Max(0f, Patient.health.LethalDamageThreshold - totalInjuries) / scale;
+        float remaining = MoreInjuriesMod.Settings.PreventDeathByLethalDamageThreshold
+            ? float.PositiveInfinity : Math.Max(0f, Patient.health.LethalDamageThreshold - totalInjuries) / scale;
         if (brain is not null)
         {
             int survivors = 0;

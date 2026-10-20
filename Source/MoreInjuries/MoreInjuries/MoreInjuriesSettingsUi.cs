@@ -35,6 +35,8 @@ internal static class MoreInjuriesSettingsUi
 
     private static void DrawGeneral(Listing_Standard list, MoreInjuriesSettings settings)
     {
+        list.CheckboxLabeled("MI_Settings_General_PreventCumulativeInjuryDeathLabel".Translate(PREVENT_DEATH_BY_LETHAL_DAMAGE_THRESHOLD_DEFAULT.NamedDefault()), ref settings.PreventDeathByLethalDamageThreshold,
+            "MI_Settings_General_PreventCumulativeInjuryDeathTooltip".Translate());
         list.CheckboxLabeled("MI_Settings_General_LoggingLabel".Translate(ENABLE_LOGGING_DEFAULT.NamedDefault()), ref settings.EnableLogging,
             "MI_Settings_General_LoggingTooltip".Translate());
         list.CheckboxLabeled("MI_Settings_General_LoggingVerboseLabel".Translate(ENABLE_VERBOSE_LOGGING_DEFAULT.NamedDefault()), ref settings.EnableVerboseLogging,

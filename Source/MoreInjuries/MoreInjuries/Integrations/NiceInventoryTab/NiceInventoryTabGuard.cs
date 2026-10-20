@@ -26,7 +26,7 @@ internal static class NiceInventoryTabGuard
         }
         catch (Exception exception)
         {
-            Log.Warning("More Injuries: Nice Inventory Tab CE null-tag guard unavailable; retaining its original behavior. " + exception.Message);
+            Logger.Warning("More Injuries: Nice Inventory Tab CE null-tag guard unavailable; retaining its original behavior. " + exception.Message);
         }
     }
 

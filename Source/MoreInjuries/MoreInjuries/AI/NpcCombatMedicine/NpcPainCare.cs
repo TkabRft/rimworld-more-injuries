@@ -148,11 +148,11 @@ internal static class NpcPainCare
 
     private static void Diagnose(Pawn actor, Pawn patient, string reason)
     {
-        if (!Prefs.DevMode) { return; }
+        if (!Logger.IsEnabled || !Prefs.DevMode) { return; }
         Diagnostic diagnostic = s_diagnostics.GetOrCreateValue(actor).GetOrCreateValue(patient);
         if (diagnostic.Reason == reason) { return; }
         diagnostic.Reason = reason;
         NpcPainAssessment assessment = Assess(patient);
-        Log.Message($"More Injuries NPC pain: {actor.ThingID} -> {patient.ThingID}: {reason}; pain={assessment.Pain:0.###}, threshold={assessment.Threshold:0.###}, painShock={assessment.InPainShock}, collapse={assessment.Collapse}.");
+        Logger.Log($"More Injuries NPC pain: {actor.ThingID} -> {patient.ThingID}: {reason}; pain={assessment.Pain:0.###}, threshold={assessment.Threshold:0.###}, painShock={assessment.InPainShock}, collapse={assessment.Collapse}.");
     }
 }

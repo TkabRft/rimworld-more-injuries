@@ -59,9 +59,9 @@ internal static class NpcMedicalGeneration
         {
             List<Pawn> candidates = pawns.Where(pawn => NpcMedicalAi.Managed(pawn)
                 && s_states.TryGetValue(pawn, out GenerationState state) && state.Pending).ToList();
-            if (Prefs.DevMode)
+            if (Logger.IsEnabled && Prefs.DevMode)
             {
-                Log.Message($"More Injuries NPC medicine: faction={parms.faction?.def.defName}, points={points:0}, generated={pawns.Count}, fresh eligible={candidates.Count}.");
+                Logger.Log($"More Injuries NPC medicine: faction={parms.faction?.def.defName}, points={points:0}, generated={pawns.Count}, fresh eligible={candidates.Count}.");
             }
             foreach (IGrouping<NpcMedicalProfileDef, Pawn> group in candidates.GroupBy(Profile))
             {
@@ -92,16 +92,16 @@ internal static class NpcMedicalGeneration
                     medicKits.TryGetValue(pawn, out Dictionary<ThingDef, int>? kit);
                     Provision(pawn, profile, selectedMedics.Contains(pawn), strength, s_states.GetOrCreateValue(pawn).New, kit);
                 }
-                if (Prefs.DevMode)
+                if (Logger.IsEnabled && Prefs.DevMode)
                 {
-                    Log.Message($"More Injuries NPC medicine: profile={profile.defName}, candidates={members.Count}, equipped={recipients.Count}, capable doctors={capable.Count + selectedMedics.Count}, medic quota={medics}, selected medics={selectedMedics.Count}.");
+                    Logger.Log($"More Injuries NPC medicine: profile={profile.defName}, candidates={members.Count}, equipped={recipients.Count}, capable doctors={capable.Count + selectedMedics.Count}, medic quota={medics}, selected medics={selectedMedics.Count}.");
                     HashSet<ThingDef> medical = new(profile.Medic.Where(item => item.ThingDef is not null).Select(item => item.ThingDef!))
                     { Blood, KnownThingDefOf.SalineBag };
                     foreach (Pawn medic in selectedMedics)
                     {
                         string supplies = string.Join(", ", medic.inventory.innerContainer.Where(item => medical.Contains(item.def) || item.def.IsMedicine)
                             .Select(item => item.def.defName + "=" + item.stackCount));
-                        Log.Message($"More Injuries NPC medicine: medic={medic.ThingID}, name={medic.LabelShort}, Medical={medic.skills.GetSkill(SkillDefOf.Medicine).Level}, actual supplies=[{supplies}].");
+                        Logger.Log($"More Injuries NPC medicine: medic={medic.ThingID}, name={medic.LabelShort}, Medical={medic.skills.GetSkill(SkillDefOf.Medicine).Level}, actual supplies=[{supplies}].");
                     }
                 }
             }
@@ -133,9 +133,9 @@ internal static class NpcMedicalGeneration
         Dictionary<ThingDef, int> allocation = Loadout(pawn, counts).Allocate(space);
         foreach (KeyValuePair<ThingDef, int> entry in allocation)
         { TopUp(pawn, entry.Key, Count(pawn, entry.Key) + entry.Value); }
-        if (Prefs.DevMode && medic)
+        if (Logger.IsEnabled && Prefs.DevMode && medic)
         {
-            Log.Message($"More Injuries NPC medicine: medic capacity before kit={space.Mass:0.00} kg/{space.Bulk:0.00} bulk; requested={counts.Values.Sum()}, granted={allocation.Values.Sum()} units.");
+            Logger.Log($"More Injuries NPC medicine: medic capacity before kit={space.Mass:0.00} kg/{space.Bulk:0.00} bulk; requested={counts.Values.Sum()}, granted={allocation.Values.Sum()} units.");
         }
         AddExtras(pawn, profile, strength);
     }

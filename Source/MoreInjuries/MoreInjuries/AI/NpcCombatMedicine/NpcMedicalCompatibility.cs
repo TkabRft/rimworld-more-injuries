@@ -50,10 +50,10 @@ internal static class NpcMedicalCompatibility
                 || new[] { s_fit, s_update, s_availableWeight, s_availableBulk }
                     .Any(method => method is null || method.IsStatic || method.DeclaringType != s_inventory))
             { s_fit = null; s_update = null; }
-            if (s_fit is null || s_update is null) { Log.Warning("More Injuries: unrecognized CE inventory API; NPC medical provisioning is disabled for CE inventories."); }
+            if (s_fit is null || s_update is null) { Logger.Warning("More Injuries: unrecognized CE inventory API; NPC medical provisioning is disabled for CE inventories."); }
             s_cePawn = OwnedType("CombatExtended.AI.CompTend", "CombatExtended")?.GetProperty("SelPawn");
             if (s_cePawn?.PropertyType == typeof(Pawn)) { Bind("CombatExtended", "CombatExtended.AI.CompTend", "TryGiveTacticalJob", nameof(CeTend), typeof(Job), false); }
-            else { Log.Warning("More Injuries: unrecognized CE tactical pawn API; retaining CE's medical decisions."); }
+            else { Logger.Warning("More Injuries: unrecognized CE tactical pawn API; retaining CE's medical decisions."); }
         }
         if (ModsConfig.IsActive("Mlie.EnemySelfPreservation"))
         { Bind("EnemySelfPreservation", "MUR_ESP.Pawn_PostApplyDamage", "Postfix", nameof(Preservation), typeof(void), true, typeof(Pawn).MakeByRefType()); }
@@ -88,7 +88,7 @@ internal static class NpcMedicalCompatibility
         catch (Exception exception)
         {
             if (s_reported.Add(assembly))
-            { Log.Warning("More Injuries: optional NPC medical adapter unavailable for " + name + ": " + exception.Message); }
+            { Logger.Warning("More Injuries: optional NPC medical adapter unavailable for " + name + ": " + exception.Message); }
         }
     }
 
@@ -141,13 +141,13 @@ internal static class NpcMedicalCompatibility
     {
         if (s_fit is null && s_update is null) { return; }
         s_fit = null; s_update = null;
-        Log.Warning("More Injuries: CE NPC medical provisioning stopped after an inventory API failure. " + exception.Message);
+        Logger.Warning("More Injuries: CE NPC medical provisioning stopped after an inventory API failure. " + exception.Message);
     }
 
     private static void SafetyUnavailable(string reason)
     {
         if (!s_reported.Add("CE safety")) { return; }
-        Log.Warning("More Injuries: optional CE suppression reads unavailable (" + reason
+        Logger.Warning("More Injuries: optional CE suppression reads unavailable (" + reason
             + "); preserving recognized cover jobs, recent-impact safeguards and external behavior.");
     }
 

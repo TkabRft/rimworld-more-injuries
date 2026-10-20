@@ -355,6 +355,8 @@ namespace MoreInjuries
 {
     internal sealed class MoreInjuriesSettings
     {
+        internal bool EnableLogging, EnableVerboseLogging;
+        internal bool PreventDeathByLethalDamageThreshold = true;
         internal bool EnableNpcCombatMedicine = true, NpcPerformanceDrugs = true;
         internal int NpcPerformanceMaximum = 1, NpcPerformanceInterval = 20000;
         internal bool NpcPainCare = true;

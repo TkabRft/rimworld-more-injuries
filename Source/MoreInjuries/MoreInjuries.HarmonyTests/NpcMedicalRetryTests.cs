@@ -229,6 +229,7 @@ public sealed class NpcMedicalRetryTests
     [TestMethod]
     public void DevelopmentDiagnosticsLogTransitionsRatherThanEveryEvaluation()
     {
+        MoreInjuriesMod.Settings.EnableLogging = true;
         Pawn doctor = new(), patient = Wounded(); Thing supply = Medicine(); Job job = Tend(patient, supply);
         bool previous = Prefs.DevMode;
         try

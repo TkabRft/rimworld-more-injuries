@@ -77,7 +77,7 @@ internal static partial class CombatExtendedBridge
         s_available = false;
         if (s_logged) { return; }
         s_logged = true;
-        Log.Warning("More Injuries: CE stabilization forecasting is unavailable; using current bleeding only. " + reason);
+        Logger.Warning("More Injuries: CE stabilization forecasting is unavailable; using current bleeding only. " + reason);
     }
 
     internal static void Capture(Pawn pawn, ref PhysiologySnapshot source, ref CombatExtendedBleedingCapture? capture)

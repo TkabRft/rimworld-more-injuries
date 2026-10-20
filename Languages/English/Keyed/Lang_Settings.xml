@@ -3,6 +3,10 @@
   <!-- ============ General Settings ============ -->
   <!-- EN: General Settings -->
   <MI_Settings_General>General Settings</MI_Settings_General>
+  <!-- EN: Prevent death from cumulative injury damage (default: {DEFAULT}) -->
+  <MI_Settings_General_PreventCumulativeInjuryDeathLabel>Prevent death from cumulative injury damage (default: {DEFAULT})</MI_Settings_General_PreventCumulativeInjuryDeathLabel>
+  <!-- EN: All pawns, including humans, animals and mechanoids, survive reaching the combined injury damage limit. Destroyed vital parts, lethal conditions and death on downing can still kill. Disable to restore the normal damage limit. -->
+  <MI_Settings_General_PreventCumulativeInjuryDeathTooltip>All pawns, including humans, animals and mechanoids, survive reaching the combined injury damage limit. Destroyed vital parts, lethal conditions and death on downing can still kill. Disable to restore the normal damage limit.</MI_Settings_General_PreventCumulativeInjuryDeathTooltip>
   <!-- EN: Enable logging (default: {DEFAULT}) -->
   <MI_Settings_General_LoggingLabel>Enable logging (default: {DEFAULT})</MI_Settings_General_LoggingLabel>
   <!-- EN: Enable verbose logging (default: {DEFAULT}) -->
@@ -331,10 +335,10 @@
   <!-- Settings controls and hover explanations. -->
   <!-- EN: Click to expand or collapse this group. Collapsing it does not change your settings. -->
   <MI_Settings_SectionTip>Click to expand or collapse this group. Collapsing it does not change your settings.</MI_Settings_SectionTip>
-  <!-- EN: Logging and the repair action for misplaced bionic parts on the current map. -->
-  <MI_Settings_GeneralTip>Logging and the repair action for misplaced bionic parts on the current map.</MI_Settings_GeneralTip>
-  <!-- EN: Write More Injuries diagnostic messages to the game log. Useful when investigating a problem. -->
-  <MI_Settings_General_LoggingTooltip>Write More Injuries diagnostic messages to the game log. Useful when investigating a problem.</MI_Settings_General_LoggingTooltip>
+  <!-- EN: Cumulative injury death, logging and the repair action for misplaced bionic parts on the current map. -->
+  <MI_Settings_GeneralTip>Cumulative injury death, logging and the repair action for misplaced bionic parts on the current map.</MI_Settings_GeneralTip>
+  <!-- EN: Allow More Injuries to write messages, warnings and errors to the game log. When disabled, all More Injuries logging is silent, including developer-mode diagnostics. -->
+  <MI_Settings_General_LoggingTooltip>Allow More Injuries to write messages, warnings and errors to the game log. When disabled, all More Injuries logging is silent, including developer-mode diagnostics.</MI_Settings_General_LoggingTooltip>
   <!-- EN: Include detailed diagnostic messages when logging is enabled. This can produce a large log; leave it off during normal play. -->
   <MI_Settings_General_LoggingVerboseTooltip>Include detailed diagnostic messages when logging is enabled. This can produce a large log; leave it off during normal play.</MI_Settings_General_LoggingVerboseTooltip>
   <!-- EN: Repair misplaced supported bionics on human pawns on the current map. Moves them to an eligible body part, or removes them if none is available. This changes the pawns immediately. -->

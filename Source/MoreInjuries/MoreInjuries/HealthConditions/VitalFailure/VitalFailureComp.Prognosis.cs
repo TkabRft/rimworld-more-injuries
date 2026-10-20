@@ -39,7 +39,8 @@ public sealed partial class VitalFailureComp
         int settings = (MoreInjuriesMod.Settings.EnableDelayedVitalFailure ? 1 : 0)
             | (MoreInjuriesMod.Settings.EnableHypovolemicShock ? 2 : 0)
             | (MoreInjuriesMod.Settings.PreventDeathByBloodLoss ? 4 : 0)
-            | (MoreInjuriesMod.Settings.AnomalyEnableConditionsForShamblers ? 8 : 0);
+            | (MoreInjuriesMod.Settings.AnomalyEnableConditionsForShamblers ? 8 : 0)
+            | (MoreInjuriesMod.Settings.PreventDeathByLethalDamageThreshold ? 16 : 0);
         if (!_hasPrognosis || now < _prognosisTick || now - _prognosisTick >= VitalFailureModel.INTERVAL
             || _prognosis.Ticks != int.MaxValue && now - _prognosisTick >= _prognosis.Ticks
             || _currentControlPrognosis.Ticks != int.MaxValue && now - _prognosisTick >= _currentControlPrognosis.Ticks
