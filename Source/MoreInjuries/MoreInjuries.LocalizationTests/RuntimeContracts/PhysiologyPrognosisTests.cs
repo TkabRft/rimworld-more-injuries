@@ -163,7 +163,7 @@ public sealed class PhysiologyPrognosisTests
         Current.ProgramState = ProgramState.Playing;
         Assert.AreEqual(0, Widgets.Draws); Assert.AreEqual(reads, pawn.health.hediffSet.CapacityReads);
         GUI.color = new(7); Patch_PhysiologyDeathEstimate.Postfix(new(0, 0, 300, 600), pawn, true);
-        Assert.AreEqual(3, Widgets.Draws); Assert.AreEqual(new Color(7), GUI.color);
+        Assert.AreEqual(2, Widgets.Draws); Assert.AreEqual(new Color(7), GUI.color);
         string source = File.ReadAllText(Path.Combine(RuntimeDefinitionTests.ModRoot, "Source/MoreInjuries/MoreInjuries/Patches/Patch_PhysiologyDeathEstimate.cs"));
         Assert.DoesNotContain("TicksUntilDeathDueToBloodLoss", source);
         OpenHealth(null);
@@ -200,7 +200,7 @@ public sealed class PhysiologyPrognosisTests
         Assert.AreEqual(0, Widgets.Draws);
         Pawn selected = patients[0]; OpenHealth(selected);
         Patch_PhysiologyDeathEstimate.Postfix(new(0, 0, 300, 600), selected, true);
-        Assert.AreEqual(3, Widgets.Draws);
+        Assert.AreEqual(2, Widgets.Draws);
         int cached = selected.health.hediffSet.CapacityReads;
         string tooltip = selected.Vital!.PrognosisTooltip;
         Find.TickManager.TicksGame += 10;
@@ -227,7 +227,7 @@ public sealed class PhysiologyPrognosisTests
         input.Breathing = 0; input.Choking = true; input.CollapsedLung = true; input.LungNeedsSurgery = true;
         PhysiologyEstimate estimate = new(1000, KnownHediffDefOf.BrainDamage_Hypoxia);
         string tip = PrognosisRescueHints.Tooltip(in input, in estimate);
-        Assert.AreEqual("Projected cause: " + estimate.Cause.LabelCap
+        Assert.AreEqual("Likely cause of death: " + estimate.Cause.LabelCap
             + "\nTry: stop bleeding; transfuse blood; tend shock; perform CPR or defibrillate; clear airway with CPR or suction; repair collapsed lung", tip);
         Assert.AreEqual(1, tip.Split("transfuse blood").Length - 1);
         Assert.DoesNotContain("Approximate game time", tip);
@@ -272,7 +272,7 @@ public sealed class PhysiologyPrognosisTests
         input.Protected = true;
         Assert.AreEqual("Death protection active", PrognosisRescueHints.Tooltip(in input, in estimate));
         input.Protected = false; estimate = new(int.MaxValue, null);
-        Assert.AreEqual("No projected fatal cause", PrognosisRescueHints.Tooltip(in input, in estimate));
+        Assert.AreEqual("No fatal cause predicted", PrognosisRescueHints.Tooltip(in input, in estimate));
         estimate = new(1000, new HediffDef { label = "custom failure" });
         Assert.Contains("treat the underlying condition", PrognosisRescueHints.Tooltip(in input, in estimate));
     }

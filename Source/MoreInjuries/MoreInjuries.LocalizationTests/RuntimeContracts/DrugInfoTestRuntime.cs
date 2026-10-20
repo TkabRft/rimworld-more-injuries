@@ -37,6 +37,7 @@ namespace Verse
 
     public sealed class HediffStage
     {
+        public bool lifeThreatening;
         public List<PawnCapacityModifier>? capMods;
         public string? label;
         public float minSeverity;

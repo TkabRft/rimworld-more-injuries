@@ -41,15 +41,19 @@ internal static class Patch_PhysiologyDeathEstimate
                 Widgets.Label(rate, "MI_Prognosis_BleedingShort".Translate(source.BleedRate.ToStringPercent()).ToString().Truncate(rate.width));
                 start += rate.width; width -= rate.width;
             }
-            Rect current = new(start, footer.y, width * .4f, footer.height);
-            Rect future = new(start + current.width, footer.y, width - current.width, footer.height);
-            Widgets.Label(current, "MI_Prognosis_HeldShort".Translate(Status(held, false)).ToString().Truncate(current.width));
-            Widgets.Label(future, "MI_Prognosis_UntendedShort".Translate(Status(estimate, source.BleedingUncertain)).ToString().Truncate(future.width));
-            string tooltip = controller.PrognosisTooltip;
-            if (source.BleedRate > 0f)
-            { tooltip = "MI_Prognosis_Footer".Translate(source.BleedRate.ToStringPercent(),
-                "MI_Prognosis_Scenarios".Translate(Status(held, false), Status(estimate, source.BleedingUncertain))) + "\n" + tooltip; }
-            TooltipHandler.TipRegion(footer, tooltip);
+            if (source.TemporaryBleedingRisk)
+            {
+                Rect current = new(start, footer.y, width * .5f, footer.height);
+                Rect future = new(start + current.width, footer.y, width - current.width, footer.height);
+                Widgets.Label(current, "MI_Prognosis_HeldShort".Translate(Status(held, false)).ToString().Truncate(current.width));
+                Widgets.Label(future, "MI_Prognosis_UntendedShort".Translate(Status(estimate, source.BleedingUncertain)).ToString().Truncate(future.width));
+            }
+            else
+            {
+                Rect single = new(start, footer.y, width, footer.height);
+                Widgets.Label(single, "MI_Prognosis_DeathShort".Translate(Status(estimate, source.BleedingUncertain)).ToString().Truncate(single.width));
+            }
+            TooltipHandler.TipRegion(footer, controller.PrognosisTip);
         }
         finally { GUI.color = previous; }
     }

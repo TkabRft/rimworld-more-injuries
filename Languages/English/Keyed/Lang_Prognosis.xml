@@ -2,46 +2,46 @@
 <LanguageData>
   <!-- EN: Use physiology-aware death estimate -->
   <MI_Prognosis_SettingLabel>Use physiology-aware death estimate</MI_Prognosis_SettingLabel>
-  <!-- EN: Shows two approximate death forecasts: current bleeding control maintained, and no further tending as temporary control wears off. The tooltip explains causes and remaining risks. Calculated only while this pawn's Health tab is open. Disabling restores the vanilla countdown. -->
-  <MI_Prognosis_SettingTooltip>Shows two approximate death forecasts: current bleeding control maintained, and no further tending as temporary control wears off. The tooltip explains causes and remaining risks. Calculated only while this pawn's Health tab is open. Disabling restores the vanilla countdown.</MI_Prognosis_SettingTooltip>
+  <!-- EN: Shows an approximate time until death. When temporary bleeding control is active, compares keeping bleeding controlled with giving no more treatment. Hover for explanations and rescue advice. Chemical dependency appears only from chemical coma onward. Calculated only while this pawn's Health tab is open. Disabling restores the vanilla countdown. -->
+  <MI_Prognosis_SettingTooltip>Shows an approximate time until death. When temporary bleeding control is active, compares keeping bleeding controlled with giving no more treatment. Hover for explanations and rescue advice. Chemical dependency appears only from chemical coma onward. Calculated only while this pawn's Health tab is open. Disabling restores the vanilla countdown.</MI_Prognosis_SettingTooltip>
   <!-- EN: Bleeding: {0}/d; {1} -->
   <MI_Prognosis_Footer>Bleeding: {0}/d; {1}</MI_Prognosis_Footer>
-  <!-- EN: Estimated death: ~{0} -->
-  <MI_Prognosis_Time>Estimated death: ~{0}</MI_Prognosis_Time>
-  <!-- EN: No projected death within 24h -->
-  <MI_Prognosis_NoPrediction>No projected death within 24h</MI_Prognosis_NoPrediction>
+  <!-- EN: ~{0} -->
+  <MI_Prognosis_Time>~{0}</MI_Prognosis_Time>
+  <!-- EN: No death predicted in the next 24 hours -->
+  <MI_Prognosis_NoPrediction>No death predicted in the next 24 hours</MI_Prognosis_NoPrediction>
   <!-- EN: Death protection active -->
   <MI_Prognosis_Protected>Death protection active</MI_Prognosis_Protected>
-  <!-- EN: No projected fatal cause -->
-  <MI_Prognosis_NoCause>No projected fatal cause</MI_Prognosis_NoCause>
-  <!-- EN: Projected cause: {0}\n{1} -->
-  <MI_Prognosis_Tooltip>Projected cause: {0}\n{1}</MI_Prognosis_Tooltip>
+  <!-- EN: No fatal cause predicted -->
+  <MI_Prognosis_NoCause>No fatal cause predicted</MI_Prognosis_NoCause>
+  <!-- EN: Likely cause of death: {0}\n{1} -->
+  <MI_Prognosis_Tooltip>Likely cause of death: {0}\n{1}</MI_Prognosis_Tooltip>
   <!-- EN: Other hazards or random complications may cause earlier death. -->
   <MI_Prognosis_OtherRisks>Other hazards or random complications may cause earlier death.</MI_Prognosis_OtherRisks>
   <!-- EN: CE stabilization is temporary; bleeding may return. Fully tend the wounds. -->
   <MI_Prognosis_CEStabilization>CE stabilization is temporary; bleeding may return. Fully tend the wounds.</MI_Prognosis_CEStabilization>
-  <!-- EN: Assumes current exposure and care continue, with no further treatment. -->
-  <MI_Prognosis_CurrentConditions>Assumes current exposure and care continue, with no further treatment.</MI_Prognosis_CurrentConditions>
-  <!-- EN: Projected cause: loss of {0}. Treat the underlying condition. -->
-  <MI_Prognosis_CapacityFailure>Projected cause: loss of {0}. Treat the underlying condition.</MI_Prognosis_CapacityFailure>
-  <!-- EN: Current control: assumes present bleeding reductions are maintained. Other modeled conditions continue to progress. -->
-  <MI_Prognosis_CurrentScenario>Current control: assumes present bleeding reductions are maintained. Other modeled conditions continue to progress.</MI_Prognosis_CurrentScenario>
-  <!-- EN: Without tending: assumes no further treatment. Temporary bleeding control weakens and expires. -->
-  <MI_Prognosis_UntendedScenario>Without tending: assumes no further treatment. Temporary bleeding control weakens and expires.</MI_Prognosis_UntendedScenario>
-  <!-- EN: Untended wounds remain temporarily controlled. Bleeding can increase again; no forecast beyond its modeled horizon guarantees safety. Fully tend the wounds. -->
-  <MI_Prognosis_TemporaryControl>Untended wounds remain temporarily controlled. Bleeding can increase again; no forecast beyond its modeled horizon guarantees safety. Fully tend the wounds.</MI_Prognosis_TemporaryControl>
+  <!-- EN: Assumes current conditions continue and no new treatment is given. -->
+  <MI_Prognosis_CurrentConditions>Assumes current conditions continue and no new treatment is given.</MI_Prognosis_CurrentConditions>
+  <!-- EN: Likely cause of death: loss of {0}. Treat the underlying condition. -->
+  <MI_Prognosis_CapacityFailure>Likely cause of death: loss of {0}. Treat the underlying condition.</MI_Prognosis_CapacityFailure>
+  <!-- EN: Bleeding stays controlled: time until death if current bandages, tourniquets and stabilization keep reducing bleeding by the same amount. Other health problems still progress; this does not assume new treatment. -->
+  <MI_Prognosis_CurrentScenario>Bleeding stays controlled: time until death if current bandages, tourniquets and stabilization keep reducing bleeding by the same amount. Other health problems still progress; this does not assume new treatment.</MI_Prognosis_CurrentScenario>
+  <!-- EN: No more treatment: time until death if nobody provides further care. Temporary bleeding control weakens and wears off. -->
+  <MI_Prognosis_UntendedScenario>No more treatment: time until death if nobody provides further care. Temporary bleeding control weakens and wears off.</MI_Prognosis_UntendedScenario>
+  <!-- EN: Bleeding is reduced for now, but the wounds still need proper tending. Bleeding can return as temporary control wears off. A long estimate does not guarantee safety. -->
+  <MI_Prognosis_TemporaryControl>Bleeding is reduced for now, but the wounds still need proper tending. Bleeding can return as temporary control wears off. A long estimate does not guarantee safety.</MI_Prognosis_TemporaryControl>
   <!-- EN: The untreated bleeding baseline could not be determined. The future death estimate is uncertain. -->
   <MI_Prognosis_Uncertain>The untreated bleeding baseline could not be determined. The future death estimate is uncertain.</MI_Prognosis_Uncertain>
   <!-- EN: uncertain -->
   <MI_Prognosis_UnknownShort>uncertain</MI_Prognosis_UnknownShort>
   <!-- EN: >24h -->
   <MI_Prognosis_BeyondHorizon>&gt;24h</MI_Prognosis_BeyondHorizon>
-  <!-- EN: Held: {0}; Untended: {1} -->
-  <MI_Prognosis_Scenarios>Held: {0}; Untended: {1}</MI_Prognosis_Scenarios>
-  <!-- EN: Held: {0} -->
-  <MI_Prognosis_HeldShort>Held: {0}</MI_Prognosis_HeldShort>
-  <!-- EN: Untended: {0} -->
-  <MI_Prognosis_UntendedShort>Untended: {0}</MI_Prognosis_UntendedShort>
+  <!-- EN: Estimated death with bleeding controlled: {0}; with no more treatment: {1} -->
+  <MI_Prognosis_Scenarios>Estimated death with bleeding controlled: {0}; with no more treatment: {1}</MI_Prognosis_Scenarios>
+  <!-- EN: Bleeding controlled: {0} -->
+  <MI_Prognosis_HeldShort>Bleeding controlled: {0}</MI_Prognosis_HeldShort>
+  <!-- EN: No more treatment: {0} -->
+  <MI_Prognosis_UntendedShort>No more treatment: {0}</MI_Prognosis_UntendedShort>
   <!-- EN: Bleeding {0}/d -->
   <MI_Prognosis_BleedingShort>Bleeding {0}/d</MI_Prognosis_BleedingShort>
   <!-- EN: protected -->
@@ -52,4 +52,6 @@
   <MI_Prognosis_HoursShort>~{0}h</MI_Prognosis_HoursShort>
   <!-- EN: ~{0}min -->
   <MI_Prognosis_MinutesShort>~{0}min</MI_Prognosis_MinutesShort>
+  <!-- EN: Estimated death: {0} -->
+  <MI_Prognosis_DeathShort>Estimated death: {0}</MI_Prognosis_DeathShort>
 </LanguageData>

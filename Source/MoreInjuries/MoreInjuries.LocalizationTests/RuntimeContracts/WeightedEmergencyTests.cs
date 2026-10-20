@@ -196,8 +196,8 @@ public sealed class WeightedEmergencyTests
         Assert.IsTrue(patient.Vital!.TryGetPrognoses(out var source, out var held, out var untended));
         Assert.AreEqual(0f, source.BleedRate); Assert.IsTrue(source.TemporaryBleedingRisk);
         Assert.AreEqual(int.MaxValue, held.Ticks); Assert.IsTrue(untended.Ticks < 60000);
-        Assert.Contains("Current control", patient.Vital.PrognosisTooltip);
-        Assert.Contains("Without tending", patient.Vital.PrognosisTooltip);
+        Assert.Contains("Bleeding stays controlled", patient.Vital.PrognosisTooltip);
+        Assert.Contains("No more treatment", patient.Vital.PrognosisTooltip);
         int reads = patient.health.hediffSet.CapacityReads;
         patient.Vital.TryGetPrognoses(out _, out var cachedHeld, out var cachedUntended);
         Assert.AreEqual(reads, patient.health.hediffSet.CapacityReads);
@@ -232,10 +232,10 @@ public sealed class WeightedEmergencyTests
             ((MainTabWindow_Inspect)MainButtonDefOf.Inspect.TabWindow).OpenTabType = typeof(ITab_Pawn_Health);
             Find.Selector.SingleSelectedThing = patient; Widgets.Draws = 0;
             Patch_PhysiologyDeathEstimate.Postfix(new(0, 0, 300, 600), patient, true);
-            Assert.AreEqual(3, Widgets.Draws); Assert.Contains("Untended:", Widgets.LastLabel);
-            Assert.DoesNotContain("Bleeding", Widgets.LastLabel);
+            Assert.AreEqual(3, Widgets.Draws); Assert.Contains("No more treatment:", Widgets.LastLabel);
+            Assert.Contains("Bleeding controlled:", Widgets.LastLabel);
             Assert.Contains(shadow ? "uncertain" : ">24h", Widgets.LastLabel);
-            Assert.Contains("Untended wounds remain", TooltipHandler.LastTip);
+            Assert.Contains("the wounds still need proper tending", TooltipHandler.LastTip);
             Find.MainTabsRoot.OpenTab = null;
             int reads = patient.health.hediffSet.CapacityReads; Widgets.Draws = 0;
             Patch_PhysiologyDeathEstimate.Postfix(new(0, 0, 300, 600), patient, true);

@@ -24,8 +24,27 @@ namespace Verse
     public static class TooltipHandler
     {
         public static string LastTip = "";
+        public static TipSignal LastSignal;
+        public static int IdentityChanges;
+        public static void TipRegion(UnityEngine.Rect rect, TipSignal tip)
+        {
+            if (LastSignal.uniqueId != tip.uniqueId) { IdentityChanges++; }
+            LastSignal = tip;
+            LastTip = tip.textGetter();
+        }
         public static void TipRegion(UnityEngine.Rect rect, string tip) => LastTip = tip;
     }
+    public readonly struct TipSignal(Func<string> getter, int id)
+    {
+        public readonly Func<string> textGetter = getter;
+        public readonly int uniqueId = id;
+    }
+    public sealed partial class Pawn
+    {
+        private static int s_nextThingId;
+        public int thingIDNumber = ++s_nextThingId;
+    }
+    public sealed class Hediff_ChemicalDependency : HediffWithComps;
     public static partial class Find
     {
         public static readonly RimWorld.MainTabsRoot MainTabsRoot = new();

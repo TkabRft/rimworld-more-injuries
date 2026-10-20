@@ -25,7 +25,10 @@ public sealed partial class VitalFailureComp
     private readonly float[] _prognosisFailureRates = new float[7];
     private readonly HediffDef[] _prognosisFailureDefs = new HediffDef[7];
     private CombatExtendedBleedingCapture? _combatExtendedBleeding;
+    private Func<string>? _prognosisTooltipGetter;
     internal string PrognosisTooltip { get; private set; } = string.Empty;
+    internal TipSignal PrognosisTip => new(_prognosisTooltipGetter ??= () => PrognosisTooltip,
+        Patient.thingIDNumber ^ 0x4D495052);
 
     partial void InvalidatePrognosis() => InvalidateForecast();
     internal void InvalidateForecast() => _hasPrognosis = false;
@@ -53,12 +56,20 @@ public sealed partial class VitalFailureComp
             current.HoldBleedingControl = true;
             _currentControlPrognosis = current.TemporaryBleedingRisk ? PhysiologyPrognosis.Estimate(in current, VitalFailureDefOf.MI_VitalFailureConfig,
                 HediffDefOf.BloodLoss, KnownHediffDefOf.BrainDamage_Hypoxia) : _prognosis;
-            PrognosisTooltip = "MI_Prognosis_CurrentScenario".Translate() + "\n"
-                + PrognosisRescueHints.Tooltip(in current, in _currentControlPrognosis) + "\n\n"
-                + "MI_Prognosis_UntendedScenario".Translate() + "\n"
-                + PrognosisRescueHints.Tooltip(in _prognosisSource, in _prognosis);
-            PrognosisTooltip += "\n" + "MI_Prognosis_Scenarios".Translate(FullStatus(in current, in _currentControlPrognosis, false),
-                FullStatus(in current, in _prognosis, current.BleedingUncertain));
+            string scenarios = current.TemporaryBleedingRisk
+                ? "MI_Prognosis_Scenarios".Translate(FullStatus(in current, in _currentControlPrognosis, false),
+                    FullStatus(in current, in _prognosis, current.BleedingUncertain)).ToString()
+                : "MI_Prognosis_DeathShort".Translate(FullStatus(in current, in _prognosis, current.BleedingUncertain)).ToString();
+            PrognosisTooltip = (current.BleedRate > 0f
+                ? "MI_Prognosis_Footer".Translate(current.BleedRate.ToStringPercent(), scenarios).ToString() : scenarios) + "\n\n";
+            if (current.TemporaryBleedingRisk)
+            {
+                PrognosisTooltip += "MI_Prognosis_CurrentScenario".Translate() + "\n"
+                    + PrognosisRescueHints.Tooltip(in current, in _currentControlPrognosis) + "\n\n"
+                    + "MI_Prognosis_UntendedScenario".Translate() + "\n"
+                    + PrognosisRescueHints.Tooltip(in _prognosisSource, in _prognosis);
+            }
+            else { PrognosisTooltip += PrognosisRescueHints.Tooltip(in _prognosisSource, in _prognosis); }
             if (current.TemporaryBleedingRisk) { PrognosisTooltip += "\n" + "MI_Prognosis_TemporaryControl".Translate(); }
             if (current.BleedingUncertain) { PrognosisTooltip += "\n" + "MI_Prognosis_Uncertain".Translate(); }
             if (current.UnmodeledRisk) { PrognosisTooltip += "\n" + "MI_Prognosis_OtherRisks".Translate(); }
@@ -113,6 +124,7 @@ public sealed partial class VitalFailureComp
         float hypothermia = 0f;
         foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
         {
+            if (!PrognosisConditionPolicy.ShouldProject(hediff)) { continue; }
             CaptureNativeCondition(ref result, hediff);
             if (hediff.def == HediffDefOf.BloodLoss) { result.BloodLoss = hediff.Severity; }
             else if (hediff.def == KnownHediffDefOf.HypovolemicShock)

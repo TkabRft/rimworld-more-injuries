@@ -24,7 +24,11 @@ public sealed class CombatExtendedPrognosisTests
     }
 
     [TestCleanup]
-    public void Cleanup() => Initialize(false);
+    public void Cleanup()
+    {
+        MoreInjuriesMod.Settings.EnableLogging = false;
+        Initialize(false);
+    }
 
     private static CEWoundFixture Wound(Pawn pawn, float rate, float modifier, bool inside = false, bool missing = false, bool stabilize = true)
     {
@@ -188,6 +192,7 @@ public sealed class CombatExtendedPrognosisTests
     [TestMethod]
     public void CeAbsentUnsupportedLayoutAndMissingCeRegistrationUseCurrentBleedingFallback()
     {
+        MoreInjuriesMod.Settings.EnableLogging = true;
         Initialize(false); Pawn pawn = VitalFailureTests.Patient(); pawn.health.hediffSet.BleedRateTotal = .7f;
         PhysiologySnapshot source = Capture(pawn);
         Assert.AreEqual(.7f, source.BleedRate); Assert.AreEqual(0, source.BleedingCount); Assert.IsFalse(source.UnmodeledRisk);
@@ -205,14 +210,16 @@ public sealed class CombatExtendedPrognosisTests
         Hediff blood = VitalFailureTests.Add(pawn, HediffDefOf.BloodLoss, .2f);
         Open(pawn); Draw(pawn); Assert.AreEqual(0, Widgets.Draws);
         pawn.health.hediffSet.Capacities[PawnCapacityDefOf.Breathing] = 0; pawn.Vital!.Invalidate();
-        Draw(pawn); Assert.AreEqual(3, Widgets.Draws); Assert.Contains("Held:", Widgets.LastLabel);
+        Draw(pawn); Assert.AreEqual(2, Widgets.Draws); Assert.Contains("Estimated death:", Widgets.LastLabel);
         Assert.DoesNotContain("Bleeding", Widgets.LastLabel);
         pawn.health.hediffSet.Capacities[PawnCapacityDefOf.Breathing] = 1; pawn.Vital.Invalidate();
         blood.Severity = 1; Hediff shock = VitalFailureTests.Add(pawn, KnownHediffDefOf.HypovolemicShock, 1);
-        Draw(pawn); Assert.AreEqual(3, Widgets.Draws); Assert.DoesNotContain("Bleeding", Widgets.LastLabel);
+        Draw(pawn); Assert.AreEqual(2, Widgets.Draws); Assert.DoesNotContain("Bleeding", Widgets.LastLabel);
         blood.Severity = .2f; pawn.health.hediffSet.hediffs.Remove(shock); pawn.Vital.Invalidate();
         Wound(pawn, 6f, -.2f); Draw(pawn);
-        Assert.AreEqual(3, Widgets.Draws); Assert.DoesNotContain("Bleeding", Widgets.LastLabel);
+        Assert.AreEqual(3, Widgets.Draws);
+        Assert.Contains("Bleeding controlled:", Widgets.LastLabel);
+        Assert.Contains("No more treatment:", Widgets.LastLabel);
         Assert.Contains("stabilization is temporary", TooltipHandler.LastTip);
         Open(null); int reads = pawn.health.hediffSet.CapacityReads;
         Draw(pawn); Assert.AreEqual(0, Widgets.Draws); Assert.AreEqual(reads, pawn.health.hediffSet.CapacityReads);
