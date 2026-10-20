@@ -50,6 +50,7 @@
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureModel.cs" Link="RuntimeContracts\Production\VitalFailureModel.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalAnatomy.cs" Link="RuntimeContracts\Production\VitalAnatomy.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureComp.cs" Link="RuntimeContracts\Production\VitalFailureComp.cs" />
+        <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureComp.Menus.cs" Link="RuntimeContracts\Production\VitalFailureComp.Menus.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureComp.Neurology.cs" Link="RuntimeContracts\Production\VitalFailureComp.Neurology.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\VitalFailureComp.Prognosis.cs" Link="RuntimeContracts\Production\VitalFailureComp.Prognosis.cs" />
         <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\PhysiologyPrognosis.cs" Link="RuntimeContracts\Production\PhysiologyPrognosis.cs" />

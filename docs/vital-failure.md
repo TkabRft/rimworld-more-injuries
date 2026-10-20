@@ -76,6 +76,10 @@ Odyssey environmental protection remains entirely native: MI neither recomputes 
 
 Emergency work scanning and manual CPR/defibrillator/airway menus include eligible owned nonhuman patients without the full injury component. Native medical and mutant restrictions apply. Species still need a compatible native or modded organ-replacement recipe; this module does not invent transplantation operations for every anatomy.
 
+Corpse float-menu correction (code-synced: 2026-10-20): `VitalFailureComp.CompFloatMenuOptions` now checks that `parent` is a `Pawn` before evaluating living-patient eligibility. The reported corpse callback previously entered the `Patient` property's unconditional cast and threw `InvalidCastException`. Corpse-owned, other non-pawn and uninitialized comps return no vital-care options; the handler does not substitute a corpse's inner pawn. Dead-pawn exclusion, duplicate-menu prevention for `MoreInjuryComp`, medical permissions, faction restrictions for nonhumans and the choking toggle retain their existing behavior. No physiology, death, resurrection, save key, setting or Harmony target changes.
+
+Five source-linked menu fixtures reproduce the original corpse/non-pawn cast failures before the guard, then verify those exclusions and preserved living-patient routing afterward. Native emergency-menu workers are test boundaries. The pinned 1.6 Release build passes, with all 233 runtime/definition/localization checks and 195 Harmony/lifecycle fixtures. The refreshed 235-file runtime package passes assembly, XML, load-path and SHA256 validation. Live acceptance must right-click the reported dead enemy again, then verify eligible living human and owned-animal emergency menus. No game was installed or launched; tested 1.7 compatibility is not inferred.
+
 ## Faster cerebral progression and prognosis
 
 Status: `implemented`. code-synced: 2026-10-19.

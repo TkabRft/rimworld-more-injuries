@@ -230,6 +230,8 @@ Blood bags retain their 35-percentage-point blood-loss reduction. Their effect o
 
 ## CPR
 
+Resuscitation and airway-care options apply to living patients. A corpse retains its normal corpse interactions.
+
 Cardiopulmonary resuscitation (CPR) is an emergency procedure that combines chest compressions with artificial ventilation to manually preserve brain function until further measures can be taken to restore spontaneous blood circulation and breathing in a person who is in [cardiac arrest](/docs/wiki/injuries/cardiac-arrest.md#cardiac-arrest), suffering from a [heart attack](https://rimworldwiki.com/wiki/Ailments#Heart_attack), or is [choking on blood](/docs/wiki/injuries/choking.md#choking-on-blood).
 
 > **In-Game Description**

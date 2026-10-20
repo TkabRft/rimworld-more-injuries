@@ -19,6 +19,7 @@ namespace Verse
     {
         public object parent = null!;
         public virtual void PostExposeData() { }
+        public virtual IEnumerable<FloatMenuOption> CompFloatMenuOptions(Pawn selectedPawn) => [];
     }
     public partial class HediffDef : Def
     {
