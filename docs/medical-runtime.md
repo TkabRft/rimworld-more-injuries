@@ -2,6 +2,8 @@
 
 code-synced: 2026-10-20
 
+`JobOutcomeDoer_FactionRelations` attributes medical goodwill and surgery-violation quest signals to the player only when the treating doctor's faction is `Faction.OfPlayer`. NPC-to-NPC treatment, including blood/saline transfusions and drug administration, completes without changing player relations or sending player violation signals. Existing goodwill amounts, history-event reasons, friendly-only restrictions and quest-lodger handling remain in effect for player-faction doctors. This changes subsequent treatment only; previously awarded goodwill is not reversed. Player guidance is in [medical devices](wiki/medical-devices.md).
+
 ## Current contracts
 
 The [vital failure owner](vital-failure.md) defines the new delayed-death and systemic cerebral progression paths. Its module supersedes systemic cerebral chance rolls while enabled; the shock and acidosis balance below remains unchanged.

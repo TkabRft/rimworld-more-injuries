@@ -21,7 +21,8 @@ public partial class JobOutcomeDoer_FactionRelations : JobOutcomeDoer
 
     protected override bool DoOutcome(Pawn doctor, Pawn patient, Thing? device)
     {
-        if (patient.Faction is Faction factionToInform
+        if (doctor.Faction == Faction.OfPlayer
+            && patient.Faction is Faction factionToInform
             && (!factionToInform.IsPlayerSafe() || patient.IsQuestLodger())
             && !(OnlyIfFriendly && factionToInform.HostileTo(Faction.OfPlayer)))
         {
