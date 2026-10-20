@@ -14,10 +14,12 @@ internal static partial class NpcExtraction
         private readonly Pawn _carrier, _patient;
         private readonly IntVec3 _origin;
         private readonly List<Thing> _threats;
+        private readonly bool _ignoreImpacts;
         private readonly Dictionary<IntVec3, (NpcExtractionRisk Risk, bool Allowed)>? _cache;
-        internal Assessment(Pawn carrier, Pawn patient, IntVec3 origin, bool evacuation = false)
+        internal Assessment(Pawn carrier, Pawn patient, IntVec3 origin, bool evacuation = false, bool ignoreImpacts = false)
         {
             _carrier = carrier; _patient = patient; _origin = origin;
+            _ignoreImpacts = ignoreImpacts;
             if (evacuation) { _cache = new(); }
             IEnumerable<Thing> candidates = evacuation
                 ? carrier.Map.mapPawns.AllPawnsSpawned.Cast<Thing>().Concat(carrier.Map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial))
@@ -46,7 +48,7 @@ internal static partial class NpcExtraction
             }
             float fire = cell.ContainsStaticFire(map) ? 2f
                 : GenRadial.RadialCellsAround(cell, 1.5f, false).Any(next => next.InBounds(map) && next.ContainsStaticFire(map)) ? .5f : 0f;
-            NpcExtractionRisk result = new(combat, NpcExtractionEnvironment.RecentImpact(map, cell), fire, thermal, known);
+            NpcExtractionRisk result = new(combat, _ignoreImpacts ? 0f : NpcExtractionEnvironment.RecentImpact(map, cell), fire, thermal, known);
             if (_cache is not null) { _cache[cell] = (result, allowed); }
             return result;
         }

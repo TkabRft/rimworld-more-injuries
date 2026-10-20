@@ -144,6 +144,7 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
         {
             this.FailOn(() => NpcCombatMedicine.NpcMedicalSafety.YieldToExplosive(doctor, attemptJob));
             this.FailOn(() => !NpcCombatMedicine.NpcQuickAid.Continue(doctor, patient, attemptJob));
+            this.FailOn(() => !NpcCombatMedicine.NpcDeparture.Continue(doctor, attemptJob));
             NpcCombatMedicine.NpcMedicalAttempts.Begin(doctor, attemptJob, patient, DeviceUsed);
             AddFinishAction(condition =>
             {
@@ -306,7 +307,8 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
     {
         Job applyingJob = job;
         if (NpcCombatMedicine.NpcMedicalAttempts.Automatic(doctor, applyingJob)
-            && !NpcCombatMedicine.NpcQuickAid.Continue(doctor, target, applyingJob, final: true))
+            && (!NpcCombatMedicine.NpcDeparture.Continue(doctor, applyingJob)
+                || !NpcCombatMedicine.NpcQuickAid.Continue(doctor, target, applyingJob, final: true)))
         { EndJobWith(JobCondition.Incompletable); return; }
         NpcCombatMedicine.NpcMedicalAttempts.Applying(applyingJob);
         bool accepted = ApplyDevice(doctor, target, thing);

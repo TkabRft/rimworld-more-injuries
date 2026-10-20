@@ -24,6 +24,7 @@ public sealed class JobDriver_NpcTend : JobDriver_TendPatient
 
     protected override IEnumerable<Toil> MakeNewToils()
     {
+        this.FailOn(() => !NpcDeparture.Continue(pawn, job));
         Job attemptJob = job;
         Pawn attemptPatient = job.targetA.Pawn;
         NpcMedicalAttempts.Begin(pawn, attemptJob, attemptPatient, job.targetB.Thing);
@@ -128,7 +129,7 @@ public sealed class JobDriver_NpcTend : JobDriver_TendPatient
         var nativeFinalize = finalize.initAction;
         finalize.initAction = () =>
         {
-            if (!NpcMedicalReservations.DeliveryAllowed(pawn, patientPawn, attemptJob.targetB.Thing)
+            if (!NpcDeparture.Continue(pawn, attemptJob) || !NpcMedicalReservations.DeliveryAllowed(pawn, patientPawn, attemptJob.targetB.Thing)
                 || patientPawn != pawn && !pawn.CanReachImmediate(patientPawn, PathEndMode.Touch))
             { EndJobWith(JobCondition.Incompletable); return; }
             NpcMedicalAttempts.Applying(attemptJob);

@@ -167,6 +167,8 @@ namespace Verse.AI
     public enum PathEndMode { Touch, ClosestTouch, OnCell }
     public static class JobMaker
     {
+        public static Job MakeJob(JobDef def) => new() { def = def };
+        public static Job MakeJob(JobDef def, Thing a, IntVec3 b) => new() { def = def, targetA = new(a), targetB = new(b) };
         public static Job MakeJob(JobDef def, Thing a, Thing? b = null) => new() { def = def, targetA = new(a), targetB = new(b!) };
     }
     public abstract class JobDriver

@@ -30,7 +30,8 @@ internal static class NpcMedicalAttempts
         && (job.endAfterTendedOnce || job.def == KnownJobDefOf.MI_NpcTend || job.def == KnownJobDefOf.MI_NpcPainSelf || job.def == KnownJobDefOf.MI_NpcRestorativeSelf || job.def == KnownJobDefOf.MI_NpcExtract);
 
     internal static bool Ready(Pawn doctor, Pawn patient, JobDef action, Thing? supply)
-        => Retry(doctor, patient, action).Allowed(Find.TickManager.TicksGame, Context(doctor, patient, supply));
+        => NpcDeparture.ProbingRetry(doctor) || Retry(doctor, patient, action).Allowed(Find.TickManager.TicksGame, Context(doctor, patient, supply));
+    internal static int RetryDeadline(Pawn doctor, Pawn patient, JobDef action) => Retry(doctor, patient, action).Deadline;
     internal static bool ExtractionAllowed(Pawn doctor, Pawn patient)
         => !NpcMedicalCompatibility.SafetyOwned(doctor) && Ready(doctor, patient, KnownJobDefOf.MI_NpcExtract, null);
     internal static void Progress(Job job)
@@ -41,9 +42,9 @@ internal static class NpcMedicalAttempts
     internal static bool Allowed(Pawn doctor, Pawn patient, JobDef action, Thing? supply)
     {
         NpcMedicalRetry retry = Retry(doctor, patient, action);
-        bool ready = retry.Allowed(Find.TickManager.TicksGame, Context(doctor, patient, supply));
+        bool ready = NpcDeparture.ProbingRetry(doctor) || retry.Allowed(Find.TickManager.TicksGame, Context(doctor, patient, supply));
         bool safe = NpcMedicalSafety.Allowed(doctor, patient, supply);
-        if (Logger.IsEnabled && Prefs.DevMode)
+        if (Logger.IsEnabled && Prefs.DevMode && !NpcDeparture.ProbingRetry(doctor))
         {
             Dictionary<JobDef, string> diagnostics = s_history.GetOrCreateValue(doctor).GetOrCreateValue(patient).Diagnostics;
             string state = !safe ? "incoming fire/safety" : !ready ? "retry=" + retry.Deadline : "eligible";
@@ -152,6 +153,7 @@ internal static class NpcMedicalAttempts
         if (s_active.TryGetValue(attempt.Job, out Attempt? current) && current == attempt)
         { s_active.Remove(attempt.Job); }
         attempt.Progress |= attempt.Improved;
+        NpcDeparture.Finish(attempt.Job, attempt.JobId, attempt.Action, attempt.Progress);
         bool resolved = attempt.Patient.Dead || (attempt.Action == KnownJobDefOf.MI_NpcExtract ? !attempt.Patient.Downed
             : NpcMedicalAi.Urgency(attempt.Patient) <= 0f && !attempt.Patient.health.HasHediffsNeedingTend());
         NpcMedicalRetry retry = Retry(attempt.Doctor, attempt.Patient, attempt.Action);

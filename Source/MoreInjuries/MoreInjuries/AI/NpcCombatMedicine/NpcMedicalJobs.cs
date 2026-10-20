@@ -33,8 +33,13 @@ public sealed class JobDriver_NpcEvacuate : JobDriver
     protected override IEnumerable<Toil> MakeNewToils()
     {
         Pawn patient = job.targetA.Pawn;
+        Job mission = job;
+        int identity = mission.loadID;
+        JobDef action = mission.def;
+        this.FailOn(() => !NpcDeparture.Continue(pawn, mission));
         AddFinishAction(condition =>
         {
+            NpcDeparture.Finish(mission, identity, action);
             if (pawn.Spawned && pawn.carryTracker.CarriedThing == patient)
             { pawn.carryTracker.TryDropCarriedThing(pawn.Position, ThingPlaceMode.Near, out _); }
         });
@@ -53,7 +58,7 @@ public sealed class JobDriver_NpcEvacuate : JobDriver
         pickup.initAction = () =>
         {
             if (pawn.carryTracker.CarriedThing == patient) { return; }
-            if (!NpcEvacuation.RouteValid(pawn, job) || !NpcMedicalReservations.PatientAvailable(pawn, patient)
+            if (!NpcDeparture.Continue(pawn, mission) || !NpcEvacuation.RouteValid(pawn, job) || !NpcMedicalReservations.PatientAvailable(pawn, patient)
                 || !pawn.CanReachImmediate(patient, PathEndMode.Touch))
             { EndJobWith(JobCondition.Incompletable); return; }
             job.count = 1;

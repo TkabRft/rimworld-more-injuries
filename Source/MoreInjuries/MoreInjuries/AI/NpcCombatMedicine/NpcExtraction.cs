@@ -41,6 +41,7 @@ internal static partial class NpcExtraction
         internal readonly float Ticks = ticks, Exposure = exposure;
         internal readonly NpcExtractionRisk Origin = origin, Target = target;
         internal Job Create() => Commit(carrier, patient, this);
+        internal Job CreatePreview() => MakeJob(carrier, patient, this);
     }
 
     internal static Job? Consider(Pawn carrier, Pawn patient, out bool unsafePatient)
@@ -53,8 +54,9 @@ internal static partial class NpcExtraction
         Assessment assessment = new(carrier, patient, patient.Position);
         NpcExtractionRisk origin = assessment.At(patient.Position, out _);
         unsafePatient = origin.Hazard;
-        if (!unsafePatient || !Carrier(carrier) || carrier.carryTracker.CarriedThing is not null
-            || carrier.carryTracker.AvailableStackSpace(patient.def) < 1
+        if (!unsafePatient || !Carrier(carrier) || carrier.carryTracker.CarriedThing is not null && !NpcDeparture.ProspectiveHands(carrier)
+            || (NpcDeparture.ProspectiveHands(carrier) ? carrier.carryTracker.MaxStackSpaceEver(patient.def)
+                : carrier.carryTracker.AvailableStackSpace(patient.def)) < 1
             || !NpcMedicalReservations.PatientAvailable(carrier, patient)
             || !NpcMedicalAttempts.ExtractionAllowed(carrier, patient)) { return null; }
         PatientState state = s_patients.GetOrCreateValue(patient);
@@ -92,8 +94,7 @@ internal static partial class NpcExtraction
     {
         PatientState state = s_patients.GetOrCreateValue(patient);
         int now = Find.TickManager.TicksGame;
-        Job extraction = JobMaker.MakeJob(KnownJobDefOf.MI_NpcExtract, patient, plan.Destination, patient.Position);
-        extraction.count = 1;
+        Job extraction = MakeJob(carrier, patient, plan);
         Mission mission = s_missions.GetOrCreateValue(carrier);
         mission.Extraction = extraction; mission.ExtractionId = extraction.loadID;
         // One bounded critical round may precede this committed transport.
@@ -107,6 +108,13 @@ internal static partial class NpcExtraction
         }
         mission.Stabilization = null;
         return extraction;
+    }
+
+    private static Job MakeJob(Pawn carrier, Pawn patient, Plan plan)
+    {
+        Job job = JobMaker.MakeJob(KnownJobDefOf.MI_NpcExtract, patient, plan.Destination, patient.Position);
+        job.count = 1;
+        return job;
     }
 
     internal static Job? Resume(Pawn carrier)

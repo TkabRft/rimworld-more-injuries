@@ -14,7 +14,7 @@ internal static class NpcMedicalDecision
 
     internal static void Report(Pawn actor, Pawn patient, int mode, string stage, string reason)
     {
-        if (!Logger.IsEnabled || !Prefs.DevMode) { return; }
+        if (!Logger.IsEnabled || !Prefs.DevMode || NpcDeparture.ProbingRetry(actor)) { return; }
         Dictionary<string, string> states = s_diagnostics.GetOrCreateValue(actor).GetOrCreateValue(patient).Reasons;
         string state = mode + ":" + reason;
         if (states.TryGetValue(stage, out string? previous) && previous == state) { return; }

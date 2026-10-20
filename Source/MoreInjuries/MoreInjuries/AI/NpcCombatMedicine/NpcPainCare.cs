@@ -107,7 +107,7 @@ internal static class NpcPainCare
 
     internal static Job? Select(Pawn actor, Pawn patient, bool pocketOnly = false, Func<JobDef, Thing?, bool>? allowed = null)
     {
-        if (Priority(patient) <= 0f || actor.carryTracker.CarriedThing is not null) { return null; }
+        if (Priority(patient) <= 0f || actor.carryTracker.CarriedThing is not null && !NpcDeparture.ProspectiveHands(actor)) { return null; }
         Thing? best = null;
         NpcPainDose bestDose = default;
         string reason = "no available safe analgesic";
@@ -149,7 +149,8 @@ internal static class NpcPainCare
     {
         bool accessible = dose.ParentHolder == actor.inventory || dose == actor.carryTracker.CarriedThing
             || dose.Spawned && actor.CanReachImmediate(dose, PathEndMode.Touch);
-        bool allowed = accessible && (actor.CurJob is not Job active || NpcQuickAid.Continue(actor, patient, active, final: true))
+        bool allowed = accessible && (actor.CurJob is not Job active || NpcDeparture.Continue(actor, active)
+            && NpcQuickAid.Continue(actor, patient, active, final: true))
             && (actor == patient || actor.CanReachImmediate(patient, PathEndMode.Touch)
             && NpcMedicalAi.Relation(actor, patient) >= 0);
         string reason = "dose or patient no longer accessible";

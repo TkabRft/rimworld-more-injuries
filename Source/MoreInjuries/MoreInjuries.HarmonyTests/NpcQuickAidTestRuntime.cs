@@ -58,6 +58,7 @@ namespace MoreInjuries.AI.NpcCombatMedicine
             internal float Ticks, Exposure;
             internal NpcExtractionRisk Origin, Target;
             internal Func<Job> Create = () => new();
+            internal Job CreatePreview() => Create();
         }
         internal static Func<Pawn, Pawn, Plan?>? OnPreview;
         internal static Plan? Preview(Pawn actor, Pawn patient, out bool danger)

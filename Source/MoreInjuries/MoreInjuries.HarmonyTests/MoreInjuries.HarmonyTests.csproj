@@ -6,6 +6,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\MoreInjuries\AI\FirstAidTending.cs" Link="Production\FirstAidTending.cs" />
+    <Compile Include="..\MoreInjuries\AI\Jobs\JobDriver_ProvideFirstAid.cs" Link="Production\JobDriver_ProvideFirstAid.cs" />
+    <Compile Include="..\MoreInjuries\AI\Jobs\IJobDescriptor.cs" Link="Production\IJobDescriptor.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcDeparture.cs" Link="Production\NpcDeparture.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcDepartureNativeJobs.cs" Link="Production\NpcDepartureNativeJobs.cs" />
     <Compile Include="..\MoreInjuries\AI\EmergencyPriority.cs" Link="Production\EmergencyPriority.cs" />
     <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcQuickAid.cs" Link="Production\NpcQuickAid.cs" />
     <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalSupplies.cs" Link="Production\NpcMedicalSupplies.cs" />

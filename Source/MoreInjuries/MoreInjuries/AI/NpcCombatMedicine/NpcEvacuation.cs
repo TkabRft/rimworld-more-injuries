@@ -9,27 +9,29 @@ namespace MoreInjuries.AI.NpcCombatMedicine;
 // Off-map carrying is deliberately stricter than local extraction or self-withdrawal.
 internal static class NpcEvacuation
 {
+    internal enum Failure { None, Actor, Mode, Incapable, Patient, Cargo, RecentDamage, Safety, CloseHostile, Reservation, Route, ApproachBudget }
     internal static bool Enabled => MoreInjuriesMod.Settings.EnableNpcCombatMedicine
         && MoreInjuriesMod.Settings.NpcMedicalAiMode >= 2;
 
-    internal static bool Eligible(Pawn carrier, Pawn patient) => Rejection(carrier, patient) is null;
+    internal static bool Eligible(Pawn carrier, Pawn patient) => Rejection(carrier, patient) == Failure.None;
 
-    private static string? Rejection(Pawn carrier, Pawn patient)
+    private static Failure Rejection(Pawn carrier, Pawn patient, bool ignoreRecent = false)
     {
-        if (!carrier.Spawned || carrier.Map is null) { return "carrier not on a map"; }
+        if (!carrier.Spawned || carrier.Map is null) { return Failure.Actor; }
         bool carrying = carrier.carryTracker.CarriedThing == patient;
-        if (!carrying && !Enabled) { return "mode or disabled module prevents new pickup"; }
-        if (!NpcExtraction.Carrier(carrier)) { return "incapable carrier"; }
+        if (!carrying && !Enabled) { return Failure.Mode; }
+        if (!NpcExtraction.Carrier(carrier)) { return Failure.Incapable; }
         if (!NpcExtraction.PatientAllowed(carrier, patient) || patient == carrier || patient.Faction != carrier.Faction)
-        { return "patient no longer eligible"; }
-        if (!carrying && (!patient.Spawned || carrier.carryTracker.CarriedThing is not null
-            || carrier.carryTracker.AvailableStackSpace(patient.def) < 1)) { return "carrying hands or patient unavailable"; }
-        if (NpcMedicalSafety.Recent(carrier) || NpcMedicalSafety.Recent(patient)) { return "recent incoming damage"; }
-        if (NpcMedicalCompatibility.SafetyOwned(carrier) || NpcMedicalCompatibility.SafetyOwned(patient)) { return "native safety work"; }
+        { return Failure.Patient; }
+        if (!carrying && (!patient.Spawned || carrier.carryTracker.CarriedThing is not null && !NpcDeparture.ProspectiveHands(carrier)
+            || (NpcDeparture.ProspectiveHands(carrier) ? carrier.carryTracker.MaxStackSpaceEver(patient.def)
+                : carrier.carryTracker.AvailableStackSpace(patient.def)) < 1)) { return Failure.Cargo; }
+        if (!ignoreRecent && (NpcMedicalSafety.Recent(carrier) || NpcMedicalSafety.Recent(patient))) { return Failure.RecentDamage; }
+        if (NpcMedicalCompatibility.SafetyOwned(carrier) || NpcMedicalCompatibility.SafetyOwned(patient)) { return Failure.Safety; }
         if (carrier.Map.mapPawns.AllPawnsSpawned.Any(enemy => !enemy.Dead && !enemy.Downed && enemy.HostileTo(carrier)
             && (enemy.Position.InHorDistOf(carrier.Position, 8f) || enemy.Position.InHorDistOf(patient.PositionHeld, 8f))))
-        { return "hostile within eight cells"; }
-        return null;
+        { return Failure.CloseHostile; }
+        return Failure.None;
     }
 
     internal static IEnumerable<IntVec3> Candidates(Pawn carrier)
@@ -75,16 +77,28 @@ internal static class NpcEvacuation
     }
 
     internal static bool TryExit(Pawn carrier, Pawn patient, out IntVec3 exit)
+        => TryPlan(carrier, patient, out exit, out _);
+
+    internal static bool TryPlan(Pawn carrier, Pawn patient, out IntVec3 exit, out Failure failure,
+        bool departure = false, bool ignoreRecent = false)
     {
         exit = IntVec3.Invalid;
-        void Report(string reason) => NpcMedicalDecision.Report(carrier, patient, MoreInjuriesMod.Settings.NpcMedicalAiMode, "exit route", reason);
-        if (Rejection(carrier, patient) is string refusal) { Report(refusal); return false; }
-        if (!NpcMedicalReservations.PatientAvailable(carrier, patient)) { Report("patient reservation unavailable"); return false; }
-        NpcExtraction.Assessment approach = new(carrier, carrier, carrier.Position, evacuation: true);
-        NpcExtraction.Assessment transport = new(carrier, patient, patient.PositionHeld, evacuation: true);
+        void Report(string reason)
+        {
+            if (!ignoreRecent) { NpcMedicalDecision.Report(carrier, patient, MoreInjuriesMod.Settings.NpcMedicalAiMode, "exit route", reason); }
+        }
+        failure = Rejection(carrier, patient, ignoreRecent);
+        if (failure != Failure.None) { Report(failure.ToString()); return false; }
+        if (!NpcMedicalReservations.PatientAvailable(carrier, patient)) { failure = Failure.Reservation; Report(failure.ToString()); return false; }
+        // Ignoring fading impacts is a wait-feasibility probe only. Drivers and
+        // committed exits always call the strict, non-probing assessment.
+        NpcExtraction.Assessment approach = new(carrier, carrier, carrier.Position, evacuation: true, ignoreImpacts: ignoreRecent);
+        NpcExtraction.Assessment transport = new(carrier, patient, patient.PositionHeld, evacuation: true, ignoreImpacts: ignoreRecent);
         if (!transport.At(patient.PositionHeld, out bool allowed).Safe || !allowed
-            || !Path(carrier, approach, carrier.Position, patient.Position, PathEndMode.Touch, out _, out IntVec3 pickup))
-        { Report("unsafe/unknown casualty position or approach"); return false; }
+            || !Path(carrier, approach, carrier.Position, patient.Position, PathEndMode.Touch, out float approachTicks, out IntVec3 pickup))
+        { failure = Failure.Route; Report("unsafe/unknown casualty position or approach"); return false; }
+        if (departure && approachTicks > NpcMedicalModel.TRAVEL_TIMEOUT)
+        { failure = Failure.ApproachBudget; Report(failure.ToString()); return false; }
         float best = float.PositiveInfinity;
         foreach (IntVec3 candidate in Candidates(carrier))
         {
@@ -93,6 +107,7 @@ internal static class NpcEvacuation
             best = ticks; exit = candidate;
         }
         Report(exit.IsValid ? "safe route available" : "no checked safe exit route");
+        failure = exit.IsValid ? Failure.None : Failure.Route;
         return exit.IsValid;
     }
 
@@ -105,7 +120,8 @@ internal static class NpcEvacuation
         {
             NpcExtraction.Assessment approach = new(carrier, carrier, carrier.Position, evacuation: true);
             if (!transport.At(patient.Position, out bool allowed).Safe || !allowed
-                || !Path(carrier, approach, carrier.Position, patient.Position, PathEndMode.Touch, out _, out pickup)) { return false; }
+                || !Path(carrier, approach, carrier.Position, patient.Position, PathEndMode.Touch, out float approachTicks, out pickup)
+                || NpcDeparture.IsWork(job) && approachTicks > NpcMedicalModel.TRAVEL_TIMEOUT) { return false; }
         }
         return Path(carrier, transport, pickup, job.targetB.Cell, PathEndMode.OnCell, out _, out _);
     }

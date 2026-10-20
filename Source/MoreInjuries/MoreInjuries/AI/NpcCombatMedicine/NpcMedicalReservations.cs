@@ -27,12 +27,13 @@ internal static class NpcMedicalReservations
     internal static bool DeliveryAllowed(Pawn doctor, Pawn patient, Thing? supply)
         => !patient.Dead && !patient.IsForbidden(doctor) && (doctor == patient || !doctor.HostileTo(patient))
             && PatientAvailable(doctor, patient)
-            && (doctor.carryTracker.CarriedThing is null || doctor.carryTracker.CarriedThing == supply)
+            && (doctor.carryTracker.CarriedThing is null || doctor.carryTracker.CarriedThing == supply || NpcDeparture.ProspectiveHands(doctor))
             && (doctor == patient || doctor.CanReach(patient, PathEndMode.Touch, Danger.Some))
             && (supply is null || !supply.Destroyed && !supply.IsForbidden(doctor)
                 && supply.stackCount > 0 && doctor.CanReserve(supply, 10, 1)
                 && (doctor.carryTracker.CarriedThing == supply || doctor.carryTracker.CarriedThing is null
-                    && doctor.carryTracker.AvailableStackSpace(supply.def) > 0)
+                    && doctor.carryTracker.AvailableStackSpace(supply.def) > 0
+                    || NpcDeparture.ProspectiveHands(doctor) && doctor.carryTracker.MaxStackSpaceEver(supply.def) > 0)
                 && NpcPainCare.SourceAllowed(doctor, patient, supply));
 
     internal static bool TakeMedicine(Pawn pawn, Job job, Thing medicine, ThingOwner source)

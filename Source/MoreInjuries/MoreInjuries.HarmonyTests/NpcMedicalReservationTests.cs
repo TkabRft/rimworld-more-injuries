@@ -190,6 +190,7 @@ namespace Verse
         public int MaxPickup = int.MaxValue;
         public Pawn Pawn = null!;
         public int AvailableStackSpace(ThingDef def) => MaxPickup;
+        public int MaxStackSpaceEver(ThingDef def) => MaxPickup;
         public bool TryDropCarriedThing(IntVec3 cell, ThingPlaceMode mode, out Thing result)
         {
             result = CarriedThing!;
@@ -282,6 +283,8 @@ namespace Verse.AI
         public LocalTargetInfo targetB;
         public LocalTargetInfo targetC;
         public bool endAfterTendedOnce, playerForced;
+        public bool exitMapOnArrival, checkOverrideOnExpire;
+        public int expiryInterval;
         public JobDef def = new();
         public int count = 1;
         public int startTick;
@@ -296,7 +299,7 @@ namespace Verse.AI
     public enum ToilCompleteMode { Instant }
     public enum JobCondition { Succeeded, Incompletable, Ongoing, InterruptForced, InterruptOptional }
     public sealed class JobTracker : Pawn_JobTracker { }
-    public class Pawn_JobTracker
+    public partial class Pawn_JobTracker
     {
         public Pawn pawn = null!;
         public readonly List<QueuedJob> jobQueue = [];
@@ -322,8 +325,13 @@ namespace Verse.AI
         public string? Tag;
         public Pawn actor = null!;
         public Action initAction = null!;
+        public Action? tickAction;
+        public Action<int>? tickIntervalAction;
+        public List<Action>? preInitActions, preTickActions;
+        public List<Action<int>>? preTickIntervalActions;
         public Func<object>? activeSkill;
         public readonly List<Action> FinishActions = [];
+        public List<Action> finishActions => FinishActions;
         public void AddPreInitAction(Action action) { Action previous = initAction; initAction = () => { action(); previous?.Invoke(); }; }
         public void AddFinishAction(Action action) => FinishActions.Add(action);
         public ToilCompleteMode defaultCompleteMode;

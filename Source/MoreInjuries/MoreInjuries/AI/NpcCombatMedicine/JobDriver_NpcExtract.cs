@@ -38,6 +38,7 @@ public sealed class JobDriver_NpcExtract : JobDriver
     {
         Job mission = job;
         Pawn patient = mission.targetA.Pawn;
+        this.FailOn(() => !NpcDeparture.Continue(pawn, mission));
         NpcMedicalAttempts.Begin(pawn, mission, patient, null);
         this.FailOn(() => NpcMedicalSafety.YieldToExplosive(pawn, mission));
         AddFinishAction(condition =>
@@ -63,7 +64,7 @@ public sealed class JobDriver_NpcExtract : JobDriver
             .FailOn(() => NpcMedicalModel.TravelExpired(Find.TickManager.TicksGame, mission.startTick));
         yield return Toils_General.Do(() =>
         {
-            if (!NpcExtraction.PickupValid(pawn, mission) || !NpcMedicalReservations.PatientAvailable(pawn, patient)
+            if (!NpcDeparture.Continue(pawn, mission) || !NpcExtraction.PickupValid(pawn, mission) || !NpcMedicalReservations.PatientAvailable(pawn, patient)
                 || !pawn.CanReachImmediate(patient, PathEndMode.Touch) || !patient.Spawned
                 || pawn.carryTracker.AvailableStackSpace(patient.def) < 1)
             { EndJobWith(JobCondition.Incompletable); return; }
@@ -96,6 +97,13 @@ public sealed class JobDriver_NpcExtract : JobDriver
             // Reserve the next application before releasing transport ownership.
             if (!NpcMedicalReservations.PrepareTacticalJob(pawn, treatment))
             { EndJobWith(JobCondition.Succeeded); return; }
+            if (!NpcDeparture.Handoff(pawn, mission, treatment))
+            {
+                pawn.Map.reservationManager.ReleaseClaimedBy(pawn, treatment);
+                NpcMedicalAttempts.Finish(treatment, JobCondition.InterruptOptional);
+                NpcQuickAid.Finish(treatment, treatment.loadID, treatment.def);
+                EndJobWith(JobCondition.Succeeded); return;
+            }
             pawn.jobs.StartJob(treatment, JobCondition.Succeeded);
         });
     }

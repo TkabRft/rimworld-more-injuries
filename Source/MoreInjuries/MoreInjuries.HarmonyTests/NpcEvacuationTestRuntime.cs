@@ -15,7 +15,7 @@ namespace Verse
         public readonly HashSet<IntVec3> Blocked = [];
     }
     public sealed class MapPawns { public readonly List<Pawn> AllPawnsSpawned = []; }
-    public enum ThingRequestGroup { BuildingArtificial }
+    public enum ThingRequestGroup { BuildingArtificial, Medicine }
     public sealed class ListerThings
     { public readonly List<Thing> Buildings = []; public List<Thing> ThingsInGroup(ThingRequestGroup group) => Buildings; }
     public static class GenRadial
@@ -56,9 +56,21 @@ namespace RimWorld
 }
 namespace Verse.AI
 {
-    public abstract class JobDriver_Goto : JobDriver
-    { protected override IEnumerable<Toil> MakeNewToils() { yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.OnCell); } }
-    public sealed class Pawn_MindState { public Verse.Thing? knownExploder; }
+    public class JobDriver_Goto : JobDriver
+    {
+        public Toil FinishExitToil()
+        {
+            Toil toil = Toils_General.Do(() => { });
+            toil.AddFinishAction(() => pawn.ExitMap(false, Verse.Rot4.Invalid));
+            return toil;
+        }
+        protected override IEnumerable<Toil> MakeNewToils()
+        {
+            yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.OnCell);
+            if (job.exitMapOnArrival) { yield return Toils_General.Do(() => pawn.ExitMap(false, Verse.Rot4.Invalid)); }
+        }
+    }
+    public sealed class Pawn_MindState { public Verse.Thing? knownExploder; public PawnDuty? duty; }
     public sealed class PawnPathFollower { public bool MovingNow; public Verse.IntVec3 nextCell = Verse.IntVec3.Invalid; }
     public sealed class PawnPath
     {

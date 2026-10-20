@@ -60,7 +60,7 @@ namespace RimWorld
     public class JobDriver_TendPatient : JobDriver;
     public static class SoundDefOf { public static readonly object Interact_Tend = new(); }
     public static class SkillDefOf { public static readonly object Medicine = new(); }
-    public static class JobDefOf { public static readonly JobDef Wait = new(), Wait_MaintainPosture = new(); }
+    public static partial class JobDefOf { public static readonly JobDef Wait = new(), Wait_MaintainPosture = new(); }
     public static class Toils_Tend
     {
         public static Toil FinalizeTend(Pawn patient)

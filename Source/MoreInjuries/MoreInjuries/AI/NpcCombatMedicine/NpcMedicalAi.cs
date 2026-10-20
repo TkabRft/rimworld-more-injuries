@@ -80,7 +80,12 @@ internal static class NpcMedicalAi
     internal static Job? Decide(Pawn doctor)
     {
         ObserveNativeAttempt(doctor);
-        if (!CanTakeDecision(doctor) || Owns(doctor.CurJob) || PreservedDuty(doctor) || NpcMedicalCompatibility.SafetyOwned(doctor)) { return null; }
+        if (!CanTakeDecision(doctor) || NpcMedicalCompatibility.SafetyOwned(doctor)) { return null; }
+        NpcDeparture.Result departure = NpcDeparture.Decide(doctor);
+        if (departure.Kind != NpcDeparture.Kind.Unhandled) { return departure.Job; }
+        if (Owns(doctor.CurJob)) { return null; }
+        if (NpcDeparture.InContext(doctor) && ShouldWithdraw(doctor)) { return Withdrawal(doctor); }
+        if (PreservedDuty(doctor)) { return null; }
         NpcMedicalState state = State(doctor);
         int now = Find.TickManager.TicksGame;
         if (now - state.LastDecision < 150) { return null; }
@@ -105,7 +110,7 @@ internal static class NpcMedicalAi
         return !NpcMedicalSafety.Recent(doctor) && threatened && (!doctor.IsPrisoner || PrisonBreak(doctor)) ? Performance(doctor, state) : null;
     }
 
-    private static Job? Care(Pawn doctor, Pawn patient, bool canDoctor, bool threatened)
+    private static Job? Care(Pawn doctor, Pawn patient, bool canDoctor, bool threatened, bool preview = false)
     {
         Job? Reject(string reason)
         { NpcMedicalDecision.Report(doctor, patient, MoreInjuriesMod.Settings.NpcMedicalAiMode, "eligibility", reason); return null; }
@@ -133,7 +138,18 @@ internal static class NpcMedicalAi
                 || Threats(doctor).Any(enemy => enemy.Position.InHorDistOf(doctor.Position, 8f))) { return Reject("exposed helper; only adjacent critical lifesaving care permitted"); }
         }
         NpcMedicalDecision.Report(doctor, patient, MoreInjuriesMod.Settings.NpcMedicalAiMode, "eligibility", "eligible");
-        return Commit(doctor, patient, treatment);
+        return preview ? treatment : Commit(doctor, patient, treatment);
+    }
+
+    internal static Job? DepartureCare(Pawn doctor, Pawn patient, bool preview)
+    {
+        (bool handled, Job? quick) = NpcQuickAid.Decide(doctor, patient, 2, preview);
+        if (handled) { return quick; }
+        NpcExtraction.Plan? extraction = NpcExtraction.Preview(doctor, patient, out bool unsafePatient);
+        if (extraction is not null) { return preview ? extraction.CreatePreview() : extraction.Create(); }
+        if (unsafePatient) { return NpcMedicalGeneration.CanDoctor(doctor) ? ImmediateStabilization(doctor, patient) : null; }
+        return Care(doctor, patient, NpcMedicalGeneration.CanDoctor(doctor),
+            Threats(doctor).Any(enemy => GenSight.LineOfSight(enemy.Position, doctor.Position, doctor.Map)), preview);
     }
 
     internal static Job? Handoff(Pawn doctor, Pawn patient)
@@ -320,7 +336,7 @@ internal static class NpcMedicalAi
         }
         return job;
     }
-    private static bool ShouldWithdraw(Pawn pawn) => Urgency(pawn) >= 70f
+    internal static bool ShouldWithdraw(Pawn pawn) => Urgency(pawn) >= 70f
         || pawn.health.capacities.GetLevel(PawnCapacityDefOf.Moving) < .5f
         || pawn.health.capacities.GetLevel(PawnCapacityDefOf.Consciousness) < .5f;
 

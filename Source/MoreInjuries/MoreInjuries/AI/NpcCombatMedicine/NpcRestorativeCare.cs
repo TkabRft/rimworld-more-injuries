@@ -18,7 +18,7 @@ internal static class NpcRestorativeCare
 
     internal static Job? Select(Pawn actor, Pawn patient, bool pocketOnly = false, Func<JobDef, Thing?, bool>? allowed = null)
     {
-        if (Priority(patient) <= 0f || actor.carryTracker.CarriedThing is not null) { return null; }
+        if (Priority(patient) <= 0f || actor.carryTracker.CarriedThing is not null && !NpcDeparture.ProspectiveHands(actor)) { return null; }
         Thing? best = null;
         NpcPainDose bestDose = default;
         JobDef action = actor == patient ? KnownJobDefOf.MI_NpcRestorativeSelf : KnownJobDefOf.MI_NpcRestorativeAssist;
@@ -48,7 +48,8 @@ internal static class NpcRestorativeCare
     }
 
     internal static bool FinalCheck(Pawn actor, Pawn patient, Thing dose) =>
-        (dose.ParentHolder == actor.inventory || dose == actor.carryTracker.CarriedThing
+        (actor.CurJob is not Job active || NpcDeparture.Continue(actor, active))
+        && (dose.ParentHolder == actor.inventory || dose == actor.carryTracker.CarriedThing
             || dose.Spawned && actor.CanReachImmediate(dose, PathEndMode.Touch))
         && (actor == patient || actor.CanReachImmediate(patient, PathEndMode.Touch) && NpcMedicalAi.Relation(actor, patient) >= 0)
         && Evaluate(actor, patient, dose, out _, out _);

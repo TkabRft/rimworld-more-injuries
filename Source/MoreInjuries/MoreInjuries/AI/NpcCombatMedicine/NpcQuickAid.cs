@@ -78,7 +78,7 @@ internal static class NpcQuickAid
     private static bool Available(Round? round, JobDef action) => round is null
         || Find.TickManager.TicksGame <= round.Deadline && !(Pain(action) && round.PainUsed || Bleeding(action) && round.BleedingUsed);
 
-    internal static (bool Handled, Job? Job) Decide(Pawn actor, Pawn patient, int mode)
+    internal static (bool Handled, Job? Job) Decide(Pawn actor, Pawn patient, int mode, bool preview = false)
     {
         if (!patient.Downed && Existing(patient) is not null && NpcMedicalAi.Urgency(patient) < 90f) { return (true, null); }
         if (actor == patient || !patient.Downed || !patient.health.InPainShock && Existing(patient) is null
@@ -138,7 +138,7 @@ internal static class NpcQuickAid
         if (extraction is not null && (best is null || !best.Critical && extractionScore > best.Score))
         {
             NpcMedicalDecision.Report(actor, patient, mode, "quick aid", "extract before aid");
-            return (true, extraction.Create());
+            return (true, preview ? extraction.CreatePreview() : extraction.Create());
         }
         if (best is null)
         {
@@ -148,7 +148,7 @@ internal static class NpcQuickAid
         }
         Job? selected = best.Create();
         if (selected is null) { return (true, null); }
-        GrantJob(actor, patient, selected, best);
+        if (!preview) { GrantJob(actor, patient, selected, best); }
         NpcMedicalDecision.Report(actor, patient, mode, "quick aid", "selected " + selected.def.defName);
         return (true, selected);
     }
