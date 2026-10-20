@@ -11,14 +11,15 @@ namespace Verse
         public T? GetModExtension<T>() where T : class => Extensions.OfType<T>().FirstOrDefault();
     }
     public sealed class SimpleCurve { public Func<float, float> EvaluateValue = value => value; public float Evaluate(float value) => EvaluateValue(value); }
-    public readonly record struct ThingRequest(ThingDef Def) { public static ThingRequest ForDef(ThingDef def) => new(def); }
-    public readonly record struct TraverseParms(Pawn Pawn) { public static TraverseParms For(Pawn pawn, Danger danger) => new(pawn); }
+    public readonly record struct ThingRequest(ThingDef Def, bool Medicine = false)
+    { public static ThingRequest ForDef(ThingDef def) => new(def); public static ThingRequest ForGroup(ThingRequestGroup group) => new(null!, group == ThingRequestGroup.Medicine); }
+    public readonly record struct TraverseParms(Pawn Pawn) { public static TraverseParms For(Pawn pawn, Danger danger = Danger.Some) => new(pawn); }
     public static class GenClosest
     {
         public static Thing? ClosestThingReachable(IntVec3 origin, Map map, ThingRequest request, PathEndMode mode,
             TraverseParms parms, float maxDistance, Func<Thing, bool> validator, int searchRegionsMin, int searchRegionsMax, bool forceAllowGlobalSearch)
             => parms.Pawn.Supplies.Concat(map.listerThings.Buildings).Where(thing => thing.Spawned
-                && thing.def == request.Def && thing.Position.InHorDistOf(origin, maxDistance) && validator(thing))
+                && (request.Medicine ? thing.def.IsMedicine : thing.def == request.Def) && thing.Position.InHorDistOf(origin, maxDistance) && validator(thing))
                 .OrderBy(thing => thing.Position.DistanceToSquared(origin)).FirstOrDefault();
     }
 }

@@ -156,7 +156,7 @@ namespace Verse
     public sealed class Gene { public bool Active = true; public GeneDef def = new(); }
     public static class ModsConfig { public static bool BiotechActive, IdeologyActive, DetActive; public static bool IsActive(string package) => DetActive && package == "det.battlemeds"; }
     public static class Prefs { public static bool DevMode; }
-    public enum Danger { Some }
+    public enum Danger { Some, Deadly }
     public static partial class Log { public static readonly List<string> Messages = []; public static void Message(string text) => Messages.Add(text); }
     public readonly struct NamedArgument(object value) { public object Value => value; }
     public static class NamedArgumentExtensions { public static NamedArgument Named(this Pawn pawn, string key) => new(pawn); }
@@ -183,7 +183,7 @@ namespace Verse.AI
         protected void AddFinishAction(Action<JobCondition> action) => _finish.Add(action);
         protected void EndJobWith(JobCondition condition) => pawn.jobs.EndCurrentJob(condition);
         protected void ReadyForNextToil() { }
-        public int ResumeIndex;
+        public int ResumeIndex, StepLimit = 40;
         public Action<int, Toil>? BeforeToil;
         public List<Toil> BuildToils() => MakeNewToils().ToList();
         public void Run()
@@ -193,11 +193,11 @@ namespace Verse.AI
             {
                 List<Toil> toils = BuildToils();
                 foreach (Toil toil in toils) { toil.actor = pawn; }
-                for (int index = ResumeIndex, steps = 0; index < toils.Count && steps < 40; steps++)
+                for (int index = ResumeIndex, steps = 0; index < toils.Count && steps < StepLimit; steps++)
                 {
                     Toil toil = toils[index];
                     BeforeToil?.Invoke(index, toil);
-                    if (pawn.jobs.Ended is not null) { break; }
+                    if (pawn.jobs.Ended is not null || pawn.CurJob != attemptJob) { break; }
                     if (Failures.Any(fail => fail()) || toil.Failures.Any(fail => fail())) { EndJobWith(JobCondition.Incompletable); break; }
                     toil.initAction?.Invoke();
                     foreach (Action finish in toil.FinishActions) { finish(); }
@@ -269,11 +269,11 @@ namespace RimWorld
     }
     public enum MedicalCareCategory { NoCare, NoMeds, HerbalOrWorse, NormalOrWorse, Best }
     public enum DrugCategory { None, Medical, Social, Hard }
-    public static class StatDefOf { public static readonly object PainShockThreshold = new(); }
+    public static class StatDefOf { public static readonly object PainShockThreshold = new(), MedicalPotency = new(); }
     public static class PawnCapacityDefOf
     {
         public static readonly PawnCapacityDef Consciousness = new("Consciousness", .3f), Breathing = new("Breathing", 0f),
-            BloodPumping = new("BloodPumping", 0f), Moving = new("Moving", .15f), Manipulation = new("Manipulation", .1f);
+            BloodPumping = new("BloodPumping", 0f), Moving = new("Moving", .15f), Manipulation = new("Manipulation", .1f), Sight = new("Sight", .1f);
     }
     public sealed class IngestionOutcomeDoer_GiveHediff
     {

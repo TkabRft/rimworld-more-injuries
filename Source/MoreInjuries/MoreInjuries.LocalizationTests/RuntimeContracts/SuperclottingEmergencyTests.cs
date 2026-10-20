@@ -110,7 +110,7 @@ public sealed class SuperclottingEmergencyTests
     }
 
     [TestMethod]
-    public void AutomaticTourniquetsAndFirstAidTendingAreDisabledButSafeRemovalRemains()
+    public void AutomaticTourniquetsStayDisabledButExplicitFirstAidTendsWoundsAndKeepsSafeRemoval()
     {
         (Pawn doctor, Pawn patient, Hediff wound, Gene gene) = Pair(2f);
         BodyPartRecord limb = new();
@@ -121,7 +121,7 @@ public sealed class SuperclottingEmergencyTests
         Assert.AreSame(KnownJobDefOf.UseTourniquet, EmergencyCare.CreateJob(doctor, patient, false)!.def);
         gene.Active = true; patient.Downed = true; wound.TestBleedRate = .05f;
         patient.LimbBleeding.Clear();
-        Assert.IsNull(EmergencyCare.CreateJob(doctor, patient, true));
+        Assert.AreSame(JobDefOf.TendPatient, EmergencyCare.CreateJob(doctor, patient, true)!.def);
         gene.Active = false;
         Assert.AreSame(JobDefOf.TendPatient, EmergencyCare.CreateJob(doctor, patient, true)!.def);
         gene.Active = true;

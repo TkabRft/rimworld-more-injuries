@@ -63,13 +63,14 @@ namespace RimWorld
     public static partial class JobDefOf { public static readonly JobDef Wait = new(), Wait_MaintainPosture = new(); }
     public static class Toils_Tend
     {
+        public static int TendLimit = int.MaxValue;
         public static Toil FinalizeTend(Pawn patient)
         {
             Toil toil = new();
             toil.initAction = () =>
             {
-                foreach (Hediff hediff in patient.health.hediffSet.hediffs) { hediff.Tended = true; }
-                patient.health.NeedsTend = false;
+                foreach (Hediff hediff in patient.health.hediffSet.hediffs.Where(wound => wound.TendableNow()).Take(TendLimit)) { hediff.Tended = true; }
+                patient.health.NeedsTend = patient.health.hediffSet.hediffs.Any(wound => wound.TendableNow());
                 Thing? medicine = toil.actor.carryTracker.CarriedThing;
                 if (medicine is null) { return; }
                 medicine.stackCount--;

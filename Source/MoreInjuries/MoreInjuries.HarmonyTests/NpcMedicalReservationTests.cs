@@ -270,6 +270,7 @@ namespace Verse.AI
 {
     public readonly struct LocalTargetInfo
     {
+        public static LocalTargetInfo Invalid => new((Thing)null!);
         public Thing Thing { get; }
         public Pawn Pawn => (Pawn)Thing;
         public IntVec3 Cell { get; }
@@ -292,6 +293,8 @@ namespace Verse.AI
         public LocalTargetInfo GetTarget(TargetIndex index) => index == TargetIndex.A ? targetA : index == TargetIndex.B ? targetB : targetC;
         public void SetTarget(TargetIndex index, Thing? thing)
         { if (index == TargetIndex.A) { targetA = new(thing!); } else if (index == TargetIndex.B) { targetB = new(thing!); } else { targetC = new(thing!); } }
+        public void SetTarget(TargetIndex index, LocalTargetInfo target)
+        { if (index == TargetIndex.A) { targetA = target; } else if (index == TargetIndex.B) { targetB = target; } else { targetC = target; } }
         public Func<Pawn, bool, bool>? ReservationAttempt;
         public bool TryMakePreToilReservations(Pawn pawn, bool errorOnFailed) => ReservationAttempt?.Invoke(pawn, errorOnFailed) ?? true;
     }
@@ -376,7 +379,7 @@ namespace MoreInjuries
 namespace MoreInjuries.Defs.WellKnown
 {
     internal static class KnownThingDefOf { internal static readonly ThingDef Epinephrine = new(); internal static ThingDef Morphine = new(); }
-    internal static class KnownJobDefOf { internal static readonly JobDef MI_NpcReposition = new(), MI_NpcWithdraw = new(), MI_NpcEvacuate = new(), MI_NpcExtract = new(), MI_NpcTend = new(), MI_NpcPerformanceDrug = new(), MI_NpcPainSelf = new(), MI_NpcPainAssist = new(), MI_NpcRestorativeSelf = new(), MI_NpcRestorativeAssist = new(), UseHemostaticAgent = new(), UseBandage = new(), UseTourniquet = new(); }
+    internal static class KnownJobDefOf { internal static readonly JobDef ProvideFirstAid = new() { defName = "ProvideFirstAid" }, MI_NpcReposition = new(), MI_NpcWithdraw = new(), MI_NpcEvacuate = new(), MI_NpcExtract = new(), MI_NpcTend = new(), MI_NpcPerformanceDrug = new(), MI_NpcPainSelf = new(), MI_NpcPainAssist = new(), MI_NpcRestorativeSelf = new(), MI_NpcRestorativeAssist = new(), UseHemostaticAgent = new(), UseBandage = new(), UseTourniquet = new(); }
 }
 namespace MoreInjuries.Things
 { internal static class MedicalDeviceHelper { internal const int MAX_MEDICAL_DEVICE_RESERVATIONS = 10; } }

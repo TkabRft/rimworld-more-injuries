@@ -249,7 +249,7 @@ internal static class EmergencyCare
         }
         if (Create() is Job chosen) { return chosen; }
         if (!aftercare || npc is not null) { return null; }
-        if (!superclotting && patient.Downed && patient.health.hediffSet.hediffs.Any(static injury => injury.TendableNow()))
+        if (patient.Downed && patient.health.hediffSet.hediffs.Any(static injury => injury.TendableNow()))
         {
             Job tend = JobMaker.MakeJob(JobDefOf.TendPatient, patient);
             tend.endAfterTendedOnce = true;
