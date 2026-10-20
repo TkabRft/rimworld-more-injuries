@@ -18,13 +18,16 @@ internal static class NpcMedicalIngestionPatch
     {
         __state = new(true, false);
         Pawn? clinician = MedicalDrugAdministration.GetDoctor(__instance);
-        bool clinicalSelf = clinician is null && ingester.CurJob?.def == KnownJobDefOf.MI_NpcPainSelf
-            && ingester.CurJob.targetA.Thing == __instance;
-        if (clinicalSelf || MedicalDrugAdministration.IsClinicalPain(__instance))
+        bool restorative = MedicalDrugAdministration.IsRestorative(__instance)
+            || clinician is null && ingester.CurJob?.def == KnownJobDefOf.MI_NpcRestorativeSelf && ingester.CurJob.targetA.Thing == __instance;
+        bool clinicalSelf = clinician is null && ingester.CurJob is { } selectedJob
+            && (selectedJob.def == KnownJobDefOf.MI_NpcPainSelf || selectedJob.def == KnownJobDefOf.MI_NpcRestorativeSelf)
+            && selectedJob.targetA.Thing == __instance;
+        if (clinicalSelf || restorative || MedicalDrugAdministration.IsClinicalPain(__instance))
         {
             Pawn actor = clinician ?? ingester;
-            if (NpcPainCare.FinalCheck(actor, ingester, __instance)) { return true; }
-            if (clinicalSelf && ingester.CurJob is { } painJob) { painJob.count = 0; }
+            if (restorative ? NpcRestorativeCare.FinalCheck(actor, ingester, __instance) : NpcPainCare.FinalCheck(actor, ingester, __instance)) { return true; }
+            if (clinician is null && ingester.CurJob is { } painJob) { painJob.count = 0; }
             __state = default;
             __result = 0f;
             return false;

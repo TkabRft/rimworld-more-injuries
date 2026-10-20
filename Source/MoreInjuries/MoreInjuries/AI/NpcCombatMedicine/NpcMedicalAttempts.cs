@@ -26,8 +26,8 @@ internal static class NpcMedicalAttempts
         return retry;
     }
 
-    internal static bool Automatic(Pawn doctor, Job job) => NpcMedicalAi.ActorEligible(doctor) && !job.playerForced
-        && (job.endAfterTendedOnce || job.def == KnownJobDefOf.MI_NpcTend || job.def == KnownJobDefOf.MI_NpcPainSelf || job.def == KnownJobDefOf.MI_NpcExtract);
+    internal static bool Automatic(Pawn doctor, Job job) => job.def is not null && NpcMedicalAi.ActorEligible(doctor) && !job.playerForced
+        && (job.endAfterTendedOnce || job.def == KnownJobDefOf.MI_NpcTend || job.def == KnownJobDefOf.MI_NpcPainSelf || job.def == KnownJobDefOf.MI_NpcRestorativeSelf || job.def == KnownJobDefOf.MI_NpcExtract);
 
     internal static bool Ready(Pawn doctor, Pawn patient, JobDef action, Thing? supply)
         => Retry(doctor, patient, action).Allowed(Find.TickManager.TicksGame, Context(doctor, patient, supply));
@@ -35,7 +35,7 @@ internal static class NpcMedicalAttempts
         => !NpcMedicalCompatibility.SafetyOwned(doctor) && Ready(doctor, patient, KnownJobDefOf.MI_NpcExtract, null);
     internal static void Progress(Job job)
     {
-        if (s_active.TryGetValue(job, out Attempt? attempt)) { attempt.Progress = true; }
+        if (s_active.TryGetValue(job, out Attempt? attempt) && attempt.Matches(job)) { attempt.Progress = true; }
     }
 
     internal static bool Allowed(Pawn doctor, Pawn patient, JobDef action, Thing? supply)
@@ -57,7 +57,7 @@ internal static class NpcMedicalAttempts
     }
 
     internal static bool Allowed(Pawn doctor, Pawn patient, Job job)
-        => Allowed(doctor, patient, job.def, job.def == KnownJobDefOf.MI_NpcPainSelf ? job.targetA.Thing : job.targetB.Thing);
+        => Allowed(doctor, patient, job.def, job.def == KnownJobDefOf.MI_NpcPainSelf || job.def == KnownJobDefOf.MI_NpcRestorativeSelf ? job.targetA.Thing : job.targetB.Thing);
 
     private static string Source(Pawn doctor, Pawn patient, Thing? supply) => supply is null ? "none"
         : supply == doctor.carryTracker.CarriedThing || supply.ParentHolder == doctor.inventory ? "own"
@@ -98,64 +98,94 @@ internal static class NpcMedicalAttempts
         + "/manip:" + doctor.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation)
         + "/source:" + Source(doctor, patient, supply);
 
-    internal static void Begin(Pawn doctor, Job job, Pawn patient, Thing? supply)
+    internal static Attempt? Begin(Pawn doctor, Job job, Pawn patient, Thing? supply)
     {
-        if (!Automatic(doctor, job) || s_active.TryGetValue(job, out _)) { return; }
+        if (!Automatic(doctor, job)) { return null; }
+        if (s_active.TryGetValue(job, out Attempt? previous))
+        {
+            if (previous.Matches(job)) { return previous; }
+            Finish(previous, JobCondition.InterruptOptional);
+        }
         Attempt attempt = new(doctor, patient, job, supply);
         s_active.Add(job, attempt);
         attempt.Diagnose("begin");
+        return attempt;
     }
 
     internal static void Stage(Job job, string stage)
     {
-        if (!s_active.TryGetValue(job, out Attempt? attempt) || attempt.Stage == stage) { return; }
+        if (!s_active.TryGetValue(job, out Attempt? attempt) || !attempt.Matches(job) || attempt.Stage == stage) { return; }
         attempt.Stage = stage;
         attempt.Diagnose("stage");
     }
 
     internal static void Applying(Job job)
     {
-        if (!s_active.TryGetValue(job, out Attempt? attempt)) { return; }
-        attempt.BeforeApplication = new(attempt.Patient);
+        if (!s_active.TryGetValue(job, out Attempt? attempt) || !attempt.Matches(job)) { return; }
+        attempt.Applying();
         Stage(job, "application");
     }
 
     internal static void Applied(Job job, bool accepted)
     {
-        if (!s_active.TryGetValue(job, out Attempt? attempt)) { return; }
-        attempt.Progress |= accepted && attempt.BeforeApplication?.Improved(attempt.Patient) == true;
+        if (!s_active.TryGetValue(job, out Attempt? attempt) || !attempt.Matches(job)) { return; }
+        NpcQuickAid.Applied(attempt.Doctor, attempt.Patient, job, accepted);
+        attempt.Progress |= accepted && attempt.Improved;
+        // Natural healing improves later; an actually consumed restorative whose
+        // indicated stage appeared is progress now, without a persistent cooldown.
+        if (accepted && (attempt.Action == KnownJobDefOf.MI_NpcRestorativeSelf || attempt.Action == KnownJobDefOf.MI_NpcRestorativeAssist)
+            && attempt.Supply is { Destroyed: true } consumed && NpcMedicalDrugs.EffectName(consumed.def) is string effect
+            && attempt.Patient.health.hediffSet.hediffs.Any(hediff => hediff.def.defName == effect)) { attempt.Progress = true; }
     }
 
     internal static void Finish(Job job, JobCondition condition)
     {
         if (!s_active.TryGetValue(job, out Attempt? attempt)) { return; }
-        s_active.Remove(job);
-        attempt.Progress |= attempt.BeforeApplication?.Improved(attempt.Patient) == true;
-        bool resolved = attempt.Patient.Dead || (job.def == KnownJobDefOf.MI_NpcExtract ? !attempt.Patient.Downed
+        Finish(attempt, condition);
+    }
+
+    internal static void Finish(Attempt attempt, JobCondition condition)
+    {
+        if (attempt.Completed) { return; }
+        attempt.Completed = true;
+        NpcQuickAid.Finish(attempt.Job, attempt.JobId, attempt.Action);
+        if (s_active.TryGetValue(attempt.Job, out Attempt? current) && current == attempt)
+        { s_active.Remove(attempt.Job); }
+        attempt.Progress |= attempt.Improved;
+        bool resolved = attempt.Patient.Dead || (attempt.Action == KnownJobDefOf.MI_NpcExtract ? !attempt.Patient.Downed
             : NpcMedicalAi.Urgency(attempt.Patient) <= 0f && !attempt.Patient.health.HasHediffsNeedingTend());
-        NpcMedicalRetry retry = Retry(attempt.Doctor, attempt.Patient, job.def);
+        NpcMedicalRetry retry = Retry(attempt.Doctor, attempt.Patient, attempt.Action);
         retry.Complete(Find.TickManager.TicksGame, attempt.Context, attempt.Progress || resolved);
         attempt.Diagnose("finish=" + condition + "; progress=" + attempt.Progress + "; resolved=" + resolved + "; retry=" + retry.Deadline);
     }
 
-    private sealed class Attempt
+    internal sealed class Attempt
     {
         internal readonly Pawn Doctor, Patient;
-        private readonly Job _job;
+        internal readonly Job Job;
+        internal readonly JobDef Action;
+        private readonly int _jobId;
+        internal int JobId => _jobId;
+        internal bool Completed;
         private readonly Thing? _supply;
+        internal Thing? Supply => _supply;
         internal readonly string Context;
-        internal HealthSnapshot? BeforeApplication;
+        private HealthSnapshot? _beforeApplication;
+        internal void Applying() => _beforeApplication = new(Patient);
+        internal bool Improved => _beforeApplication?.Improved(Patient) == true;
         internal string Stage = "retrieval";
         internal bool Progress;
         internal Attempt(Pawn doctor, Pawn patient, Job job, Thing? supply)
         {
-            Doctor = doctor; Patient = patient; _job = job; _supply = supply;
+            Doctor = doctor; Patient = patient; Job = job; Action = job.def; _jobId = job.loadID; _supply = supply;
             Context = NpcMedicalAttempts.Context(doctor, patient, supply);
         }
+        internal bool Matches(Job? job) => !Completed && job is not null && ReferenceEquals(Job, job)
+            && job.loadID == _jobId && job.def == Action;
         internal void Diagnose(string transition)
         {
             if (!Logger.IsEnabled || !Prefs.DevMode) { return; }
-            Logger.Log($"More Injuries NPC attempt: {Doctor.ThingID}->{Patient.ThingID}; job={_job.def.defName}; supply={_supply?.ThingID}; stage={Stage}; {transition}; impact={NpcMedicalSafety.Recent(Doctor) || NpcMedicalSafety.Recent(Patient)}; safety={NpcMedicalCompatibility.SafetyOwned(Doctor)}.");
+            Logger.Log($"More Injuries NPC attempt: {Doctor.ThingID}->{Patient.ThingID}; job={Action.defName}; supply={_supply?.ThingID}; stage={Stage}; {transition}; impact={NpcMedicalSafety.Recent(Doctor) || NpcMedicalSafety.Recent(Patient)}; safety={NpcMedicalCompatibility.SafetyOwned(Doctor)}.");
         }
     }
 }

@@ -31,7 +31,7 @@ internal static class EmergencyCare
     private sealed class History { internal bool MustResuscitate; }
     private static readonly ConditionalWeakTable<Pawn, History> s_history = new();
     private readonly record struct Candidate(Kind Kind, Thing? Device, BodyPartRecord? Limb, float Score,
-        int Retrieval, float Cost, bool Critical, bool Quick, Job? NativeJob = null);
+        int Retrieval, float Cost, bool Critical, bool Quick, Job? NativeJob = null, int Duration = 0);
 
     internal static void NotifyTreatmentCompleted(Pawn patient, JobDef action)
     {
@@ -52,6 +52,9 @@ internal static class EmergencyCare
         internal Func<ThingDef, Thing?> Find = null!;
         internal Func<Thing?>? Medicine;
         internal Func<JobDef, Thing?, bool>? Allowed;
+        // Read-only selection for NPC quick-aid comparison. The factory is invoked
+        // only for the winning action; ordinary callers retain the existing path.
+        internal Action<Func<Job?>, JobDef, Thing?, float, int, int, float>? Preview;
     }
 
     internal static Job? CreateJob(Pawn doctor, Pawn patient, bool aftercare, NpcContext? npc = null)
@@ -110,7 +113,7 @@ internal static class EmergencyCare
             bool fast = bleeding >= .5f && travel == 0 && duration <= EmergencyPriority.CRITICAL_BUDGET
                 && kind is Kind.Tourniquet or Kind.Hemostat;
             Candidate value = new(kind, device, limb, EmergencyPriority.Score(urgency, benefit, duration, travel, cost), travel, cost,
-                criticalTreatment, fast, native);
+                criticalTreatment, fast, native, duration);
             if (kind is Kind.Tourniquet or Kind.Hemostat or Kind.Bandage) { miBleeding = true; }
             if (Better(value, best)) { best = value; }
             if (kind is not (Kind.Tourniquet or Kind.Hemostat or Kind.Bandage or Kind.Stabilize)
@@ -156,7 +159,7 @@ internal static class EmergencyCare
             { Devices(KnownThingDefOf.Bandage, item => Consider(Kind.Bandage, item, EmergencyPriority.BleedingUrgency(rate),
                 Reduction(KnownThingDefOf.Bandage, .8f) * EmergencyPriority.Suitability(false, rate, superclotting), 80, bleeding: rate), true); }
         }
-        if (!miBleeding && nativeBleeding > Mathf.Epsilon
+        if (npc?.Preview is null && !miBleeding && nativeBleeding > Mathf.Epsilon
             && CombatExtendedBridge.TryCreateStabilizationJob(doctor, patient, npc?.Medicine, npc?.IgnoreCare ?? false) is Job stabilize)
         {
             int count = 0; float rate = 0f;
@@ -218,21 +221,33 @@ internal static class EmergencyCare
         Candidate selected = critical && rescue.Kind != Kind.None
             ? !superclotting && quickAllowed && quick.Kind != Kind.None ? quick : rescue
             : superclotting && otherEmergency.Kind != Kind.None ? otherEmergency : best;
-        Job? result = selected.Kind switch
+        Job? Create()
         {
-            Kind.Tourniquet => JobDriver_UseTourniquet.GetDispatcher(doctor, patient, selected.Device!, selected.Limb!).CreateJob(),
-            Kind.Hemostat => JobDriver_UseHemostaticAgent.GetDispatcher(doctor, patient, selected.Device!, EmergencyTravel.InInventory(doctor, selected.Device!)).CreateJob(),
-            Kind.Bandage => JobDriver_UseBandage.GetDispatcher(doctor, patient, selected.Device!, EmergencyTravel.InInventory(doctor, selected.Device!)).CreateJob(),
-            Kind.Stabilize => selected.NativeJob,
-            Kind.Epinephrine => JobDriver_UseEpinephrine.GetDispatcher(doctor, patient, selected.Device!).CreateJob(),
-            Kind.Defibrillator => JobDriver_UseDefibrillator.GetDispatcher(doctor, patient, selected.Device!).CreateJob(),
-            Kind.Cpr => JobDriver_PerformCpr.GetDispatcher(doctor, patient).CreateJob(),
-            Kind.Suction => JobDriver_UseSuctionDevice.GetDispatcher(doctor, patient, selected.Device!).CreateJob(),
-            Kind.Saline => JobDriver_UseSalineBag.GetDispatcher(doctor, patient, selected.Device!, aftercare, SalineTransfusionMode.Stabilize).CreateJob(),
-            Kind.Blood => JobDriver_UseBloodBag.GetDispatcher(doctor, patient, selected.Device!, aftercare, fullyHeal: false).CreateJob(),
-            _ => null
-        };
-        if (result is not null) { result.endAfterTendedOnce = true; return result; }
+            Job? result = selected.Kind switch
+            {
+                Kind.Tourniquet => JobDriver_UseTourniquet.GetDispatcher(doctor, patient, selected.Device!, selected.Limb!).CreateJob(),
+                Kind.Hemostat => JobDriver_UseHemostaticAgent.GetDispatcher(doctor, patient, selected.Device!, EmergencyTravel.InInventory(doctor, selected.Device!)).CreateJob(),
+                Kind.Bandage => JobDriver_UseBandage.GetDispatcher(doctor, patient, selected.Device!, EmergencyTravel.InInventory(doctor, selected.Device!)).CreateJob(),
+                Kind.Stabilize => selected.NativeJob,
+                Kind.Epinephrine => JobDriver_UseEpinephrine.GetDispatcher(doctor, patient, selected.Device!).CreateJob(),
+                Kind.Defibrillator => JobDriver_UseDefibrillator.GetDispatcher(doctor, patient, selected.Device!).CreateJob(),
+                Kind.Cpr => JobDriver_PerformCpr.GetDispatcher(doctor, patient).CreateJob(),
+                Kind.Suction => JobDriver_UseSuctionDevice.GetDispatcher(doctor, patient, selected.Device!).CreateJob(),
+                Kind.Saline => JobDriver_UseSalineBag.GetDispatcher(doctor, patient, selected.Device!, aftercare, SalineTransfusionMode.Stabilize).CreateJob(),
+                Kind.Blood => JobDriver_UseBloodBag.GetDispatcher(doctor, patient, selected.Device!, aftercare, fullyHeal: false).CreateJob(),
+                _ => null
+            };
+            if (result is not null) { result.endAfterTendedOnce = true; }
+            return result;
+        }
+        if (npc?.Preview is { } preview && selected.Kind != Kind.None)
+        {
+            JobDef action = selected.Kind == Kind.Hemostat ? KnownJobDefOf.UseHemostaticAgent
+                : selected.Kind == Kind.Bandage ? KnownJobDefOf.UseBandage : KnownJobDefOf.UseTourniquet;
+            preview(Create, action, selected.Device, selected.Score, selected.Duration, selected.Retrieval, selected.Cost);
+            return null;
+        }
+        if (Create() is Job chosen) { return chosen; }
         if (!aftercare || npc is not null) { return null; }
         if (!superclotting && patient.Downed && patient.health.hediffSet.hediffs.Any(static injury => injury.TendableNow()))
         {

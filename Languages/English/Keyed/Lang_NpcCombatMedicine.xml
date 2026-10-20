@@ -74,12 +74,12 @@
   <MI_NpcMedicine_TitleTip>Medical supplies and emergency behavior for NPC combatants and prisoners. Includes medic equipment, permitted patients, and combat-drug limits.</MI_NpcMedicine_TitleTip>
   <!-- EN: Choose how much control More Injuries has over NPC treatment and survival decisions. Hover each menu choice for its behavior. -->
   <MI_NpcMedicine_ModeTip>Choose how much control More Injuries has over NPC treatment and survival decisions. Hover each menu choice for its behavior.</MI_NpcMedicine_ModeTip>
-  <!-- EN: Adds medical actions without choosing safer treatment positions, medical withdrawal, or evacuation. -->
-  <MI_NpcMedicine_Mode0Tip>Adds medical actions without choosing safer treatment positions, medical withdrawal, or evacuation.</MI_NpcMedicine_Mode0Tip>
-  <!-- EN: Adds medical actions and allows injured NPCs to move to nearby safer treatment positions. Other mods retain retreat and rescue decisions. -->
-  <MI_NpcMedicine_Mode1Tip>Adds medical actions and allows injured NPCs to move to nearby safer treatment positions. Other mods retain retreat and rescue decisions.</MI_NpcMedicine_Mode1Tip>
-  <!-- EN: Also permits individual medical withdrawal and evacuation of nearby downed faction members. Does not change group retreat decisions. -->
-  <MI_NpcMedicine_Mode2Tip>Also permits individual medical withdrawal and evacuation of nearby downed faction members. Does not change group retreat decisions.</MI_NpcMedicine_Mode2Tip>
+  <!-- EN: Adds medical actions and ordinary travel to patients and supplies, without tactical repositioning, casualty extraction, medical withdrawal, or evacuation. -->
+  <MI_NpcMedicine_Mode0Tip>Adds medical actions and ordinary travel to patients and supplies, without tactical repositioning, casualty extraction, medical withdrawal, or evacuation.</MI_NpcMedicine_Mode0Tip>
+  <!-- EN: Adds medical actions, nearby safer treatment positions, and local casualty extraction. Other mods retain retreat and off-map rescue decisions, except while a local extraction is committed. -->
+  <MI_NpcMedicine_Mode1Tip>Adds medical actions, nearby safer treatment positions, and local casualty extraction. Other mods retain retreat and off-map rescue decisions, except while a local extraction is committed.</MI_NpcMedicine_Mode1Tip>
+  <!-- EN: Also permits individual medical withdrawal and safe off-map evacuation of nearby downed faction members. Available treatment is considered first; casualty evacuation is deferred during immediate combat. Does not change group retreat decisions. -->
+  <MI_NpcMedicine_Mode2Tip>Also permits individual medical withdrawal and safe off-map evacuation of nearby downed faction members. Available treatment is considered first; casualty evacuation is deferred during immediate combat. Does not change group retreat decisions.</MI_NpcMedicine_Mode2Tip>
   <!-- EN: Supply quantities, medic prevalence, rare scavenged equipment, and optional training for newly generated medics. Existing pawns receive no free equipment. -->
   <MI_NpcMedicine_EquipmentTip>Supply quantities, medic prevalence, rare scavenged equipment, and optional training for newly generated medics. Existing pawns receive no free equipment.</MI_NpcMedicine_EquipmentTip>
   <!-- EN: Scale medical consumables, clinical reserves and booster reserves granted to newly generated NPCs. Reusable devices and sedatives are unchanged. Existing supplies count toward the kit. -->

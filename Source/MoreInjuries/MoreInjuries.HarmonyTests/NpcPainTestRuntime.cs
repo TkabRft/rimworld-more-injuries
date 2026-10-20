@@ -22,21 +22,31 @@ namespace Verse
     {
         public object? ParentHolder;
         public bool IngestibleNow = true, Forbidden;
-        public IntVec3 PositionHeld;
+        private IntVec3 _positionHeld;
+        public IntVec3 PositionHeld { get => ParentHolder is CarryTracker carry ? carry.Pawn.Position
+            : ParentHolder is Pawn_InventoryTracker inventory ? inventory.pawn.Position
+            : this is Pawn pawn ? pawn.Position : _positionHeld; set => _positionHeld = value; }
+        public Map Map = new();
         public IntVec3 Position => PositionHeld;
         public string ThingID = "fixture";
         public bool IsForbidden(Pawn pawn) => Forbidden;
     }
-    public readonly struct IntVec3(float value)
+    public readonly struct IntVec3
     {
-        public float DistanceToSquared(IntVec3 other) => (value - other.Value) * (value - other.Value);
+        public IntVec3(float value) { Value = value; x = (int)value; z = 0; }
+        public IntVec3(int x, int y, int z) { Value = x; this.x = x; this.z = z; }
+        public readonly int x, z;
+        public static IntVec3 Invalid => new(-10000, 0, -10000);
+        public bool IsValid => x != -10000;
+        public bool InBounds(Map map) => x >= 0 && z >= 0 && x < map.Size.x && z < map.Size.z;
+        public float DistanceToSquared(IntVec3 other) => (Value - other.Value) * (Value - other.Value) + (z - other.z) * (z - other.z);
         public bool InHorDistOf(IntVec3 other, float radius) => DistanceToSquared(other) <= radius * radius;
-        public float Value => value;
-        public override string ToString() => value.ToString();
-        public static bool operator ==(IntVec3 a, IntVec3 b) => a.Value == b.Value;
+        public float Value { get; }
+        public override string ToString() => Value + "," + z;
+        public static bool operator ==(IntVec3 a, IntVec3 b) => a.Value == b.Value && a.z == b.z;
         public static bool operator !=(IntVec3 a, IntVec3 b) => !(a == b);
         public override bool Equals(object? obj) => obj is IntVec3 other && this == other;
-        public override int GetHashCode() => value.GetHashCode();
+        public override int GetHashCode() => Value.GetHashCode() ^ z;
     }
     public enum ThingPlaceMode { Near, Direct }
     public sealed partial class Pawn
@@ -48,6 +58,8 @@ namespace Verse
         public float BodySize = 1f, RawPain = .5f, PainFactor = 1f, PainThreshold = .8f, ChemicalEffect = 1f;
         public bool IsColonistPlayerControlled, NativeSafety;
         public bool DestinationValid = true, RouteValid = true, CarrierCapable = true;
+        public int TicksPerMoveCardinal = 60;
+        public int BleedingDeathTicks = int.MaxValue;
         public float EmergencyUrgency;
         public JobDef CurJobDef => CurJob.def;
         public bool Downed, Dead, IsMutant, IsPrisoner, Teetotaler, AllowDrug = true, DoctorCapable = true, Hostile;
@@ -56,6 +68,10 @@ namespace Verse
         private static readonly object s_faction = new();
         public object Faction = s_faction;
         public bool Reachable = true;
+        public Pawn_MindState mindState = new();
+        public PawnPathFollower pather = new();
+        public bool Exited;
+        public void ExitMap(bool allowed, Rot4 rotation) { Exited = true; Spawned = false; }
         public bool CanReach(Thing thing, PathEndMode end, Danger danger) => Reachable;
         public RaceProperties RaceProps = new();
         public MutantTracker mutant = new();
@@ -96,10 +112,16 @@ namespace Verse
         public float Severity { get => severityInt; set => severityInt = value; }
         public HediffStage? CurStage => def.stages.LastOrDefault(stage => stage.minSeverity <= Severity);
     }
-    public sealed class HediffDef
+    public sealed class Hediff_Injury : Hediff { public bool Healable = true; public bool CanHealNaturally() => Healable && Severity > 0f; }
+    public static class DefDatabase<T> where T : class
+    {
+        public static readonly Dictionary<string, T> Definitions = [];
+        public static T? GetNamedSilentFail(string name) => Definitions.TryGetValue(name, out T? value) ? value : null;
+    }
+    public sealed partial class HediffDef
     { public string defName = "fixture high"; public List<HediffStage> stages = []; public float initialSeverity = .01f, minSeverity, maxSeverity = 1f, lethalSeverity = -1f; }
     public sealed class HediffStage
-    { public bool lifeThreatening; public float minSeverity, painFactor = 1f, painOffset; public List<PawnCapacityModifier> capMods = []; }
+    { public bool lifeThreatening; public float minSeverity, painFactor = 1f, painOffset, naturalHealingFactor = -1f, totalBleedFactor = -1f; public List<PawnCapacityModifier> capMods = []; }
     public sealed class PawnCapacityModifier
     { public PawnCapacityDef capacity = null!; public float offset, setMax = float.MaxValue; }
     public sealed class HediffSet(Pawn pawn)
@@ -132,7 +154,7 @@ namespace Verse
     }
     public sealed class GeneDef { public ChemicalDef? chemical; public float overdoseChanceFactor = 1f; }
     public sealed class Gene { public bool Active = true; public GeneDef def = new(); }
-    public static class ModsConfig { public static bool BiotechActive, IdeologyActive; }
+    public static class ModsConfig { public static bool BiotechActive, IdeologyActive, DetActive; public static bool IsActive(string package) => DetActive && package == "det.battlemeds"; }
     public static class Prefs { public static bool DevMode; }
     public enum Danger { Some }
     public static partial class Log { public static readonly List<string> Messages = []; public static void Message(string text) => Messages.Add(text); }
@@ -158,6 +180,7 @@ namespace Verse.AI
         protected void AddEndCondition(Func<JobCondition> condition) { }
         protected void AddFinishAction(Action<JobCondition> action) => _finish.Add(action);
         protected void EndJobWith(JobCondition condition) => pawn.jobs.EndCurrentJob(condition);
+        protected void ReadyForNextToil() { }
         public int ResumeIndex;
         public Action<int, Toil>? BeforeToil;
         public List<Toil> BuildToils() => MakeNewToils().ToList();
@@ -206,7 +229,8 @@ namespace Verse.AI
     }
     public static class Toils_Goto
     {
-        public static Toil GotoThing(TargetIndex target, PathEndMode end) => new();
+        public static Toil GotoThing(TargetIndex target, PathEndMode end)
+        { Toil toil = new(); toil.initAction = () => toil.actor.Position = toil.actor.CurJob.GetTarget(target).Thing.PositionHeld; return toil; }
         public static Toil GotoCell(TargetIndex target, PathEndMode end)
         { Toil toil = new(); toil.initAction = () => toil.actor.Position = toil.actor.CurJob.GetTarget(target).Cell; return toil; }
     }
@@ -229,6 +253,7 @@ namespace Verse.AI
 }
 namespace RimWorld
 {
+    public enum TechLevel { Neolithic, Medieval, Industrial, Spacer, Ultra }
     public class JobDriver_Ingest : JobDriver;
     public static class Toils_Ingest
     {
@@ -327,9 +352,7 @@ namespace MoreInjuries.AI.NpcCombatMedicine
         internal static float Urgency(Pawn patient) => Math.Max(patient.EmergencyUrgency, patient.health.NeedsTend ? 50f : NpcPainCare.Priority(patient));
         internal static int Relation(Pawn actor, Pawn patient) => actor.HostileTo(patient) ? -1 : patient.CareRelation;
         internal static float Severity(Pawn patient, string name) => patient.health.hediffSet.hediffs.FirstOrDefault(hediff => hediff.def.defName == name)?.Severity ?? 0f;
-        internal static Thing? FindSupply(Pawn actor, Pawn patient, ThingDef def) => actor.inventory.innerContainer
-            .Concat(patient.inventory.innerContainer).Concat(actor.Supplies.Where(item => item.PositionHeld.DistanceToSquared(actor.Position) <= 144f))
-            .FirstOrDefault(item => item.def == def && !item.Destroyed && !item.Forbidden);
+        internal static Thing? FindSupply(Pawn actor, Pawn patient, ThingDef def) => NpcMedicalSupplies.Find(actor, patient, def);
     }
 }
 namespace UnityEngine

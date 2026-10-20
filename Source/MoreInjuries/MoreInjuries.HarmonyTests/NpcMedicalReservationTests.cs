@@ -173,7 +173,6 @@ namespace Verse
     }
     public sealed partial class Pawn : Thing
     {
-        public Map Map = new();
         public Pawn_InventoryTracker inventory = new();
         public CarryTracker carryTracker = new();
         public int FitCount = int.MaxValue, InventoryUpdates;
@@ -182,8 +181,8 @@ namespace Verse
         public JobTracker jobs = new();
         public Job CurJob { get => jobs.curJob; set => jobs.curJob = value; }
     }
-    public sealed class Map { public ReservationManager reservationManager = new(); }
-    public sealed class Pawn_InventoryTracker { public Pawn pawn = null!; public ThingOwner innerContainer = new(); }
+    public sealed partial class Map { public ReservationManager reservationManager = new(); }
+    public sealed class Pawn_InventoryTracker { public Pawn pawn = null!; public ThingOwner innerContainer = new(); public Thing? FindCombatEnhancingDrug() => null; }
     public sealed class CarryTracker
     {
         public ThingOwner innerContainer = new();
@@ -295,7 +294,7 @@ namespace Verse.AI
     }
     public enum TargetIndex { A, B, C }
     public enum ToilCompleteMode { Instant }
-    public enum JobCondition { Succeeded, Incompletable, Ongoing, InterruptForced }
+    public enum JobCondition { Succeeded, Incompletable, Ongoing, InterruptForced, InterruptOptional }
     public sealed class JobTracker : Pawn_JobTracker { }
     public class Pawn_JobTracker
     {
@@ -338,7 +337,7 @@ namespace MoreInjuries.AI.NpcCombatMedicine
     {
         internal static void InventoryChanged(Pawn pawn) => pawn.InventoryUpdates++;
         internal static int Fit(Pawn pawn, Thing thing) => pawn.FitCount;
-        internal static bool SafetyOwned(Pawn pawn) => pawn.NativeSafety;
+        internal static bool SafetyOwned(Pawn pawn) => pawn.NativeSafety || NpcMedicalSafety.ExplosiveDanger(pawn);
     }
     internal sealed class NpcMedicalState { internal readonly NpcDrugBudget Drugs = new(); }
     internal static partial class NpcMedicalAi
@@ -360,6 +359,8 @@ namespace MoreInjuries
         internal bool EnableNpcCombatMedicine = true, NpcPerformanceDrugs = true;
         internal int NpcPerformanceMaximum = 1, NpcPerformanceInterval = 20000;
         internal bool NpcPainCare = true;
+        internal int NpcDrugSelection;
+        internal int NpcMedicalAiMode = 2;
         internal float NpcPainThreshold = .5f;
     }
     internal static class MoreInjuriesMod { internal static MoreInjuriesSettings Settings = new(); }
@@ -367,7 +368,7 @@ namespace MoreInjuries
 namespace MoreInjuries.Defs.WellKnown
 {
     internal static class KnownThingDefOf { internal static readonly ThingDef Epinephrine = new(); internal static ThingDef Morphine = new(); }
-    internal static class KnownJobDefOf { internal static readonly JobDef MI_NpcExtract = new(), MI_NpcTend = new(), MI_NpcPerformanceDrug = new(), MI_NpcPainSelf = new(), MI_NpcPainAssist = new(); }
+    internal static class KnownJobDefOf { internal static readonly JobDef MI_NpcReposition = new(), MI_NpcWithdraw = new(), MI_NpcEvacuate = new(), MI_NpcExtract = new(), MI_NpcTend = new(), MI_NpcPerformanceDrug = new(), MI_NpcPainSelf = new(), MI_NpcPainAssist = new(), MI_NpcRestorativeSelf = new(), MI_NpcRestorativeAssist = new(), UseHemostaticAgent = new(), UseBandage = new(), UseTourniquet = new(); }
 }
 namespace MoreInjuries.Things
 { internal static class MedicalDeviceHelper { internal const int MAX_MEDICAL_DEVICE_RESERVATIONS = 10; } }

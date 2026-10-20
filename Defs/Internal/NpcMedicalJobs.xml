@@ -15,12 +15,12 @@
   </JobDef>
   <JobDef>
     <defName>MI_NpcReposition</defName>
-    <driverClass>JobDriver_Goto</driverClass>
+    <driverClass>MoreInjuries.AI.NpcCombatMedicine.JobDriver_NpcMove</driverClass>
     <reportString>moving to a safer treatment position.</reportString>
   </JobDef>
   <JobDef>
     <defName>MI_NpcWithdraw</defName>
-    <driverClass>JobDriver_Goto</driverClass>
+    <driverClass>MoreInjuries.AI.NpcCombatMedicine.JobDriver_NpcMove</driverClass>
     <reportString>withdrawing for medical reasons.</reportString>
     <casualInterruptible>false</casualInterruptible>
   </JobDef>
@@ -32,7 +32,7 @@
   </JobDef>
   <JobDef>
     <defName>MI_NpcPerformanceDrug</defName>
-    <driverClass>JobDriver_Ingest</driverClass>
+    <driverClass>MoreInjuries.AI.NpcCombatMedicine.JobDriver_NpcPerformanceDrug</driverClass>
     <reportString>taking a combat drug.</reportString>
     <casualInterruptible>false</casualInterruptible>
   </JobDef>
@@ -54,5 +54,17 @@
     <reportString>carrying TargetA to a safer treatment position.</reportString>
     <casualInterruptible>false</casualInterruptible>
     <suspendable>true</suspendable>
+  </JobDef>
+  <JobDef>
+    <defName>MI_NpcRestorativeSelf</defName>
+    <driverClass>MoreInjuries.AI.NpcCombatMedicine.JobDriver_NpcRestorativeSelf</driverClass>
+    <reportString>taking medicine for wounds.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+  <JobDef>
+    <defName>MI_NpcRestorativeAssist</defName>
+    <driverClass>MoreInjuries.AI.NpcCombatMedicine.JobDriver_NpcRestorativeAssist</driverClass>
+    <reportString>administering wound treatment to TargetA.</reportString>
+    <casualInterruptible>false</casualInterruptible>
   </JobDef>
 </Defs>

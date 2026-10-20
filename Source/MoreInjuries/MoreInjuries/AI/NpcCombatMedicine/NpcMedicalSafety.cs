@@ -5,6 +5,12 @@ namespace MoreInjuries.AI.NpcCombatMedicine;
 
 internal static class NpcMedicalSafety
 {
+    internal static bool ExplosiveDanger(Pawn pawn) => pawn.Spawned
+        && pawn.mindState?.knownExploder is Thing { Spawned: true } explosive
+        && explosive.Map == pawn.Map && explosive.Position.InHorDistOf(pawn.Position, 9f);
+    internal static bool YieldToExplosive(Pawn pawn, Verse.AI.Job job)
+        => NpcMedicalAi.ActorEligible(pawn) && !job.playerForced && ExplosiveDanger(pawn);
+
     private sealed class Impact { internal int Tick; }
     private static readonly ConditionalWeakTable<Pawn, Impact> s_impacts = new();
 
@@ -24,6 +30,8 @@ internal static class NpcMedicalSafety
     internal static bool Allowed(Pawn doctor, Pawn patient, Thing? supply)
     {
         if (NpcMedicalCompatibility.SafetyOwned(doctor)) { return false; }
+        if (NpcQuickAid.HasGrant(doctor, patient) && doctor.CurJob is { } job)
+        { return NpcQuickAid.Continue(doctor, patient, job); }
         if (!Recent(doctor) && !Recent(patient) || NpcExtraction.Cleared(doctor, patient)) { return true; }
         bool pocket = supply is null || supply.ParentHolder == doctor.inventory || supply == doctor.carryTracker.CarriedThing;
         return pocket && (doctor == patient || NpcMedicalAi.Urgency(patient) >= 90f

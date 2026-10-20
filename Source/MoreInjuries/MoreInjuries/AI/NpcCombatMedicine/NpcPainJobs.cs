@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MoreInjuries.Defs.WellKnown;
 using MoreInjuries.HealthConditions.Drugs;
 using RimWorld;
 using Verse;
@@ -6,7 +7,10 @@ using Verse.AI;
 
 namespace MoreInjuries.AI.NpcCombatMedicine;
 
-public sealed class JobDriver_NpcPainSelf : JobDriver_Ingest
+public sealed class JobDriver_NpcPainSelf : JobDriver_NpcClinicalSelf;
+public sealed class JobDriver_NpcRestorativeSelf : JobDriver_NpcClinicalSelf;
+
+public abstract class JobDriver_NpcClinicalSelf : JobDriver_Ingest
 {
     public override bool TryMakePreToilReservations(bool errorOnFailed)
     {
@@ -27,6 +31,7 @@ public sealed class JobDriver_NpcPainSelf : JobDriver_Ingest
     {
         Job attemptJob = job;
         NpcMedicalAttempts.Begin(pawn, attemptJob, pawn, attemptJob.targetA.Thing);
+        this.FailOn(() => NpcMedicalSafety.YieldToExplosive(pawn, attemptJob));
         AddFinishAction(condition =>
         {
             NpcMedicalAttempts.Finish(attemptJob, condition);
@@ -83,30 +88,37 @@ public sealed class JobDriver_NpcPainSelf : JobDriver_Ingest
     }
 }
 
-public sealed class JobDriver_NpcPainAssist : JobDriver_UseMedicalDrug
+public sealed class JobDriver_NpcPainAssist : JobDriver_NpcClinicalAssist;
+public sealed class JobDriver_NpcRestorativeAssist : JobDriver_NpcClinicalAssist;
+
+public abstract class JobDriver_NpcClinicalAssist : JobDriver_UseMedicalDrug
 {
     public override bool TryMakePreToilReservations(bool errorOnFailed)
         => (pawn.carryTracker.CarriedThing is null || pawn.carryTracker.CarriedThing == job.targetB.Thing)
             && base.TryMakePreToilReservations(errorOnFailed);
 
     protected override ThingDef DeviceDef => DeviceUsed!.def;
-    protected override bool RequiresTreatment(Pawn patient) => NpcPainCare.Priority(patient) > 0f;
+    protected override bool RequiresTreatment(Pawn patient) => job.def == KnownJobDefOf.MI_NpcRestorativeAssist
+        ? NpcRestorativeCare.Priority(patient) > 0f : NpcPainCare.Priority(patient) > 0f;
 
     protected override IEnumerable<Toil> MakeNewToils()
     {
         AddFinishAction(_ => NpcMedicalReservations.RestockUnusedDrug(pawn, job, TargetIndex.B));
+        this.FailOn(() => NpcMedicalSafety.YieldToExplosive(pawn, job));
         this.FailOn(() => DeviceUsed is { Destroyed: false } dose && !NpcPainCare.SourceAllowed(pawn, Patient, dose));
         foreach (Toil toil in base.MakeNewToils()) { yield return toil; }
     }
 
     protected override bool ApplyDevice(Pawn doctor, Pawn patient, Thing? device)
     {
-        if (device is null || !NpcPainCare.FinalCheck(doctor, patient, device)) { return false; }
+        if (device is null || !(job.def == KnownJobDefOf.MI_NpcRestorativeAssist
+            ? NpcRestorativeCare.FinalCheck(doctor, patient, device) : NpcPainCare.FinalCheck(doctor, patient, device))) { return false; }
         if (device.ParentHolder == doctor.inventory
             && !NpcMedicalReservations.TakeDrug(doctor, job, TargetIndex.B, device, doctor.inventory.innerContainer)) { return false; }
         Thing? dose = DeviceUsed;
         if (dose is null || dose != doctor.carryTracker.CarriedThing || dose.stackCount != 1) { return false; }
-        MedicalDrugAdministration.Administer(doctor, patient, dose, clinicalPain: true);
+        MedicalDrugAdministration.Administer(doctor, patient, dose, clinicalPain: job.def != KnownJobDefOf.MI_NpcRestorativeAssist,
+            restorative: job.def == KnownJobDefOf.MI_NpcRestorativeAssist);
         if (!dose.Destroyed) { return false; }
         if (ModsConfig.IdeologyActive)
         {

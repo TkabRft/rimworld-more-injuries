@@ -246,6 +246,40 @@ public sealed class NpcMedicalRetryTests
         finally { Prefs.DevMode = previous; }
     }
 
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(2)]
+    public void ClearedNativeJobCompletesUsingCapturedActionExactlyOnce(int mode)
+    {
+        MoreInjuriesMod.Settings.NpcMedicalAiMode = mode;
+        Pawn doctor = new(), patient = Wounded();
+        Job job = Tend(patient, Medicine()); job.loadID = 123;
+        var attempt = NpcMedicalAttempts.Begin(doctor, job, patient, job.targetB.Thing)!;
+        job.def = null!; job.loadID = -1;
+        Assert.IsFalse(attempt.Matches(job));
+        NpcMedicalAttempts.Finish(attempt, JobCondition.InterruptOptional);
+        NpcMedicalAttempts.Finish(attempt, JobCondition.InterruptOptional);
+        Assert.IsFalse(NpcMedicalAttempts.Ready(doctor, patient, KnownJobDefOf.MI_NpcTend, job.targetB.Thing));
+        Find.TickManager.TicksGame += 150;
+        Assert.IsTrue(NpcMedicalAttempts.Ready(doctor, patient, KnownJobDefOf.MI_NpcTend, job.targetB.Thing));
+    }
+
+    [TestMethod]
+    public void DelayedObserverCannotCompleteReplacementUsingSamePooledJob()
+    {
+        Pawn doctor = new(), patient = Wounded(), replacementPatient = Wounded();
+        Job job = Tend(patient, Medicine()); job.loadID = 123;
+        var old = NpcMedicalAttempts.Begin(doctor, job, patient, job.targetB.Thing)!;
+        job.loadID = 124; job.def = KnownJobDefOf.MI_NpcPainAssist;
+        var replacement = NpcMedicalAttempts.Begin(doctor, job, replacementPatient, null)!;
+        NpcMedicalAttempts.Finish(old, JobCondition.InterruptOptional);
+        Assert.IsTrue(replacement.Matches(job));
+        Assert.IsFalse(replacement.Completed);
+        NpcMedicalAttempts.Finish(replacement, JobCondition.Incompletable);
+        Assert.IsFalse(NpcMedicalAttempts.Ready(doctor, replacementPatient, KnownJobDefOf.MI_NpcPainAssist, null));
+    }
+
     private static Pawn Wounded()
     {
         Pawn patient = new(); patient.health.hediffSet.hediffs.Add(new() { pawn = patient, def = new(), Severity = .2f }); return patient;

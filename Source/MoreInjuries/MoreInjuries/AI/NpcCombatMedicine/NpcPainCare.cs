@@ -45,10 +45,10 @@ internal static class NpcPainCare
         {
             return !holder.pawn.IsForbidden(actor) && !actor.HostileTo(holder.pawn)
                 && (holder.pawn == patient || holder.pawn.Faction == actor.Faction)
-                && holder.pawn.Position.InHorDistOf(actor.Position, 12f)
+                && NpcQuickAid.SourceNearby(actor, patient, holder.pawn.Position)
                 && actor.CanReach(holder.pawn, PathEndMode.Touch, Danger.Some);
         }
-        return dose.Spawned && !dose.IsForbidden(actor) && dose.Position.InHorDistOf(actor.Position, 12f)
+        return dose.Spawned && !dose.IsForbidden(actor) && NpcQuickAid.SourceNearby(actor, patient, dose.Position)
             && actor.CanReach(dose, PathEndMode.ClosestTouch, Danger.Some);
     }
 
@@ -66,10 +66,13 @@ internal static class NpcPainCare
     }
 
     internal static bool Evaluate(Pawn actor, Pawn patient, Thing dose, out NpcPainDose projection, out string reason)
+        => EvaluateClinical(actor, patient, dose, out projection, out reason, NpcDrugPurpose.Pain);
+
+    internal static bool EvaluateClinical(Pawn actor, Pawn patient, Thing dose, out NpcPainDose projection, out string reason, NpcDrugPurpose purpose)
     {
         projection = default;
-        reason = "pain care disabled or no indication";
-        if (!NpcMedicalAi.Managed(actor) || Priority(patient) <= 0f) { return false; }
+        reason = "clinical care disabled or no indication";
+        if (!NpcMedicalAi.Managed(actor) || (purpose == NpcDrugPurpose.Pain ? Priority(patient) : NpcRestorativeCare.Priority(patient)) <= 0f) { return false; }
         reason = "patient or medical-care restriction";
         if (patient.Dead || !patient.RaceProps.Humanlike || !patient.RaceProps.IsFlesh
             || patient.IsMutant && !patient.mutant.Def.entitledToMedicalCare || actor.HostileTo(patient)
@@ -79,22 +82,27 @@ internal static class NpcPainCare
         if (actor != patient && !NpcMedicalGeneration.CanDoctor(actor)
             || actor == patient && (actor.Downed || !actor.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))) { return false; }
         reason = "unavailable or unsupported dose";
-        if (!NpcMedicalGeneration.IsPerformance(dose.def) || dose.Destroyed || dose.stackCount < 1
+        if (!(purpose == NpcDrugPurpose.Pain ? NpcMedicalDrugs.Analgesics.Contains(dose.def) : NpcMedicalDrugs.Restorative(dose.def)) || dose.Destroyed || dose.stackCount < 1
             || !dose.IngestibleNow || dose.IsForbidden(actor) || !SourceAllowed(actor, patient, dose)) { return false; }
         reason = "actor refuses drug";
         if (!Willing(actor, patient, dose.def)) { return false; }
+        if (!VitalSafety(patient, dose.def, out reason)) { return false; }
+        return NpcPainProjection.TryDose(patient, dose.def, out projection, out reason, purpose);
+    }
+
+    internal static bool VitalSafety(Pawn patient, ThingDef drug, out string reason)
+    {
         reason = "dangerous depressant combination";
         if (NpcMedicalAi.Severity(patient, "KetamineBuildup") > 0f || NpcMedicalAi.Severity(patient, "ChloroformBuildup") > 0f
             || NpcMedicalAi.Severity(patient, "AlcoholHigh") > 0f) { return false; }
-        if (dose.def == KnownThingDefOf.Morphine)
+        if (drug == KnownThingDefOf.Morphine)
         {
             reason = "morphine unsafe with blood loss, shock or depressed vital capacities";
             if (NpcMedicalAi.Severity(patient, "BloodLoss") >= .2f || NpcMedicalAi.Severity(patient, "HypovolemicShock") > 0f
-                || patient.health.capacities.GetLevel(PawnCapacityDefOf.Consciousness) < .8f
                 || patient.health.capacities.GetLevel(PawnCapacityDefOf.Breathing) < .9f
                 || patient.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping) < .9f) { return false; }
         }
-        return NpcPainProjection.TryDose(patient, dose.def, out projection, out reason);
+        return true;
     }
 
     internal static Job? Select(Pawn actor, Pawn patient, bool pocketOnly = false, Func<JobDef, Thing?, bool>? allowed = null)
@@ -104,7 +112,7 @@ internal static class NpcPainCare
         NpcPainDose bestDose = default;
         string reason = "no available safe analgesic";
         float threshold = patient.GetStatValue(StatDefOf.PainShockThreshold);
-        foreach (ThingDef def in new[] { KnownThingDefOf.Morphine, ThingDefOf.Yayo, ThingDefOf.GoJuice })
+        foreach (ThingDef def in NpcMedicalDrugs.Analgesics)
         {
             Thing? item = pocketOnly ? actor.inventory?.innerContainer.FirstOrDefault(thing => thing.def == def)
                 : NpcMedicalAi.FindSupply(actor, patient, def);
@@ -123,7 +131,10 @@ internal static class NpcPainCare
 
     private static int Compare(Pawn actor, Thing left, NpcPainDose a, Thing right, NpcPainDose b, float threshold)
     {
-        int comparison = (a.Pain >= threshold).CompareTo(b.Pain >= threshold);
+        int comparison = b.Recovery.CompareTo(a.Recovery);
+        if (comparison == 0) { comparison = b.Function.CompareTo(a.Function); }
+        if (comparison == 0) { comparison = a.BleedingFactor.CompareTo(b.BleedingFactor); }
+        if (comparison == 0) { comparison = (a.Pain >= threshold).CompareTo(b.Pain >= threshold); }
         if (comparison == 0) { comparison = a.PhysiologicalRisk.CompareTo(b.PhysiologicalRisk); }
         if (comparison == 0) { comparison = a.OverdoseRisk.CompareTo(b.OverdoseRisk); }
         if (comparison == 0) { comparison = a.AddictionRisk.CompareTo(b.AddictionRisk); }
@@ -138,7 +149,8 @@ internal static class NpcPainCare
     {
         bool accessible = dose.ParentHolder == actor.inventory || dose == actor.carryTracker.CarriedThing
             || dose.Spawned && actor.CanReachImmediate(dose, PathEndMode.Touch);
-        bool allowed = accessible && (actor == patient || actor.CanReachImmediate(patient, PathEndMode.Touch)
+        bool allowed = accessible && (actor.CurJob is not Job active || NpcQuickAid.Continue(actor, patient, active, final: true))
+            && (actor == patient || actor.CanReachImmediate(patient, PathEndMode.Touch)
             && NpcMedicalAi.Relation(actor, patient) >= 0);
         string reason = "dose or patient no longer accessible";
         allowed = allowed && Evaluate(actor, patient, dose, out _, out reason);

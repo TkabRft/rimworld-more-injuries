@@ -9,7 +9,7 @@ using Verse.AI;
 
 namespace MoreInjuries.AI.NpcCombatMedicine;
 
-internal static class NpcExtraction
+internal static partial class NpcExtraction
 {
     private sealed class PatientState
     {
@@ -34,63 +34,19 @@ internal static class NpcExtraction
         && patient.MapHeld == carrier.Map && NpcMedicalAi.Relation(carrier, patient) >= 0
         && patient.playerSettings?.medCare != MedicalCareCategory.NoCare;
 
-    internal sealed class Assessment
+    internal sealed class Plan(Pawn carrier, Pawn patient, IntVec3 destination, float ticks, float exposure,
+        NpcExtractionRisk origin, NpcExtractionRisk target)
     {
-        private readonly Pawn _carrier, _patient;
-        private readonly IntVec3 _origin;
-        private readonly List<Thing> _threats;
-        internal Assessment(Pawn carrier, Pawn patient, IntVec3 origin)
-        {
-            _carrier = carrier; _patient = patient; _origin = origin;
-            _threats = GenRadial.RadialDistinctThingsAround(origin, carrier.Map, 35f, true)
-                .Where(thing => thing.HostileTo(carrier) && (thing is Pawn enemy && !enemy.Downed && !enemy.Dead
-                    || thing is Building_Turret)).Take(16).ToList();
-        }
-        internal NpcExtractionRisk At(IntVec3 cell, out bool allowed)
-        {
-            Map map = _carrier.Map;
-            allowed = NpcExtractionEnvironment.Boundary(_carrier, _patient, _origin, cell);
-            float thermal = NpcExtractionEnvironment.Thermal(_carrier, _patient, _origin, cell, out bool known, out bool thermalAllowed);
-            allowed &= thermalAllowed;
-            float combat = NpcExtractionEnvironment.CeDanger(map, cell, out bool ceKnown);
-            known &= ceKnown;
-            foreach (Thing threat in _threats)
-            {
-                if (!threat.Spawned || threat.Destroyed) { continue; }
-                if (threat.Position.InHorDistOf(cell, 4f)) { combat = Math.Max(combat, 2f); }
-                else if (GenSight.LineOfSight(threat.Position, cell, map))
-                { combat = Math.Max(combat, 1f - CoverUtility.CalculateOverallBlockChance(cell, threat.Position, map)); }
-            }
-            float fire = cell.ContainsStaticFire(map) ? 2f
-                : GenRadial.RadialCellsAround(cell, 1.5f, false).Any(next => next.InBounds(map) && next.ContainsStaticFire(map)) ? .5f : 0f;
-            return new(combat, NpcExtractionEnvironment.RecentImpact(map, cell), fire, thermal, known);
-        }
-        internal bool Path(IntVec3 start, IntVec3 end, PathEndMode mode, out float ticks, out float exposure, bool carrying = true)
-        {
-            ticks = exposure = 0f;
-            PawnPath path = _carrier.Map.pathFinder.FindPathNow(start, end, _carrier, peMode: mode);
-            try
-            {
-                if (!path.Found || path.TotalCost > NpcExtractionModel.TRAVEL_BUDGET) { return false; }
-                ticks = path.TotalCost;
-                foreach (IntVec3 cell in path.NodesReversed)
-                {
-                    // A path may leave a burning origin; never walk into another
-                    // burning/forbidden/confinement-violating cell to rescue.
-                    NpcExtractionRisk risk = At(cell, out bool allowed);
-                    // Before pickup, the casualty stays at its origin. Only the
-                    // approaching actor crosses these cells and room boundaries.
-                    if (!carrying) { allowed = NpcExtractionEnvironment.Boundary(_carrier, _carrier, _carrier.Position, cell); }
-                    if (cell != start && (!allowed || risk.Combat >= 2f)) { return false; }
-                    exposure += risk.Worst;
-                }
-                return true;
-            }
-            finally { path.ReleaseToPool(); }
-        }
+        internal readonly IntVec3 Destination = destination;
+        internal readonly float Ticks = ticks, Exposure = exposure;
+        internal readonly NpcExtractionRisk Origin = origin, Target = target;
+        internal Job Create() => Commit(carrier, patient, this);
     }
 
     internal static Job? Consider(Pawn carrier, Pawn patient, out bool unsafePatient)
+        => Preview(carrier, patient, out unsafePatient)?.Create();
+
+    internal static Plan? Preview(Pawn carrier, Pawn patient, out bool unsafePatient)
     {
         unsafePatient = false;
         if (!Enabled || patient == carrier || !PatientAllowed(carrier, patient)) { return null; }
@@ -129,14 +85,21 @@ internal static class NpcExtraction
             destination = candidate.Cell; selected = candidate.Risk; bestRoute = exposure + approachRisk; bestTicks = approach + travel;
         }
         if (!destination.IsValid) { return null; }
-        Job extraction = JobMaker.MakeJob(KnownJobDefOf.MI_NpcExtract, patient, destination, patient.Position);
+        return new Plan(carrier, patient, destination, bestTicks, bestRoute, origin, selected);
+    }
+
+    private static Job Commit(Pawn carrier, Pawn patient, Plan plan)
+    {
+        PatientState state = s_patients.GetOrCreateValue(patient);
+        int now = Find.TickManager.TicksGame;
+        Job extraction = JobMaker.MakeJob(KnownJobDefOf.MI_NpcExtract, patient, plan.Destination, patient.Position);
         extraction.count = 1;
         Mission mission = s_missions.GetOrCreateValue(carrier);
         mission.Extraction = extraction; mission.ExtractionId = extraction.loadID;
         // One bounded critical round may precede this committed transport.
         if (state.Limits.CanPrepare(now) && NpcMedicalGeneration.CanDoctor(carrier) && (NpcMedicalAi.Urgency(patient) >= 90f
             || patient.health.hediffSet.BleedRateTotal >= .5f
-                && HealthUtility.TicksUntilDeathDueToBloodLoss(patient) <= bestTicks + 150f))
+                && HealthUtility.TicksUntilDeathDueToBloodLoss(patient) <= plan.Ticks + 150f))
         {
             Job? immediate = NpcMedicalAi.ImmediateStabilization(carrier, patient);
             if (immediate is not null)
@@ -158,6 +121,7 @@ internal static class NpcExtraction
 
     internal static bool PickupValid(Pawn carrier, Job job)
     {
+        if (!Enabled) { return false; }
         Pawn patient = job.targetA.Pawn;
         if (patient.Position != job.targetC.Cell || !DestinationValid(carrier, job)) { return false; }
         Assessment assessment = new(carrier, patient, job.targetC.Cell);
@@ -197,6 +161,7 @@ internal static class NpcExtraction
         state.ArrivedAt = Find.TickManager.TicksGame;
         state.Limits.Delivered(Find.TickManager.TicksGame);
         state.ClearedAt = allowed && risk.Safe ? Find.TickManager.TicksGame : -1;
+        NpcQuickAid.Delivered(carrier, patient, job.targetC.Cell);
         NpcMedicalAttempts.Progress(job);
     }
     internal static bool Cleared(Pawn carrier, Pawn patient)

@@ -37,6 +37,28 @@ public sealed class WeightedEmergencyTests
     }
 
     [TestMethod]
+    public void NpcQuickPreviewUsesProductionBleedingSelectionWithoutCreatingTheLosingJob()
+    {
+        (Pawn doctor, Pawn patient, _) = Pair(.6f);
+        Thing device = Supply(doctor, KnownThingDefOf.HemostaticAgent, 6);
+        Func<Verse.AI.Job?>? create = null;
+        EmergencyCare.NpcContext context = new()
+        {
+            Advanced = true,
+            Find = def => def == device.def ? device : null,
+            Allowed = (action, _) => action == KnownJobDefOf.UseHemostaticAgent,
+            Preview = (factory, action, supply, score, duration, retrieval, cost) =>
+            {
+                Assert.AreSame(device, supply); Assert.IsGreaterThan(0f, score);
+                Assert.AreEqual(40, duration); create = factory;
+            }
+        };
+        Assert.IsNull(EmergencyCare.CreateJob(doctor, patient, false, context));
+        Assert.IsNotNull(create);
+        Assert.AreSame(KnownJobDefOf.UseHemostaticAgent, create()!.def);
+    }
+
+    [TestMethod]
     public void NearbyHemostaticBeatsPocketBandageButDistantHemostaticDoesNot()
     {
         var (doctor, patient, _) = Pair(.6f);

@@ -142,6 +142,8 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
         bool automatic = NpcCombatMedicine.NpcMedicalAttempts.Automatic(doctor, attemptJob);
         if (automatic)
         {
+            this.FailOn(() => NpcCombatMedicine.NpcMedicalSafety.YieldToExplosive(doctor, attemptJob));
+            this.FailOn(() => !NpcCombatMedicine.NpcQuickAid.Continue(doctor, patient, attemptJob));
             NpcCombatMedicine.NpcMedicalAttempts.Begin(doctor, attemptJob, patient, DeviceUsed);
             AddFinishAction(condition =>
             {
@@ -254,6 +256,7 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
             });
         }
         waitToil.WithProgressBarToilDelay(PATIENT_INDEX);
+        if (automatic) { waitToil.AddPreInitAction(() => NpcCombatMedicine.NpcQuickAid.Applying(attemptJob, ticks)); }
         SoundDef? soundDef = SoundDefProvider.GetSoundDef(doctor, patient, DeviceUsed);
         if (soundDef is not null)
         {
@@ -302,6 +305,9 @@ public abstract class JobDriver_UseMedicalDevice : JobDriver_MedicalBase<Pawn>
     protected override void FinalizeTreatment(Pawn doctor, Pawn target, Thing? thing)
     {
         Job applyingJob = job;
+        if (NpcCombatMedicine.NpcMedicalAttempts.Automatic(doctor, applyingJob)
+            && !NpcCombatMedicine.NpcQuickAid.Continue(doctor, target, applyingJob, final: true))
+        { EndJobWith(JobCondition.Incompletable); return; }
         NpcCombatMedicine.NpcMedicalAttempts.Applying(applyingJob);
         bool accepted = ApplyDevice(doctor, target, thing);
         NpcCombatMedicine.NpcMedicalAttempts.Applied(applyingJob, accepted);

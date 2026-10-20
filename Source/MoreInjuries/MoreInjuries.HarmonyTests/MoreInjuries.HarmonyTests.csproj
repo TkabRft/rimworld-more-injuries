@@ -6,10 +6,16 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcDrugProvisioning.cs" Link="Production\NpcDrugProvisioning.cs" />
+    <Compile Include="..\MoreInjuries\AI\EmergencyPriority.cs" Link="Production\EmergencyPriority.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcQuickAid.cs" Link="Production\NpcQuickAid.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalSupplies.cs" Link="Production\NpcMedicalSupplies.cs" />
     <Compile Include="..\MoreInjuries\Logging\Logger.cs" Link="Production\Logger.cs" />
     <Compile Include="..\MoreInjuries\Patches\Patch_LethalDamageThreshold.cs" Link="Production\Patch_LethalDamageThreshold.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcEvacuation.cs" Link="Production\NpcEvacuation.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcExtractionAssessment.cs" Link="Production\NpcExtractionAssessment.cs" />
     <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalDecision.cs" Link="Production\NpcMedicalDecision.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcNativeJobDrivers.cs" Link="Production\NpcNativeJobDrivers.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalJobs.cs" Link="Production\NpcMedicalJobs.cs" />
     <Compile Include="..\MoreInjuries\HealthConditions\HeavyBleeding\TimedHemostasis.cs" Link="Production\TimedHemostasis.cs" />
 
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
@@ -19,8 +25,11 @@
     <Compile Include="..\MoreInjuries\HealthConditions\VitalFailure\PrognosisBleeding.cs" Link="Production\PrognosisBleeding.cs" />
     <Compile Include="..\MoreInjuries\Integrations\NiceInventoryTab\NiceInventoryTabGuard.cs" Link="Production\NiceInventoryTabGuard.cs" />
     <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalReservations.cs" Link="Production\NpcMedicalReservations.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcDrugProvisioning.cs" Link="Production\NpcDrugProvisioning.cs" />
     <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalModel.cs" Link="Production\NpcMedicalModel.cs" />
     <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalIngestionPatch.cs" Link="Production\NpcMedicalIngestionPatch.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalDrugs.cs" Link="Production\NpcMedicalDrugs.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcRestorativeCare.cs" Link="Production\NpcRestorativeCare.cs" />
     <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcPainPolicy.cs" Link="Production\NpcPainPolicy.cs" />
     <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcPainProjection.cs" Link="Production\NpcPainProjection.cs" />
     <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcPainCare.cs" Link="Production\NpcPainCare.cs" />

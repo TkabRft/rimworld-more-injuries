@@ -235,12 +235,12 @@ public sealed class NpcPainCareTests
     }
 
     [TestMethod]
-    public void RankingPrefersLowerRiskThenEffortAndCostRatherThanStrongerAnalgesia()
+    public void RankingPrefersUsefulFunctionBeforeSecondaryRiskEffortAndCost()
     {
         Pawn actor = new() { RawPain = .9f };
         Thing yayo = Pocket(actor, ThingDefOf.Yayo), go = Pocket(actor, ThingDefOf.GoJuice);
         yayo.def.BaseMarketValue = 21f; go.def.BaseMarketValue = 53f;
-        Assert.AreSame(yayo, NpcPainCare.Select(actor, actor)!.targetA.Thing);
+        Assert.AreSame(go, NpcPainCare.Select(actor, actor)!.targetA.Thing);
         go.def.Drug.largeOverdoseChance = .001f;
         Assert.AreSame(go, NpcPainCare.Select(actor, actor)!.targetA.Thing);
         actor.inventory.innerContainer.Items.Clear();
@@ -394,7 +394,8 @@ public sealed class NpcPainCareTests
         Pawn actor = new(), other = new();
         Thing stack = Pocket(actor, ThingDefOf.Yayo, 3);
         actor.Map.reservationManager.Reserve(other, new(), actor);
-        actor.CurJob = NpcPainCare.Select(actor, actor)!;
+        Assert.IsNull(NpcPainCare.Select(actor, actor));
+        actor.CurJob = JobMaker.MakeJob(KnownJobDefOf.MI_NpcPainSelf, stack);
         Assert.IsFalse(new JobDriver_NpcPainSelf { pawn = actor }.TryMakePreToilReservations(false));
         Assert.AreEqual(3, stack.stackCount);
         Assert.IsNull(actor.carryTracker.CarriedThing);

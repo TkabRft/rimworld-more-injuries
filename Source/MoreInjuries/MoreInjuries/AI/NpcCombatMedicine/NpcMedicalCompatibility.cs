@@ -156,6 +156,7 @@ internal static class NpcMedicalCompatibility
 
     internal static bool SafetyOwned(Pawn pawn)
     {
+        if (NpcMedicalSafety.ExplosiveDanger(pawn)) { return true; }
         if (!s_ceActive) { return false; }
         if (s_ceSafety?.OwnsJob(pawn.CurJobDef) == true) { return true; }
         // Retain job protection when a newer suppression signature is unsupported.

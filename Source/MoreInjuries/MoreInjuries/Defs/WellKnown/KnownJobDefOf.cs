@@ -33,4 +33,6 @@ public static class KnownJobDefOf
     public static JobDef MI_NpcPerformanceDrug = null!;
     public static JobDef MI_NpcPainSelf = null!;
     public static JobDef MI_NpcPainAssist = null!;
+    public static JobDef MI_NpcRestorativeSelf = null!;
+    public static JobDef MI_NpcRestorativeAssist = null!;
 }

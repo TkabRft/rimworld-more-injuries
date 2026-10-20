@@ -41,4 +41,8 @@ internal static class NpcMedicalDrugs
         if (Restorative(def)) { return true; }
         return def == KnownThingDefOf.Morphine ? settings.NpcPainCare : !Booster(def) || settings.NpcPerformanceDrugs;
     }
+
+    internal static bool SafeOptionalBooster(Pawn pawn, ThingDef def) => EffectName(def) != "DV_AdrenalineShotHediff"
+        || NpcPainCare.Willing(pawn, pawn, def)
+            && NpcPainProjection.TryDose(pawn, def, out _, out _, NpcDrugPurpose.Performance);
 }

@@ -33,6 +33,7 @@ public sealed class JobDriver_NpcTend : JobDriver_TendPatient
             NpcMedicalReservations.RestockUnusedMedicine(pawn, attemptJob);
         });
         this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
+        this.FailOn(() => NpcMedicalSafety.YieldToExplosive(pawn, attemptJob));
         this.FailOn(() => job.targetA.Pawn is not Pawn patient || patient.Dead
             || patient.IsMutant && !patient.mutant.Def.entitledToMedicalCare
             || !NpcMedicalGeneration.CanDoctor(pawn) || !MedicalTiming.CanWork(pawn)

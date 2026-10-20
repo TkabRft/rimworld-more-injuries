@@ -19,7 +19,8 @@ public sealed class JobDriver_NpcExtract : JobDriver
     public override bool TryMakePreToilReservations(bool errorOnFailed)
     {
         NpcMedicalAttempts.Begin(pawn, job, job.targetA.Pawn, null);
-        bool reserved = NpcExtraction.PatientAllowed(pawn, job.targetA.Pawn)
+        bool reserved = (NpcExtraction.Enabled || pawn.carryTracker.CarriedThing == job.targetA.Thing)
+            && NpcExtraction.PatientAllowed(pawn, job.targetA.Pawn)
             && NpcMedicalReservations.PatientAvailable(pawn, job.targetA.Pawn)
             && NpcExtraction.DestinationValid(pawn, job)
             && (pawn.carryTracker.CarriedThing is null || pawn.carryTracker.CarriedThing == job.targetA.Thing)
@@ -38,6 +39,7 @@ public sealed class JobDriver_NpcExtract : JobDriver
         Job mission = job;
         Pawn patient = mission.targetA.Pawn;
         NpcMedicalAttempts.Begin(pawn, mission, patient, null);
+        this.FailOn(() => NpcMedicalSafety.YieldToExplosive(pawn, mission));
         AddFinishAction(condition =>
         {
             if (NpcExtraction.Suspending(pawn)) { return; }
