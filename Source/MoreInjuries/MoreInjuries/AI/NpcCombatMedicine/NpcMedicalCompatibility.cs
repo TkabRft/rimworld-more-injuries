@@ -195,10 +195,10 @@ internal static class NpcMedicalCompatibility
         return false;
     }
     private static bool Preservation([HarmonyArgument(0)] ref Pawn pawn)
-        => !NpcMedicalAi.OwnsSurvival(pawn);
+        => !NpcMedicalAi.OwnsSurvival(pawn) && !NpcExtraction.Owns(pawn);
     private static bool Rescue([HarmonyArgument(0)] Pawn pawn, ref Job? __result)
     {
-        if (!NpcMedicalAi.OwnsSurvival(pawn)) { return true; }
+        if (!NpcMedicalAi.OwnsSurvival(pawn) && !NpcExtraction.Owns(pawn)) { return true; }
         __result = null;
         return false;
     }

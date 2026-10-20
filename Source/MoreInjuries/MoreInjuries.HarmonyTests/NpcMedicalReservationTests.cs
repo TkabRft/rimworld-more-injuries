@@ -189,7 +189,17 @@ namespace Verse
         public ThingOwner innerContainer = new();
         public Thing? CarriedThing => innerContainer.Items.FirstOrDefault();
         public int MaxPickup = int.MaxValue;
+        public Pawn Pawn = null!;
         public int AvailableStackSpace(ThingDef def) => MaxPickup;
+        public bool TryDropCarriedThing(IntVec3 cell, ThingPlaceMode mode, out Thing result)
+        {
+            result = CarriedThing!;
+            if (result is null || !DropAllowed) { return false; }
+            innerContainer.Items.Remove(result); result.Spawned = true; result.ParentHolder = null;
+            if (result is Pawn patient) { patient.Position = cell; } else { result.PositionHeld = cell; }
+            return true;
+        }
+        public bool DropAllowed = true;
         public int TryStartCarry(Thing thing, int count)
         {
             if (MaxPickup <= 0 || ReferenceEquals(CarriedThing, thing)
@@ -254,11 +264,19 @@ namespace Verse
     }
     public static partial class Find { public static TickManager TickManager = new(); }
     public sealed class TickManager { public int TicksGame = 1000; }
-    public sealed class JobDef { public string defName = "fixture"; }
+    public sealed class JobDef { public string defName = "fixture"; public Type? driverClass; }
 }
 namespace Verse.AI
 {
-    public readonly struct LocalTargetInfo(Thing thing) { public Thing Thing { get; } = thing; public Pawn Pawn => (Pawn)Thing; }
+    public readonly struct LocalTargetInfo
+    {
+        public Thing Thing { get; }
+        public Pawn Pawn => (Pawn)Thing;
+        public IntVec3 Cell { get; }
+        public LocalTargetInfo(Thing thing) { Thing = thing; Cell = default; }
+        public LocalTargetInfo(IntVec3 cell) { Thing = null!; Cell = cell; }
+    }
+    public sealed class QueuedJob { public Job job = new(); }
     public sealed class Job
     {
         public LocalTargetInfo targetA;
@@ -268,6 +286,7 @@ namespace Verse.AI
         public JobDef def = new();
         public int count = 1;
         public int startTick;
+        public int loadID;
         public LocalTargetInfo GetTarget(TargetIndex index) => index == TargetIndex.A ? targetA : index == TargetIndex.B ? targetB : targetC;
         public void SetTarget(TargetIndex index, Thing? thing)
         { if (index == TargetIndex.A) { targetA = new(thing!); } else if (index == TargetIndex.B) { targetB = new(thing!); } else { targetC = new(thing!); } }
@@ -277,8 +296,21 @@ namespace Verse.AI
     public enum TargetIndex { A, B, C }
     public enum ToilCompleteMode { Instant }
     public enum JobCondition { Succeeded, Incompletable, Ongoing, InterruptForced }
-    public sealed class JobTracker
+    public sealed class JobTracker : Pawn_JobTracker { }
+    public class Pawn_JobTracker
     {
+        public Pawn pawn = null!;
+        public readonly List<QueuedJob> jobQueue = [];
+        public Action? DuringStart;
+        public bool KeptCarry, Resumed;
+        public void StartJob(Job newJob, JobCondition lastJobEndCondition = JobCondition.Ongoing, bool resumeCurJobAfterwards = false, bool? keepCarryingThingOverride = null)
+        {
+            KeptCarry = keepCarryingThingOverride == true; Resumed = resumeCurJobAfterwards;
+            DuringStart?.Invoke();
+            if (resumeCurJobAfterwards) { jobQueue.Add(new() { job = curJob }); }
+            if (!KeptCarry && pawn.carryTracker.CarriedThing is Thing item) { pawn.carryTracker.TryDropCarriedThing(pawn.Position, ThingPlaceMode.Near, out _); }
+            curJob = newJob;
+        }
         public Job curJob = new();
         public JobCondition? Ended;
         public void EndCurrentJob(JobCondition condition) => Ended = condition;
@@ -333,7 +365,7 @@ namespace MoreInjuries
 namespace MoreInjuries.Defs.WellKnown
 {
     internal static class KnownThingDefOf { internal static readonly ThingDef Epinephrine = new(); internal static ThingDef Morphine = new(); }
-    internal static class KnownJobDefOf { internal static readonly JobDef MI_NpcTend = new(), MI_NpcPerformanceDrug = new(), MI_NpcPainSelf = new(), MI_NpcPainAssist = new(); }
+    internal static class KnownJobDefOf { internal static readonly JobDef MI_NpcExtract = new(), MI_NpcTend = new(), MI_NpcPerformanceDrug = new(), MI_NpcPainSelf = new(), MI_NpcPainAssist = new(); }
 }
 namespace MoreInjuries.Things
 { internal static class MedicalDeviceHelper { internal const int MAX_MEDICAL_DEVICE_RESERVATIONS = 10; } }

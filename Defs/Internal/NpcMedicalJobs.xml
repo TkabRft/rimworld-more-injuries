@@ -48,4 +48,11 @@
     <reportString>administering pain relief to TargetA.</reportString>
     <casualInterruptible>false</casualInterruptible>
   </JobDef>
+  <JobDef>
+    <defName>MI_NpcExtract</defName>
+    <driverClass>MoreInjuries.AI.NpcCombatMedicine.JobDriver_NpcExtract</driverClass>
+    <reportString>carrying TargetA to a safer treatment position.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+    <suspendable>true</suspendable>
+  </JobDef>
 </Defs>

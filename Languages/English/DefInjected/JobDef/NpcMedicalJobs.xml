@@ -14,4 +14,6 @@
   <MI_NpcPainSelf.reportString>taking medicine for pain.</MI_NpcPainSelf.reportString>
   <!-- EN: administering pain relief to TargetA. -->
   <MI_NpcPainAssist.reportString>administering pain relief to TargetA.</MI_NpcPainAssist.reportString>
+  <!-- EN: carrying TargetA to a safer treatment position. -->
+  <MI_NpcExtract.reportString>carrying TargetA to a safer treatment position.</MI_NpcExtract.reportString>
 </LanguageData>

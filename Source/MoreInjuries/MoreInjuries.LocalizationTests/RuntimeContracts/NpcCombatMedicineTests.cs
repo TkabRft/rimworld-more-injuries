@@ -12,6 +12,18 @@ namespace MoreInjuries.LocalizationTests.RuntimeContracts;
 [TestClass, DoNotParallelize]
 public sealed class NpcCombatMedicineTests
 {
+    [TestMethod]
+    public void LocalExtractionIsDistinctFromExitEvacuationAndHasNativeResumeSupport()
+    {
+        XDocument jobs = XDocument.Load(Path.Combine(RuntimeDefinitionTests.ModRoot, "Defs", "Internal", "NpcMedicalJobs.xml"));
+        XElement extraction = jobs.Root!.Elements("JobDef").Single(def => def.Element("defName")?.Value == "MI_NpcExtract");
+        Assert.AreEqual("true", extraction.Element("suspendable")?.Value);
+        Assert.AreEqual("false", extraction.Element("casualInterruptible")?.Value);
+        Assert.AreEqual("MoreInjuries.AI.NpcCombatMedicine.JobDriver_NpcExtract", extraction.Element("driverClass")?.Value);
+        Assert.IsTrue(jobs.Root.Elements("JobDef").Any(def => def.Element("defName")?.Value == "MI_NpcEvacuate"));
+        Assert.AreEqual("false", jobs.Root.Elements("JobDef").Single(def => def.Element("defName")?.Value == "MI_NpcTend").Element("suspendable")?.Value);
+    }
+
     private static XDocument Profiles() => XDocument.Load(Path.Combine(RuntimeDefinitionTests.ModRoot, "Defs", "Internal", "NpcMedicalProfiles.xml"));
     [TestMethod]
     public void TravelDeadlineDoesNotResetWithDecisionReevaluation()

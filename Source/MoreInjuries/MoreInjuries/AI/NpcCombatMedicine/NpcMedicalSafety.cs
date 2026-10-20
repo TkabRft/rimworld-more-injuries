@@ -13,7 +13,10 @@ internal static class NpcMedicalSafety
         if (!MoreInjuriesMod.Settings.EnableNpcCombatMedicine || amount <= 0f || pawn.Map is null
             || !damage.Def.ExternalViolenceFor(pawn) || !(damage.Def.isRanged || damage.Def.isExplosive)) { return; }
         s_impacts.GetOrCreateValue(pawn).Tick = Find.TickManager.TicksGame;
+        NpcExtractionEnvironment.Impact(pawn, damage.Def.isExplosive);
     }
+
+    internal static bool ImpactAfter(Pawn pawn, int tick) => s_impacts.TryGetValue(pawn, out Impact? impact) && impact.Tick >= tick;
 
     internal static bool Recent(Pawn pawn) => s_impacts.TryGetValue(pawn, out Impact? impact)
         && Find.TickManager.TicksGame - impact.Tick < 600;
@@ -21,7 +24,7 @@ internal static class NpcMedicalSafety
     internal static bool Allowed(Pawn doctor, Pawn patient, Thing? supply)
     {
         if (NpcMedicalCompatibility.SafetyOwned(doctor)) { return false; }
-        if (!Recent(doctor) && !Recent(patient)) { return true; }
+        if (!Recent(doctor) && !Recent(patient) || NpcExtraction.Cleared(doctor, patient)) { return true; }
         bool pocket = supply is null || supply.ParentHolder == doctor.inventory || supply == doctor.carryTracker.CarriedThing;
         return pocket && (doctor == patient || NpcMedicalAi.Urgency(patient) >= 90f
             && patient.Position.InHorDistOf(doctor.Position, 1.5f));

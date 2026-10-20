@@ -33,14 +33,21 @@ namespace Verse
         public bool InHorDistOf(IntVec3 other, float radius) => DistanceToSquared(other) <= radius * radius;
         public float Value => value;
         public override string ToString() => value.ToString();
+        public static bool operator ==(IntVec3 a, IntVec3 b) => a.Value == b.Value;
+        public static bool operator !=(IntVec3 a, IntVec3 b) => !(a == b);
+        public override bool Equals(object? obj) => obj is IntVec3 other && this == other;
+        public override int GetHashCode() => value.GetHashCode();
     }
+    public enum ThingPlaceMode { Near, Direct }
     public sealed partial class Pawn
     {
+        public Map MapHeld => ParentHolder is CarryTracker carry ? carry.Pawn.Map : Map;
         public Health health;
         public Pawn()
-        { health = new(this); inventory.pawn = this; inventory.innerContainer.Owner = inventory; carryTracker.innerContainer.Owner = carryTracker; }
+        { health = new(this); inventory.pawn = this; inventory.innerContainer.Owner = inventory; carryTracker.innerContainer.Owner = carryTracker; carryTracker.Pawn = this; jobs.pawn = this; }
         public float BodySize = 1f, RawPain = .5f, PainFactor = 1f, PainThreshold = .8f, ChemicalEffect = 1f;
         public bool IsColonistPlayerControlled, NativeSafety;
+        public bool DestinationValid = true, RouteValid = true, CarrierCapable = true;
         public float EmergencyUrgency;
         public JobDef CurJobDef => CurJob.def;
         public bool Downed, Dead, IsMutant, IsPrisoner, Teetotaler, AllowDrug = true, DoctorCapable = true, Hostile;
@@ -135,7 +142,7 @@ namespace Verse
 }
 namespace Verse.AI
 {
-    public enum PathEndMode { Touch, ClosestTouch }
+    public enum PathEndMode { Touch, ClosestTouch, OnCell }
     public static class JobMaker
     {
         public static Job MakeJob(JobDef def, Thing a, Thing? b = null) => new() { def = def, targetA = new(a), targetB = new(b!) };
@@ -197,7 +204,12 @@ namespace Verse.AI
         public static Toil Jump(Toil target) => JumpIf(target, () => true);
         public static Toil JumpIf(Toil target, Func<bool> condition) => new() { JumpTarget = target, JumpCondition = condition };
     }
-    public static class Toils_Goto { public static Toil GotoThing(TargetIndex target, PathEndMode end) => new(); }
+    public static class Toils_Goto
+    {
+        public static Toil GotoThing(TargetIndex target, PathEndMode end) => new();
+        public static Toil GotoCell(TargetIndex target, PathEndMode end)
+        { Toil toil = new(); toil.initAction = () => toil.actor.Position = toil.actor.CurJob.GetTarget(target).Cell; return toil; }
+    }
     public static class Toils_Haul
     {
         public static Toil StartCarryThing(TargetIndex target)

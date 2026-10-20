@@ -28,5 +28,8 @@
     <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalAttempts.cs" Link="Production\NpcMedicalAttempts.cs" />
     <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalSafety.cs" Link="Production\NpcMedicalSafety.cs" />
     <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcMedicalCeSafety.cs" Link="Production\NpcMedicalCeSafety.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcExtractionModel.cs" Link="Production\NpcExtractionModel.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\JobDriver_NpcExtract.cs" Link="Production\JobDriver_NpcExtract.cs" />
+    <Compile Include="..\MoreInjuries\AI\NpcCombatMedicine\NpcExtractionCarryPatch.cs" Link="Production\NpcExtractionCarryPatch.cs" />
   </ItemGroup>
 </Project>

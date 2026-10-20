@@ -27,7 +27,16 @@ internal static class NpcMedicalAttempts
     }
 
     internal static bool Automatic(Pawn doctor, Job job) => NpcMedicalAi.ActorEligible(doctor) && !job.playerForced
-        && (job.endAfterTendedOnce || job.def == KnownJobDefOf.MI_NpcTend || job.def == KnownJobDefOf.MI_NpcPainSelf);
+        && (job.endAfterTendedOnce || job.def == KnownJobDefOf.MI_NpcTend || job.def == KnownJobDefOf.MI_NpcPainSelf || job.def == KnownJobDefOf.MI_NpcExtract);
+
+    internal static bool Ready(Pawn doctor, Pawn patient, JobDef action, Thing? supply)
+        => Retry(doctor, patient, action).Allowed(Find.TickManager.TicksGame, Context(doctor, patient, supply));
+    internal static bool ExtractionAllowed(Pawn doctor, Pawn patient)
+        => !NpcMedicalCompatibility.SafetyOwned(doctor) && Ready(doctor, patient, KnownJobDefOf.MI_NpcExtract, null);
+    internal static void Progress(Job job)
+    {
+        if (s_active.TryGetValue(job, out Attempt? attempt)) { attempt.Progress = true; }
+    }
 
     internal static bool Allowed(Pawn doctor, Pawn patient, JobDef action, Thing? supply)
     {
@@ -122,8 +131,8 @@ internal static class NpcMedicalAttempts
         if (!s_active.TryGetValue(job, out Attempt? attempt)) { return; }
         s_active.Remove(job);
         attempt.Progress |= attempt.BeforeApplication?.Improved(attempt.Patient) == true;
-        bool resolved = attempt.Patient.Dead || NpcMedicalAi.Urgency(attempt.Patient) <= 0f
-            && !attempt.Patient.health.HasHediffsNeedingTend();
+        bool resolved = attempt.Patient.Dead || (job.def == KnownJobDefOf.MI_NpcExtract ? !attempt.Patient.Downed
+            : NpcMedicalAi.Urgency(attempt.Patient) <= 0f && !attempt.Patient.health.HasHediffsNeedingTend());
         NpcMedicalRetry retry = Retry(attempt.Doctor, attempt.Patient, job.def);
         retry.Complete(Find.TickManager.TicksGame, attempt.Context, attempt.Progress || resolved);
         attempt.Diagnose("finish=" + condition + "; progress=" + attempt.Progress + "; resolved=" + resolved + "; retry=" + retry.Deadline);

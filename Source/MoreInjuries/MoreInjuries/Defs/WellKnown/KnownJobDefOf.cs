@@ -25,6 +25,7 @@ public static class KnownJobDefOf
     public static JobDef UseBloodBag = null!;
     public static JobDef UseSalineBag = null!;
     public static JobDef HarvestBlood = null!;
+    public static JobDef MI_NpcExtract = null!;
     public static JobDef MI_NpcTend = null!;
     public static JobDef MI_NpcReposition = null!;
     public static JobDef MI_NpcWithdraw = null!;
